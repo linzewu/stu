@@ -2,5 +2,4 @@ target/
 *.class
 .settings/
 .project
-.classpath
 demo/
