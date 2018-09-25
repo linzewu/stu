@@ -106,7 +106,7 @@ public class PreCarRegisterController {
 
 			sb.append(bcr.getDpid());
 
-			String id = this.preCarRegisterManager.save(bcr);
+			String id = this.preCarRegisterManager.save(bcr); 
 
 			System.out.println(sb);
 			String path = System.getProperty("2code");
