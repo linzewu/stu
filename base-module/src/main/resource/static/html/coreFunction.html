@@ -1,0 +1,98 @@
+ <div id="footer" style="padding:5px;">
+        <a href="#" class="easyui-linkbutton" onclick="onSave()">保存</a>
+    </div>
+<div class="easyui-panel"  title="核心功能管理" data-options="footer:'#footer',fit:true">
+        <ul id="corepowerListTree" ></ul>
+        <input name="coreFunctionPoint" value="" id="input_coreFunctionPoint" type="hidden">
+    </div>
+<script>
+$(function(){
+	var allCoreFunction = $.ajax({
+		url : "../../coreFunction/getAllCoreFunction",
+		async : false,
+		type:'POST'
+	}).responseText;
+	if(allCoreFunction!=""){
+		allCoreFunction=$.parseJSON(allCoreFunction);
+	}
+	
+	$.post("../../role/getPowerPoints",function(data){
+		var pwGroup={};
+		$.each(data,function(i,n){
+			if(!pwGroup[n.modeCode]){
+				pwGroup[n.modeCode]=[n];
+			}else{
+				pwGroup[n.modeCode].push(n);
+			}
+		});
+		var treeArray =[];
+		
+		var isCheck=function(code){
+			for(var a in allCoreFunction){
+				if(allCoreFunction[a].functionPoint == code){
+					return true;
+				}
+			}
+			return false;
+		};
+		
+		$.each(pwGroup,function(i,n){
+			var treeObj={};
+			treeObj.text=n[0].model;
+			treeObj.children=[];
+			$.each(n,function(j,k){
+				var child={};
+				child.id=k.code;
+				child.text=k.name;
+				child.checked= isCheck(k.code);
+				treeObj.children.push(child);
+				
+			});
+			
+			treeArray.push(treeObj);
+		});
+		$("#corepowerListTree").tree({
+			checkbox:true,
+			data:treeArray,
+			onCheck:function(){
+				var checkedArray = $("#corepowerListTree").tree("getChecked");
+				var fp="";
+				$.each(checkedArray,function(i,n){
+					if(n.id){
+						fp+=","+n.id;
+					}
+				});
+				if(fp.length>0){
+					fp=fp.substring(1);
+				}
+				$("#input_coreFunctionPoint").val(fp);
+			}
+		});
+	});
+});
+
+function onSave(){
+	var coreFun = $("#input_coreFunctionPoint").val();
+	if(coreFun == null || coreFun == ""){
+		$.messager.alert("提示","请勾选核心功能菜单");
+	}else{
+		var obj = {
+			"functionPoint":coreFun
+		};
+		$.ajax(
+	             {
+	               url:"../../coreFunction/save", 
+	               type: "POST", 
+	               data: obj,
+	               success: function(data){
+	            	   if(data.state==1){
+	           			$.messager.alert("提示","保存成功","info");
+	           		}else{						
+	           			$.messager.alert("提示","保存失败","error");
+	           		}
+	               }, 
+	               dataType: "json"
+	            } );
+	}
+}
+</script>

@@ -1,0 +1,113 @@
+
+<div class="easyui-tabs" data-options="fit:true" id="tab-role">
+	<div data-options="title:'角色列表'">
+		<table id="roleManager" class="easyui-datagrid basegrid"
+			data-options="url:'../../role/getRoles',singleSelect:true,toolbar:'#roleManagerToolbar',pagination:true">
+			<thead> 
+				<tr>
+					<th data-options="field:'jsmc'"  style="width: 200px;">角色名称</th>
+					<th data-options="field:'jsjb',formatter:roleManager.jsjbFormatter"  style="width: 200px;">角色级别</th>
+					<th data-options="field:'jslx',formatter:roleManager.jslxFormatter"  style="width: 200px;">角色类型</th>
+					<th data-options="field:'bz'"  style="width: 400px;">备注</th>
+				</tr>
+			</thead>
+		</table>
+		<div id="roleManagerToolbar" class="list-query-base">
+			<div>
+				<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="comm.createTab('#tab-role','新增角色','RoleInfo.html')">添加角色</a>
+				<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="roleManager.editRole()">编辑角色</a>
+				<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="roleManager.deleteRole()">删除角色</a>
+			</div>
+			<div>
+				<label>角色名称：</label><input name="jsmc">
+				<label>角色级别：</label><select name="jsjb" id="list-jsjb"></select>
+				<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="roleManager.queryRole()">查询</a>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+
+	$(function(){
+		comm.createBaseSelect("select[name=jsjb]","role.jsjb","请选择角色级别");
+	});
+	
+	var roleManager={};
+	
+	roleManager.jsjbFormatter=function(value){
+		return comm.getParamNameByValue("role.jsjb", value);
+	};
+	
+	roleManager.jslxFormatter=function(value){
+		return comm.getParamNameByValue("role.jslx", value);
+	};
+	
+	roleManager.queryRole=function (){
+		var jsmc = $("#roleManagerToolbar input[name=jsmc]").val();
+		var jsjb= $("#roleManagerToolbar select[name=jsjb]").val();
+		
+		var param={};
+		
+		if(jsmc && $.trim(jsmc)!=""){
+			param.jsmc=jsmc;
+		}
+		
+		if(jsjb && $.trim(jsjb)!=""){
+			param.jsjb=jsjb;
+		}
+		$("#roleManager").datagrid("reload",param);
+		
+	};
+
+	roleManager.editRole=function(){
+		var row = $("#roleManager").datagrid("getSelected");
+		if(row){
+			if(row.jslx==0){
+				$.messager.alert("提示","内置角色无法编辑！","warning");
+				return ;
+			}
+			comm.createTab("#tab-role","编辑角色","RoleInfo.html");
+		}else{
+			$.messager.alert("提示","请选择角色编辑！","info");
+		}
+	}
+	
+	roleManager.deleteRole=function(){
+		var row = $("#roleManager").datagrid("getSelected");
+		if(row){
+			
+			if(row.jslx==0){
+				$.messager.alert("提示","系统超级管理员不能删除","info");
+				return;
+			}
+			
+			$.messager.confirm("确认","您是否确认删除该角色?",function(r){
+				if(r){
+					$.messager.progress({
+						"title" : "提示",
+						"msg" : "数据删除中..."
+					});
+					
+					$.post("../../role/delete",{id:row.id}, function(data) {
+						if(data.state==1){
+							$.messager.alert("提示","角色删除成功！","info",function(){
+								$("#roleManager").datagrid("reload");
+							});
+						}else{
+							$.messager.alert("提示",data.message,"error",function(){
+								$("#roleManager").datagrid("reload");
+							});
+						}
+					}).complete(function() {
+						$.messager.progress("close");
+					}).error(function(){
+						$.messager.alert("错误","系统错误，请联系管理员！","error");
+					});
+				}
+			})
+			
+		}else{
+			$.messager.alert("提示","请选择角色删除！","info");
+		}
+	}
+</script>

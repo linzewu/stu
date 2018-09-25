@@ -1,0 +1,13 @@
+<table id="securityLogManager" class="easyui-datagrid"
+	data-options="url:'../../securityLog/getSecurityLog',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#operlogToolbar'">
+	<thead> 
+		<tr>
+			<th data-options="field:'ipAddr',width:100">IP地址</th>
+			<th data-options="field:'userName',width:100">账号</th>
+			<th data-options="field:'clbm',width:100">安全审计策略子类型编码</th>
+			<th data-options="field:'content',width:100">内容描述</th>
+			<th data-options="field:'createUser',width:100">创建人</th>
+			<th data-options="field:'createTime',width:100">创建时间</th>
+		</tr>
+	</thead>
+</table>

@@ -1,0 +1,91 @@
+.readonly{
+	background-color: #eee;
+}
+
+.info2{
+	width: 85%;
+	background-color: #F8FBFE;
+	
+	padding:5px 5px 5px 5px;
+	border-right: 1px solid #99BBE8;
+	border-bottom: 1px solid #99BBE8;
+}
+
+.info_title {
+	text-align: right;
+	width: 15%;
+	color: #890C1A;
+	background-color: #EEF0F7;
+	
+	padding:5px 5px 5px 5px;
+	border-right: 1px solid #99BBE8;
+	border-bottom: 1px solid #99BBE8;
+}
+.info{
+	width: 35%;
+	background-color: #F8FBFE;
+	height: 18px;
+	
+	padding:5px 5px 5px 5px;
+	border-right: 1px solid #99BBE8;
+	border-bottom: 1px solid #99BBE8;
+}
+.base_table{
+	margin:20px 10px 10px 20px;
+	border-left: 1px solid #99BBE8;
+	border-top: 1px solid #99BBE8;
+	/* min-width: 680px; */
+	width: 96%;
+}
+
+.base_table  select{
+	width: 180px;
+}
+
+.base_table td{
+	
+}
+
+.fileInfo div{
+	margin: 0px;
+	left: 0px;
+	background-color: #E0ECF9;
+}
+
+.fileInfo div  a{
+	margin-left: 10px;
+}
+
+
+.projectTitle{
+	font-size: 14px;
+	color: #890C1A;
+}
+
+.base_fl{
+	border: 1px solid #99BBE8;
+}
+
+.basegrid{
+	width: 100%;
+	height: 400px;
+}
+
+.list-query-base div{
+	margin: 5px 0 5px 5px;
+}
+
+
+.list-query-base input{
+	width: 120px;
+}
+
+.list-query-base select{
+	width: 120px;
+}
+
+.center-div{
+	margin:20px 10px 10px 20px;
+	min-width: 680px;
+	width: 96%;
+}

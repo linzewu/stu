@@ -1,0 +1,171 @@
+<div  data-options="fit:true" id="deptPage" class="easyui-layout">
+	<div data-options="title:'部门列表',region:'west',split:true"
+		style="width: 240px;">
+		<ul id="dept-list"></ul>
+	</div>
+	<div data-options="region:'center',title:'部门信息'" id="deptInfoPanel">
+		<form id="deptInfoForm" method="post">
+			<table class="base_table" cellspacing="0" cellpadding="0"> 
+				<tr><td class="info_title">部门代码：</td>
+					<td class="info"><input name="bmdm" class="easyui-validatebox" data-options="required:true"></td>
+					<td class="info_title">部门级别：</td>
+					<td class="info">
+						<select name="bmjb" class="easyui-validatebox" data-options="required:true">
+						</select>
+					</td>
+				</tr>
+				<tr><td class="info_title">部门名称：</td>
+					<td class="info"> <input name="bmmc" class="easyui-validatebox" data-options="required:true"> </td>
+					<td class="info_title">部门全程：</td>
+					<td class="info"><input name="bmqc" class="easyui-validatebox" data-options="required:true"></td>
+				</tr>
+				<tr><td class="info_title">水印名称：</td>
+					<td class="info"><input name="symc" class="easyui-validatebox" data-options="required:true"></td>
+					<td class="info_title">负责人：</td>
+					<td class="info"><input name="fzr" class="easyui-validatebox" data-options="required:true"></td>
+				</tr>
+				<tr><td class="info_title">联系电话：</td>
+					<td class="info"><input name="lxdh" class="easyui-validatebox" data-options="required:true"></td>
+					<td class="info_title">传真号码：</td>
+					<td class="info"><input name="czhm" class="easyui-validatebox" data-options="required:true"></td>
+				</tr>
+				<tr><td class="info_title">地址：</td>
+					<td class="info2" colspan="3"><input name="dz" style="width: 400px;" class="easyui-validatebox" data-options="required:true"></td>
+				</tr>
+				<tr><td class="info_title">备注：</td>
+					<td class="info2" colspan="3"><input name="bz" style="width: 400px;"></td>
+				</tr>
+			</table>
+			 <div style="margin:0 15px;;float: right;" >
+		        <a href="#" class="easyui-linkbutton c4" style="width:80px" onclick="createDept()">新增</a>
+		        <a href="#" class="easyui-linkbutton c4" style="width:80px" onclick="saveDept()">保存</a>
+		        <a href="#" class="easyui-linkbutton c3" style="width:80px" onclick="deleteDept()">删除</a>
+		     </div>
+		     <input type="hidden" name="id" >
+		     <input type="hidden" name="sjbmdm" >
+	     </form>
+	</div>
+</div>
+<script type="text/javascript">
+
+function createDept(){
+	var node =  $("#dept-list").tree("getSelected")
+	$("#deptInfoPanel").panel("setTitle","新增   部门信息 上级部门("+node.text+")");
+	$("#deptInfoForm").form("clear");
+	$("#deptInfoForm input[name=sjbmdm]").val(node.id);
+	
+}
+
+function deleteDept(){
+	var node =  $("#dept-list").tree("getSelected");
+	loadTree(node.id);
+	
+	$.messager.confirm("提示","您确认删除改数据吗？",function(r){
+		if (r){
+			var node =  $("#dept-list").tree("getSelected");
+			var root =  $("#dept-list").tree("getRoot");
+			
+			if(root.id==node.id){
+				$.messager.alert("提示","根部门无法删除！");
+			}else if(node.children&&node.children.length>0){
+				$.messager.alert("提示","您删除的部门存在子部门，请先删除子部门!");
+			}else{
+				$.messager.progress({
+					title:"提示",
+					msg:"数据删除中..."
+				});
+				$.post("../../dept/delete",{"bmdm":node.id},function(data){
+					if(data.state==1){
+						$.messager.alert("提示","删除成功");
+						loadTree();
+					}
+				}).error(function(){
+					$.messager.alert("错误","删除错误","error");
+				}).complete(function() {
+					$.messager.progress("close");
+				});
+			}
+		}
+	})
+	
+}
+
+function saveDept(){
+	var flag = $("#deptInfoForm").form("validate");
+	if(flag){
+		$.messager.progress({
+			title:"提示",
+			msg:"数据保存中..."
+		});
+		
+		$.post("../../dept/save",$("#deptInfoForm").serializeJson(),function(data){
+			if(data.state==1){
+				$.messager.alert("提示","保存成功");
+				loadTree(data.data.bmdm)
+			}
+		}).error(function(){
+			$.messager.alert("错误","保存错误","error");
+		}).complete(function() {
+			$.messager.progress("close");
+		});
+	}
+}
+
+function depts2Node(data){
+	var roots=[];
+	for(var i in data){
+		if(data[i].sjbmdm==null||data[i].sjbmdm==""){
+			var node={};
+			node.id=data[i].bmdm;
+			node.text=data[i].bmmc;
+			node.data=data[i];
+			setChildrenNode(data,node);
+			roots.push(node);
+		}
+	}
+	return roots;
+}
+
+function setChildrenNode(data,node){
+	var children=[];
+	for(var i in data){
+		if(node.id==data[i].sjbmdm){
+			var child={};
+			child.id=data[i].bmdm;
+			child.text=data[i].bmmc;
+			child.data=data[i];
+			setChildrenNode(data,child);
+			children.push(child);
+			node.children=children;
+		}
+	}
+}
+
+function loadTree(selectNodeId){
+	$.messager.progress({
+		"title" : "提示",
+		"msg" : "数据加载中..."
+	});
+	$.post("../../dept/getDepts", function(data) {
+		var nodes = depts2Node(data);
+		$("#dept-list").tree({data:nodes,onSelect:function(node){
+			$("#deptInfoForm").form("load",node.data);
+			$("#deptInfoPanel").panel("setTitle","编辑   部门信息");
+		}});
+	}).complete(function() {
+		$.messager.progress("close");
+		var node=null;
+		if(!selectNodeId){
+			node=$('#dept-list').tree("getRoot");
+		}else{
+			node=$('#dept-list').tree('find', selectNodeId);
+		}
+		$('#dept-list').tree('select', node.target);
+	});
+}
+
+$(function(){
+	comm.createBaseSelect("select[name=bmjb]","dept.bmjb");
+	loadTree();
+})
+</script>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="../js/easyui/themes/color.css">
+<link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+
+
+<style type="text/css">
+.f1{
+	text-align: right;
+	font-size: 12px;
+	color: white;
+}
+
+.t{
+		_margin-top: 339px;
+		_margin-left: 600px;
+		margin-top: 339px\9;
+		margin-left: 600px\9;
+		padding-top: 339px;
+		padding-left: 600px;
+	}
+</style>
+
+<script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+<script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../js/login.js"></script>
+
+<title>电子档案影像化管理系统</title>
+</head>
+<body style="margin: 0;background-color: #0172AA;">
+<div style="background-image: url('../images/login.jpg');width: 1360px;height:610px;background-repeat: no-repeat;margin: 0 auto;">
+	<form>
+	<!--<div style="width: 280px;position: absolute;top: 290px;left: 720px;">-->
+		<table class="t">
+			<tr>
+				<!--<td class="f1"><label>用户名：</label></td>-->
+				<td>  <input id="userName" type="text" style="height: 18px;width: 150px;"></td>
+				<td rowspan="2" style="padding-left: 8px;">
+					<a id="login" href="javascript:login()" >
+					<img alt="登陆" src="../images/loginbt.jpg"  style="border:0 ;">
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<!--<td class="f1"><label>密码：</label></td>-->
+				<td> <input id="password" type="password" style="height: 18px;width: 150px;"></td>
+			</tr>
+			<!--<tr>
+				<td colspan="2" style="text-align: center;">
+					 <a href="#" class="easyui-linkbutton c6" style="width:120px;margin-top: 6px;" onclick="login()">登陆</a>
+				</td>
+			</tr>-->
+		</table>
+	<!--</div>-->
+	</form>
+</div>
+</body>
+</html>

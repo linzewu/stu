@@ -1,0 +1,215 @@
+<form id="roleInfoForm" method="post">
+	<table class="base_table" cellspacing="0" cellpadding="0"> 
+		<tr><td class="info_title">角色名称：</td>
+			<td class="info"><input name="jsmc" class="easyui-validatebox" data-options="required:true"></td>
+			<td class="info_title">角色级别：</td>
+			<td class="info"><input id="jsjb" name="jsjb"   prompt='请选择角色级别' data-options="required:true,editable:false,data:comm.getBaseParames('role.jsjb'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox">
+		<!--<select name="jsjb" class="easyui-validatebox" data-options="required:true"></select>--> </td>
+		</tr>
+		<tr><td class="info_title">角色类型：</td>
+			<td class="info"><input name="jslx" value="1" type="hidden">自定义角色</td>
+			<td class="info_title">备注：</td>
+			<td class="info"><input name="bz" ></td>
+		</tr>
+		<tr>
+			<td class="info_title">功能权限</td>
+			<td class="info2" colspan="3">
+				<input type="hidden" name="jsqx" >
+				<!--<table id="power-list"></table>-->
+				<div class="easyui-panel" style="padding:5px" >
+			        <ul id="powerListTree" ></ul>
+			    </div>
+			</td>
+		</tr>
+	</table>
+	 <div style="text-align: center;" >
+        <a href="#" id="roleSave" style="width:80px" ></a>
+        <a href="#" id="roleClose" style="width:80px" ></a>
+     </div>
+     <input type="hidden" name="id" >
+</form>
+
+<script type="text/javascript">
+
+$(function(){
+	
+	/**comm.createBaseSelect("#roleInfoForm select[name=jsjb]","role.jsjb","请选择角色级别");**/
+	var title = $("#tab-role").tabs("getSelected").panel("options").title;
+	var row;
+	if(title=="编辑角色"){
+		row = $("#roleManager").datagrid("getSelected");
+		$("#roleInfoForm").form("load",row);
+	}
+	/**$("#power-list").datagrid({
+		url:'role/getPowers',
+		height:300,
+		selectOnCheck:false,
+		rownumbers:true,
+	    columns:[[
+			{field:'ck',checkbox:true},
+	        {field:'module',title:'模块',width:100},
+	        {field:'app',title:'菜单',width:100},
+	        {field:'function',title:'功能',width:100}
+	    ]],
+	    onLoadSuccess:function(data){
+	    	initEditAttr(data.rows);
+	    }
+	});**/
+	$.post("../../role/getPowerPoints",function(data){
+		var pwGroup={};
+		$.each(data,function(i,n){
+			if(!pwGroup[n.modeCode]){
+				pwGroup[n.modeCode]=[n];
+			}else{
+				pwGroup[n.modeCode].push(n);
+			}
+		});
+		var treeArray =[];
+		
+		var isCheck=function(code){
+			if(row&&row.jsqx){
+				return row.jsqx.indexOf(code)!=-1;
+			}
+			return false;
+		};
+		
+		$.each(pwGroup,function(i,n){
+			var treeObj={};
+			treeObj.text=n[0].model;
+			treeObj.attributes = {"empowered":n[0].empowered};
+			treeObj.children=[];
+			$.each(n,function(j,k){
+				var child={};
+				child.id=k.code;
+				child.text=k.name;
+				child.checked= isCheck(k.code);
+				child.attributes = {"empowered":k.empowered};
+				treeObj.children.push(child);
+				
+			});
+			
+			treeArray.push(treeObj);
+		});
+		$("#powerListTree").tree({
+			checkbox:
+				/**function(node){
+				if (node.attributes.empowered){
+					return true;
+				}else{
+					return false;
+				}
+			},**/
+			true,
+			data:treeArray,
+			onCheck:function(){
+				var checkedArray = $("#powerListTree").tree("getChecked");
+				var fp="";
+				$.each(checkedArray,function(i,n){
+					if(n.id){
+						fp+=","+n.id;
+					}
+				});
+				if(fp.length>0){
+					fp=fp.substring(1);
+				}
+				$("#roleInfoForm input[name=jsqx]").val(fp);
+			}
+		});
+		initEditAttr();
+	});
+	
+});
+
+function initEditAttr(){
+	
+	var title = $("#tab-role").tabs("getSelected").panel("options").title;
+	if(title=="编辑角色"){
+		//var row = $("#roleManager").datagrid("getSelected");
+		//$("#roleInfoForm").form("load",row);
+		$("#roleSave").linkbutton({
+			text:'修改',
+			onClick:function(){
+				saveRole("../../role/save",function(data){
+					if(data.state==1){
+						$.messager.alert("提示","保存成功！","info",function(r){
+							$("#tab-role").tabs("close","编辑角色");
+							$("#roleManager").datagrid("reload");
+						});
+					}
+				});
+			}
+		});
+		
+		/**var keys = row.jsqx.split(",");
+		
+		$.each(keys,function(i,n){
+			$.each(rows,function(j,k){
+				if(k.key==n){
+					$("#power-list").datagrid("selectRow",j);
+				}
+			})
+		});**/
+		
+	}
+	
+	if(title=="新增角色"){
+		$("#roleSave").linkbutton({
+			text:'保存',
+			onClick:function(){
+				saveRole("../../role/add",function(data){
+					if(data.state==1){
+						$.messager.confirm("提示","保存成功，您是否继续新增？",function(r){
+							if(r){
+								//$("#power-list").datagrid("uncheckAll");
+								$("#roleInfoForm").form("clear");
+							}else{
+								$("#tab-role").tabs("close","新增角色");
+							}
+							$("#roleManager").datagrid("reload");
+						});
+					}
+				});
+			}
+		});
+	}
+	
+	$("#roleClose").linkbutton({
+		text:"关闭",
+		onClick:function(){
+			$("#tab-role").tabs("close",$("#tab-role").tabs("getSelected").panel("options").title);
+		}
+	});
+}
+
+
+function saveRole(url,callback){
+	var flag = $("#roleInfoForm").form("validate");
+	if(!flag){
+		return false;
+	}
+	/**var rows = $("#power-list").datagrid("getChecked");
+	if(rows.length==0){
+		$.messager.alert("提示","请选择角色的权限");
+		return false;
+	}
+	var keys=[];
+	for(var i in rows){
+		var data =  rows[i];
+		keys.push(data.key);
+	}
+	$("#roleInfoForm input[name=jsqx]").val( keys.toString());**/
+	
+	$.messager.progress({
+		title:"提示",
+		msg:"数据保存中..."
+	});
+	
+	$.post(url,$("#roleInfoForm").serializeJson(),callback).error(function(){
+		$.messager.alert("错误","保存错误","error");
+	}).complete(function() {
+		$.messager.progress("close");
+	});
+}
+
+</script>

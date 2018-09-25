@@ -1,0 +1,64 @@
+<table id="operationLogManager" class="easyui-datagrid"
+	data-options="url:'',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#operlogToolbar'">
+	<thead> 
+		<tr>
+			<th data-options="field:'operationType',width:100">操作类型</th>
+			<th data-options="field:'operationUser',width:100">用户姓名</th>
+			<th data-options="field:'operationDate',width:100">操作时间</th>
+			<th data-options="field:'ipAddr',width:100">IP地址</th>
+			<th data-options="field:'operationResult',width:100">操作结果</th>
+			<th data-options="field:'failMsg',width:100">操作失败原因</th>
+			<th data-options="field:'module',width:100">功能模块名称</th>
+			<th data-options="field:'content',width:100,formatter:formatCellTooltip">内容描述</th>
+			<th data-options="field:'operationCondition',width:100,formatter:formatCellTooltip">操作条件</th>
+		</tr>
+	</thead>
+</table>
+
+<div id="operlogToolbar">
+	<div><label>用户姓名：</label><input class="easyui-textbox"  id="quer_operationUser" style="width: 100px;"  />
+	    <label>操作时间：</label> <input id="quer_operationDate" class="easyui-datebox" style="width: 100px;">~<input id="quer_operationDateEnd" class="easyui-datebox" style="width: 100px;">
+	    <label>功能模块名称：</label><input class="easyui-textbox" id="quer_module" style="width: 100px;"  />
+	    <label>是否核心功能：</label><select class="easyui-combobox" id="quer_coreFunction" style="width: 100px;">
+	    		<option value="">ALL</option>
+                <option value="Y">Y</option>
+                <option value="N">N</option>
+                </select>
+		<a class="easyui-linkbutton" href="#" data-options="iconCls:'icon-search'" onclick="query()"></a>
+	</div>
+</div>
+
+<script type="text/javascript">
+//格式化单元格提示信息  
+function formatCellTooltip(value){  
+    return "<span title='" + value + "'>" + value + "</span>";  
+}  
+function query(){
+	var operationDate = $("#quer_operationDate").datebox("getValue");
+	var operationDateEnd = $("#quer_operationDateEnd").datebox("getValue");
+	
+	var operationUser = $("#quer_operationUser").val();
+	var module = $("#quer_module").val();
+	var coreFunction = $("#quer_coreFunction").combobox("getValue");
+	
+	var param={};
+	if(operationUser&&$.trim(operationUser)!=""){
+		param.operationUser=operationUser;
+	}
+	if(operationDate&&$.trim(operationDate)!=""){
+		param.operationDate=operationDate;
+	}
+	if(operationDateEnd&&$.trim(operationDateEnd)!=""){
+		param.operationDateEnd=operationDateEnd;
+	}
+	if(module&&$.trim(module)!=""){
+		param.module=module;
+	}
+	if(coreFunction&&$.trim(coreFunction)!=""){
+		param.coreFunction=coreFunction;
+	}
+	 var opts = $("#operationLogManager").datagrid("options");
+	 opts.url = "../../opeationLog/getLoginOperationLog";
+	$("#operationLogManager").datagrid("reload",param);
+}
+</script>

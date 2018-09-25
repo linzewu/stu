@@ -1,0 +1,138 @@
+
+<script type="text/javascript">
+var baseParamManager = gridUtil.createNew("#datagrid-baseparam", {"url":"../../bps",idField:"id"});
+
+baseParamManager.query=function(){
+	
+	var type = $("#query-type").val();
+	var paramName = $("#query-paramName").val();
+	
+	var param={};
+	
+	if(type!=null&&$.trim(type)!=""){
+		param.type=$.trim(type);
+	}
+	
+	if(paramName!=null&&$.trim(paramName)!=""){
+		param.paramName=$.trim(paramName);
+	}
+	
+	$("#datagrid-baseparam").datagrid("reload",param);
+}
+
+baseParamManager.refresh=function(){
+	$.post("../../bps/refresh",function(data){
+		if(data.state==1){
+			$.messager.alert("提示","刷新成功！","info");
+		}
+	},"json");	
+}
+</script>
+<div class="easyui-tabs" data-options="fit:true">
+	<div data-options="title:'数据字典'">
+		<div class="center-div">
+			<table id="datagrid-baseparam" title="数据字典" class="easyui-datagrid" style="width:100%;height:400px"
+	            toolbar="#datagrid-baseparam-toolbar" pagination="true" url="../../bps/getBaseParamsOfPage" pageSize="100"
+	            pageList="[100,200,300,400,500]"
+	            rownumbers="true"  singleSelect="true">
+	        <thead>
+	            <tr>
+	                <th  width="150px" data-options="field:'type',editor:'text'" >字典类型</th>
+	                <th  width="150px" data-options="field:'paramName',editor:'text'">字典名称</th>
+	                <th  width="150px" data-options="field:'paramValue',editor:'text'">字典值</th>
+	                <th  width="150px" data-options="field:'seq',editor:'text'">排序</th>
+	                <th  width="200px" data-options="field:'memo',editor:'text'">备注</th> 
+	            </tr>
+	        </thead>
+	    </table>
+	    <div id="datagrid-baseparam-toolbar">
+	    	<div>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="baseParamManager.append()">新增字典</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="baseParamManager.accept()">保存</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="baseParamManager.reject()">取消编辑</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="baseParamManager.remove()">删除字典</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="baseParamManager.refresh()">刷新系统参数</a>
+	    	</div>
+	    	<div style="margin: 5px 2px 5px 2px;">
+	    		<label>字典类型：</label>
+	    		<input id="query-type" style="width: 100px;">
+	    		<label>字典名称：</label>
+	    		<input id="query-paramName" style="width: 100px;">
+	    		&nbsp;<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search"  onclick="baseParamManager.query()">查询</a>
+	    	</div>
+	    </div>
+	</div>
+	</div>
+	<div data-options="title:'服务器信息'">
+		<form  id="formComputerInfo">
+			<table class="base_table" cellspacing="0" cellpadding="0">
+				<tr>
+					<td class="info_title">操作系统：</td>
+					<td class="info">
+						<input name="czxt" class="easyui-validatebox readonly" readonly="readonly">
+					</td>
+					<td class="info_title">cpu个数：</td>
+					<td class="info">
+						<input name="cpugs" class="easyui-validatebox readonly" readonly="readonly">
+					</td>
+				</tr>
+				<tr>
+					<td class="info_title">操作系统名称：</td>
+					<td class="info">
+						<input name="czxtmc" class="easyui-validatebox readonly" readonly="readonly">
+					</td>
+					<td class="info_title">操作系统架构：</td>
+					<td class="info">
+						<input name="czxtjg" class="easyui-validatebox readonly" readonly="readonly">
+					</td>
+				</tr>
+				<tr>
+					<td class="info_title">ip及maca地址：</td>
+					<td class="info2" colspan="3">
+						<input name="ipmac" class="easyui-validatebox readonly" readonly="readonly" type="hidden">
+						<label id="lab_ipmac"></label>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div data-options="title:'授权信息'"></div>
+</div>
+
+<script type="text/javascript">
+	$(function(){
+		loadComputer();
+	});
+
+	function loadComputer(){
+		$.messager.progress({
+			title:"提示",
+			msg:"数据保存中..."
+		});
+		
+		$.post("../../bps/getComputerInfo",{},function(data){
+			if(data.state=="1"){
+				$("#formComputerInfo").form("load",data.data);
+				var ipms = data.data.ipmac.split(";");
+				var context="";
+				$.each(ipms,function(i,n){
+					if(n==""){
+						return;
+					}
+					var temp=n.split(",");
+					var ip=temp[0];
+					var mac=temp[1];
+					context+="IP 地址："+ip +"&nbsp;&nbsp;&nbsp;&nbsp;";
+					context+="MAC 地址："+ip +"<br/>";
+				});
+				
+				$("#lab_ipmac").html(context);
+			}
+			
+		}).error(function(){
+			$.messager.alert("错误","查询错误","error");
+		}).complete(function() {
+			$.messager.progress("close");
+		});
+	}
+</script>

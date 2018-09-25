@@ -1,0 +1,230 @@
+
+<div  data-options="fit:true" id="userPage" class="easyui-layout">
+	<div data-options="title:'部门列表',region:'west',split:true"
+		style="width: 180px;">
+		<ul id="dept-list"></ul>
+	</div>
+	<div data-options="region:'center'" id="userList">
+		<div class="easyui-tabs" data-options="fit:true" id="user-tabs">
+			<div data-options="title:'用户列表'">
+				<table id="userManager"
+					data-options="url:'../../user/getUsers',singleSelect:true,toolbar:userManagerToolbar,pagination:true">
+					<thead> 
+						<tr>
+							<th data-options="field:'yhm'"  style="width:100px;">用户名</th>
+							<th data-options="field:'yhxm'"  style="width:100px;">姓名</th>
+							<th data-options="field:'sfzh',formatter:idCardFormatter"  style="width:200px;">身份证号码</th>
+							<th data-options="field:'bmdm',formatter:deptFormatter"  style="width:200px;">管理部门</th>
+							<th data-options="field:'mmyxq'"  style="width:100px;">密码有效期</th>
+							<th data-options="field:'zjdlsj'"  style="width:100px;">最近登陆时间</th>
+							<th data-options="field:'zt',formatter:userStateFormatter"  style="width:80px;">状态</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="userManagerToolbar" class="list-query-base">
+	<div>
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="comm.createTab('#user-tabs','添加用户','UserInfo.html')">添加用户</a>
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="comm.createTab('#user-tabs','编辑用户','UserInfo.html')">编辑用户</a>
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="deleteUser()">删除用户</a>
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-redo',plain:true" onclick="passwordReset()">重置密码</a>
+	</div>
+	<div>
+		<label>用户名:</label><input name="yhm">
+		<label>姓名:</label><input name="yhxm">
+		<label>身份证号码:</label><input name="sfzh">
+		<label>下级部门:</label><input name="son" type="checkbox" style="width: 20px;" value="1">
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="queryUser()">查询</a>
+	</div>
+</div>
+
+<script type="text/javascript">
+function idCardFormatter(value,row,index){
+	return value.replace(value.substr(6,6),"******");
+}
+function userStateFormatter(value,row,index){
+	if(value == 0){
+		return "正常";
+	}else if (value == 1){
+		return "锁定";
+	}else if(value == 2){
+		return "停用";
+	}
+	return  "";
+}
+
+function deleteUser(){
+	
+	var row = $("#userManager").datagrid("getSelected");
+	
+	if(!row){
+		$.messager.alert("提示","请选择删除的用户！","info");
+		return;
+	}else{
+		$.messager.confirm("确认","您是否确认删除该用户？",function(r){
+			
+			if(r){
+				$.messager.progress({
+					"title" : "提示",
+					"msg" : "数据删除中..."
+				});
+				
+				$.post("../../user/delete", {id:row.id} ,function(data) {
+					if(data.state==1){
+						$.messager.alert("提示","用户删除成功！","info",function(){
+							$("#userManager").datagrid("reload");
+						});
+					}else{
+						$.messager.alert("提示",data.message,"error",function(){
+							$("#userManager").datagrid("reload");
+						});
+					}
+				}).error(function(){
+					$.messager.alert("错误","系统错误，请联系管理员！","error");
+				}).complete(function() {
+					$.messager.progress("close");
+				});
+			}
+			
+		})
+	}
+	
+}
+
+function passwordReset(){
+	
+	var row = $("#userManager").datagrid("getSelected");
+
+	if(!row){
+		$.messager.alert("提示","请选择重置密码的用户！","info");
+		return;
+	}else{
+		$.messager.confirm("确认","您是否确认重置该用户密码？",function(r){
+			
+			if(r){
+				$.messager.progress({
+					"title" : "提示",
+					"msg" : "处理中..."
+				});
+				
+				$.post("../../user/passwordReset", {id:row.id} ,function(data) {
+					if(data.state==1){
+						$.messager.alert("提示","密码重置成功！","info",function(){
+							$("#userManager").datagrid("reload");
+						});
+					}else{
+						$.messager.alert("提示",data.message,"error",function(){
+							$("#userManager").datagrid("reload");
+						});
+					}
+				}).error(function(){
+					$.messager.alert("错误","系统错误，请联系管理员！","error");
+				}).complete(function() {
+					$.messager.progress("close");
+				});
+			}
+			
+		})
+	}
+	
+}
+
+
+function deptFormatter(value,row,index){
+	return $("#dept-list").tree("find",value).text;
+}
+
+function queryUser(){
+	
+	var param ={};
+	
+	var yhm=$("#userManagerToolbar input[name=yhm]").val();
+	
+	var yhxm=$("#userManagerToolbar input[name=yhxm]").val();
+	
+	var sfzh=$("#userManagerToolbar input[name=sfzh]").val();
+	
+	var son =$("#userManagerToolbar input[name=son]").is(':checked');
+	
+	if(son){
+		param.seq=1;
+	}
+	
+	param.yhm=yhm;
+	
+	param.yhxm=yhxm;
+	
+	param.sfzh=sfzh;
+	
+	var node = $("#dept-list").tree("getSelected");
+	
+	param.bmdm=node.id;
+	
+	$("#userManager").datagrid("reload",param);
+	
+}
+
+$(function(){
+	loadTree();
+});
+
+function depts2Node(data){
+	var roots=[];
+	for(var i in data){
+		if(data[i].sjbmdm==null||data[i].sjbmdm==""){
+			var node={};
+			node.id=data[i].bmdm;
+			node.text=data[i].bmmc;
+			node.data=data[i];
+			setChildrenNode(data,node);
+			roots.push(node);
+		}
+	}
+	return roots;
+}
+
+
+function setChildrenNode(data,node){
+	var children=[];
+	for(var i in data){
+		if(node.id==data[i].sjbmdm){
+			var child={};
+			child.id=data[i].bmdm;
+			child.text=data[i].bmmc;
+			child.data=data[i];
+			setChildrenNode(data,child);
+			children.push(child);
+			node.children=children;
+		}
+	}
+}
+
+
+function loadTree(selectNodeId){
+	$.messager.progress({
+		"title" : "提示",
+		"msg" : "数据加载中..."
+	});
+	$.post("../../dept/getDepts", function(data) {
+		var nodes = depts2Node(data);
+		
+		$("#dept-list").tree({data:nodes,onClick:function(){
+			queryUser();
+		}});
+		
+		$("#userManager").datagrid({
+			queryParams:{bmdm:nodes[0].id}
+		});
+		
+	}).complete(function() {
+		$.messager.progress("close");
+	 	var node=$('#dept-list').tree("getRoot");
+		$('#dept-list').tree('select', node.target); 
+	});
+}
+</script>

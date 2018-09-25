@@ -1,0 +1,117 @@
+[{
+	"module": "系统管理",
+	"group": [
+		{
+			"groupName": "系统管理",
+			"menus": [				
+				{
+					"icon": "../../static/images/system.png",
+					"title": "系统参数管理",
+					"href": "../../static/html/systemInfo.html",
+					"permission":"BaseParams.getBaseParamsOfPage"
+				},				
+				{
+					"icon" : "../../static/images/function.png",
+					"title" : "核心功能管理",
+					"href" : "../../static/html/coreFunction.html",
+					"permission":"coreFunction.getAllCoreFunction"		
+				},
+				{
+					"icon" : "../../static/images/warning.png",
+					"title" : "非常规功能管理",
+					"href" : "../../static/html/SpecialCoreFunction.html",
+					"permission":"coreFunction.getAllSpecialCoreFunction"				
+				},{
+					"icon" : "../../static/images/police.png",
+					"title" : "警员功能管理",
+					"href" : "../../static/html/policeCoreFunction.html",
+					"permission":"coreFunction.getAllPoliceCoreFunction"			
+				},
+				{
+					"icon" : "../../static/images/security.png",
+					"title" : "安全审计策略设置",
+					"href" : "../../static/html/securityAuditPolicySetting.html",
+					"permission":"securityAuditPolicySetting.getPolicySettingList"
+				},
+				{
+					"icon" : "../../static/images/blackList.png",
+					"title" : "黑名单管理",
+					"href" : "../../static/html/BlackListManager.html",
+					"permission":"blackList.getBlackList"
+				}
+			]
+		},{
+			"groupName": "权限管理",
+			"menus": [
+				{
+					"icon": "../../static/images/user.png",
+					"title": "用户管理",
+					"href": "../../static/html/UserManager.html",
+					"permission":"user.getUsers"
+				},
+				{
+					"icon": "../../static/images/group_48.png",
+					"title": "角色权限管理",
+					"href": "../../static/html/RoleManager.html",
+					"permission":"role.getRoles"
+				},
+				{
+					"icon": "../../static/images/Organization_48.png",
+					"title": "组织架构管理",
+					"href": "../../static/html/department.html",
+					"permission":"dept.getDepts"
+				}
+			]
+		},{
+			"groupName": "日志管理",
+			"menus": [
+				{
+					"icon" : "../../static/images/LOG.png",
+					"title" : "操作日志",
+					"href" : "../../static/html/operationLog.html",
+					"permission":"OperationLog.getOperationLog"
+				},
+				{
+					"icon" : "../../static/images/loginlog.png",
+					"title" : "登录日志",
+					"href" : "../../static/html/loginOperationLog.html",
+					"permission":"OperationLog.getLoginOperationLog"
+				},
+				{		
+					"icon" : "../../static/images/logsec.png",
+					"title" : "安全日志",
+					"href" : "../../static/html/securityLog.html",
+					"permission":"SecurityLog.getSecurityLog"
+				}
+			]
+		}
+	]
+}
+,{
+	"module": "车辆预登记",
+	"group": [
+		{
+			"groupName": "车辆预登记",
+			"menus": [				
+				{
+					"icon": "../../static/images/car.png",
+					"title": "车辆预登记",
+					"href": "../../static/html/proCarRegister.html",
+					"permission":""
+				},
+				{
+					"icon": "../../static/images/impCar.png",
+					"title": "进口车登记",
+					"href": "../../static/html/importProCarRegister.html",
+					"permission":""
+				},
+				{
+					"icon": "../../static/images/list.png",
+					"title": "已登记信息",
+					"href": "../../static/html/proCarRegisterList.html",
+					"permission":""
+				}
+			]
+		}
+	]
+}]

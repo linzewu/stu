@@ -1,0 +1,324 @@
+
+<div class="easyui-layout" fit=true style="min-height: 480px;min-width: 800px;">
+	  <div data-options="region:'center'" style="padding:5px" >
+	  	<div class="easyui-tabs"  data-options="fit:true" id="user-info-tab" >
+			<div data-options="title:'基本信息'" >
+			<form id="userInfoForm" method="post"> 
+				<table class="base_table" cellspacing="0" cellpadding="0"> 
+					<tr><td class="info_title">部门代码：</td>
+						<td class="info"><input name="bmdm" class="easyui-validatebox readonly" readonly="readonly" data-options="required:true">
+							 <a href="#" class="easyui-linkbutton" style="width:40px" onclick="setCurrentDeptNode()">变更</a>
+						</td>
+						<td class="info_title">部门名称：</td>
+						<td class="info"><input name="bmmc" class="easyui-validatebox readonly" data-options="required:true"> </td>
+					</tr>
+					<tr><td class="info_title">用户角色：</td>
+						<td class="info"><input id="js" name="js"></td>
+						<td class="info_title">用户名：</td>
+						<td class="info"><input name="yhm" id="yhm" class="easyui-validatebox" data-options="required:true,validType:{userVad:['#userInfoForm input[name=id]']}"></td>
+					</tr>
+					<tr><td class="info_title">用户姓名：</td>
+						<td class="info"><input name="yhxm"  class="easyui-validatebox" data-options="required:true"></td>
+						<td class="info_title">身份证号码：</td>
+						<td class="info" >
+							<input name="sfzh" id="sfzh" class="easyui-validatebox" data-options="required:true,validType:{idCardVad:'',remote:['../../user/validateIdCard','sfzh']}">
+						</td>
+					</tr>
+					<tr>
+						<td class="info_title">是否民警：</td>
+						<td class="info" >
+							<input value="Y" name="isPolice" type="checkbox" >
+						</td>
+						<td class="info_title">警号</td>
+						<td class="info" >
+							<input  name="gh" >
+						</td>
+					</tr>
+					<tr>
+						<td class="info_title">密码有效期</td>
+						<td class="info" >
+							<input name="mmyxq" id="mmyxq" readonly="readonly" onFocus="WdatePicker()" class="Wdate" >
+						</td>
+						<td class="info_title">账户有效期</td>
+						<td class="info" >
+							<input name="zhyxq" id="zhyxq" readonly="readonly" onFocus="WdatePicker()" class="Wdate" >
+						</td>
+					</tr>
+					<tr>
+						<td class="info_title"><label>允许登录时间(开始)：</label></td>
+						<td class="info"><input id="permitBeginTime" name="permitBeginTime" data-options="required:true,showSeconds:false" class="easyui-timespinner">(00:00)</td>
+						<td class="info_title"><label>允许登录时间(截止)：</label></td>
+						<td class="info"><input id="permitEndTime" name="permitEndTime" data-options="required:true,showSeconds:false" class="easyui-timespinner">(20:00)</td>
+					</tr>
+					<tr>
+						<td class="info_title">IP起始地址</td>
+						<td class="info">
+							<input name="ipqsdz" class="easyui-validatebox" data-options="validType:'ipVad'">
+						</td>
+						<td class="info_title">IP结束地址</td>
+						<td class="info" >
+							<input name="ipjsdz" class="easyui-validatebox" data-options="validType:'ipVad'" >
+						</td>
+					</tr>
+					<tr>
+						<td class="info_title">固定IP</td>
+						<td class="info2" colspan="3">
+							<input name="gdip" style="width: 600px;" class="easyui-validatebox" data-options="validType:'ipsVad'"><label style="font: 14px; color: orange;">（多个用,隔开）</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="info_title">最近登陆时间</td>
+						<td class="info">
+							<input name="zjdlsj" readonly="readonly" class="readonly">
+						</td>
+						<td class="info_title">状态</td>
+						<td class="info">
+							<label for="zt_0">正常</label><input id="zt_0" value="0" name="zt" type="radio" checked="checked" />
+							<label for="zt_1">锁定</label><input id="zt_1" value="1" name="zt" type="radio" />
+							<label for="zt_2">停用</label><input id="zt_2" value="2" name="zt" type="radio" />
+							<!--<input type="hidden" name="jsqx" >-->
+						</td>
+					</tr>
+				</table>
+				<input type="hidden" name="id" >
+				</form>
+			</div>
+			<!--<div data-options="title:'授权信息'">
+				<table class="base_table"  cellspacing="0" cellpadding="0">
+					<tr >
+						<td  class="info_title">权限模式</td>
+						<td class="info2" ><input value="0" type="radio" name="qxms" checked="checked" onclick="createPowerList(0)"><label>角色</label><input onclick="createPowerList(1)" value="1" type="radio" name="qxms"><label>自由授权</label></td>
+					</tr>
+					<tr >
+						<td  class="info_title">操作权限</td>
+						<td class="info2" >
+							<table id="power-list"></table>
+						</td>
+					</tr>
+				</table>
+			</div>-->
+		</div>
+	  </div>
+	  <div data-options="region:'south'" style="height:100px;width: 100%;">
+	  		<div style="text-align: center;" >
+			   <a href="#" id="userSave" style="width:80px" ></a>
+			   <a href="#" id="userClose" style="width:80px" ></a>
+			</div>
+			
+			<!--<input type="hidden" name="qx" >
+			<input type="hidden" name="js" >-->
+	  </div>
+</div>
+
+
+<script type="text/javascript">
+
+$(function(){
+	initEditAttr();
+	$('#js').combobox({
+	    url:'../../role/getAllRole',
+	    valueField:'id',
+	    textField:'jsmc',
+	    editable:false,
+	    required:true	    
+	});
+});
+
+
+function setCurrentDeptNode(){
+	
+	var node = $("#dept-list").tree("getSelected");
+	if(node){
+		$("#userInfoForm input[name='bmdm']").val(node.id);
+		$("#userInfoForm input[name='bmmc']").val(node.text);
+	}
+}
+
+function createPowerList(type){
+	if(type==0){
+		$("#power-list").datagrid({
+			url:'../../role/getRoles',
+			height:'250',
+			width:'400',
+			selectOnCheck:false,
+			onLoadSuccess:setPower,
+		    columns:[[
+				{field:'ck',checkbox:true},
+		        {field:'jsmc',title:'角色名称',width:150}
+		    ]]
+		});
+	}
+	
+	if(type==1){
+		$("#power-list").datagrid({
+			url:'../../role/getPowers',
+			height:250,
+			width:'400',
+			selectOnCheck:false,
+			onLoadSuccess:setPower,
+		    columns:[[
+				{field:'ck',checkbox:true},
+		        {field:'module',title:'模块',width:100},
+		        {field:'app',title:'菜单',width:100},
+		        {field:'function',title:'功能',width:100}
+		    ]]
+		});
+	}
+}
+
+function initEditAttr(rows){
+	
+	var title =  $("#user-tabs").tabs("getSelected").panel("options").title;;
+	$("#userInfoForm").form("clear");
+	if(title=="添加用户"){
+		var date = new Date();
+		var str1 =  (date.getFullYear()+1)+"-"+(date.getMonth()+1)+"-"+date.getDate();
+		$("#zhyxq").val(str1);
+		date.setMonth(date.getMonth()+3);
+		var str2 =  (date.getFullYear())+"-"+(date.getMonth()+1)+"-"+date.getDate();
+		$("#mmyxq").val(str2);
+		
+		$("#permitBeginTime").val("08:00");
+		$("#permitEndTime").val("18:00");
+		setCurrentDeptNode();
+		//createPowerList(0);
+		$("#userSave").linkbutton({
+			text:'保存',
+			onClick:function(){
+				saveUser('../../user/saveUser',function(){
+					$.messager.confirm("提示","保存成功,是否继续新增用户？",function(r){
+						if(r){
+							$("#userInfoForm").form("clear");
+							$("#userInfoForm input[name=qxms]:eq(0)").click()
+							setCurrentDeptNode();
+							$("#user-info-tab").tabs("select",0);
+						}else{
+							$("#user-tabs").tabs("close",1);
+						}
+						
+						$("#userManager").datagrid("reload");
+					});
+				});
+			}
+		});
+	}
+	
+	if(title=="编辑用户"){
+		var row = $("#userManager").datagrid("getSelected");
+		if(row){
+			$("#userInfoForm").form("load",row);
+			$("#yhm").textbox({disabled:true});
+			$("#sfzh").textbox({disabled:true});
+			$("#userInfoForm input[name=bmmc]").val($("#dept-list").tree("find",row.bmdm).text);
+			//createPowerList(row.qxms);
+			
+			$("#userSave").linkbutton({
+				text:'保存',
+				onClick:function(){
+					saveUser('../../user/saveUser',function(){
+						$.messager.confirm("提示","保存成功,是否关闭编辑页面？",function(r){
+							if(r){
+								$("#userInfoForm").form("clear");
+								$("#user-tabs").tabs("close",1);
+							}
+							$("#userManager").datagrid("reload");
+						});
+					});
+				}
+			});
+			
+		}
+	}
+	
+	$("#userClose").linkbutton({
+		text:"关闭",
+		onClick:function(){
+			$("#user-tabs").tabs("close",$("#user-tabs").tabs("getSelected").panel("options").title);
+		}
+	});
+}
+
+function setPower(data){
+	
+	var rows=data.rows;
+	
+	var powers =[];
+	
+	var js=$("#userInfoForm input[name=js]").val();
+	var qx=$("#userInfoForm input[name=qx]").val();
+	
+	var qxms=$("#userInfoForm input[name=qxms]:checked").val();
+	
+	if(qxms==0){
+		if(js != ""){
+			powers = $.parseJSON(js);
+		}
+	}else{
+		if(qx != ""){
+			powers = $.parseJSON(qx);
+		}
+	}
+	$.each(powers,function(i,n){
+		$.each(rows,function(j,k){
+			if(qxms==0&&k.id==n){
+				$("#power-list").datagrid("checkRow",j);
+				return false;
+			}
+			if(qxms==1&&k.key==n){
+				$("#power-list").datagrid("checkRow",j);
+				return false;
+			}
+		});
+	})
+}
+
+
+function saveUser(url,callback){
+	
+	var flag = $("#userInfoForm").form("validate");
+	if(!flag){
+		return;
+	}
+	//var rows = $("#power-list").datagrid("getChecked");
+	
+	/**if(!rows||rows.length==0){
+		$.messager.alert("提示","请对当前用户进行授权！","info",function(){
+			$("#user-info-tab").tabs("select",1);
+		});
+		return false;
+	}else{
+		var qxms=$("#userInfoForm input[name=qxms]:checked").val();
+		var qx={qxms:qxms};
+		var data=[];
+		$.each(rows,function(i,n){
+			if(qxms==0){
+				data.push(n.id);
+			}
+			if(qxms==1){
+				data.push(n.key);
+			}
+		});
+		if(qxms==0){
+			$("#userInfoForm input[name=js]").val(JSON.stringify(data));
+			$("#userInfoForm input[name=qx]").val('');
+		}
+		if(qxms==1){
+			$("#userInfoForm input[name=qx]").val(JSON.stringify(data));
+			$("#userInfoForm input[name=js]").val('');
+		}
+		
+	}**/
+	
+	$.messager.progress({
+		title:"提示",
+		msg:"数据保存中..."
+	});
+	
+	$.post(url,$('#user-info-tab').tabs('getSelected').find("form").serializeJson(),callback).error(function(){
+		$.messager.alert("错误","保存错误","error");
+	}).complete(function() {
+		$.messager.progress("close");
+	});
+}
+
+</script>

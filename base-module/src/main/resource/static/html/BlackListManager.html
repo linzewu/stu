@@ -1,0 +1,43 @@
+<script type="text/javascript">
+	var gu  = gridUtil.createNew("#blackListManager",{idField:"id",url:"../../blackList"});
+	
+	function delBlack(){
+		var row = $("#blackListManager").datagrid("getSelected");
+		
+		if(row){
+			$.messager.confirm("请确认","您确认删除该数据？",function(r){
+				if (r) {
+					
+					$.messager.progress({"title":"处理删除中。。。"});
+					
+					$.post("../../blackList/delete",{ip:row.ip},function(rd){
+						$.messager.progress("close");
+						$.messager.alert("提示","删除成功");
+						$("#blackListManager").datagrid('reload');
+					}).complete(function(){
+						
+					});
+				}
+			});
+		}else{
+			$.messager.alert("提示","请选择要删除的数据！","info");
+		}
+	}
+</script>
+<table id="blackListManager" class="easyui-datagrid"
+	data-options="url:'../../blackList/getBlackList',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#blackListToolbar'">
+	<thead> 
+		<tr>
+			<th data-options="field:'ip',width:100,editor:{type:'textbox',options:{required:true,validType:{ipsVad:''}}}">IP</th>
+			<th data-options="field:'createBy',width:100">创建人</th>
+		</tr>
+	</thead>
+</table>
+
+<div id="blackListToolbar">
+	<div>
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="gu.append()">添加黑名单</a>
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="gu.accept()">保存</a>
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="delBlack()">删除黑名单</a>
+	</div>
+</div>

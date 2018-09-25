@@ -1,0 +1,154 @@
+html {
+	font-size: 100%;
+	-webkit-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+	font-family: "Arial","Microsoft YaHei","����","����",sans-serif;
+}
+
+
+.panel_cyxm{
+	height: 180px; padding:  10px 40px 0px 0px;
+}
+
+.panel_cyxm table{
+		width: 100%;
+}
+.panel_cyxm table tr td{
+	text-align: right;
+}
+
+.panel_cyxm table tr td label{
+	font-family: "Arial","Microsoft YaHei","����","����",sans-serif;
+	font-size: 16px;
+}
+
+.basetable{
+	width: 98%;
+	min-width:857px;
+	border-top:solid #95B8E7 1px;
+	border-left:solid #95B8E7 1px;
+}
+
+.tl{
+	width: 90px;
+	text-align: right;
+	border-bottom: solid #95B8E7 1px;
+	border-right: solid #95B8E7 1px;
+	height: 30px;
+	background-color: #EEF0F7;
+}
+
+.tl label{
+	font-size: 12px;
+	color: #890C1A;
+}
+.tc{
+	padding-left: 5px;
+	border-bottom: solid #95B8E7 1px;
+	border-right: solid #95B8E7 1px;
+	height: 30px;
+}
+
+.line_01{
+    padding: 0 20px 0;
+    margin: 20px 0;
+    line-height: 1px;
+    border-left: 200px solid #ddd;
+    border-right: 200px solid #ddd;
+    text-align: center;
+    color: #890C1A;
+}
+
+.menus{
+	list-style-type: none;
+}
+
+.menus li{
+	  width: 48px;
+	  text-align: center;
+	  margin-top: 20px;
+	  padding-left: 20px;
+}
+.menus li img{
+  border: 0;
+  margin: 0px;
+}
+
+.menus li a{
+  line-height: 20px;
+  text-decoration: none;
+  color: #15428B;
+}
+
+.gather-ul{
+	list-style:none;
+}
+
+.gather-ul li{
+	float: left;
+	width: 220px;
+	margin: 5px 6px 5px 6px;
+}
+
+.gather-east{
+	text-align: center;margin: 20px 0 0 0;
+}
+
+.box {
+	height: 130px;
+	float: left;
+	width: 800px;
+	overflow: hidden;
+	position: relative;
+}
+
+.box li {
+	display: block;
+	float: left;
+	margin-left: 5px;
+	margin-right: 5px;
+	width: 160px;
+	height: 120px;
+	vertical-align: middle;
+	text-align: center;
+	color: #bbb;
+}
+
+.box li:hover {
+	color: #leee;
+	
+}
+
+.box li.active {
+	background-position: -174px 0;
+	color: #555;
+	cursor: default;
+}
+
+a.prev, a.next {
+	height: 120px;
+	float: left;
+	margin: 15px 0 0 0;
+	cursor: pointer;
+	color: #eee;
+	font-size:50px;
+	 text-decoration: none;
+	 text-align: left;
+  line-height:120px;   
+  overflow:hidden;   
+}
+
+a.next {
+	margin-left: 30px;
+}
+
+.scroll_list {
+	width: 10000em;
+	position: absolute;
+}
+
+.box li img{
+	width: 160px;
+	height: 120px;
+	border: 0;
+}

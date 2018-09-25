@@ -1,0 +1,94 @@
+<script type="text/javascript">
+var editIndex = undefined;
+function endEditing(){
+    if (editIndex == undefined){return true}
+    if ($('#policySetManager').datagrid('validateRow', editIndex)){
+        $('#policySetManager').datagrid('endEdit', editIndex);
+        editIndex = undefined;
+        return true;
+    } else {
+        return false;
+    }
+}
+function onDBClickRow(index, field){
+    if (editIndex != index){
+        if (endEditing()){
+            $('#policySetManager').datagrid('selectRow', index)
+                    .datagrid('beginEdit', index);
+            editIndex = index;
+        } else {
+            setTimeout(function(){
+                $('#policySetManager').datagrid('selectRow', editIndex);
+            },0);
+        }
+    }
+}
+
+function stateFormatter(value,row,index){
+	if(value == 0){
+		return "开启";
+	}else if (value == 1){
+		return "关闭";
+	}
+	return  "";
+}
+
+function save(){
+	$('#policySetManager').datagrid('endEdit', editIndex);
+	var rows = $('#policySetManager').datagrid('getChanges');
+	console.log(rows)
+	
+	editIndex = null;
+	var obj = {};
+	obj.updateList = rows;
+	 $.ajax(
+             {
+               url:"../../securityAuditPolicySetting/save", 
+               type: "POST", 
+               data: JSON.stringify(obj), 
+               success: function(data){
+            	   if(data.state==1){
+           			$.messager.alert("提示","保存成功","info");
+           		}else{						
+           			$.messager.alert("提示","保存失败","error");
+           		}
+               }, 
+               dataType: "json",
+               contentType: "application/json"
+            } );
+	
+}
+</script>
+<table id="policySetManager" class="easyui-datagrid"
+	data-options="url:'../../securityAuditPolicySetting/getPolicySettingList',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#policySetToolbar',onDblClickRow:onDBClickRow">
+	<thead> 
+		<tr>
+			<th data-options="field:'aqsjcllxmc',width:100">安全审计策略类型名称</th>
+			<th data-options="field:'aqsjclbm',width:100">安全审计策略子类型编码</th>
+			<th data-options="field:'aqsjclzlxmc',width:100">安全审计策略子类型名称</th>
+			<th data-options="field:'clz',width:100,editor:{type:'textbox'}">策略值</th>
+			<th data-options="field:'clzsm',width:100">策略值说明</th>
+			<th data-options="field:'sfkq',width:100,formatter:stateFormatter,editor:{type:'combobox',options:{required:true,data:comm.getBaseParames('sjclzt'),valueField: 'id',textField: 'value'}}">是否开启</th>
+		</tr>
+	</thead>
+</table>
+
+<div id="policySetToolbar">
+	<div>
+		<!--<label>策略类型名称：</label><input class="easyui-textbox"  id="quer_aqsjcllxmc" style="width: 100px;"  />
+		<a class="easyui-linkbutton" href="#" data-options="iconCls:'icon-search'" onclick="query()"></a>-->
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="save()">保存</a>
+	</div>
+</div>
+<script type="text/javascript">
+function query(){
+	
+	var aqsjcllxmc = $("#quer_aqsjcllxmc").val();
+	
+	var param={};
+	if(aqsjcllxmc&&$.trim(aqsjcllxmc)!=""){
+		param.aqsjcllxmc=aqsjcllxmc;
+	}
+	$("#policySetManager").datagrid("reload",param);
+}
+</script>
