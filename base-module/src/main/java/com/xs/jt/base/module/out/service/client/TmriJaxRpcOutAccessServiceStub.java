@@ -11,19 +11,29 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.RequestContext;
+
 /*
 *  TmriJaxRpcOutAccessServiceStub java implementation
 */
-
 public class TmriJaxRpcOutAccessServiceStub extends org.apache.axis2.client.Stub {
 	static Properties properties = new Properties();
-
+	
+	@Value("${}")
 	public static String IP = "10.39.137.35";
+	
+	@Autowired
+	private RequestContext requestContext;
 
 	public static String getIp() {
 		try {
 			FileInputStream fileInputStream = new FileInputStream(
-					"D:\\apache-tomcat-6.0.26\\webapps\\network.properties");
+					"D:\\network.properties");
+					//"D:\\apache-tomcat-6.0.26\\webapps\\network.properties");
 			properties.load(fileInputStream);
 			fileInputStream.close();
 			return properties.getProperty("cip");
@@ -117,7 +127,7 @@ public class TmriJaxRpcOutAccessServiceStub extends org.apache.axis2.client.Stub
 	 */
 	public TmriJaxRpcOutAccessServiceStub(org.apache.axis2.context.ConfigurationContext configurationContext)
 			throws org.apache.axis2.AxisFault {
-
+		
 		this(configurationContext, "http://" + getIp() + ":9080/trffweb/services/TmriOutAccess");
 
 	}
@@ -393,8 +403,10 @@ public class TmriJaxRpcOutAccessServiceStub extends org.apache.axis2.client.Stub
 		}
 		return false;
 	}
-
+	
 	public static class QueryObjectOut implements org.apache.axis2.databinding.ADBBean {
+
+		private static final long serialVersionUID = 1L;
 
 		public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
 				"http://endpoint.axis.framework.tmri.com", "queryObjectOut", "ns2");

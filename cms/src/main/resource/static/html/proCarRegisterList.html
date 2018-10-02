@@ -1,10 +1,13 @@
+<object  id="LODOP_OB" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0>  
+       <embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0></embed> 
+</object> 
 <table id="preCarRegisterDG"   data-options="rownumbers:true,
 		fitColumns:true,
 		toolbar:'#toolbar2',
 		singleSelect:true,
 		pagination:true,
 		pageSize:10,
-		url:'baseManager!!multipleManager.action?bType=preCarRegister&method=getCarList'"
+		url:'../../preCarRegister/getCarList'"
 		>  
     <thead>
         <tr>  
@@ -21,7 +24,7 @@
 <div id="toolbar2"  style="padding:5px;height:auto">
 	<div style="margin-bottom:5px">
 	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="print()">打印查验单</a> 
-	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="loadCenter({title:'车辆预登记',action:'baseManager!proCarRegister!toPage.action'})">车辆预登记</a>
+	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="loadCenter({title:'车辆预登记',action:'../../static/html/proCarRegister.html'})">车辆预登记</a>
        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="toEdit()">修改预登记信息</a>
     </div>
     <div style="margin-bottom:5px">
@@ -30,9 +33,19 @@
     </div>
 </div>
 <div id="printTemplet"  style="display: none;"></div>
+<OBJECT ID="vehPrinter" CLASSID="CLSID:F1EFB37B-C778-4AF8-B0C2-B647C9E89E2D" CODEBASE="VehPlatForm_web.CAB#version=2,7,0,0">
+</OBJECT>
 <script type="text/javascript" src="../js/LodopFuncs.js"></script>
 <script type="text/javascript" src="../js/carRegister.js"></script>
+<script type="text/javascript" src="../js/dwf_0.1.js"></script>
 <script type="text/javascript">
+function addProCar(){
+	
+	//$("#win").window("close");
+	//window.clearInterval(qrtNumber);
+	
+	$("#tabAll").tabs("getSelected").find(".menus li:contains('车辆预登记')").click();
+}
 $(function(){
 	$('#preCarRegisterDG').datagrid();
 });
@@ -41,7 +54,7 @@ function toEdit(){
 	var row = $("#preCarRegisterDG").datagrid("getSelected");
 	if(row!=null){
 		ppRow=row;
-		loadCenter({title:'车辆预登记',action:'baseManager!proCarRegisterEdit!toPage.action'});
+		loadCenter({title:'车辆预登记',action:'../../static/html/proCarRegisterEdit.html'});
 	}else{
 		$.messager.alert("提示","请选择一行数据","warning");
 	}

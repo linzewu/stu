@@ -55,12 +55,50 @@ function save() {
 
 function saveAndPring() {
 	$("#isPrint").val("true");
-	$('#myform').submit();
+	$('#myform').form('submit', {
+		url: "../../preCarRegister/savePreCarRegister",
+		onSubmit: function(){
+			console.log($(this));
+			var isValid = $(this).form('validate');
+			if (!isValid){
+				return false;	// hide progress bar while the form is invalid
+			}
+			return isValid;	// return false will stop the form submission
+		},
+		success: function(data){
+			data=$.parseJSON(data);
+			//$.messager.progress('close');	// hide progress bar while submit successfully
+			//$.messager.alert("提示",data.message,"info",function(){
+			//	window.location.href="login.html";
+			//})
+			
+		}
+	});
+	//$('#myform').submit();
 }
 
 function implSaveAndPring() {
 	$("#isPrint").val("true");
-	$('#myformImpl').submit();
+	$('#myformImpl').form('submit', {
+		url: "../../preCarRegister/savePreCarRegister",
+		onSubmit: function(){
+			console.log($(this));
+			var isValid = $(this).form('validate');
+			if (!isValid){
+				return false;	// hide progress bar while the form is invalid
+			}
+			return isValid;	// return false will stop the form submission
+		},
+		success: function(data){
+			data=$.parseJSON(data);
+			//$.messager.progress('close');	// hide progress bar while submit successfully
+			//$.messager.alert("提示",data.message,"info",function(){
+			//	window.location.href="login.html";
+			//})
+			
+		}
+	});
+	//$('#myformImpl').submit();
 }
 
 function updateAndPring() {
@@ -230,7 +268,7 @@ $('#myformEdit').form({
 		}
 	}
 });
-
+/**
 $('#myform').form({
 	onSubmit : checkData,
 	success : function(data) {
@@ -258,7 +296,7 @@ $('#myform').form({
 			$.messager.alert('提示', "保存出错", 'error');
 		}
 	}
-});
+});**/
 
 $.post("a.html", null, function(data) {
 	$("#printTemplet").html(data);
@@ -381,30 +419,28 @@ function getZj(m_SourceValue) {
 function readQrtext() {
 	var barcodetemp = "";
 	try{
-		 var textPrinter =vehPrinter;
+		var strbarcode = vehPrinter.GetQrText();
+		if (strbarcode == "") {
+			return 0;
+		}
+		if (strbarcode == "-1") {
+			$.messager.alert("提示", "条码信息有误!");
+			return 0;
+		}
+		var barArray = strbarcode.split("|");
+	
+		var strBarCodeType = barArray[0];
+		if (strBarCodeType.split("_")[0] == "ZCCCHGZ") {
+			loadScanInfo(barArray, strbarcode);
+			return;
+		}
+	
+		if (strBarCodeType == "SFZXX_2.0") {
+			loadSFZXX(barArray);
+			return;
+		}
 	}catch (e) {
 		return ;
-	}
-	
-	var strbarcode = vehPrinter.GetQrText();
-	if (strbarcode == "") {
-		return 0;
-	}
-	if (strbarcode == "-1") {
-		$.messager.alert("提示", "条码信息有误!");
-		return 0;
-	}
-	var barArray = strbarcode.split("|");
-
-	var strBarCodeType = barArray[0];
-	if (strBarCodeType.split("_")[0] == "ZCCCHGZ") {
-		loadScanInfo(barArray, strbarcode);
-		return;
-	}
-
-	if (strBarCodeType == "SFZXX_2.0") {
-		loadSFZXX(barArray);
-		return;
 	}
 
 }

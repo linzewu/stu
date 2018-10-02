@@ -42,9 +42,29 @@
 			<version>1.2.13</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.ws.commons.axiom</groupId>
+			<artifactId>axiom-impl</artifactId>
+			<version>1.2.13</version>
+		</dependency>
+		<dependency>
 			<groupId>com.google.zxing</groupId>
 			<artifactId>core</artifactId>
 			<version>2.2</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.ws.commons.schema</groupId>
+		    <artifactId>XmlSchema</artifactId>
+		    <version>1.4.7</version>
+		</dependency>
+		<dependency>
+		    <groupId>wsdl4j</groupId>
+		    <artifactId>wsdl4j</artifactId>
+		    <version>1.6.2</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.neethi</groupId>
+		    <artifactId>neethi</artifactId>
+		    <version>3.0.2</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -1,14 +1,11 @@
 package com.xs.jt.cms.controller;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -35,6 +32,7 @@ import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutAccessServiceStub;
 import com.xs.jt.cms.common.MatrixToImageWriter;
+import com.xs.jt.cms.common.URLCodeUtil;
 import com.xs.jt.cms.entity.PreCarRegister;
 import com.xs.jt.cms.manager.IPreCarRegisterManager;
 
@@ -42,9 +40,6 @@ import com.xs.jt.cms.manager.IPreCarRegisterManager;
 @RequestMapping(value = "/preCarRegister")
 @Modular(modelCode = "preCarRegister", modelName = "车辆预登记")
 public class PreCarRegisterController {
-
-	@Autowired
-	private HttpServletRequest request;
 
 	@Autowired
 	private IPreCarRegisterManager preCarRegisterManager;
@@ -55,8 +50,8 @@ public class PreCarRegisterController {
 		if (!result.hasErrors()) {
 			User user = (User) session.getAttribute("user");
 
-			Map userMap = (Map) request.getSession().getAttribute("user");
-			String stationCode = (String) userMap.get("StationCode");// ---------------
+			//Map userMap = (Map) request.getSession().getAttribute("user");
+			String stationCode = (String) user.getBmdm();// ---------------
 
 			bcr.setStationCode(stationCode);
 
@@ -106,22 +101,29 @@ public class PreCarRegisterController {
 
 			sb.append(bcr.getDpid());
 
-			String id = this.preCarRegisterManager.save(bcr); 
+			PreCarRegister register = this.preCarRegisterManager.save(bcr); 
 
 			System.out.println(sb);
 			String path = System.getProperty("2code");
-			create2Code(path, sb.toString(), id);
+			create2Code(path, sb.toString(), String.valueOf(register.getId()));
 			if ("A".equals(bcr.getYwlx())) {
-				createLSHCode(path,id, lsh);
+				createLSHCode(path,String.valueOf(register.getId()), lsh);
 			}
 
-			respondData.put(BaseManagerAction.SID, id);
-			respondData.put(BaseManagerAction.STATE, BaseManagerAction.STATE_SUCCESS);
-			pw.print(respondData);
+//			respondData.put(BaseManagerAction.SID, id);
+//			respondData.put(BaseManagerAction.STATE, BaseManagerAction.STATE_SUCCESS);
+//			pw.print(respondData);
 			return ResultHandler.resultHandle(result, null, Constant.ConstantMessage.SAVE_SUCCESS);
 		} else {
 			return ResultHandler.resultHandle(result, null, null);
 		}
+	}
+	
+	@UserOperation(code="getCarList",name="查询已登记信息")
+	@RequestMapping(value = "getCarList", method = RequestMethod.POST)
+	public @ResponseBody Map<String,Object> getCarList(Integer page, Integer rows, PreCarRegister preCarRegister) {			
+		
+		return preCarRegisterManager.getPreCarRegisters(page-1, rows, preCarRegister);
 	}
 
 	private String getlsh() {
@@ -200,6 +202,103 @@ public class PreCarRegisterController {
 		hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
 		BitMatrix bitMatrix = new MultiFormatWriter().encode(str, BarcodeFormat.CODE_128, width, height, hints);
 		return bitMatrix;
+	}
+	
+	@UserOperation(code = "updateRegister", name = "更新")
+	@RequestMapping(value = "updateRegister", method = RequestMethod.POST)
+	public @ResponseBody Map updateRegister(HttpSession session, @Valid PreCarRegister bcr, BindingResult result) {
+		StringBuilder sb = new StringBuilder("");
+		
+		sb.append(bcr.getClxh());
+		sb.append("|");
+		sb.append(bcr.getClsbdh());
+		sb.append("|");
+		sb.append(bcr.getHdzk());
+		sb.append("|");
+		sb.append(bcr.getCsys());
+		sb.append("|");
+		sb.append(bcr.getCllx());
+		sb.append("|");
+		sb.append(bcr.getHpzl());
+		sb.append("|");
+		sb.append(bcr.getYwlx());
+		sb.append("|");
+		sb.append(bcr.getGgbh());
+		sb.append("|");
+		sb.append(bcr.getSyxz());
+		sb.append("|");
+		sb.append(bcr.getFdjh());
+		sb.append("|");
+		sb.append(bcr.getQlj());
+		sb.append("|");
+		sb.append(bcr.getHlj());
+		sb.append("|");
+		sb.append(bcr.getZj());
+		sb.append("|");
+		sb.append(bcr.getLsh());
+		sb.append("|");
+//		if(null==bcr.getHphm()||"".equals(bcr.getHphm().trim())){
+//			bcr.setHphm(null);
+//		}
+		sb.append(bcr.getHphm());
+		sb.append("|");
+		if(null==bcr.getDpid()||"".equals(bcr.getDpid().trim())){
+			bcr.setDpid(null);
+		}
+		
+		sb.append(bcr.getDpid());
+		
+		this.preCarRegisterManager.save(bcr);
+		System.out.println(sb.toString());
+		
+		String path = System.getProperty("2code");
+		create2Code(path,sb.toString(), String.valueOf(bcr.getId()));
+		return ResultHandler.resultHandle(result, null, Constant.ConstantMessage.SAVE_SUCCESS);
+	}
+	
+	@UserOperation(code = "getCarInfoByCarNumber", name = "获取基础信息")
+	@RequestMapping(value = "getCarInfoByCarNumber", method = RequestMethod.POST)
+	public @ResponseBody Map<String,String> getCarInfoByCarNumber(String hpzl,String hphm) {
+		Map<String, String> dataMap = new HashMap<String, String>();
+		try {
+			TmriJaxRpcOutAccessServiceStub trias = new TmriJaxRpcOutAccessServiceStub();
+			TmriJaxRpcOutAccessServiceStub.QueryObjectOut qo = new TmriJaxRpcOutAccessServiceStub.QueryObjectOut();
+			
+			if (hpzl == null || "".equals(hpzl.trim()) || hphm == null
+					|| "".equals(hphm.trim())) {
+				return dataMap;
+			}
+
+			qo.setJkid("01C21");
+			qo.setJkxlh("7F1C0909010517040815E3FF83F5F3E28BCC8F9B818DE7EA88DFD19EB8C7D894B9B9BCE0BFD8D6D0D0C4A3A8D0C5CFA2BCE0B9DCCFB5CDB3A3A9");
+			qo.setUTF8XmlDoc("<root><QueryCondition><hphm>" + hphm
+					+ "</hphm><hpzl>" + hpzl
+					+ "</hpzl></QueryCondition></root>");
+			qo.setXtlb("01");
+
+			String returnXML = trias.queryObjectOut(qo)
+					.getQueryObjectOutReturn();
+			String xml = URLCodeUtil.urlDecode(returnXML);
+			Document doc = DocumentHelper.parseText(xml);
+			Element root = doc.getRootElement();
+			Element dataElecmet = root.element("body").element("veh");
+
+			if (dataElecmet != null) {
+				
+				for (Object o : dataElecmet.elements()) {
+					Element element = (Element) o;
+					String key = element.getName();
+					String value = element.getText();
+					dataMap.put(key, value);
+				}
+				//pw.print(JSONObject.fromObject(dataMap));
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dataMap;
 	}
 
 }
