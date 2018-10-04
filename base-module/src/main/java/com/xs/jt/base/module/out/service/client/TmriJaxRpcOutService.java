@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.axis2.AxisFault;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -24,14 +25,19 @@ public class TmriJaxRpcOutService {
 	@Autowired
 	private HttpSession session;
 	
+	@Value("${stu.properties.jkxlh}")
 	private String jkxlh;
 	
+	@Value("${stu.properties.xtlb}")
 	private String xtlb;
 	
+	@Value("${stu.properties.dwmc}")
 	private String dwmc;
 	
+	@Value("${stu.properties.dwjgdm}")
 	private String dwjgdm;
 	
+	@Value("${stu.properties.zdbs}")
 	private String zdbs;
 	
 	
