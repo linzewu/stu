@@ -61,6 +61,9 @@ public class PDAServiceController {
 	@Autowired
 	private TmriJaxRpcOutService tmriJaxRpcOutService;
 
+	@Autowired
+	private TmriJaxRpcOutService tmriJaxRpcOutService;
+
 	@RequestMapping(value = "addPoliceCheckInfo", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> addPoliceCheckInfo(PoliceCheckInfo policeCheckInfo, BindingResult result)
 			throws Exception {

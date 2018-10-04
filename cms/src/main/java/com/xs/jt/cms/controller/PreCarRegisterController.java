@@ -1,8 +1,11 @@
 package com.xs.jt.cms.controller;
 
 import java.io.File;
+<<<<<<< HEAD
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+=======
+>>>>>>> branch 'master' of https://github.com/linzewu/stu.git
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -12,10 +15,12 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,13 +34,13 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
+import com.xs.jt.base.module.common.ApplicationException;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutNewAccessServiceStub;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutService;
 import com.xs.jt.cms.common.MatrixToImageWriter;
-import com.xs.jt.cms.common.URLCodeUtil;
 import com.xs.jt.cms.entity.PreCarRegister;
 import com.xs.jt.cms.manager.IPDAServiceManager;
 import com.xs.jt.cms.manager.IPreCarRegisterManager;
@@ -44,14 +49,19 @@ import com.xs.jt.cms.manager.IPreCarRegisterManager;
 @RequestMapping(value = "/preCarRegister")
 @Modular(modelCode = "preCarRegister", modelName = "车辆预登记")
 public class PreCarRegisterController {
+	
+	private static Logger logger = LoggerFactory.getLogger(PreCarRegisterController.class);
 
 	@Autowired
 	private IPreCarRegisterManager preCarRegisterManager;
 	
 	@Autowired
+<<<<<<< HEAD
 	private IPDAServiceManager pDAServiceManager;
 	
 	@Autowired
+=======
+>>>>>>> branch 'master' of https://github.com/linzewu/stu.git
 	private TmriJaxRpcOutService tmriJaxRpcOutService;
 	
 	@Value("${stu.properties.glbm}")
