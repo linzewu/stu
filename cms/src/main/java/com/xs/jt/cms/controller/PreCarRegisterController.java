@@ -1,7 +1,6 @@
 package com.xs.jt.cms.controller;
 
 import java.io.File;
-import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -10,10 +9,12 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,12 +28,13 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
+import com.xs.jt.base.module.common.ApplicationException;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.entity.User;
-import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutAccessServiceStub;
+import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutNewAccessServiceStub;
+import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutService;
 import com.xs.jt.cms.common.MatrixToImageWriter;
-import com.xs.jt.cms.common.URLCodeUtil;
 import com.xs.jt.cms.entity.PreCarRegister;
 import com.xs.jt.cms.manager.IPreCarRegisterManager;
 
@@ -40,9 +42,17 @@ import com.xs.jt.cms.manager.IPreCarRegisterManager;
 @RequestMapping(value = "/preCarRegister")
 @Modular(modelCode = "preCarRegister", modelName = "车辆预登记")
 public class PreCarRegisterController {
+	
+	private static Logger logger = LoggerFactory.getLogger(PreCarRegisterController.class);
 
 	@Autowired
 	private IPreCarRegisterManager preCarRegisterManager;
+	
+	@Autowired
+	private TmriJaxRpcOutService tmriJaxRpcOutService;
+	
+	@Value("${stu.properties.glbm}")
+	private String glbm;
 
 	@UserOperation(code = "savePreCarRegister", name = "保存")
 	@RequestMapping(value = "savePreCarRegister", method = RequestMethod.POST)
@@ -129,25 +139,17 @@ public class PreCarRegisterController {
 	private String getlsh() {
 		String lsh = null;
 		try {
-			TmriJaxRpcOutAccessServiceStub trias = new TmriJaxRpcOutAccessServiceStub();
-			TmriJaxRpcOutAccessServiceStub.QueryObjectOut qo = new TmriJaxRpcOutAccessServiceStub.QueryObjectOut();
-
+			TmriJaxRpcOutNewAccessServiceStub trias =tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
+			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo = tmriJaxRpcOutService.createQueryObjectOut();
 			qo.setJkid("01C24");
-			qo.setJkxlh(
-					"7F1C0909010517040815E3FF83F5F3E28BCC8F9B818DE7EA88DFD19EB8C7D894B9B9BCE0BFD8D6D0D0C4A3A8D0C5CFA2BCE0B9DCCFB5CDB3A3A9");
-			qo.setUTF8XmlDoc("<root><QueryCondition></QueryCondition></root>");
-			qo.setXtlb("01");
-
+			qo.setUTF8XmlDoc("<root><QueryCondition><glbm>"+glbm+"</glbm></QueryCondition></root>");
 			String returnXML = trias.queryObjectOut(qo).getQueryObjectOutReturn();
-
 			Document doc = DocumentHelper.parseText(returnXML);
 			Element root = doc.getRootElement();
 			lsh = root.element("body").element("veh").element("lsh").getText();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("获取平台流水号异常",e);
+			throw new  ApplicationException("获取平台流水号异常",e);
 		}
 		return lsh;
 	}
