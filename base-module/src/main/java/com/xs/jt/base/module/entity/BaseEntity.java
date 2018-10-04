@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
@@ -21,6 +22,7 @@ public abstract class BaseEntity {
 	@Id
 	@GenericGenerator(name = "idGenerator", strategy = "identity")
 	@GeneratedValue(generator = "idGenerator")
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
 	private Integer id;
 	

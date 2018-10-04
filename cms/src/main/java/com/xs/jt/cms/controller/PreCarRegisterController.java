@@ -256,49 +256,6 @@ public class PreCarRegisterController {
 		return ResultHandler.resultHandle(result, null, Constant.ConstantMessage.SAVE_SUCCESS);
 	}
 	
-	@UserOperation(code = "getCarInfoByCarNumber", name = "获取基础信息")
-	@RequestMapping(value = "getCarInfoByCarNumber", method = RequestMethod.POST)
-	public @ResponseBody Map<String,String> getCarInfoByCarNumber(String hpzl,String hphm) {
-		Map<String, String> dataMap = new HashMap<String, String>();
-		try {
-			TmriJaxRpcOutAccessServiceStub trias = new TmriJaxRpcOutAccessServiceStub();
-			TmriJaxRpcOutAccessServiceStub.QueryObjectOut qo = new TmriJaxRpcOutAccessServiceStub.QueryObjectOut();
-			
-			if (hpzl == null || "".equals(hpzl.trim()) || hphm == null
-					|| "".equals(hphm.trim())) {
-				return dataMap;
-			}
-
-			qo.setJkid("01C21");
-			qo.setJkxlh("7F1C0909010517040815E3FF83F5F3E28BCC8F9B818DE7EA88DFD19EB8C7D894B9B9BCE0BFD8D6D0D0C4A3A8D0C5CFA2BCE0B9DCCFB5CDB3A3A9");
-			qo.setUTF8XmlDoc("<root><QueryCondition><hphm>" + hphm
-					+ "</hphm><hpzl>" + hpzl
-					+ "</hpzl></QueryCondition></root>");
-			qo.setXtlb("01");
-
-			String returnXML = trias.queryObjectOut(qo)
-					.getQueryObjectOutReturn();
-			String xml = URLCodeUtil.urlDecode(returnXML);
-			Document doc = DocumentHelper.parseText(xml);
-			Element root = doc.getRootElement();
-			Element dataElecmet = root.element("body").element("veh");
-
-			if (dataElecmet != null) {
-				
-				for (Object o : dataElecmet.elements()) {
-					Element element = (Element) o;
-					String key = element.getName();
-					String value = element.getText();
-					dataMap.put(key, value);
-				}
-				//pw.print(JSONObject.fromObject(dataMap));
-				
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return dataMap;
-	}
+	
 
 }
