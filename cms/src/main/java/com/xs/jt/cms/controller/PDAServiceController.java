@@ -30,12 +30,12 @@ import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutService;
 import com.xs.jt.cms.common.CommonUtil;
 import com.xs.jt.cms.common.URLCodeUtil;
 import com.xs.jt.cms.entity.MotorVehiclePhotos;
-import com.xs.jt.cms.entity.PoliceCheckInfo;
+import com.xs.jt.cms.entity.VehCheckInfo;
 import com.xs.jt.cms.entity.PreCarRegister;
 import com.xs.jt.cms.manager.IMotorVehicleBusinessLockManager;
 import com.xs.jt.cms.manager.IMotorVehiclePhotosManager;
 import com.xs.jt.cms.manager.IPDAServiceManager;
-import com.xs.jt.cms.manager.IPoliceCheckInfoManager;
+import com.xs.jt.cms.manager.IVehCheckInfoManager;
 import com.xs.jt.cms.manager.IPreCarRegisterManager;
 
 import springfox.documentation.annotations.ApiIgnore;
@@ -46,7 +46,7 @@ import springfox.documentation.annotations.ApiIgnore;
 public class PDAServiceController {
 
 	@Autowired
-	private IPoliceCheckInfoManager policeCheckInfoManager;
+	private IVehCheckInfoManager policeCheckInfoManager;
 	@Autowired
 	private IPDAServiceManager pDAServiceManager;
 	@Autowired
@@ -63,7 +63,7 @@ public class PDAServiceController {
 
 
 	@RequestMapping(value = "addPoliceCheckInfo", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> addPoliceCheckInfo(PoliceCheckInfo policeCheckInfo, BindingResult result)
+	public @ResponseBody Map<String, Object> addPoliceCheckInfo(VehCheckInfo policeCheckInfo, BindingResult result)
 			throws Exception {
 
 		if (!result.hasErrors()) {

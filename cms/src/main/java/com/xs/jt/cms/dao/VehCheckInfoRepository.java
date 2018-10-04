@@ -1,16 +1,17 @@
 package com.xs.jt.cms.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.xs.jt.cms.entity.PoliceCheckInfo;
+import com.xs.jt.cms.entity.VehCheckInfo;
 @Repository
-public interface PoliceCheckInfoRepository extends JpaRepository<PoliceCheckInfo, Integer>{
+public interface VehCheckInfoRepository extends JpaRepository<VehCheckInfo, Integer>,JpaSpecificationExecutor<VehCheckInfo>{
 	
 	
 	@Query(value = "from PoliceCheckInfo where lsh = :lsh")
-	PoliceCheckInfo findPoliceCheckInfoByLsh(@Param("lsh")String lsh);
+	VehCheckInfo findPoliceCheckInfoByLsh(@Param("lsh")String lsh);
 
 }

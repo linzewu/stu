@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.xs.jt.cms.entity.PoliceCheckInfo;
+import com.xs.jt.cms.entity.VehCheckInfo;
 import com.xs.jt.cms.entity.PreCarRegister;
 
 @Repository
