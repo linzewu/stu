@@ -105,5 +105,12 @@ public class BaseParamsController {
 		servletContext.setAttribute("bps", baseParamsManager.getBaseParams());
 		return ResultHandler.toSuccessJSON("刷新成功");
 	}
+	
+	@UserOperation(code="getBaseParamsByType",name="根据字典类型查询数据字典",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
+	@RequestMapping(value = "getBaseParamsByType",method = RequestMethod.POST)
+	public @ResponseBody List<BaseParams> getBaseParamsByType(String type) {
+		List<BaseParams> list = this.baseParamsManager.getBaseParamsByType(type);
+		return list;
+	}
 
 }

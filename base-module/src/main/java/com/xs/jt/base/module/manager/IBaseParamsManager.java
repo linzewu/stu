@@ -17,5 +17,7 @@ public interface IBaseParamsManager {
 	
 	public Map<String,Object> getBaseParams(Integer page, Integer rows,BaseParams param);
 	
+	public List<BaseParams> getBaseParamsByType(String type);
+	
 
 }

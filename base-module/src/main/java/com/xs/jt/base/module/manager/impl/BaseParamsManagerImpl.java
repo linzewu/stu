@@ -95,4 +95,9 @@ public class BaseParamsManagerImpl implements IBaseParamsManager {
 		return data;
 	}
 
+	public List<BaseParams> getBaseParamsByType(String type) {
+		// TODO Auto-generated method stub
+		return baseParamsRepository.findBaseParamsByType(type);
+	}
+
 }
