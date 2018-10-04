@@ -5,5 +5,7 @@ import com.xs.jt.cms.entity.PoliceCheckInfo;
 public interface IPoliceCheckInfoManager {
 	
 	public PoliceCheckInfo save(PoliceCheckInfo policeCheckInfo);
+	
+	public PoliceCheckInfo findPoliceCheckInfoByLsh(String lsh);
 
 }

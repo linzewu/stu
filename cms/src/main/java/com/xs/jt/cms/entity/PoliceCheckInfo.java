@@ -21,6 +21,22 @@ public class PoliceCheckInfo extends BaseEntity{
 	private String lsh;
 	@Column
 	private Integer cycs;
+	@Column(length=20)
+	private String hphm;
+	@Column(length=20)
+	private String hpzl;
+	@Column(length=100)
+	private String syxz;
+	@Column(length=20)
+	private String xczl;
+	@Column(length=100)
+	private String clsbdh;
+	@Column(length=100)
+	private String ywlx;
+	@Column(length=100)
+	private String jczbh;
+	@Column(length=100)
+	private String cllx;
 	@Column
 	private Date cysj;
 	@Column(length=20)
@@ -464,6 +480,54 @@ public class PoliceCheckInfo extends BaseEntity{
 	}
 	public void setJy50(String jy50) {
 		this.jy50 = jy50;
+	}
+	public String getHphm() {
+		return hphm;
+	}
+	public void setHphm(String hphm) {
+		this.hphm = hphm;
+	}
+	public String getHpzl() {
+		return hpzl;
+	}
+	public void setHpzl(String hpzl) {
+		this.hpzl = hpzl;
+	}
+	public String getSyxz() {
+		return syxz;
+	}
+	public void setSyxz(String syxz) {
+		this.syxz = syxz;
+	}
+	public String getXczl() {
+		return xczl;
+	}
+	public void setXczl(String xczl) {
+		this.xczl = xczl;
+	}
+	public String getClsbdh() {
+		return clsbdh;
+	}
+	public void setClsbdh(String clsbdh) {
+		this.clsbdh = clsbdh;
+	}
+	public String getYwlx() {
+		return ywlx;
+	}
+	public void setYwlx(String ywlx) {
+		this.ywlx = ywlx;
+	}
+	public String getCllx() {
+		return cllx;
+	}
+	public void setCllx(String cllx) {
+		this.cllx = cllx;
+	}
+	public String getJczbh() {
+		return jczbh;
+	}
+	public void setJczbh(String jczbh) {
+		this.jczbh = jczbh;
 	}
 	
 	

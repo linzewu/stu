@@ -17,4 +17,8 @@ public class PoliceCheckInfoManagerImpl implements IPoliceCheckInfoManager {
 		return policeCheckInfoRepository.save(policeCheckInfo);
 	}
 
+	public PoliceCheckInfo findPoliceCheckInfoByLsh(String lsh) {
+		return policeCheckInfoRepository.findPoliceCheckInfoByLsh(lsh);
+	}
+
 }

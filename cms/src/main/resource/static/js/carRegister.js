@@ -18,10 +18,10 @@ function getGgbh(value) {
 		});
 		var param = {};
 
-		param.mType = "trafficDBManager";
-		param.method = "getGongGaoListbyCLXH";
+		//param.mType = "trafficDBManager";
+		//param.method = "getGongGaoListbyCLXH";
 		param.clxh = value;
-		$.post("baseManager!!multipleManager.action", param, function(data) {
+		$.post("../../preCarRegister/getGongGaoListbyCLXH", param, function(data) {
 			if (data != null && data.length > 0) {
 				$("#ggbh").combobox("loadData", data);
 
@@ -315,8 +315,8 @@ function loadCarInfo() {
 	}
 
 	var param = {};
-	param.mType = "preCarRegisterManager";
-	param.method = "getCarInfoByCarNumber";
+	//param.mType = "preCarRegisterManager";
+	//param.method = "getCarInfoByCarNumber";
 	param.hpzl = hpzl;
 	param.hphm = hphm;
 
@@ -325,7 +325,7 @@ function loadCarInfo() {
 		msg : '数据加载中...'
 	});
 
-	$.post("baseManager!!multipleManager.action", param, function(data) {
+	$.post("../../preCarRegister/getCarInfoByCarNumber", param, function(data) {
 		if (data != null) {
 			$('#myform').form('load', data);
 		} else {
@@ -338,10 +338,10 @@ function loadCarInfo() {
 function gongGaoChange(value) {
 	if (value != null && value != "" && value.length == 14) {
 		var param = {};
-		param.mType = "trafficDBManager";
-		param.method = "getGongGaoInfoByGgbh";
+		//param.mType = "trafficDBManager";
+		//param.method = "getGongGaoInfoByGgbh";
 		param.ggbh = value;
-		loadInfo("baseManager!!multipleManager.action", param, "gonggaoForm",
+		loadInfo("../../preCarRegister/getGongGaoInfoByGgbh", param, "gonggaoForm",
 				function(data) {
 					$("#cllx").combobox("select", data.cllx);
 				});

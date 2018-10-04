@@ -2,8 +2,10 @@ package com.xs.jt.cms.controller;
 
 import java.io.File;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -30,10 +32,12 @@ import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.entity.User;
-import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutAccessServiceStub;
+import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutNewAccessServiceStub;
+import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutService;
 import com.xs.jt.cms.common.MatrixToImageWriter;
 import com.xs.jt.cms.common.URLCodeUtil;
 import com.xs.jt.cms.entity.PreCarRegister;
+import com.xs.jt.cms.manager.IPDAServiceManager;
 import com.xs.jt.cms.manager.IPreCarRegisterManager;
 
 @Controller
@@ -43,6 +47,15 @@ public class PreCarRegisterController {
 
 	@Autowired
 	private IPreCarRegisterManager preCarRegisterManager;
+	
+	@Autowired
+	private IPDAServiceManager pDAServiceManager;
+	
+	@Autowired
+	private TmriJaxRpcOutService tmriJaxRpcOutService;
+	
+	@Value("${stu.properties.glbm}")
+	private String glbm;
 
 	@UserOperation(code = "savePreCarRegister", name = "保存")
 	@RequestMapping(value = "savePreCarRegister", method = RequestMethod.POST)
@@ -129,25 +142,17 @@ public class PreCarRegisterController {
 	private String getlsh() {
 		String lsh = null;
 		try {
-			TmriJaxRpcOutAccessServiceStub trias = new TmriJaxRpcOutAccessServiceStub();
-			TmriJaxRpcOutAccessServiceStub.QueryObjectOut qo = new TmriJaxRpcOutAccessServiceStub.QueryObjectOut();
-
+			TmriJaxRpcOutNewAccessServiceStub trias =tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
+			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo = tmriJaxRpcOutService.createQueryObjectOut();
 			qo.setJkid("01C24");
-			qo.setJkxlh(
-					"7F1C0909010517040815E3FF83F5F3E28BCC8F9B818DE7EA88DFD19EB8C7D894B9B9BCE0BFD8D6D0D0C4A3A8D0C5CFA2BCE0B9DCCFB5CDB3A3A9");
-			qo.setUTF8XmlDoc("<root><QueryCondition></QueryCondition></root>");
-			qo.setXtlb("01");
-
+			qo.setUTF8XmlDoc("<root><QueryCondition><glbm>"+glbm+"</glbm></QueryCondition></root>");
 			String returnXML = trias.queryObjectOut(qo).getQueryObjectOutReturn();
-
 			Document doc = DocumentHelper.parseText(returnXML);
 			Element root = doc.getRootElement();
 			lsh = root.element("body").element("veh").element("lsh").getText();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("获取平台流水号异常",e);
+			throw new  ApplicationException("获取平台流水号异常",e);
 		}
 		return lsh;
 	}
@@ -254,6 +259,84 @@ public class PreCarRegisterController {
 		String path = System.getProperty("2code");
 		create2Code(path,sb.toString(), String.valueOf(bcr.getId()));
 		return ResultHandler.resultHandle(result, null, Constant.ConstantMessage.SAVE_SUCCESS);
+	}
+	
+	@UserOperation(code = "getCarInfoByCarNumber", name = "获取机动车基础信息")
+	@RequestMapping(value = "getCarInfoByCarNumber", method = RequestMethod.POST)
+	public @ResponseBody Map<String, String> getCarInfoByCarNumber(String hpzl,String hphm) {
+		Map<String, String> dataMap = new HashMap<String, String>();
+		try {
+			TmriJaxRpcOutAccessServiceStub trias = new TmriJaxRpcOutAccessServiceStub();
+			TmriJaxRpcOutAccessServiceStub.QueryObjectOut qo = new TmriJaxRpcOutAccessServiceStub.QueryObjectOut();
+
+			if (hpzl == null || "".equals(hpzl.trim()) || hphm == null
+					|| "".equals(hphm.trim())) {
+				return dataMap;
+			}
+
+			qo.setJkid("01C21");
+			qo.setJkxlh("7F1C0909010517040815E3FF83F5F3E28BCC8F9B818DE7EA88DFD19EB8C7D894B9B9BCE0BFD8D6D0D0C4A3A8D0C5CFA2BCE0B9DCCFB5CDB3A3A9");
+			qo.setUTF8XmlDoc("<root><QueryCondition><hphm>" + hphm
+					+ "</hphm><hpzl>" + hpzl
+					+ "</hpzl></QueryCondition></root>");
+			qo.setXtlb("01");
+
+			String returnXML = trias.queryObjectOut(qo)
+					.getQueryObjectOutReturn();
+			String xml = URLCodeUtil.urlDecode(returnXML);
+			Document doc = DocumentHelper.parseText(xml);
+			Element root = doc.getRootElement();
+			Element dataElecmet = root.element("body").element("veh");
+
+			if (dataElecmet != null) {
+				
+				for (Object o : dataElecmet.elements()) {
+					Element element = (Element) o;
+					String key = element.getName();
+					String value = element.getText();
+					dataMap.put(key, value);
+				}
+				
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return dataMap;
+	}
+	
+	@UserOperation(code = "getGongGaoInfoByGgbh", name = "获取公告信息")
+	@RequestMapping(value = "getGongGaoInfoByGgbh", method = RequestMethod.POST)
+	public @ResponseBody Map getGongGaoInfoByGgbh(String ggbh) {
+		Map map = new HashMap();
+		if (ggbh == null || "".equals(ggbh.trim())) {
+			return map;
+		}
+
+		List<Map<String, Object>> list = pDAServiceManager.findPcbStVehicle(ggbh);
+
+		Map<String, Object> rMap = (Map) list.get(0);
+
+		Map returnMap = new HashMap();
+
+		for (String key : rMap.keySet()) {
+			returnMap.put(key.toLowerCase(), rMap.get(key));
+		}
+
+		return returnMap;
+
+	}
+	
+	@UserOperation(code = "getGongGaoListbyCLXH", name = "获取公告日期列表")
+	@RequestMapping(value = "getGongGaoListbyCLXH", method = RequestMethod.POST)
+	public @ResponseBody List<Map<String, Object>> getGongGaoListbyCLXH(String clxh) {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		if (clxh != null) {
+			list = pDAServiceManager.findGongGaoListbyCLXH(clxh);
+
+		}
+		return list;
 	}
 	
 	

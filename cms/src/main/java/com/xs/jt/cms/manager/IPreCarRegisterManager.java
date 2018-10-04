@@ -9,5 +9,7 @@ public interface IPreCarRegisterManager {
 	public PreCarRegister save(PreCarRegister preCarRegister);
 	
 	public Map<String,Object> getPreCarRegisters(Integer page, Integer rows,PreCarRegister preCarRegister);
+	
+	public PreCarRegister findPreCarRegisterByLsh(String lsh);
 
 }

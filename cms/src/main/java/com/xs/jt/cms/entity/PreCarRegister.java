@@ -3,6 +3,7 @@ package com.xs.jt.cms.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -169,6 +170,8 @@ public class PreCarRegister extends BaseEntity {
 	
 	@Column(name="stationCode",length = 64,updatable=false)
 	private String stationCode;
+	@Transient
+	private boolean sdzt;
 	
 	
 
@@ -595,6 +598,16 @@ public class PreCarRegister extends BaseEntity {
 
 	public void setBz(String bz) {
 		this.bz = bz;
+	}
+
+
+	public boolean isSdzt() {
+		return sdzt;
+	}
+
+
+	public void setSdzt(boolean sdzt) {
+		this.sdzt = sdzt;
 	}
 	
 	

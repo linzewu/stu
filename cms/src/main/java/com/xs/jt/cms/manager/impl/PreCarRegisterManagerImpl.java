@@ -60,4 +60,9 @@ public class PreCarRegisterManagerImpl implements IPreCarRegisterManager {
 		return data;
 	}
 
+	public PreCarRegister findPreCarRegisterByLsh(String lsh) {
+		
+		return preCarRegisterRepository.findPreCarRegisterByLsh(lsh);
+	}
+
 }

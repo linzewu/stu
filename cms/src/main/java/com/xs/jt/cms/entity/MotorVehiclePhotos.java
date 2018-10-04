@@ -33,7 +33,7 @@ public class MotorVehiclePhotos extends BaseEntity{
 	@Column
 	private byte[] photo;
 	@Column(length=100)
-	private String sbdh;
+	private String clsbdh;
 	@Column
 	private Integer jccs;
 	
@@ -72,12 +72,12 @@ public class MotorVehiclePhotos extends BaseEntity{
 	}
 	public void setPhoto(byte[] photo) {
 		this.photo = photo;
+	}	
+	public String getClsbdh() {
+		return clsbdh;
 	}
-	public String getSbdh() {
-		return sbdh;
-	}
-	public void setSbdh(String sbdh) {
-		this.sbdh = sbdh;
+	public void setClsbdh(String clsbdh) {
+		this.clsbdh = clsbdh;
 	}
 	public Integer getJccs() {
 		return jccs;
