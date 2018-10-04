@@ -1,11 +1,7 @@
 package com.xs.jt.cms.controller;
 
 import java.io.File;
-<<<<<<< HEAD
-import java.rmi.RemoteException;
 import java.util.ArrayList;
-=======
->>>>>>> branch 'master' of https://github.com/linzewu/stu.git
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -41,6 +37,7 @@ import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutNewAccessServiceStub;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutService;
 import com.xs.jt.cms.common.MatrixToImageWriter;
+import com.xs.jt.cms.common.URLCodeUtil;
 import com.xs.jt.cms.entity.PreCarRegister;
 import com.xs.jt.cms.manager.IPDAServiceManager;
 import com.xs.jt.cms.manager.IPreCarRegisterManager;
@@ -55,13 +52,8 @@ public class PreCarRegisterController {
 	@Autowired
 	private IPreCarRegisterManager preCarRegisterManager;
 	
-	@Autowired
-<<<<<<< HEAD
 	private IPDAServiceManager pDAServiceManager;
 	
-	@Autowired
-=======
->>>>>>> branch 'master' of https://github.com/linzewu/stu.git
 	private TmriJaxRpcOutService tmriJaxRpcOutService;
 	
 	@Value("${stu.properties.glbm}")
@@ -276,8 +268,8 @@ public class PreCarRegisterController {
 	public @ResponseBody Map<String, String> getCarInfoByCarNumber(String hpzl,String hphm) {
 		Map<String, String> dataMap = new HashMap<String, String>();
 		try {
-			TmriJaxRpcOutAccessServiceStub trias = new TmriJaxRpcOutAccessServiceStub();
-			TmriJaxRpcOutAccessServiceStub.QueryObjectOut qo = new TmriJaxRpcOutAccessServiceStub.QueryObjectOut();
+			TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
+			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo = tmriJaxRpcOutService.createQueryObjectOut();
 
 			if (hpzl == null || "".equals(hpzl.trim()) || hphm == null
 					|| "".equals(hphm.trim())) {
@@ -285,11 +277,9 @@ public class PreCarRegisterController {
 			}
 
 			qo.setJkid("01C21");
-			qo.setJkxlh("7F1C0909010517040815E3FF83F5F3E28BCC8F9B818DE7EA88DFD19EB8C7D894B9B9BCE0BFD8D6D0D0C4A3A8D0C5CFA2BCE0B9DCCFB5CDB3A3A9");
 			qo.setUTF8XmlDoc("<root><QueryCondition><hphm>" + hphm
 					+ "</hphm><hpzl>" + hpzl
 					+ "</hpzl></QueryCondition></root>");
-			qo.setXtlb("01");
 
 			String returnXML = trias.queryObjectOut(qo)
 					.getQueryObjectOutReturn();
