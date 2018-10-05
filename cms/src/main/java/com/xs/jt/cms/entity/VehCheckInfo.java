@@ -14,8 +14,8 @@ import com.xs.jt.base.module.entity.BaseEntity;
 @Scope("prototype")
 @Component("policeCheckInfo")
 @Entity
-@Table(name = "TM_POLICECHECKINFO")
-public class PoliceCheckInfo extends BaseEntity{
+@Table(name = "TM_VHE_CHECKINFO")
+public class VehCheckInfo extends BaseEntity{
 	
 	@Column(length=100)
 	private String lsh;

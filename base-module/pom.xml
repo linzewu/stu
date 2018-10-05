@@ -70,5 +70,11 @@
 			<artifactId>neethi</artifactId>
 			<version>3.0.2</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>aspose</groupId>
+			<artifactId>aspose-words-jdk16</artifactId>
+			<version>15.11.0</version>
+		</dependency>
 	</dependencies>
 </project>
