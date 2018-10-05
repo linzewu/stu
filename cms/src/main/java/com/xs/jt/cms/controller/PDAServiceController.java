@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
+import com.xs.jt.base.module.common.ApplicationException;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutNewAccessServiceStub;
@@ -73,7 +74,7 @@ public class PDAServiceController {
 			return ResultHandler.resultHandle(result, null, null);
 		}
 	}
-	@RequestMapping(value = "findPoliceCheckInfoByLsh", method = RequestMethod.POST)
+	@RequestMapping(value = "findPreCarRegisterByLsh", method = RequestMethod.POST)
 	public @ResponseBody PreCarRegister findPreCarRegisterByLsh(String lsh){
 		PreCarRegister carInfo = preCarRegisterManager.findPreCarRegisterByLsh(lsh);
 		if(carInfo != null){
@@ -108,11 +109,15 @@ public class PDAServiceController {
 					String key = element.getName();
 					String value = element.getText();
 					dataMap.put(key, value);
+					if(key.equals("clsbdh")){
+						boolean sdzt = motorVehicleBusinessLockManager.findMotorVehicleBusinessLockByClsbdh(value);
+						dataMap.put("sdzt", String.valueOf(sdzt));
+					}
 				}
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new  ApplicationException("获取基础信息异常",e);
 		}
 		return dataMap;
 	}
