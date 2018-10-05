@@ -1,0 +1,94 @@
+<script type="text/javascript">
+var vehicleLockManager = gridUtil.createNew("#datagrid-vehicleLock", {"url":"../../vehicleLock",idField:"id"});
+
+var editIndex = undefined;
+function endEditing(){
+    if (editIndex == undefined){return true}
+    if ($('#datagrid-vehicleLock').datagrid('validateRow', editIndex)){
+        $('#datagrid-vehicleLock').datagrid('endEdit', editIndex);
+        editIndex = undefined;
+        return true;
+    } else {
+        return false;
+    }
+}
+function onDBClickRow(index, field){
+	debugger;
+    if (editIndex != index){
+        if (endEditing()){
+            $('#datagrid-vehicleLock').datagrid('selectRow', index)
+                    .datagrid('beginEdit', index);
+            editIndex = index;
+        } else {
+            setTimeout(function(){
+                $('#datagrid-vehicleLock').datagrid('selectRow', editIndex);
+            },0);
+        }
+    }
+}
+
+vehicleLockManager.unLock=function(){
+	$("#datagrid-vehicleLock" ).datagrid('acceptChanges');
+var row = $("#datagrid-vehicleLock").datagrid("getSelected");
+console.log(row)
+	
+	if(!row){
+		$.messager.alert("提示","请选择要解锁的数据！","info");
+		return;
+	}else{
+		if(row.jsyy == null || row.jsyy == ""){
+			$.messager.alert("提示","请输入解锁原因！","info");
+			 $('#datagrid-vehicleLock').datagrid('selectRow', editIndex)
+             .datagrid('beginEdit', editIndex);
+			return;
+		}
+		$.messager.confirm("确认","您是否确认解锁该数据？",function(r){
+			if(r){
+				$.post("../../vehicleLock/unLock",row,function(data){
+					if(data.state==1){
+						$.messager.alert("提示","解锁成功！","info");
+						$("#datagrid-vehicleLock").datagrid("reload");
+					}
+				},"json");	
+			}
+		});
+	}
+}
+
+</script>
+<table id="datagrid-vehicleLock" title="机动车业务锁定" class="easyui-datagrid" style="width:100%;height:400px"
+	            toolbar="#datagrid-vehicleLock-toolbar" pagination="true" url="../../vehicleLock/getVehicleLocks" pageSize="100"
+	            pageList="[20,50,100,200,300]"
+	            rownumbers="true"  singleSelect="true" data-options="onDblClickRow:onDBClickRow">
+	        <thead>
+	            <tr>
+	                <th  width="150px" data-options="field:'clsbdh',editor:{type:'textbox',options:{required:true}}" >车辆识别代号</th>
+	                <th  width="150px" data-options="field:'sdr'">锁定人</th>
+	                <th  width="150px" data-options="field:'sdsj'">锁定时间</th>
+	                <th  width="150px" data-options="field:'sdzt',formatter:sdztFormatter">锁定状态</th>
+	                <th  width="150px" data-options="field:'jsr'">解锁人</th> 
+	                <th  width="150px" data-options="field:'jssj'">解锁时间</th> 
+	                <th  width="150px" data-options="field:'jsyy',editor:{type:'textbox'}">解锁原因</th> 
+	                <th  width="150px" data-options="field:'sdyy',editor:{type:'textbox',options:{required:true}}">锁定原因</th> 
+	            </tr>
+	        </thead>
+	    </table>
+	    <div id="datagrid-vehicleLock-toolbar">
+	    	<div>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="vehicleLockManager.append()">新增</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="vehicleLockManager.accept()">保存</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="vehicleLockManager.unLock()">解锁</a>
+	    	</div>
+	    	
+	    </div>
+	    
+<script type="text/javascript">
+function sdztFormatter(value,row,index){
+	if(value == 0){
+		return "未锁定";
+	}else if (value == 1){
+		return "锁定";
+	}
+	return  "";
+}
+</script>

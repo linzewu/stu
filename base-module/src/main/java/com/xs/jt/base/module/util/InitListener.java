@@ -52,7 +52,7 @@ public class InitListener implements ServletContextListener {
 			servletContext = contextEvent.getServletContext();
 			wac = WebApplicationContextUtils.getWebApplicationContext(contextEvent.getServletContext());
 			InitServerCommonPowerUtil initServerCommonPowerUtil = (InitServerCommonPowerUtil) wac.getBean("initServerCommonPowerUtil");
-			List<PowerPoint> powerPoints = initServerCommonPowerUtil.initPower(new String[] {"com.xs.jt.base.module.controller"});
+			List<PowerPoint> powerPoints = initServerCommonPowerUtil.initPower();
 			servletContext.setAttribute("powerPoints", powerPoints);
 
 			// 加载参数表
