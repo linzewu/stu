@@ -682,8 +682,8 @@ function loadParam(){
 	}
 	
 	var queryParams={"clxh":clxh};
-	queryParams.mType = "trafficDBManager";
-	queryParams.method = "getImplCarParam";
+	//queryParams.mType = "trafficDBManager";
+	//queryParams.method = "getImplCarParam";
 	
 	var isParse = $("#implCarParamListIsParse").val();
 	if(isParse=="false"){

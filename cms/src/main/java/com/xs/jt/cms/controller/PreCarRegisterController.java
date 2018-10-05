@@ -339,6 +339,17 @@ public class PreCarRegisterController {
 		return list;
 	}
 	
+	@UserOperation(code = "getImplCarParam", name = "获取进口车辆信息")
+	@RequestMapping(value = "getImplCarParam", method = RequestMethod.POST)
+	public @ResponseBody List<Map<String, Object>> getImplCarParam(String clxh) {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		if (clxh != null) {
+			list = pDAServiceManager.getImplCarParam(clxh);
+
+		}
+		return list;
+	}
+	
 	
 
 }
