@@ -1,6 +1,9 @@
 package com.xs.jt.cms.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -10,6 +13,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.coyote.http11.OutputFilter;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -23,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.druid.util.StringUtils;
+import com.alibaba.fastjson.JSON;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -32,15 +38,20 @@ import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.ApplicationException;
 import com.xs.jt.base.module.common.Constant;
+import com.xs.jt.base.module.common.MapUtil;
 import com.xs.jt.base.module.common.ResultHandler;
+import com.xs.jt.base.module.common.Sql2WordUtil;
 import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutNewAccessServiceStub;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutService;
+import com.xs.jt.cms.common.BarcodeUtil;
 import com.xs.jt.cms.common.MatrixToImageWriter;
 import com.xs.jt.cms.common.URLCodeUtil;
 import com.xs.jt.cms.entity.PreCarRegister;
 import com.xs.jt.cms.manager.IPDAServiceManager;
 import com.xs.jt.cms.manager.IPreCarRegisterManager;
+
+import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping(value = "/preCarRegister")
@@ -54,80 +65,44 @@ public class PreCarRegisterController {
 	
 	private IPDAServiceManager pDAServiceManager;
 	
+	@Autowired
 	private TmriJaxRpcOutService tmriJaxRpcOutService;
 	
 	@Value("${stu.properties.glbm}")
 	private String glbm;
+	
+	@Value("${stu.cache.dir}")
+	private String cacheDir;
 
 	@UserOperation(code = "savePreCarRegister", name = "保存")
 	@RequestMapping(value = "savePreCarRegister", method = RequestMethod.POST)
-	public @ResponseBody Map savePreCarRegister(HttpSession session, @Valid PreCarRegister bcr, BindingResult result) {
+	public @ResponseBody Map savePreCarRegister(HttpSession session, @Valid PreCarRegister bcr, BindingResult result) throws Exception {
 		if (!result.hasErrors()) {
 			User user = (User) session.getAttribute("user");
-
 			//Map userMap = (Map) request.getSession().getAttribute("user");
 			String stationCode = (String) user.getBmdm();// ---------------
-
 			bcr.setStationCode(stationCode);
-
-			StringBuilder sb = new StringBuilder("");
-
-			sb.append(bcr.getClxh());
-			sb.append("|");
-			sb.append(bcr.getClsbdh());
-			sb.append("|");
-			sb.append(bcr.getHdzk());
-			sb.append("|");
-			sb.append(bcr.getCsys());
-			sb.append("|");
-			sb.append(bcr.getCllx());
-			sb.append("|");
-			sb.append(bcr.getHpzl());
-			sb.append("|");
-			sb.append(bcr.getYwlx());
-			sb.append("|");
-			sb.append(bcr.getGgbh());
-			sb.append("|");
-			sb.append(bcr.getSyxz());
-			sb.append("|");
-			sb.append(bcr.getFdjh());
-			sb.append("|");
-			sb.append(bcr.getQlj());
-			sb.append("|");
-			sb.append(bcr.getHlj());
-			sb.append("|");
-			sb.append(bcr.getZj());
-
 			String lsh = null;
-
 			if ("A".equals(bcr.getYwlx())) {
-				lsh = getlsh();
+				//lsh = getlsh();
+				lsh = "123456";
 				bcr.setLsh(lsh);
 			}
-			sb.append("|");
-			sb.append(bcr.getLsh());
-			sb.append("|");
-			sb.append(bcr.getHphm());
-			sb.append("|");
-
 			if (null == bcr.getDpid() || "".equals(bcr.getDpid().trim())) {
 				bcr.setDpid(null);
 			}
-
-			sb.append(bcr.getDpid());
-
 			PreCarRegister register = this.preCarRegisterManager.save(bcr); 
-
-			System.out.println(sb);
-			String path = System.getProperty("2code");
-			create2Code(path, sb.toString(), String.valueOf(register.getId()));
+			//create2Code(cacheDir+"\\2Code", sb.toString(), String.valueOf(register.getId()));
 			if ("A".equals(bcr.getYwlx())) {
-				createLSHCode(path,String.valueOf(register.getId()), lsh);
+				//createLSHCode(cacheDir+"\\1Code",lsh, lsh);
+				Map<String,Object> data =MapUtil.object2Map(bcr);
+				data.put("lshCode", BarcodeUtil.generateInputStream(lsh));
+				if(StringUtils.isEmpty(bcr.getHphm())) {
+					data.put("hphm", bcr.getClsbdh());
+				}
+				com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil("template_ptc.doc", data);
+				Sql2WordUtil.toCase(doc, cacheDir, "\\report\\template_ptc_02_"+lsh+".jpg");
 			}
-
-//			respondData.put(BaseManagerAction.SID, id);
-//			respondData.put(BaseManagerAction.STATE, BaseManagerAction.STATE_SUCCESS);
-//			pw.print(respondData);
 			return ResultHandler.resultHandle(result, null, Constant.ConstantMessage.SAVE_SUCCESS);
 		} else {
 			return ResultHandler.resultHandle(result, null, null);
@@ -176,10 +151,9 @@ public class PreCarRegisterController {
 	}
 
 	private void createLSHCode(String path,String fileName, String lsh) {
-		MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
 		try {
 			BitMatrix bitMatrix = toBarCodeMatrix(lsh, 10, 20);
-			File file1 = new File(path, fileName + "code39.jpg");
+			File file1 = new File(path, fileName + ".jpg");
 			MatrixToImageWriter.writeToFile(bitMatrix, "jpg", file1);
 		} catch (Exception e) {
 			e.printStackTrace();

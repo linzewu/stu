@@ -83,7 +83,7 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 		
 		Document doc = Sql2WordUtil.map2WordUtil("template_ptc.doc", data);
 		
-		return Sql2WordUtil.toCase(doc, cacheDir, "\report\template_ptc_01"+id+".jpg");
+		return Sql2WordUtil.toCase(doc, cacheDir, "\\report\\template_ptc_01"+id+".jpg");
 	}
 
 }
