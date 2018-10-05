@@ -78,12 +78,20 @@ public class Sql2WordUtil {
 			if(imgObj==null) {
 				continue;
 			}
-			SerializableBlobProxy proxy = (SerializableBlobProxy) Proxy.getInvocationHandler(imgObj);
-			Blob blob =proxy.getWrappedBlob();
-			if (blob!=null) {// 如果shape类型是ole类型
-				InputStream inStream = blob.getBinaryStream();
+			if(imgObj instanceof Proxy) {
+				SerializableBlobProxy proxy = (SerializableBlobProxy) Proxy.getInvocationHandler(imgObj);
+				Blob blob =proxy.getWrappedBlob();
+				if (blob!=null) {// 如果shape类型是ole类型
+					InputStream inStream = blob.getBinaryStream();
+					i.setImage(inStream);
+				}
+			}
+			
+			if(imgObj instanceof InputStream) {
+				InputStream inStream =(InputStream)imgObj;
 				i.setImage(inStream);
 			}
+			
 		}
 		
 		// 填充文字
@@ -93,15 +101,13 @@ public class Sql2WordUtil {
 			Object[] fieldValues = new Object[fieldNames.length];
 			int i=0;
 			for(String fieldName:fieldNames) {
-				fieldName=fieldName.toUpperCase();
-				if(fieldName.indexOf("CK")==0) {
+				fieldName=fieldName.toLowerCase();
+				if(fieldName.indexOf("ck")==0) {
 					String[] temp = fieldName.split("##");
 					String value=temp[1];
-					if(data.get(temp[2]) instanceof Character){
-						fieldValues[i]=((Character)data.get(temp[2])).toString();
-					}else{
-						fieldValues[i]=(String)data.get(temp[2]);
-					}
+					String key =temp[2].toLowerCase();
+					fieldValues[i]=(String)data.get(key);
+					
 					if(value.equals(fieldValues[i])) {
 						fieldValues[i]="☑";
 					}else {

@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,9 @@ public class BaseParamsManagerImpl implements IBaseParamsManager {
 //	private HibernateTemplate hibernateTemplate;
 	@Autowired
 	private BaseParamsRepository baseParamsRepository;
+	
+	@Autowired
+	private ServletContext servletContext;
 
 	public List<BaseParams> getBaseParams() {
 //		Sort result = new Sort(Sort.Direction.fromString("asc"), "type");
@@ -98,6 +102,20 @@ public class BaseParamsManagerImpl implements IBaseParamsManager {
 	public List<BaseParams> getBaseParamsByType(String type) {
 		// TODO Auto-generated method stub
 		return baseParamsRepository.findBaseParamsByType(type);
+	}
+
+	public BaseParams getBaseParam(String type, String paramName) {
+			List<BaseParams> bps = (List<BaseParams>) servletContext.getAttribute("bps");
+			if(bps==null) {
+				bps=getBaseParams();
+			}
+			for (BaseParams param : bps) {
+				if (param.getType().equals(type) && param.getParamName().equals(paramName)) {
+					return param;
+				}
+			}
+			return null;
+		
 	}
 
 }

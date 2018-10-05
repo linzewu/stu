@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.xs.jt.base.module.annotation.Modular;
@@ -22,13 +23,19 @@ import com.xs.jt.base.module.enums.CommonUserOperationEnum;
 
 @Component("initServerCommonPowerUtil")
 public class InitServerCommonPowerUtil {
+	
+	@Value("${stu.power.scan.pack}")
+	private String scanPack;
 
 	protected static Log log = LogFactory.getLog(InitServerCommonPowerUtil.class);
 
 //	@Resource(name = "userManager")
 //	private UserManager userManager;
 
-	public List<PowerPoint> initPower(String[] packs) throws IOException {
+	public List<PowerPoint> initPower() throws IOException {
+		
+		String[] packs = scanPack.split(",");
+		
 		List<PowerPoint> powerPonits = new ArrayList<PowerPoint>();
 		
 		Map<String,PowerPoint> powerPointMap=new HashMap<String,PowerPoint>();

@@ -7,24 +7,30 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import org.springframework.context.annotation.Scope;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.xs.jt.base.module.entity.BaseEntity;
 @Scope("prototype")
-@Component("motorVehicleBusinessLock")
+@Component("vehicleLock")
 @Entity
-@Table(name = "TM_MOTORVEHICLEBUSINESSLOCK")
-public class MotorVehicleBusinessLock extends BaseEntity{
+@Table(name = "TM_VEHICLELOCK")
+public class VehicleLock extends BaseEntity{
 	@Column(length=100)
 	private String clsbdh;
 	@Column(length=20)
 	private String sdr;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	@DateTimeFormat( pattern = "yyyy-MM-dd HH:mm:ss" )
 	@Column
 	private Date sdsj;
 	@Column(length=1)
 	private String sdzt;
 	@Column(length=20)
 	private String jsr;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	@DateTimeFormat( pattern = "yyyy-MM-dd HH:mm:ss" )
 	@Column
 	private Date jssj;
 	@Column(length=300)

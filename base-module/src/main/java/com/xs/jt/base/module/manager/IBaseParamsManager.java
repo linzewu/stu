@@ -19,5 +19,7 @@ public interface IBaseParamsManager {
 	
 	public List<BaseParams> getBaseParamsByType(String type);
 	
+	public BaseParams getBaseParam(String type, String paramName);
+	
 
 }

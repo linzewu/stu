@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
@@ -22,7 +23,10 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
 public class BaseConfig extends WebMvcConfigurationSupport  {
-
+	
+	@Value("${stu.cache.dir}")
+	private String cacheDir;
+	
 	@Bean
 	public Docket createRestApi() {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
@@ -34,7 +38,7 @@ public class BaseConfig extends WebMvcConfigurationSupport  {
 	}
 
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+		registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/","file:"+cacheDir);
 		registry.addResourceHandler("/swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
 		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 		super.addResourceHandlers(registry);

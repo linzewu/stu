@@ -1,4 +1,45 @@
 [{
+	"module": "车辆预登记",
+	"group": [
+		{
+			"groupName": "车辆预登记",
+			"menus": [				
+				{
+					"icon": "../../static/images/car.png",
+					"title": "车辆预登记",
+					"href": "../../static/html/proCarRegister.html",
+					"permission":""
+				},
+				{
+					"icon": "../../static/images/impCar.png",
+					"title": "进口车登记",
+					"href": "../../static/html/importProCarRegister.html",
+					"permission":""
+				},
+				{
+					"icon": "../../static/images/list.png",
+					"title": "已登记信息",
+					"href": "../../static/html/proCarRegisterList.html",
+					"permission":""
+				}
+			]
+		}
+	]
+},{
+	"module": "查验管理",
+	"group": [
+		{
+			"groupName": "查验管理",
+			"menus": [				
+				{
+					"icon": "../../static/images/lockImg.png",
+					"title": "机动车业务锁定管理",
+					"href": "../../static/html/vehicleLock.html",
+					"permission":"vehicleLock.getVehicleLocks"
+				}
+			]
+		}]
+},{
 	"module": "系统管理",
 	"group": [
 		{
@@ -82,34 +123,6 @@
 					"title" : "安全日志",
 					"href" : "../../static/html/securityLog.html",
 					"permission":"SecurityLog.getSecurityLog"
-				}
-			]
-		}
-	]
-}
-,{
-	"module": "车辆预登记",
-	"group": [
-		{
-			"groupName": "车辆预登记",
-			"menus": [				
-				{
-					"icon": "../../static/images/car.png",
-					"title": "车辆预登记",
-					"href": "../../static/html/proCarRegister.html",
-					"permission":""
-				},
-				{
-					"icon": "../../static/images/impCar.png",
-					"title": "进口车登记",
-					"href": "../../static/html/importProCarRegister.html",
-					"permission":""
-				},
-				{
-					"icon": "../../static/images/list.png",
-					"title": "已登记信息",
-					"href": "../../static/html/proCarRegisterList.html",
-					"permission":""
 				}
 			]
 		}
