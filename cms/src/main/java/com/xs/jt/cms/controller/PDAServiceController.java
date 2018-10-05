@@ -30,11 +30,11 @@ import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutNewAccessServiceStu
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutService;
 import com.xs.jt.cms.common.CommonUtil;
 import com.xs.jt.cms.common.URLCodeUtil;
-import com.xs.jt.cms.entity.MotorVehiclePhotos;
+import com.xs.jt.cms.entity.VehiclePhotos;
 import com.xs.jt.cms.entity.VehCheckInfo;
 import com.xs.jt.cms.entity.PreCarRegister;
-import com.xs.jt.cms.manager.IMotorVehicleBusinessLockManager;
-import com.xs.jt.cms.manager.IMotorVehiclePhotosManager;
+import com.xs.jt.cms.manager.IVehicleLockManager;
+import com.xs.jt.cms.manager.IVehiclePhotosManager;
 import com.xs.jt.cms.manager.IPDAServiceManager;
 import com.xs.jt.cms.manager.IVehCheckInfoManager;
 import com.xs.jt.cms.manager.IPreCarRegisterManager;
@@ -51,11 +51,11 @@ public class PDAServiceController {
 	@Autowired
 	private IPDAServiceManager pDAServiceManager;
 	@Autowired
-	private IMotorVehiclePhotosManager motorVehiclePhotosManager;
+	private IVehiclePhotosManager vehiclePhotosManager;
 	@Autowired
 	private HttpServletRequest request;
 	@Autowired
-	private IMotorVehicleBusinessLockManager motorVehicleBusinessLockManager;
+	private IVehicleLockManager vehicleLockManager;
 	@Autowired
 	private IPreCarRegisterManager preCarRegisterManager;
 
@@ -78,7 +78,7 @@ public class PDAServiceController {
 	public @ResponseBody PreCarRegister findPreCarRegisterByLsh(String lsh){
 		PreCarRegister carInfo = preCarRegisterManager.findPreCarRegisterByLsh(lsh);
 		if(carInfo != null){
-			carInfo.setSdzt(motorVehicleBusinessLockManager.findMotorVehicleBusinessLockByClsbdh(carInfo.getClsbdh()));
+			carInfo.setSdzt(vehicleLockManager.findMotorVehicleBusinessLockByClsbdh(carInfo.getClsbdh()));
 		}
 		return carInfo;
 	}
@@ -110,7 +110,7 @@ public class PDAServiceController {
 					String value = element.getText();
 					dataMap.put(key, value);
 					if(key.equals("clsbdh")){
-						boolean sdzt = motorVehicleBusinessLockManager.findMotorVehicleBusinessLockByClsbdh(value);
+						boolean sdzt = vehicleLockManager.findMotorVehicleBusinessLockByClsbdh(value);
 						dataMap.put("sdzt", String.valueOf(sdzt));
 					}
 				}
@@ -212,10 +212,10 @@ public class PDAServiceController {
 
 	@UserOperation(code = "uploadFile", name = "上传图片")
 	@RequestMapping(value = "uploadFile", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> uploadFile(MotorVehiclePhotos motorVehiclePhotos, MultipartFile file,
+	public @ResponseBody Map<String, Object> uploadFile(VehiclePhotos motorVehiclePhotos, MultipartFile file,
 			@ApiIgnore() BindingResult result) throws Exception {
 		motorVehiclePhotos.setPhoto(file.getBytes());
-		motorVehiclePhotosManager.save(motorVehiclePhotos);
+		vehiclePhotosManager.save(motorVehiclePhotos);
 		return ResultHandler.resultHandle(result, motorVehiclePhotos, Constant.ConstantMessage.SAVE_SUCCESS);
 	}
 	
@@ -223,7 +223,7 @@ public class PDAServiceController {
 	public @ResponseBody boolean findLockMotorVehicleByClsbdh(String clsbdh)
 			throws Exception {
 
-		return motorVehicleBusinessLockManager.findMotorVehicleBusinessLockByClsbdh(clsbdh);
+		return vehicleLockManager.findMotorVehicleBusinessLockByClsbdh(clsbdh);
 	}
 
 }

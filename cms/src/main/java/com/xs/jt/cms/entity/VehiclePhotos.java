@@ -15,10 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.xs.jt.base.module.entity.BaseEntity;
 
 @Scope("prototype")
-@Component("motorVehiclePhotos")
+@Component("vehiclePhotos")
 @Entity
-@Table(name = "TM_MOTORVEHICLEPHOTOS")
-public class MotorVehiclePhotos extends BaseEntity{
+@Table(name = "TM_VEHICLEPHOTOS")
+public class VehiclePhotos extends BaseEntity{
 	@Column(length=100)
 	private String lsh;
 	@Column(length=20)

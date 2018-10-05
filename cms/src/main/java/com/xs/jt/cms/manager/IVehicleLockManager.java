@@ -1,6 +1,6 @@
 package com.xs.jt.cms.manager;
 
-public interface IMotorVehicleBusinessLockManager {
+public interface IVehicleLockManager {
 	
 	public boolean findMotorVehicleBusinessLockByClsbdh(String clsbdh);
 

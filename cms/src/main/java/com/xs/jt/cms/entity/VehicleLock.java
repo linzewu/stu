@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 
 import com.xs.jt.base.module.entity.BaseEntity;
 @Scope("prototype")
-@Component("motorVehicleBusinessLock")
+@Component("vehicleLock")
 @Entity
-@Table(name = "TM_MOTORVEHICLEBUSINESSLOCK")
-public class MotorVehicleBusinessLock extends BaseEntity{
+@Table(name = "TM_VEHICLELOCK")
+public class VehicleLock extends BaseEntity{
 	@Column(length=100)
 	private String clsbdh;
 	@Column(length=20)
