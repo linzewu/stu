@@ -14,5 +14,7 @@ public interface IPDAServiceManager {
 	List<Map<String,Object>> getListOfDPGG(String dpid);
 	
 	List<Map<String,Object>> getDPGG(String bh);
+	
+	List<Map<String,Object>> getImplCarParam(String clxh);
 
 }

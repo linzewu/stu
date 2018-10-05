@@ -37,4 +37,9 @@ public class  PDAServiceRepository {
 		String sql = "select c.* from trff_app.PCB_ST_CHASSIS c where bh=?";
 		return jdbcTemplate.queryForList(sql, bh);
 	}
+	public  List<Map<String,Object>> getImplCarParam(String clxh){
+		String sql = "select * from trff_app.PCB_FINAL_PARA where clxh like ? and rownum <= 100";
+		return jdbcTemplate.queryForList(sql, clxh + "%");
+	}
+	
 }
