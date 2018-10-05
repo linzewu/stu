@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -26,12 +27,14 @@ import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.ApplicationException;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
+import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutNewAccessServiceStub;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutService;
 import com.xs.jt.cms.common.CommonUtil;
 import com.xs.jt.cms.common.URLCodeUtil;
 import com.xs.jt.cms.entity.VehiclePhotos;
 import com.xs.jt.cms.entity.VehCheckInfo;
+import com.xs.jt.cms.entity.VehicleLock;
 import com.xs.jt.cms.entity.PreCarRegister;
 import com.xs.jt.cms.manager.IVehicleLockManager;
 import com.xs.jt.cms.manager.IVehiclePhotosManager;
@@ -61,13 +64,56 @@ public class PDAServiceController {
 
 	@Autowired
 	private TmriJaxRpcOutService tmriJaxRpcOutService;
+	
+	@Autowired
+	private HttpSession session;
 
 
 	@RequestMapping(value = "addPoliceCheckInfo", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> addPoliceCheckInfo(VehCheckInfo policeCheckInfo, BindingResult result)
 			throws Exception {
-
+		User user = (User) session.getAttribute("user");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd  HH:mm:ss");
 		if (!result.hasErrors()) {
+			//校验车辆是否被锁定，如果被锁定则不能保存(如果当前用户是锁定人则可以保存)
+			List<VehicleLock> list = vehicleLockManager.findLockVehicle(policeCheckInfo.getClsbdh());
+			if(list != null && list.size() > 0){
+				boolean flag = false;
+				for(VehicleLock lock:list){
+					if(!user.getYhm().equals(lock.getSdr())){
+						flag = true;
+						break;
+					}
+				}
+				if(flag){
+					return ResultHandler.toErrorJSON("车辆已被锁定，不能保存查验数据！");
+				}else{
+					//查验合格，则解锁
+					if("1".equals(policeCheckInfo.getCyjg())){
+						for(VehicleLock lock:list){
+							lock.setJsr(user.getYhm());
+							lock.setJssj(new Date());
+							lock.setSdzt("0");
+							lock.setJsyy(policeCheckInfo.getYwlx()+sdf.format(new Date())+"查验合格");
+							this.vehicleLockManager.save(lock);
+						}
+					}
+				}
+			}else{
+				//车辆没有被锁定，如果查验不合格，写入机动车业务锁定表 1：合格，0：不合格
+				if("0".equals(policeCheckInfo.getCyjg())){
+					
+					VehicleLock vehicleLock = new VehicleLock();
+					vehicleLock.setSdr(user.getYhm());
+					vehicleLock.setSdsj(new Date());
+					vehicleLock.setSdzt("1");
+					vehicleLock.setClsbdh(policeCheckInfo.getClsbdh());
+					vehicleLock.setSdyy(policeCheckInfo.getYwlx()+sdf.format(new Date())+"查验不合格");
+					 this.vehicleLockManager.save(vehicleLock);
+				}
+			}
+			
+			
 			policeCheckInfoManager.save(policeCheckInfo);
 			return ResultHandler.resultHandle(result, policeCheckInfo, Constant.ConstantMessage.SAVE_SUCCESS);
 		} else {
@@ -214,6 +260,21 @@ public class PDAServiceController {
 	@RequestMapping(value = "uploadFile", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> uploadFile(VehiclePhotos motorVehiclePhotos, MultipartFile file,
 			@ApiIgnore() BindingResult result) throws Exception {
+		User user = (User) session.getAttribute("user");
+		//校验车辆是否被锁定，如果被锁定则不能保存(如果当前用户是锁定人则可以保存)
+		List<VehicleLock> list = vehicleLockManager.findLockVehicle(motorVehiclePhotos.getClsbdh());
+		if(list != null && list.size() > 0){
+			boolean flag = false;
+			for(VehicleLock lock:list){
+				if(!user.getYhm().equals(lock.getSdr())){
+					flag = true;
+					break;
+				}
+			}
+			if(flag){
+				return ResultHandler.toErrorJSON("车辆已被锁定，不能上传图片！");
+			}
+		}
 		motorVehiclePhotos.setPhoto(file.getBytes());
 		vehiclePhotosManager.save(motorVehiclePhotos);
 		return ResultHandler.resultHandle(result, motorVehiclePhotos, Constant.ConstantMessage.SAVE_SUCCESS);

@@ -34,6 +34,11 @@ public class VehicleLockManagerImpl implements IVehicleLockManager {
 		}
 		return flag;
 	}
+	
+	public List<VehicleLock> findLockVehicle(String clsbdh){
+		List<VehicleLock> list = vehicleLockRepository.findMotorVehicleBusinessLockByClsbdh(clsbdh);
+		return list;
+	}
 
 	public Map<String, Object> getVehicleLocks(Integer page, Integer rows, VehicleLock vehicleLock) {
 		Pageable pageable = new QPageRequest(page, rows);
