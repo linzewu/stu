@@ -12,4 +12,7 @@ public interface IVehCheckInfoManager {
 	
 	public Map<String,Object> getVehCheckInfoList(Integer page, Integer rows,VehCheckInfo vehCheckInfo);
 
+	public String getVehCheckReport(Integer id) throws Exception;
+	
+	
 }

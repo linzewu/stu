@@ -28,6 +28,13 @@ public class VehCheckInfoController {
 		
 		return vehCheckInfoManager.getVehCheckInfoList(page-1, rows, vehCheckInfo);
 	}
+	
+	@UserOperation(code="getVehCheckReport",name="查询查验报表")
+	@RequestMapping(value = "getVehCheckReport", method = RequestMethod.POST)
+	public @ResponseBody String getVehCheckReport(Integer id) throws Exception {
+		
+		return vehCheckInfoManager.getVehCheckReport(id);
+	}
 
 	
 	

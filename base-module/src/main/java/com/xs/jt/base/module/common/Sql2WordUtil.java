@@ -5,16 +5,10 @@ import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
 import org.hibernate.engine.jdbc.SerializableBlobProxy;
-import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -52,6 +46,20 @@ public class Sql2WordUtil {
 			 doc = createTemplate(template,data);
 		}
 		return doc;
+	}
+	
+	public static String toCase(Document doc,String paht,String fileName) throws Exception{
+		
+		if(doc!=null) {
+			ImageSaveOptions iso = new ImageSaveOptions(SaveFormat.JPEG);
+			iso.setPrettyFormat(true);
+			iso.setUseAntiAliasing(true);
+			iso.setJpegQuality(80);
+			doc.save(paht+fileName,iso);
+			return fileName;
+		}else {
+			return null;
+		}
 	}
 	
 	

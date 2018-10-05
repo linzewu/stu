@@ -11,7 +11,7 @@ import com.xs.jt.cms.entity.VehCheckInfo;
 public interface VehCheckInfoRepository extends JpaRepository<VehCheckInfo, Integer>,JpaSpecificationExecutor<VehCheckInfo>{
 	
 	
-	@Query(value = "from PoliceCheckInfo where lsh = :lsh")
-	VehCheckInfo findPoliceCheckInfoByLsh(@Param("lsh")String lsh);
+	@Query(value = "from VehCheckInfo where lsh = :lsh")
+	VehCheckInfo findVehCheckInfoByLsh(@Param("lsh")String lsh);
 
 }

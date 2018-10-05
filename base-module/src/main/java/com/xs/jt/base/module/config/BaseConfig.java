@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -48,5 +49,11 @@ public class BaseConfig extends WebMvcConfigurationSupport  {
 		excludeList.add("/static/**");
 		registry.addInterceptor(userInterceptor).addPathPatterns("/**").excludePathPatterns(excludeList);
 	}
+	
+	@Bean
+    public OpenEntityManagerInViewFilter openEntityManagerInViewFilter(){
+    	return new OpenEntityManagerInViewFilter();
+    }
+
 
 }
