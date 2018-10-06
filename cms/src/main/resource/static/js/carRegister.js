@@ -54,27 +54,29 @@ function save() {
 }
 
 function saveAndPring() {
-	$("#isPrint").val("true");
-	$('#myform').form('submit', {
-		url: "../../preCarRegister/savePreCarRegister",
-		onSubmit: function(){
-			console.log($(this));
-			var isValid = $(this).form('validate');
-			if (!isValid){
-				return false;	// hide progress bar while the form is invalid
-			}
-			return isValid;	// return false will stop the form submission
-		},
-		success: function(data){
-			data=$.parseJSON(data);
-			//$.messager.progress('close');	// hide progress bar while submit successfully
-			//$.messager.alert("提示",data.message,"info",function(){
-			//	window.location.href="login.html";
-			//})
-			
-		}
+	$('#myform').form({
+		url: "../../preCarRegister/savePreCarRegister"
 	});
-	//$('#myform').submit();
+	var isValid = $('#myform').form('validate');
+	if(isValid){
+		$.post("../../preCarRegister/savePreCarRegister",$("#myform").serializeJson(),function(data){
+			if(data.state==1){
+				$.messager.alert("提示","保存成功！","info",function(){
+					$('#myform').form('clear');
+				});
+				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
+				printCYD();
+			}else{
+				$.messager.alert("提示",data.message,"error");
+			}
+			
+		},"json").complete(function(){
+			$.messager.progress('close');
+		});
+	}
+	
+	
+	
 }
 
 function implSaveAndPring() {
@@ -635,34 +637,22 @@ function print() {
 	}
 }
 
-function printCYD(data) {
-	
-	$("input[name=businessTypeCheckBox]").attr("checked", false);
-
-	$("input[name=businessTypeCheckBox][value=" + data['ywlx'] + "]").attr(
-			"checked", true);
-	$("#plateTypeLabel").text(getLabelByid("hpzl", data.hpzl));
-	
-	$("#label_clsbdh").text(data['clsbdh']);
-	if (data['ywlx'] == "A") {
-		$("#carIdCodeLabel").text(data['clsbdh']);
-		$("#1code").show();
-		$("#1code").attr("src", "/2code/" + data['id'] + "code39.jpg");
-	} else {
-		$("#carIdCodeLabel").text(data['hphm']);
-		$("#1code").hide();
+function printCYD(option) {
+	var prview=false;
+	if(option){
+		if(option.prview){
+			prview=option.prview
+		}
 	}
-//	$("#userTypeLabel").text(getLabelByid("syxz", data['syxz']));
-	$("#2code").one(
-			"load",
-			function() {
-				var LODOP = getLodop(document.getElementById('LODOP_OB'),
-						document.getElementById('LODOP_EM'));
-				LODOP.ADD_PRINT_HTM(-10, 10, 1024, 1100, document
-						.getElementById("printTemplet").innerHTML);
-				LODOP.PREVIEW();
-			});
-	$("#2code").attr("src", "/2code/" + data['id'] + ".jpg");
+	var LODOP = getLodop(document.getElementById('LODOP_OB'),
+			document.getElementById('LODOP_EM'));
+	LODOP.ADD_PRINT_HTM(0, 0, 1024, 1200, document
+			.getElementById("printTemplet").innerHTML);
+	if(prview){
+		LODOP.PREVIEW();
+	}else{
+		LODOP.PRINT();
+	}
 }
 
 function deving(){
@@ -682,8 +672,6 @@ function loadParam(){
 	}
 	
 	var queryParams={"clxh":clxh};
-	//queryParams.mType = "trafficDBManager";
-	//queryParams.method = "getImplCarParam";
 	
 	var isParse = $("#implCarParamListIsParse").val();
 	if(isParse=="false"){

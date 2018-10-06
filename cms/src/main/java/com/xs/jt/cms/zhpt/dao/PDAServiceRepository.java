@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class  PDAServiceRepository {
 	
-	@Resource
+	@Resource(name="oraJdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
 	//@Query(value = "SELECT v.* from arc_sys.tb_user v where yhm=:bh", nativeQuery = true)

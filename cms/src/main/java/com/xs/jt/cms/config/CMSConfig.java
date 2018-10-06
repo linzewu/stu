@@ -2,12 +2,14 @@ package com.xs.jt.cms.config;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
@@ -26,5 +28,18 @@ public class CMSConfig {
 	public DataSource oraDataSource() {
 		return DataSourceBuilder.create().build();
 	}
+	
+	@Bean(name = "oraJdbcTemplate")
+	public JdbcTemplate oraJdbcTemplate(@Qualifier("oraDataSource") DataSource dataSource) {
+		return new JdbcTemplate(dataSource);
+	}
+	
+	@Primary
+	@Bean(name = "cmsJdbcTemplate")
+	public JdbcTemplate cmsJdbcTemplate(@Qualifier("cmsDataSource") DataSource dataSource) {
+		return new JdbcTemplate(dataSource);
+	}
+	
+	
 
 }

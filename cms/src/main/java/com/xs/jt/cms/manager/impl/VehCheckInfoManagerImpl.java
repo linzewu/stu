@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONPObject;
 import com.aspose.words.Document;
 import com.xs.jt.base.module.common.Sql2WordUtil;
+import com.xs.jt.base.module.entity.BaseParams;
 import com.xs.jt.cms.dao.VehCheckInfoRepository;
 import com.xs.jt.cms.entity.VehCheckInfo;
 import com.xs.jt.cms.manager.IVehCheckInfoManager;
@@ -38,6 +40,9 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 	
 	@Value("${stu.cache.dir}")
 	private String cacheDir;
+	
+	@Autowired
+	private ServletContext servletContext;
 	
 	public VehCheckInfo save(VehCheckInfo vehCheckInfo) {
 		return vehCheckInfoRepository.save(vehCheckInfo);
@@ -81,7 +86,9 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 		
 		JSONObject data = JSONObject.fromObject(vehCheckInfo.get());
 		
-		Document doc = Sql2WordUtil.map2WordUtil("template_ptc.doc", data);
+		Map<String, List<BaseParams>> bpsMap = (Map<String, List<BaseParams>>) servletContext.getAttribute("bpsMap");
+		
+		Document doc = Sql2WordUtil.map2WordUtil("template_ptc.doc", data,bpsMap);
 		
 		return Sql2WordUtil.toCase(doc, cacheDir, "\\report\\template_ptc_01"+id+".jpg");
 	}

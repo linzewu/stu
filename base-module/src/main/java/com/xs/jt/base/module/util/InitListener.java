@@ -1,6 +1,7 @@
 package com.xs.jt.base.module.util;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -59,6 +60,8 @@ public class InitListener implements ServletContextListener {
 			IBaseParamsManager baseParamsManager = (IBaseParamsManager) wac.getBean("baseParamsManager");
 			List<BaseParams> bps = baseParamsManager.getBaseParams();
 			servletContext.setAttribute("bps", bps);
+			Map<String, List<BaseParams>>  bpsMap = baseParamsManager.convertBaseParam2Map();
+			servletContext.setAttribute("bpsMap", bpsMap);
 			
 			InitServerCommonUtil initServerCommonUtil= (InitServerCommonUtil) wac.getBean("initServerCommonUtil");
 			System.out.println("*********************************************");

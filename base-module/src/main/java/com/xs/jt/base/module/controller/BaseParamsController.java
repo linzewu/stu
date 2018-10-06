@@ -103,6 +103,9 @@ public class BaseParamsController {
 	public @ResponseBody Map<String,Object> refresh() {
 		ServletContext servletContext = request.getSession().getServletContext();
 		servletContext.setAttribute("bps", baseParamsManager.getBaseParams());
+		Map<String, List<BaseParams>>  bpsMap = baseParamsManager.convertBaseParam2Map();
+		servletContext.setAttribute("bpsMap", bpsMap);
+		
 		return ResultHandler.toSuccessJSON("刷新成功");
 	}
 	

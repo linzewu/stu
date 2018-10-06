@@ -61,7 +61,7 @@ function getLodop(oOBJECT,oEMBED){
 	             }
 	                 
 	             return LODOP;
-	     } else if (LODOP.VERSION<"6.1.9.4") {
+	     } else if (LODOP.VERSION<"6.1.9.8") {
 	    	 console.log("LODOP.VERSION " + LODOP.VERSION)
 	             if (is64IE){
 	            	 $.messager.alert("警告", strHtml2, 'warn', function() {

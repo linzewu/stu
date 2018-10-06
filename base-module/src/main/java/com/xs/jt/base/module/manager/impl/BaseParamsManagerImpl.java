@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.xs.jt.base.module.dao.BaseParamsRepository;
 import com.xs.jt.base.module.entity.BaseParams;
@@ -35,14 +36,15 @@ public class BaseParamsManagerImpl implements IBaseParamsManager {
 //	private HibernateTemplate hibernateTemplate;
 	@Autowired
 	private BaseParamsRepository baseParamsRepository;
-	
+
 	@Autowired
 	private ServletContext servletContext;
 
 	public List<BaseParams> getBaseParams() {
 //		Sort result = new Sort(Sort.Direction.fromString("asc"), "type");
 //		result.and(new Sort(Sort.Direction.fromString("asc"), "seq"));
-		List<BaseParams> bps = baseParamsRepository.findAll(SortTools.basicSort(new SortDto("asc", "type"), new SortDto("asc","seq")));
+		List<BaseParams> bps = baseParamsRepository
+				.findAll(SortTools.basicSort(new SortDto("asc", "type"), new SortDto("asc", "seq")));
 
 //		DetachedCriteria dc = DetachedCriteria.forClass(BaseParams.class);
 //		dc.addOrder(Order.asc("type"));
@@ -69,7 +71,7 @@ public class BaseParamsManagerImpl implements IBaseParamsManager {
 	}
 
 	public Map<String, Object> getBaseParams(Integer page, Integer rows, final BaseParams param) {
-		Pageable pageable =new QPageRequest(page, rows);
+		Pageable pageable = new QPageRequest(page, rows);
 
 		@SuppressWarnings("serial")
 		Page<BaseParams> bookPage = baseParamsRepository.findAll(new Specification<BaseParams>() {
@@ -105,17 +107,41 @@ public class BaseParamsManagerImpl implements IBaseParamsManager {
 	}
 
 	public BaseParams getBaseParam(String type, String paramName) {
-			List<BaseParams> bps = (List<BaseParams>) servletContext.getAttribute("bps");
-			if(bps==null) {
-				bps=getBaseParams();
+		List<BaseParams> bps = (List<BaseParams>) servletContext.getAttribute("bps");
+		if (bps == null) {
+			bps = getBaseParams();
+		}
+		for (BaseParams param : bps) {
+			if (param.getType().equals(type) && param.getParamName().equals(paramName)) {
+				return param;
 			}
-			for (BaseParams param : bps) {
-				if (param.getType().equals(type) && param.getParamName().equals(paramName)) {
-					return param;
-				}
+		}
+		return null;
+
+	}
+
+	public Map<String, List<BaseParams>> convertBaseParam2Map() {
+
+		Map<String, List<BaseParams>> mapParam = new HashMap<String, List<BaseParams>>();
+
+		List<BaseParams> bps = (List<BaseParams>) servletContext.getAttribute("bps");
+		if (bps == null) {
+			bps = getBaseParams();
+		}
+
+		for (BaseParams param : bps) {
+			String key = param.getType();
+			List<BaseParams> typeList = mapParam.get(key);
+			if (typeList == null) {
+				typeList = new ArrayList<BaseParams>();
+				typeList.add(param);
+				mapParam.put(key, typeList);
+			} else {
+				typeList.add(param);
 			}
-			return null;
-		
+		}
+
+		return mapParam;
 	}
 
 }

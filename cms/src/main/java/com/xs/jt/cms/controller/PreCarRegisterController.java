@@ -1,19 +1,16 @@
 package com.xs.jt.cms.controller;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.apache.coyote.http11.OutputFilter;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -28,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.druid.util.StringUtils;
-import com.alibaba.fastjson.JSON;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -41,6 +37,7 @@ import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.MapUtil;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.common.Sql2WordUtil;
+import com.xs.jt.base.module.entity.BaseParams;
 import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutNewAccessServiceStub;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutService;
@@ -50,8 +47,6 @@ import com.xs.jt.cms.common.URLCodeUtil;
 import com.xs.jt.cms.entity.PreCarRegister;
 import com.xs.jt.cms.manager.IPDAServiceManager;
 import com.xs.jt.cms.manager.IPreCarRegisterManager;
-
-import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping(value = "/preCarRegister")
@@ -63,6 +58,7 @@ public class PreCarRegisterController {
 	@Autowired
 	private IPreCarRegisterManager preCarRegisterManager;
 	
+	@Autowired
 	private IPDAServiceManager pDAServiceManager;
 	
 	@Autowired
@@ -73,6 +69,9 @@ public class PreCarRegisterController {
 	
 	@Value("${stu.cache.dir}")
 	private String cacheDir;
+	
+	@Autowired
+	private ServletContext servletContext;
 
 	@UserOperation(code = "savePreCarRegister", name = "保存")
 	@RequestMapping(value = "savePreCarRegister", method = RequestMethod.POST)
@@ -85,7 +84,7 @@ public class PreCarRegisterController {
 			String lsh = null;
 			if ("A".equals(bcr.getYwlx())) {
 				//lsh = getlsh();
-				lsh = "123456";
+				lsh = "123456789101111111";
 				bcr.setLsh(lsh);
 			}
 			if (null == bcr.getDpid() || "".equals(bcr.getDpid().trim())) {
@@ -100,12 +99,14 @@ public class PreCarRegisterController {
 				if(StringUtils.isEmpty(bcr.getHphm())) {
 					data.put("hphm", bcr.getClsbdh());
 				}
-				com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil("template_ptc.doc", data);
-				Sql2WordUtil.toCase(doc, cacheDir, "\\report\\template_ptc_02_"+lsh+".jpg");
+				
+				Map<String, List<BaseParams>> bpsMap = (Map<String, List<BaseParams>>) servletContext.getAttribute("bpsMap");
+				com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil("template_pt_first.doc", data,bpsMap);
+				Sql2WordUtil.toCase(doc, cacheDir, "\\report\\template_ptc_01_"+lsh+".jpg");
 			}
-			return ResultHandler.resultHandle(result, null, Constant.ConstantMessage.SAVE_SUCCESS);
+			return ResultHandler.resultHandle(result, lsh, Constant.ConstantMessage.SAVE_SUCCESS);
 		} else {
-			return ResultHandler.resultHandle(result, null, null);
+			return ResultHandler.toErrorJSON("数据校验失败");
 		}
 	}
 	
@@ -150,7 +151,7 @@ public class PreCarRegisterController {
 		}
 	}
 
-	private void createLSHCode(String path,String fileName, String lsh) {
+	public void createLSHCode(String path,String fileName, String lsh) {
 		try {
 			BitMatrix bitMatrix = toBarCodeMatrix(lsh, 10, 20);
 			File file1 = new File(path, fileName + ".jpg");
@@ -158,16 +159,6 @@ public class PreCarRegisterController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		/*
-		 * JBarcode localJBarcode = new JBarcode(Code39Encoder.getInstance(),
-		 * WideRatioCodedPainter.getInstance(), BaseLineTextPainter.getInstance());
-		 * 
-		 * localJBarcode.setShowCheckDigit(false); BufferedImage localBufferedImage =
-		 * localJBarcode.createBarcode(lsh);
-		 * OneBarcodeUtil.saveToJPEG(localBufferedImage, fileName + "code39.jpg");
-		 */
-
 	}
 
 	public static BitMatrix toBarCodeMatrix(String str, Integer width, Integer height) throws WriterException {
