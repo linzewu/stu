@@ -27,7 +27,7 @@ public class CMSApplication
 	
     public static void main( String[] args ) throws Exception
     {
-    	InputStream license = CMSApplication.class.getClassLoader().getResourceAsStream("\\license.xml");
+    	InputStream license = CMSApplication.class.getClassLoader().getResourceAsStream("license.xml");
     	License aposeLic = new License();
         aposeLic.setLicense(license);
     	SpringApplication.run(CMSApplication.class, args);

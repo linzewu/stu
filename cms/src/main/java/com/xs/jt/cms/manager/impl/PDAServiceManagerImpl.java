@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.xs.jt.cms.manager.IPDAServiceManager;
 import com.xs.jt.cms.zhpt.dao.PDAServiceRepository;
-@Service("pDAServiceManager")
+@Service
 public class PDAServiceManagerImpl implements IPDAServiceManager {
 	
 	@Autowired

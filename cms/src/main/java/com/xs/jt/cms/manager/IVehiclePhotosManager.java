@@ -5,5 +5,7 @@ import com.xs.jt.cms.entity.VehiclePhotos;
 public interface IVehiclePhotosManager {
 	
 	public VehiclePhotos save(VehiclePhotos motorVehiclePhotos);
+	
+	public VehiclePhotos findVehiclePhotosByLsh(String lsh);
 
 }

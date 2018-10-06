@@ -15,4 +15,8 @@ public class VehiclePhotosManagerImpl implements IVehiclePhotosManager {
 		return vehiclePhotosRepository.save(motorVehiclePhotos);
 	}
 
+	public VehiclePhotos findVehiclePhotosByLsh(String lsh) {
+		return vehiclePhotosRepository.findVehiclePhotosByLsh(lsh);
+	}
+
 }

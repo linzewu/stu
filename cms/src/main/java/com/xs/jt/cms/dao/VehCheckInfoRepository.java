@@ -13,5 +13,8 @@ public interface VehCheckInfoRepository extends JpaRepository<VehCheckInfo, Inte
 	
 	@Query(value = "from VehCheckInfo where lsh = :lsh")
 	VehCheckInfo findVehCheckInfoByLsh(@Param("lsh")String lsh);
+	
+	@Query(value = "select max(cycs) from VehCheckInfo where lsh = :lsh")
+	Integer findMaxCsByLsh(String lsh);
 
 }
