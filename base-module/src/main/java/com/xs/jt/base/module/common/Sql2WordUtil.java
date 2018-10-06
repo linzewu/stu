@@ -6,12 +6,17 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletContext;
 
 import org.hibernate.engine.jdbc.SerializableBlobProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.util.ServletContextPropertyUtils;
 
 import com.aspose.words.Document;
 import com.aspose.words.ImageSaveOptions;
@@ -20,16 +25,17 @@ import com.aspose.words.NodeCollection;
 import com.aspose.words.NodeType;
 import com.aspose.words.SaveFormat;
 import com.aspose.words.Shape;
+import com.xs.jt.base.module.entity.BaseParams;
 
 public class Sql2WordUtil {
 	
 	static Logger logger = LoggerFactory.getLogger(Sql2WordUtil.class);
 	
-	public static Document sql2WordUtil(final String template,final String sql, JdbcTemplate jdbcTemplate) throws Exception{
+	public static Document sql2WordUtil(final String template,final String sql, JdbcTemplate jdbcTemplate,Map<String,List<BaseParams>> bpsMap) throws Exception{
 		Map<String,Object> data = jdbcTemplate.queryForMap(sql);
 		Document doc=null;
 		if(data!=null) {
-			 doc = createTemplate(template,data);
+			 doc = createTemplate(template,data,bpsMap);
 		}
 		return doc;
 	}
@@ -39,11 +45,11 @@ public class Sql2WordUtil {
 		return data;
 	}
 	
-	public static Document map2WordUtil(final String template,Map<String,Object> data) throws Exception{
+	public static Document map2WordUtil(final String template,Map<String,Object> data,Map<String,List<BaseParams>> bpsMap) throws Exception{
 		
 		Document doc=null;
 		if(data!=null) {
-			 doc = createTemplate(template,data);
+			 doc = createTemplate(template,data,bpsMap);
 		}
 		return doc;
 	}
@@ -64,8 +70,8 @@ public class Sql2WordUtil {
 	
 	
 	
-	public static Document createTemplate(String template,Map<String, Object> data) throws Exception {
-		
+	public static Document createTemplate(String template,Map<String, Object> data,Map<String,List<BaseParams>> bpsMap) throws Exception {
+	
 		InputStream wordTemplate = Sql2WordUtil.class.getClassLoader().getResourceAsStream(template);
 		Document doc = new Document(wordTemplate);
 		NodeCollection shapeCollection = doc.getChildNodes(NodeType.SHAPE, true);// 查询文档中所有wmf图片
@@ -101,20 +107,22 @@ public class Sql2WordUtil {
 			Object[] fieldValues = new Object[fieldNames.length];
 			int i=0;
 			for(String fieldName:fieldNames) {
-				fieldName=fieldName.toLowerCase();
-				if(fieldName.indexOf("ck")==0) {
+				if(fieldName.indexOf("CK##")==0) {
 					String[] temp = fieldName.split("##");
 					String value=temp[1];
 					String key =temp[2].toLowerCase();
 					fieldValues[i]=(String)data.get(key);
-					
 					if(value.equals(fieldValues[i])) {
 						fieldValues[i]="☑";
 					}else {
 						fieldValues[i]="□";
 					}
+				}else if(bpsMap!=null&&bpsMap.containsKey(fieldName.toLowerCase())){
+					
+					fieldValues[i] = translateParamVlaue(data.get(fieldName),bpsMap.get(fieldName.toLowerCase()));
+					
 				}else {
-					fieldValues[i] = translateMapValue(data, fieldName);
+					fieldValues[i] = translateMapValue(data, fieldName.toLowerCase());
 				}
 				i++;
 			}
@@ -129,8 +137,21 @@ public class Sql2WordUtil {
 	}
 	
 	
+	private static Object translateParamVlaue(Object object, List<BaseParams> list) {
+		
+		if(object!=null) {
+			for(BaseParams param : list) {
+				if(param.getParamValue().equals(object.toString())) {
+					return param.getParamName();
+				}
+			}
+		}
+		
+		return object;
+	}
+
 	public static String sql2WordUtilCase(String template, String sql, JdbcTemplate jdbcTemplate,String fileName) throws Exception {
-		Document doc = sql2WordUtil(template, sql, jdbcTemplate);
+		Document doc = sql2WordUtil(template, sql, jdbcTemplate,null);
 		
 		if(doc!=null) {
 			ImageSaveOptions iso = new ImageSaveOptions(SaveFormat.JPEG);

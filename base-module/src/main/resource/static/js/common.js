@@ -314,7 +314,7 @@ $(function($){
         var _opt = $.extend(opt,{  
             error:function(XMLHttpRequest, textStatus, errorThrown){  
                 fn.error(XMLHttpRequest, textStatus, errorThrown);  
-            },  
+            },
             success:function(data, textStatus){
             	var temp={};
             	if(typeof(data) == "string"){
