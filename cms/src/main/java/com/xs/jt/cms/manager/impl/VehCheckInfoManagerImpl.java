@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONPObject;
 import com.aspose.words.Document;
+import com.xs.jt.base.module.common.Common;
 import com.xs.jt.base.module.common.Sql2WordUtil;
 import com.xs.jt.base.module.entity.BaseParams;
 import com.xs.jt.cms.dao.VehCheckInfoRepository;
@@ -48,7 +49,7 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 		return vehCheckInfoRepository.save(vehCheckInfo);
 	}
 
-	public VehCheckInfo findPoliceCheckInfoByLsh(String lsh) {
+	public List<VehCheckInfo> findPoliceCheckInfoByLsh(String lsh) {
 		return vehCheckInfoRepository.findVehCheckInfoByLsh(lsh);
 	}
 
@@ -61,9 +62,9 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 			public Predicate toPredicate(Root<VehCheckInfo> root, CriteriaQuery<?> query,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> list = new ArrayList<Predicate>();
-				/*if(Common.isNotEmpty(preCarRegister.getClsbdh())) {
-					list.add(criteriaBuilder.like(root.get("clsbdh").as(String.class), "%"+ preCarRegister.getClsbdh()));
-				}*/
+				if(Common.isNotEmpty(vehCheckInfo.getClsbdh())) {
+					list.add(criteriaBuilder.like(root.get("clsbdh").as(String.class), "%"+ vehCheckInfo.getClsbdh()));
+				}
 				//list.add(criteriaBuilder.equal(root.get("stationCode").as(String.class), "Y"));
 				
 				List<Order> orders = new ArrayList<Order>();
@@ -91,6 +92,22 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 		Document doc = Sql2WordUtil.map2WordUtil("template_ptc.doc", data,bpsMap);
 		
 		return Sql2WordUtil.toCase(doc, cacheDir, "\\report\\template_ptc_01"+id+".jpg");
+	}
+
+	@Override
+	public VehCheckInfo findBhgVehCheckInfoByLsh(String lsh) {
+		return this.vehCheckInfoRepository.findBhgVehCheckInfoByLsh(lsh);
+	}
+
+	@Override
+	public VehCheckInfo findBhgVehCheckInfoByHphmHpzl(String hphm, String hpzl) {
+		
+		return this.vehCheckInfoRepository.findBhgVehCheckInfoByHphmHpzl(hphm, hpzl);
+	}
+
+	@Override
+	public Integer findMaxCsByLsh(String lsh) {
+		return vehCheckInfoRepository.findMaxCsByLsh(lsh);
 	}
 
 }

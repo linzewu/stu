@@ -45,6 +45,8 @@ public class VehCheckInfo extends BaseEntity{
 	private String cyjg;
 	@Column(length=500)
 	private String bz;
+	@Column(length=10)
+	private String csys;
 	@Column(length=20)
 	private String jy1;
 	@Column(length=20)
@@ -528,6 +530,12 @@ public class VehCheckInfo extends BaseEntity{
 	}
 	public void setJczbh(String jczbh) {
 		this.jczbh = jczbh;
+	}
+	public String getCsys() {
+		return csys;
+	}
+	public void setCsys(String csys) {
+		this.csys = csys;
 	}
 	
 	

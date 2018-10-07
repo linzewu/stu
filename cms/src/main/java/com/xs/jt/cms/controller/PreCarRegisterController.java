@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.druid.util.StringUtils;
@@ -45,8 +46,10 @@ import com.xs.jt.cms.common.BarcodeUtil;
 import com.xs.jt.cms.common.MatrixToImageWriter;
 import com.xs.jt.cms.common.URLCodeUtil;
 import com.xs.jt.cms.entity.PreCarRegister;
+import com.xs.jt.cms.entity.VehicleLock;
 import com.xs.jt.cms.manager.IPDAServiceManager;
 import com.xs.jt.cms.manager.IPreCarRegisterManager;
+import com.xs.jt.cms.manager.IVehicleLockManager;
 
 @Controller
 @RequestMapping(value = "/preCarRegister")
@@ -72,28 +75,32 @@ public class PreCarRegisterController {
 	
 	@Autowired
 	private ServletContext servletContext;
+	
+	@Autowired
+	private IVehicleLockManager vehicleLockManager;
 
 	@UserOperation(code = "savePreCarRegister", name = "保存")
 	@RequestMapping(value = "savePreCarRegister", method = RequestMethod.POST)
 	public @ResponseBody Map savePreCarRegister(HttpSession session, @Valid PreCarRegister bcr, BindingResult result) throws Exception {
 		if (!result.hasErrors()) {
+			List<VehicleLock> list = vehicleLockManager.findLockVehicle(bcr.getClsbdh());
+			if (list != null && list.size() > 0) {
+				return ResultHandler.toErrorJSON("车辆已被锁定，不能保存");
+			}
 			User user = (User) session.getAttribute("user");
-			//Map userMap = (Map) request.getSession().getAttribute("user");
 			String stationCode = (String) user.getBmdm();// ---------------
 			bcr.setStationCode(stationCode);
 			String lsh = null;
 			if ("A".equals(bcr.getYwlx())) {
-				//lsh = getlsh();
-				lsh = "123456789101111111";
+				lsh = getlsh();
+				//lsh = "123456789101111111";
 				bcr.setLsh(lsh);
 			}
 			if (null == bcr.getDpid() || "".equals(bcr.getDpid().trim())) {
 				bcr.setDpid(null);
 			}
-			PreCarRegister register = this.preCarRegisterManager.save(bcr); 
-			//create2Code(cacheDir+"\\2Code", sb.toString(), String.valueOf(register.getId()));
+			this.preCarRegisterManager.save(bcr); 
 			if ("A".equals(bcr.getYwlx())) {
-				//createLSHCode(cacheDir+"\\1Code",lsh, lsh);
 				Map<String,Object> data =MapUtil.object2Map(bcr);
 				data.put("lshCode", BarcodeUtil.generateInputStream(lsh));
 				if(StringUtils.isEmpty(bcr.getHphm())) {
@@ -313,6 +320,36 @@ public class PreCarRegisterController {
 
 		}
 		return list;
+	}
+	
+	@UserOperation(code = "printCarInfo", name = "打印查验单")
+	@RequestMapping(value = "printCarInfo", method = RequestMethod.POST)
+	public @ResponseBody Map printCarInfo(String lsh) {
+		try {
+			
+			if(StringUtils.isEmpty(lsh)) {
+				return ResultHandler.toMyJSON(Constant.ConstantState.STATE_ERROR, "流水号不能为空", lsh);
+			}
+			
+			File imgFile = new File(cacheDir+"\\report\\template_ptc_01_"+lsh+".jpg");
+			if(!imgFile.exists()) {
+				PreCarRegister bcr = this.preCarRegisterManager.findPreCarRegisterByLsh(lsh);
+				Map<String,Object> data =MapUtil.object2Map(bcr);
+				data.put("lshCode", BarcodeUtil.generateInputStream(bcr.getLsh()));
+				if(StringUtils.isEmpty(bcr.getHphm())) {
+					data.put("hphm", bcr.getClsbdh());
+				}
+				
+				Map<String, List<BaseParams>> bpsMap = (Map<String, List<BaseParams>>) servletContext.getAttribute("bpsMap");
+				com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil("template_pt_first.doc", data,bpsMap);
+				Sql2WordUtil.toCase(doc, cacheDir, "\\report\\template_ptc_01_"+bcr.getLsh()+".jpg");
+				
+			}
+		}catch(Exception e) {
+			logger.error("打印查验单异常",e);
+			throw new  ApplicationException("打印查验单异常",e);
+		}
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "打印查验单成功", lsh);
 	}
 	
 	

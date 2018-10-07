@@ -23,8 +23,8 @@ public class VehCheckInfoController {
 	
 	
 	@UserOperation(code="getCheckInfoList",name="查询查验列表")
-	@RequestMapping(value = "getCarList", method = RequestMethod.POST)
-	public @ResponseBody Map<String,Object> getCarList(Integer page, Integer rows, VehCheckInfo vehCheckInfo) {			
+	@RequestMapping(value = "getCheckInfoList", method = RequestMethod.POST)
+	public @ResponseBody Map<String,Object> getCheckInfoList(Integer page, Integer rows, VehCheckInfo vehCheckInfo) {			
 		
 		return vehCheckInfoManager.getVehCheckInfoList(page-1, rows, vehCheckInfo);
 	}

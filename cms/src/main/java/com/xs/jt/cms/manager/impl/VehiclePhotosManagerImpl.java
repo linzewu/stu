@@ -14,9 +14,11 @@ public class VehiclePhotosManagerImpl implements IVehiclePhotosManager {
 	public VehiclePhotos save(VehiclePhotos motorVehiclePhotos) {
 		return vehiclePhotosRepository.save(motorVehiclePhotos);
 	}
-
-	public VehiclePhotos findVehiclePhotosByLsh(String lsh) {
-		return vehiclePhotosRepository.findVehiclePhotosByLsh(lsh);
+	
+	public VehiclePhotos findLast45degPhotosByLsh(String lsh) {
+		VehiclePhotos photos = vehiclePhotosRepository.findLastPhotosByLshAndZpzl(lsh,"11");
+		
+		return photos;
 	}
 
 }

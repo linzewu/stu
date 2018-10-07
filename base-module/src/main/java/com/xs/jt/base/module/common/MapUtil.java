@@ -10,6 +10,11 @@ import com.alibaba.fastjson.JSONObject;
 
 public class MapUtil {
 	public static Map<String, Object> object2Map(Object object){
+		
+		if(object==null) {
+			return null;
+		}
+		
         JSONObject jsonObject = (JSONObject) JSON.toJSON(object);
         Set<Entry<String,Object>> entrySet = jsonObject.entrySet();
         Map<String, Object> map=new HashMap<String,Object>();

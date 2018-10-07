@@ -41,6 +41,7 @@ public class VehicleLockController {
 		vehicleLock.setSdr(user.getYhm());
 		vehicleLock.setSdsj(new Date());
 		vehicleLock.setSdzt("1");
+		vehicleLock.setSdfs(VehicleLock.SDFS_BYHAND);
 		vehicleLock = this.vehicleLockManager.save(vehicleLock);
 		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "保存成功",vehicleLock);
 	}

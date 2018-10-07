@@ -6,6 +6,6 @@ public interface IVehiclePhotosManager {
 	
 	public VehiclePhotos save(VehiclePhotos motorVehiclePhotos);
 	
-	public VehiclePhotos findVehiclePhotosByLsh(String lsh);
+	public VehiclePhotos findLast45degPhotosByLsh(String lsh);
 
 }

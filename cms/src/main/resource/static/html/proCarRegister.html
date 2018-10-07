@@ -52,7 +52,7 @@
 					<td class="info_title">所有人：</td>
 					<td class="info"><input name="syr" id="syr" class="easyui-textbox" required="true" /></td>
 					<td class="info_title">身份证：</td>
-					<td class="info" colspan="2"><input name="sfz"  id="sfz" class="easyui-textbox" /></td>
+					<td class="info" colspan="2"><input name="sfz"  id="sfz" class="easyui-textbox" required="true"/></td>
 				</tr>
 				<tr>
 					<td class="info_title">地址：</td>
@@ -104,12 +104,14 @@
 						<input id="ewm"  name="ewm" type="hidden"/>
 					 </div>
 					 </td>
+					 
 				</tr>
 			</tbody>
 		</table>
-		<div align="center" class="actionbar">
+		<div align="center" class="actionbar">		
 			<a href="javascript:saveAndPring()" class="easyui-linkbutton" data-options="iconCls:'icon-print'">保存并打印</a> 
-			<a href="javascript:loadCenter({title:'预登记列表',action:'proCarRegisterList.html'})" class="easyui-linkbutton" data-options="iconCls:'icon-back'">返回</a>
+			<a href="javascript:clearData('myform')" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清除</a>&nbsp;&nbsp;
+			<input class="easyui-checkbox" name="isView" value="true" label="打印预览" labelWidth="80px" labelPosition="after">
 		</div>
 	</div>
 </form>

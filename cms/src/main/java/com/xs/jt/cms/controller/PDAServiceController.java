@@ -15,12 +15,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.axiom.om.util.Base64;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,6 +61,9 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping(value = "/pdaService")
 @Modular(modelCode = "pdaService", modelName = "PDA对外接口")
 public class PDAServiceController {
+	
+	@Value("${stu.properties.glbm}")
+	private String glbm;
 
 	@Autowired
 	private IVehCheckInfoManager policeCheckInfoManager;
@@ -85,15 +90,15 @@ public class PDAServiceController {
 	public static String YWLX_TYPE = "check.ywlx";
 
 	@RequestMapping(value = "addPoliceCheckInfo", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> addPoliceCheckInfo(VehCheckInfo policeCheckInfo, BindingResult result)
+	public @ResponseBody Map<String, Object> addPoliceCheckInfo(VehCheckInfo vehCheckInfo, BindingResult result)
 			throws Exception {
 		User user = (User) session.getAttribute("user");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd  HH:mm:ss");
-		BaseParams baseParam = baseParamsManager.getBaseParam(YWLX_TYPE, policeCheckInfo.getYwlx());
+		BaseParams baseParam = baseParamsManager.getBaseParam(YWLX_TYPE, vehCheckInfo.getYwlx());
 		String ywlx = baseParam == null ? "" : baseParam.getParamValue();
 		if (!result.hasErrors()) {
 			// 校验车辆是否被锁定，如果被锁定则不能保存(如果当前用户是锁定人则可以保存)
-			List<VehicleLock> list = vehicleLockManager.findLockVehicle(policeCheckInfo.getClsbdh());
+			List<VehicleLock> list = vehicleLockManager.findLockVehicle(vehCheckInfo.getClsbdh());
 			if (list != null && list.size() > 0) {
 				boolean flag = false;
 				for (VehicleLock lock : list) {
@@ -106,7 +111,7 @@ public class PDAServiceController {
 					return ResultHandler.toErrorJSON("车辆已被锁定，不能保存查验数据！");
 				} else {
 					// 查验合格，则解锁
-					if ("1".equals(policeCheckInfo.getCyjg())) {
+					if ("1".equals(vehCheckInfo.getCyjg())) {
 						for (VehicleLock lock : list) {
 							lock.setJsr(user.getYhm());
 							lock.setJssj(new Date());
@@ -118,60 +123,64 @@ public class PDAServiceController {
 				}
 			} else {
 				// 车辆没有被锁定，如果查验不合格，写入机动车业务锁定表 1：合格，0：不合格
-				if ("0".equals(policeCheckInfo.getCyjg())) {
+				if ("0".equals(vehCheckInfo.getCyjg())) {
 
 					VehicleLock vehicleLock = new VehicleLock();
 					vehicleLock.setSdr(user.getYhm());
 					vehicleLock.setSdsj(new Date());
 					vehicleLock.setSdzt("1");
-					vehicleLock.setClsbdh(policeCheckInfo.getClsbdh());
+					vehicleLock.setClsbdh(vehCheckInfo.getClsbdh());
 					vehicleLock.setSdyy((ywlx) + sdf.format(new Date()) + "查验不合格");
+					vehicleLock.setSdfs(VehicleLock.SDFS_AUTO);
 					this.vehicleLockManager.save(vehicleLock);
 				}
 			}
+			
+			//获取查验次数
+			Integer cycs = this.policeCheckInfoManager.findMaxCsByLsh(vehCheckInfo.getLsh());
+			cycs = cycs == null?0:cycs;
+			cycs++;
+			vehCheckInfo.setCycs(cycs);
 
-			policeCheckInfoManager.save(policeCheckInfo);
+			policeCheckInfoManager.save(vehCheckInfo);
 			// 注册登记（A） 并且 查验结果是合格，则上传预录入信息到综合平台
-			if (policeCheckInfo.getLsh() != null && "A".equals(ywlx) && "1".equals(policeCheckInfo.getCyjg())) {
+			if (vehCheckInfo.getLsh() != null && "A".equals(ywlx) && "1".equals(vehCheckInfo.getCyjg())) {
 				// 上传预录入信息到综合平台
-				uploadPlatForm(policeCheckInfo);
-
+				uploadPlatForm(vehCheckInfo);
 				// 上传图片
-				VehiclePhotos photo = this.vehiclePhotosManager.findVehiclePhotosByLsh(policeCheckInfo.getLsh());
+				VehiclePhotos photo = this.vehiclePhotosManager.findLast45degPhotosByLsh(vehCheckInfo.getLsh());
 				xrzp(photo);
 			}
-			return ResultHandler.resultHandle(result, policeCheckInfo, Constant.ConstantMessage.SAVE_SUCCESS);
+			return ResultHandler.resultHandle(result, vehCheckInfo, Constant.ConstantMessage.SAVE_SUCCESS);
 		} else {
 			return ResultHandler.resultHandle(result, null, null);
 		}
 	}
 
 	public JSONObject getImageMap(VehiclePhotos photo) {
-		Map imgMap = new HashMap();
+		Map<String,String> imgMap = new HashMap<String,String>();
 
 		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		String hpzl = photo.getHpzl();
 
-		String lic = photo.getClsbdh();
+		String clsbdh = photo.getClsbdh();
 
 		String hphm = photo.getHphm();
 
-		String zp = photo.getPhoto().toString();
+		String zp = Base64.encode(photo.getPhoto());
 
 		String gxsj = sd.format(new Date());
 
 		imgMap.put("hpzl", hpzl);
 
-		imgMap.put("clsbdh", lic);
+		imgMap.put("clsbdh", clsbdh);
 
 		if (hphm != null) {
 			imgMap.put("hphm", hphm);
 		}
-
 		imgMap.put("zp", zp);
 		imgMap.put("gxsj", gxsj);
-		System.out.println(JSONObject.fromObject(imgMap));
 		return JSONObject.fromObject(imgMap);
 	}
 
@@ -180,8 +189,6 @@ public class PDAServiceController {
 		JSONObject map = getImageMap(photo);
 		try {
 			TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
-			// TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo =
-			// tmriJaxRpcOutService.createQueryObjectOut();
 			TmriJaxRpcOutNewAccessServiceStub.WriteObjectOut wo = tmriJaxRpcOutService.createWriteObjectOut();
 
 			Document document = DocumentHelper.createDocument(); // 创建文档
@@ -202,80 +209,42 @@ public class PDAServiceController {
 
 	}
 
-	private void uploadPlatForm(VehCheckInfo policeCheckInfo) throws AxisFault {
+	private void uploadPlatForm(VehCheckInfo vehCheckInfo) throws AxisFault {
 		TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
-		// TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo =
-		// tmriJaxRpcOutService.createQueryObjectOut();
 		TmriJaxRpcOutNewAccessServiceStub.WriteObjectOut wo = tmriJaxRpcOutService.createWriteObjectOut();
-		PreCarRegister carRegister = this.preCarRegisterManager.findPreCarRegisterByLsh(policeCheckInfo.getLsh());
+		PreCarRegister carRegister = this.preCarRegisterManager.findPreCarRegisterByLsh(vehCheckInfo.getLsh());
 		JSONObject jo = JSONObject.fromObject(carRegister);
 		String xh = getNewCarSeq();
-
 		jo.put("XH", xh);
-
-		jo.remove("EWM");
-		jo.remove("C_ID");
-		jo.remove("C_UPDATEDUSER");
-		jo.remove("C_CREATEUSER");
-		jo.remove("C_UPDATEDDATE");
-		jo.remove("C_CREATEDDATE");
-		jo.remove("C_DATASTATE");
-		jo.remove("CSYS");
 		jo.put("SFZMHM", jo.remove("SFZ"));
 		jo.put("GCJK", "A");
 		String bh = (String) jo.remove("GGBH");
 		jo.put("BH", bh);
 		jo.remove("BZ");
-		String cyry = (String) policeCheckInfo.getCyr();
-
+		String cyry = (String) vehCheckInfo.getCyr();
 		String zzg = (String) jo.get("ZZG");
-		System.out.println("zzg " + bh);
 		if ((zzg == null || "".equals(zzg)) && bh != null && !"".equals(bh)) {
 			List<Map<String, Object>> gglist = pDAServiceManager.findPcbStVehicle(bh);
 			if (gglist != null && gglist.size() > 0) {
 				JSONObject gonggao = JSONObject.fromObject(gglist.get(0));
-				System.out.println("ggzzg " + gonggao.get("ZZG"));
 				jo.put("ZZG", gonggao.get("ZZG"));
 			}
 
 		}
-
-		if (jo.get("SYXZ") == null) {
-			jo.put("SYXZ", policeCheckInfo.getSyxz());
-		}
-
-		String rst6 = (String) policeCheckInfo.getJy6();
-
-		if (rst6 != null) {
-			String cllx = rst6.split(" ")[0];
-			jo.put("CLLX", cllx);
-		}
-
-		// System.out.println(jo);
-		String rst4 = (String) policeCheckInfo.getJy4();
-
-		if (rst4 != null) {
-			String csys = rst4.split(" ")[0];
-			csys = csys.replace(",", "");
-			jo.put("CSYS", csys);
-		}
+		jo.put("SYXZ", vehCheckInfo.getSyxz());
+		jo.put("CLLX", vehCheckInfo.getCllx());
+		jo.put("CSYS", vehCheckInfo.getCsys());
 
 		if (cyry != null) {
 			jo.put("CYRY", cyry);
 		}
 
 		Document document = DocumentHelper.createDocument(); // 创建文档
-
 		document.setXMLEncoding("UTF-8");
-
 		Element veh = document.addElement("root").addElement("veh");
-
 		veh = JSONConvertXML(veh, jo);
-
 		wo.setUTF8XmlDoc(document.asXML());
-		// System.out.println("bo="+document.asXML());
 		wo.setJkid("01C77");
-
 		try {
 			urlDecode(trias.writeObjectOut(wo).getWriteObjectOutReturn());
 		} catch (Exception e) {
@@ -328,15 +297,7 @@ public class PDAServiceController {
 			TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
 			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo = tmriJaxRpcOutService.createQueryObjectOut();
 			qo.setJkid("01C23");
-			qo.setJkxlh(
-					"7F1C0909010517040815E3FF83F5F3E28BCC8F9B818DE7EA88DFD19EB8C7D894B9B9BCE0BFD8D6D0D0C4A3A8D0C5CFA2BCE0B9DCCFB5CDB3A3A9");
-			qo.setUTF8XmlDoc("<root><QueryCondition><glbm>320900000400</glbm></QueryCondition></root>");
-			qo.setXtlb("01");
-			qo.setDwmc("盐城市公安局交通警察支队车辆管理所");
-			qo.setDwjgdm("320900000400");
-			qo.setYhbz("");
-			qo.setYhxm("");
-			qo.setZdbs("10.39.147.6");
+			qo.setUTF8XmlDoc("<root><QueryCondition><glbm>"+glbm+"</glbm></QueryCondition></root>");
 
 			String returnXML1 = trias.queryObjectOut(qo).getQueryObjectOutReturn();
 			Document doc = DocumentHelper.parseText(returnXML1);
@@ -350,23 +311,30 @@ public class PDAServiceController {
 	}
 
 	@RequestMapping(value = "findPreCarRegisterByLsh", method = RequestMethod.POST)
-	public @ResponseBody PreCarRegister findPreCarRegisterByLsh(String lsh) {
+	public @ResponseBody Map<String,Object> findPreCarRegisterByLsh(String lsh) {
+		Map<String,Object> map = new HashMap<String,Object>();
 		PreCarRegister carInfo = preCarRegisterManager.findPreCarRegisterByLsh(lsh);
+		map.put("data", carInfo);
 		if (carInfo != null) {
-			carInfo.setSdzt(vehicleLockManager.findMotorVehicleBusinessLockByClsbdh(carInfo.getClsbdh()));
+			List<VehicleLock> list = vehicleLockManager.findLockVehicle(carInfo.getClsbdh());
+			if (list != null && list.size() > 0) {
+				map.put("lockData", list);				
+			}
+			//carInfo.setSdzt(vehicleLockManager.findMotorVehicleBusinessLockByClsbdh(carInfo.getClsbdh()));
 		}
-		return carInfo;
+		return map;
 	}
 
 	@UserOperation(code = "getCarInfoByCarNumber", name = "获取基础信息")
 	@RequestMapping(value = "getCarInfoByCarNumber", method = RequestMethod.POST)
-	public @ResponseBody Map<String, String> getCarInfoByCarNumber(String hpzl, String hphm) {
+	public @ResponseBody Map<String, Object> getCarInfoByCarNumber(String hpzl, String hphm) {
+		Map<String,Object> map = new HashMap<String,Object>();
 		Map<String, String> dataMap = new HashMap<String, String>();
 		try {
 			TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
 			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo = tmriJaxRpcOutService.createQueryObjectOut();
 			if (hpzl == null || "".equals(hpzl.trim()) || hphm == null || "".equals(hphm.trim())) {
-				return dataMap;
+				return map;
 			}
 			qo.setJkid("01C21");
 			qo.setUTF8XmlDoc(
@@ -385,16 +353,21 @@ public class PDAServiceController {
 					String value = element.getText();
 					dataMap.put(key, value);
 					if (key.equals("clsbdh")) {
-						boolean sdzt = vehicleLockManager.findMotorVehicleBusinessLockByClsbdh(value);
-						dataMap.put("sdzt", String.valueOf(sdzt));
+						//boolean sdzt = vehicleLockManager.findMotorVehicleBusinessLockByClsbdh(value);
+						//dataMap.put("sdzt", String.valueOf(sdzt));
+						List<VehicleLock> list = vehicleLockManager.findLockVehicle(value);
+						if (list != null && list.size() > 0) {
+							map.put("lockData", list);				
+						}
 					}
 				}
+				map.put("data", dataMap);
 			}
 
 		} catch (Exception e) {
 			throw new ApplicationException("获取基础信息异常", e);
 		}
-		return dataMap;
+		return map;
 	}
 
 	@UserOperation(code = "getGongGaoInfoByGgbh", name = "获取公告信息")
@@ -504,6 +477,11 @@ public class PDAServiceController {
 				return ResultHandler.toErrorJSON("车辆已被锁定，不能上传图片！");
 			}
 		}
+		//获取检验次数
+		Integer cycs = this.policeCheckInfoManager.findMaxCsByLsh(motorVehiclePhotos.getLsh());
+		cycs = cycs == null?0:cycs;
+		cycs++;
+		motorVehiclePhotos.setJccs(cycs);;
 		motorVehiclePhotos.setPhoto(file.getBytes());
 		vehiclePhotosManager.save(motorVehiclePhotos);
 		return ResultHandler.resultHandle(result, motorVehiclePhotos, Constant.ConstantMessage.SAVE_SUCCESS);
@@ -513,6 +491,87 @@ public class PDAServiceController {
 	public @ResponseBody boolean findLockMotorVehicleByClsbdh(String clsbdh) throws Exception {
 
 		return vehicleLockManager.findMotorVehicleBusinessLockByClsbdh(clsbdh);
+	}
+
+	// 新车查验复检
+	@UserOperation(code = "newCarRepeatCheck", name = "新车查验复检")
+	@RequestMapping(value = "newCarRepeatCheck", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> newCarRepeatCheck(String lsh) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean flag= false;
+		VehCheckInfo checkInfo = this.policeCheckInfoManager.findBhgVehCheckInfoByLsh(lsh);
+		//不合格
+		if (checkInfo != null && "0".equals(checkInfo.getCyjg())) {
+			flag = true;
+		}
+		if (!flag) {
+			return map;
+		} else {
+			PreCarRegister register = this.preCarRegisterManager.findPreCarRegisterByLsh(lsh);
+			map.put("data", register);
+			//锁定信息
+			List<VehicleLock> lockList = this.vehicleLockManager.findLockVehicle(checkInfo.getClsbdh());
+			map.put("lockData", lockList);
+			return map;
+		}
+
+	}
+
+	// 在用车查验复检
+	@UserOperation(code = "inUseCarRepeatCheck", name = "在用车查验复检")
+	@RequestMapping(value = "inUseCarRepeatCheck", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> inUseCarRepeatCheck(String hphm, String hpzl) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, String> dataMap = new HashMap<String, String>();
+		boolean flag = false;
+		VehCheckInfo checkInfo = this.policeCheckInfoManager.findBhgVehCheckInfoByHphmHpzl(hphm, hpzl);
+		//不合格
+		if (checkInfo != null && "0".equals(checkInfo.getCyjg())) {
+			flag = true;
+		}
+		if (!flag) {
+			return map;
+		} else {
+			try {
+				TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService
+						.createTmriJaxRpcOutNewAccessServiceStub();
+				TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo = tmriJaxRpcOutService.createQueryObjectOut();
+				qo.setJkid("01C21");
+				qo.setUTF8XmlDoc("<root><QueryCondition><hphm>" + hphm + "</hphm><hpzl>" + hpzl
+						+ "</hpzl></QueryCondition></root>");
+
+				String returnXML = trias.queryObjectOut(qo).getQueryObjectOutReturn();
+				String xml = URLCodeUtil.urlDecode(returnXML);
+				Document doc = DocumentHelper.parseText(xml);
+				Element root = doc.getRootElement();
+				Element dataElecmet = root.element("body").element("veh");
+
+				if (dataElecmet != null) {
+					for (Object o : dataElecmet.elements()) {
+						Element element = (Element) o;
+						String key = element.getName();
+						String value = element.getText();
+						dataMap.put(key, value);
+//						if (key.equals("clsbdh")) {
+//							boolean sdzt = vehicleLockManager.findMotorVehicleBusinessLockByClsbdh(value);
+//							dataMap.put("sdzt", String.valueOf(sdzt));
+//						}
+					}
+					dataMap.put("lsh", checkInfo.getLsh());
+					dataMap.put("ywlx", checkInfo.getYwlx());
+					map.put("data", dataMap);
+				}
+				
+				List<VehicleLock> lockList = this.vehicleLockManager.findLockVehicle(checkInfo.getClsbdh());
+				map.put("lockData", lockList);
+
+			} catch (Exception e) {
+				throw new ApplicationException("获取基础信息异常", e);
+			}
+
+			return map;
+		}
+
 	}
 
 }

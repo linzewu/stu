@@ -59,13 +59,19 @@ function saveAndPring() {
 	});
 	var isValid = $('#myform').form('validate');
 	if(isValid){
-		$.post("../../preCarRegister/savePreCarRegister",$("#myform").serializeJson(),function(data){
+		var params = $("#myform").serializeJson();
+		$.post("../../preCarRegister/savePreCarRegister",params,function(data){
 			if(data.state==1){
 				$.messager.alert("提示","保存成功！","info",function(){
 					$('#myform').form('clear');
 				});
 				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
-				printCYD();
+				var printObj = {};
+				printObj.prview = false;
+				if(params.isView == "true"){
+					printObj.prview = true;
+				}
+				printCYD(printObj);
 			}else{
 				$.messager.alert("提示",data.message,"error");
 			}
@@ -80,7 +86,7 @@ function saveAndPring() {
 }
 
 function implSaveAndPring() {
-	$("#isPrint").val("true");
+	/**$("#isPrint").val("true");
 	$('#myformImpl').form('submit', {
 		url: "../../preCarRegister/savePreCarRegister",
 		onSubmit: function(){
@@ -99,8 +105,40 @@ function implSaveAndPring() {
 			//})
 			
 		}
+	});**/
+	
+	
+	$('#myformImpl').form({
+		url: "../../preCarRegister/savePreCarRegister"
 	});
-	//$('#myformImpl').submit();
+	var isValid = $('#myformImpl').form('validate');
+	if(isValid){
+		var params = $("#myformImpl").serializeJson();
+		$.post("../../preCarRegister/savePreCarRegister",params,function(data){
+			if(data.state==1){
+				$.messager.alert("提示","保存成功！","info",function(){
+					$('#myformImpl').form('clear');
+					$("#ywlx").combobox("setValue","A");
+				});
+				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
+				var printObj = {};
+				printObj.prview = false;
+				if(params.isView == "true"){
+					printObj.prview = true;
+				}
+				printCYD(printObj);
+			}else{
+				$.messager.alert("提示",data.message,"error");
+			}
+			
+		},"json").complete(function(){
+			$.messager.progress('close');
+		});
+	}
+}
+
+function clearData(formId){
+	$('#'+formId).form('clear');
 }
 
 function updateAndPring() {
@@ -631,7 +669,22 @@ function formatterYwlx(value) {
 function print() {
 	var row = $("#preCarRegisterDG").datagrid("getSelected");
 	if (row != null) {
-		printCYD(row);
+		//
+		$.post("../../preCarRegister/printCarInfo",{"lsh":row.lsh},function(data){
+			if(data.state==1){
+				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
+				var isView = $("#isView").checkbox("options").checked;
+				var printObj = {};
+				printObj.prview = isView;
+				printCYD(printObj);
+			}else{
+				$.messager.alert("提示",data.message,"error");
+			}
+			
+		},"json").complete(function(){
+			$.messager.progress('close');
+		});
+		//printCYD(row);
 	} else {
 		$.messager.alert("提示", "请选择需要打印的数据", "warning");
 	}

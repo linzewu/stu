@@ -43,6 +43,12 @@ public class PreCarRegisterManagerImpl implements IPreCarRegisterManager {
 				if(Common.isNotEmpty(preCarRegister.getClsbdh())) {
 					list.add(criteriaBuilder.like(root.get("clsbdh").as(String.class), "%"+ preCarRegister.getClsbdh()));
 				}
+				if(Common.isNotEmpty(preCarRegister.getSfz())) {
+					list.add(criteriaBuilder.equal(root.get("sfz").as(String.class),  preCarRegister.getSfz()));
+				}
+				if(Common.isNotEmpty(preCarRegister.getSyr())) {
+					list.add(criteriaBuilder.equal(root.get("syr").as(String.class),  preCarRegister.getSyr()));
+				}
 				//list.add(criteriaBuilder.equal(root.get("stationCode").as(String.class), "Y"));
 				
 				List<Order> orders = new ArrayList<Order>();

@@ -30,7 +30,13 @@
 	"group": [
 		{
 			"groupName": "查验管理",
-			"menus": [				
+			"menus": [
+				{
+					"icon": "../../static/images/checkInfo.png",
+					"title": "机动车查验信息查询",
+					"href": "../../static/html/vehCheckInfoList.html",
+					"permission":"vheCheckInfo.getCheckInfoList"
+				},				
 				{
 					"icon": "../../static/images/lockImg.png",
 					"title": "机动车业务锁定管理",

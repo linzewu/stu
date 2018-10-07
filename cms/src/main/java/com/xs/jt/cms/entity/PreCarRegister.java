@@ -144,9 +144,6 @@ public class PreCarRegister extends BaseEntity {
 	@Column(name="CWKG",length = 128)
 	private String cwkg;
 	
-	@Column(name="EWM",length = 2000)
-	private String ewm;
-	
 	@Column(name="LSH",length = 128,updatable=false)
 	private String lsh;
 	
@@ -170,6 +167,7 @@ public class PreCarRegister extends BaseEntity {
 	
 	@Column(name="stationCode",length = 64,updatable=false)
 	private String stationCode;
+	
 	@Transient
 	private boolean sdzt;
 	
@@ -252,13 +250,6 @@ public class PreCarRegister extends BaseEntity {
 		this.lsh = lsh;
 	}
 
-	public String getEwm() {
-		return ewm;
-	}
-
-	public void setEwm(String ewm) {
-		this.ewm = ewm;
-	}
 
 	public String getCwkc() {
 		return cwkc;

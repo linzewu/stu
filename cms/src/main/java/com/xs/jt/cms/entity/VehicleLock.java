@@ -17,6 +17,9 @@ import com.xs.jt.base.module.entity.BaseEntity;
 @Entity
 @Table(name = "TM_VEHICLELOCK")
 public class VehicleLock extends BaseEntity{
+	
+	public static String SDFS_AUTO = "auto";
+	public static String SDFS_BYHAND = "byhand";
 	@Column(length=100)
 	private String clsbdh;
 	@Column(length=20)
@@ -37,6 +40,8 @@ public class VehicleLock extends BaseEntity{
 	private String jsyy;
 	@Column(length=300)
 	private String sdyy;
+	@Column(length=20)
+	private String sdfs;
 	public String getClsbdh() {
 		return clsbdh;
 	}
@@ -84,6 +89,12 @@ public class VehicleLock extends BaseEntity{
 	}
 	public void setSdyy(String sdyy) {
 		this.sdyy = sdyy;
+	}
+	public String getSdfs() {
+		return sdfs;
+	}
+	public void setSdfs(String sdfs) {
+		this.sdfs = sdfs;
 	}
 
 }
