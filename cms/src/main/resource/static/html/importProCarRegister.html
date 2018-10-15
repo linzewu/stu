@@ -106,7 +106,9 @@
 					<td class="info_title3">所有人：</td>
 					<td class="info3"><input name="syr" id="syr" class="easyui-textbox" required="true" /></td>
 					<td class="info_title3">身份证：</td>
-					<td class="info3" colspan="3"><input name="sfz"  id="sfz" class="easyui-textbox" required="true"/></td>
+					<td class="info3"><input name="sfz"  id="sfz" class="easyui-textbox" required="true"/></td>
+					<td class="info_title3">手机号码：</td>
+					 <td class="info3"><input name="sjhm" id="sjhm" class="easyui-textbox" data-options="validType:'mobile'"/></td>
 				</tr>
 				<tr>
 					<td class="info_title3">地址：</td>
@@ -139,7 +141,7 @@
 		</table>
 		<div align="center" class="actionbar">
 			<a href="javascript:implSaveAndPring()" class="easyui-linkbutton" data-options="iconCls:'icon-print'">保存并打印</a> 
-			<a href="javascript:clearDatas()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">返回</a>&nbsp;&nbsp;
+			<a href="javascript:clearDatas()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清除</a>&nbsp;&nbsp;
 			<input class="easyui-checkbox" name="isView" value="true" label="打印预览" labelWidth="80px" labelPosition="after">
 		</div>
 	</div>

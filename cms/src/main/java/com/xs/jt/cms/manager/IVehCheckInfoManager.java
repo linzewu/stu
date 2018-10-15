@@ -23,6 +23,8 @@ public interface IVehCheckInfoManager {
 	
 	public Integer findMaxCsByLsh(String lsh);
 	
+	public VehCheckInfo findVehCheckInfoByLshAndCycs(String lsh,int cycs);
+	
 	
 	
 }

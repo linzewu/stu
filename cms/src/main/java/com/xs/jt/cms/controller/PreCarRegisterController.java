@@ -92,8 +92,8 @@ public class PreCarRegisterController {
 			bcr.setStationCode(stationCode);
 			String lsh = null;
 			if ("A".equals(bcr.getYwlx())) {
-				lsh = getlsh();
-				//lsh = "123456789101111111";
+				//lsh = getlsh();
+				lsh = "123456789101111511";
 				bcr.setLsh(lsh);
 			}
 			if (null == bcr.getDpid() || "".equals(bcr.getDpid().trim())) {
@@ -232,7 +232,7 @@ public class PreCarRegisterController {
 		
 		String path = System.getProperty("2code");
 		create2Code(path,sb.toString(), String.valueOf(bcr.getId()));
-		return ResultHandler.resultHandle(result, null, Constant.ConstantMessage.SAVE_SUCCESS);
+		return ResultHandler.resultHandle(result, bcr.getLsh(), Constant.ConstantMessage.SAVE_SUCCESS);
 	}
 	
 	@UserOperation(code = "getCarInfoByCarNumber", name = "获取机动车基础信息")

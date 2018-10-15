@@ -7,5 +7,7 @@ public interface IVehiclePhotosManager {
 	public VehiclePhotos save(VehiclePhotos motorVehiclePhotos);
 	
 	public VehiclePhotos findLast45degPhotosByLsh(String lsh);
+	
+	public VehiclePhotos findPhotosByLshAndZpzlAndJccs(String lsh,String  zpzl,int jccs);
 
 }

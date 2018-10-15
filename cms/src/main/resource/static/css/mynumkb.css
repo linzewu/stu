@@ -1,0 +1,47 @@
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+.mykb-box{
+    width:430px;
+    height:370px;
+    background:rgba(0,0,0,0.6);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+    box-shadow:0 0 10px rgb(43, 42, 42);
+    padding:20px;
+    border-radius:10px;
+    user-select: none;
+    -ms-user-select: none;
+    position:absolute;
+    display: none;
+}
+.mykb-box ul,.mykb-box li{
+    list-style: none;
+}
+.mykb-box li{
+    width:70px;
+    height:70px;
+    line-height:70px;
+    text-align: center;
+    background:#f5f5f5;
+    border-radius:10px;
+    font-weight:bold;
+    margin:10px;
+    float:left;
+    box-shadow: 0px 2px 1px #000;
+    color:#1b50a2;
+    font-size:24px;
+    cursor:pointer;
+}
+.mykb-box li.active{
+    box-shadow:0px -2px 1px #000;
+}
+.mykb-box .func{color:#fff;width:100px;}
+.mykb-box .exit{background:#F44336;}
+.mykb-box .del{background:#ff9800}
+.mykb-box .clearall{background:#2196F3}
+.mykb-box .sure{background: #4CAF50;width:190px;}

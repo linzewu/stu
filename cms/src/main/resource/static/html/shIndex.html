@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css"
+	href="../js/easyui/themes/gray/easyui.css">
+<link rel="stylesheet" type="text/css"
+	href="../js/easyui/themes/color.css">
+<link rel="stylesheet" type="text/css"
+	href="../js/easyui/themes/icon.css">
+<script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+<script type="text/javascript" src="../js/json2.js"></script>
+<script type="text/javascript"
+	src="../js/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript"
+	src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+
+<title>机动车查验自助终端</title>
+<style type="text/css">
+.subTitle{
+    width:400px;height:68px;  /*设置div的大小*/
+    display:table-cell; 
+    vertical-align:bottom;
+    padding-left: 100px;
+    color: white;
+    font-size: 18px;
+    font-weight:bold;
+    letter-spacing: 1px;
+    text-align: right;
+ }
+ .title{
+ color: white;padding-left: 100px;letter-spacing: 1px;float: left;
+ }
+ .label-date{
+    width:400px;height:68px;  /*设置div的大小*/
+    display:table-cell; 
+    vertical-align:bottom;
+    padding-left: 100px;
+    color: white;
+    font-size: 16px;
+    font-weight:bold;
+    letter-spacing: 1px;
+    text-align: right;
+ }
+</style>
+
+</head>
+<body class="easyui-layout">
+	<div data-options="region:'north'"
+		style="height: 100px; border: 0; background-color: rgb(40, 82, 180); overflow-x: hidden; overflow-y: hidden;">
+		<div class="title">
+			<H1 style="">机动车查验登记自助终端</H1>
+		</div>
+		<div class="subTitle">欢迎使用机动车查验自助终端</div>
+	</div>
+	<div data-options="region:'south'" style="height: 100px;border: 0; background-color: rgb(40, 82, 180); overflow-y: hidden;">
+		<div class="title">
+			<H3 style="">盐城市公安局交通警察支队车辆管理所</H3>
+		</div>
+		<div class="label-date">2018-09-09 14:21:59</div>
+	</div>
+	<div data-options="region:'center'" style="background-color: rgb(242, 242, 245);text-align: center;">
+		<a href="checkAndRegister.html" class="easyui-linkbutton c8" style="width:300px;height: 160px;margin-top: 140px;"><img alt="" src="../images/car_64.png" style="widows: 64px;height: 64px;"/><br><font style="font-size: 24px;">查验登记</font></a>
+		<a href="#" class="easyui-linkbutton c8" style="width:300px;height: 160px;margin-top: 140px;margin-left: 100px;" onclick="alert('222')"><img alt="" src="../images/search_64.png" style="widows: 64px;height: 64px;"/><br><font style="font-size: 24px;">流水查询</font></a>
+	</div>
+</body>
+<script type="text/javascript">
+$(function(){
+	var userName = "zouxiuling";
+	var password = "888888";
+	$.post("../../user/login",{userName:userName,password:password}, function(data){
+		if(data.state==1){
+			//window.location.href="index.html";
+		}else{
+			$.messager.alert("登陆失败",data.message,"info");
+		}
+	},"json").error(function(e){
+		$.messager.alert("提示",e.responseText);
+	}).complete(function(){
+	})
+});
+</script>
+</html>

@@ -2,7 +2,6 @@
        <embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0></embed> 
 </object> 
 <table id="preCarRegisterDG"   data-options="rownumbers:true,
-		fitColumns:true,
 		toolbar:'#toolbar2',
 		singleSelect:true,
 		pagination:true,
@@ -11,19 +10,21 @@
 		>  
     <thead>
         <tr>  
-        	<th data-options="field:'lsh',width:80"   style="width: 180px" >流水号</th>
-            <th data-options="field:'cllx',width:80"  formatter="formatterCllx"  style="width: 180px" >车辆类型</th>
-            <th data-options="field:'clsbdh',width:80" style="width: 180px"  >车辆识别码</th>  
-            <th data-options="field:'csys',width:80"  formatter="formatterCsys" style="width: 180px"  >车身颜色</th>
-            <th data-options="field:'hpzl',width:80"  formatter="formatterHpzl"  style="width: 180px" >号牌种类</th>
-            <th data-options="field:'ywlx',width:80" formatter="formatterYwlx" style="width: 80px" >业务类型</th>
-            <th data-options="field:'syr',width:80" >所有人</th>
-            <th data-options="field:'sfz',width:80" >身份证</th>
+        	<th data-options="field:'lsh',width:150,resizable:false"  >流水号</th>
+            <th data-options="field:'cllx',width:130,resizable:false"  formatter="formatterCllx" >车辆类型</th>
+            <th data-options="field:'clsbdh',width:180,resizable:false" >车辆识别码</th>  
+            <th data-options="field:'csys',width:80,resizable:false"  formatter="formatterCsys" >车身颜色</th>
+            <th data-options="field:'hpzl',width:100,resizable:false"  formatter="formatterHpzl" >号牌种类</th>
+            <th data-options="field:'ywlx',width:100,resizable:false" formatter="formatterYwlx" >业务类型</th>
+            <th data-options="field:'syr',width:80,resizable:false" >所有人</th>
+            <th data-options="field:'sfz',width:160,resizable:false" >身份证</th>
+            <th data-options="field:'sjhm',width:160,resizable:false" >手机号码</th>
         </tr>  
       </thead>  
 </table>
 <div id="toolbar2"  style="padding:5px;height:auto">
 	<div style="margin-bottom:5px">
+		<input class="easyui-checkbox" name="isView" id="isView" value="true" label="打印预览" labelWidth="80px" labelPosition="after">
 	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="print()">打印查验单</a> 
 	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="loadCenter({title:'车辆预登记',action:'../../static/html/proCarRegister.html'})">车辆预登记</a>
        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="toEdit()">修改预登记信息</a>
@@ -33,7 +34,7 @@
     	身份证：<input type="text" class="easyui-textbox" id="sfz" >
     	所有人：<input  name="syr" type="text" class="easyui-textbox" id="syr"  />
     	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryClsbdh()">查询</a>
-    	<input class="easyui-checkbox" name="isView" id="isView" value="true" label="打印预览" labelWidth="80px" labelPosition="after">
+    	
     </div>
 </div>
 <div id="printTemplet"  style="display: none;">

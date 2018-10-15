@@ -64,6 +64,7 @@ function saveAndPring() {
 			if(data.state==1){
 				$.messager.alert("提示","保存成功！","info",function(){
 					$('#myform').form('clear');
+					$("#ywlx").combobox("setValue","A");
 				});
 				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
 				var printObj = {};
@@ -85,28 +86,7 @@ function saveAndPring() {
 	
 }
 
-function implSaveAndPring() {
-	/**$("#isPrint").val("true");
-	$('#myformImpl').form('submit', {
-		url: "../../preCarRegister/savePreCarRegister",
-		onSubmit: function(){
-			console.log($(this));
-			var isValid = $(this).form('validate');
-			if (!isValid){
-				return false;	// hide progress bar while the form is invalid
-			}
-			return isValid;	// return false will stop the form submission
-		},
-		success: function(data){
-			data=$.parseJSON(data);
-			//$.messager.progress('close');	// hide progress bar while submit successfully
-			//$.messager.alert("提示",data.message,"info",function(){
-			//	window.location.href="login.html";
-			//})
-			
-		}
-	});**/
-	
+function implSaveAndPring() {	
 	
 	$('#myformImpl').form({
 		url: "../../preCarRegister/savePreCarRegister"
@@ -144,6 +124,42 @@ function clearData(formId){
 function updateAndPring() {
 	$("#isPrint").val("true");
 	$('#myformEdit').submit();
+	
+	$('#myformEdit').form({
+		url: "../../preCarRegister/updateRegister"
+	});
+	var isValid = $('#myformEdit').form('validate');
+	if(isValid){
+		var params = $("#myformEdit").serializeJson();
+		$.post("../../preCarRegister/updateRegister",params,function(data){
+			if(data.state==1){
+				$.messager.alert("提示","保存成功！","info",function(){
+					$('#myformEdit').form("clear");
+				});
+				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
+				
+				var cydata = {};
+				cydata.prview = false;
+				if(params.isView == "true"){
+					cydata.prview = true;
+				}
+				cydata['ywlx'] = $("#ywlx").combobox("getValue");
+				cydata['hpzl'] = $("#hpzl").combobox("getValue");
+				cydata['id'] = datajson['sid'];
+				cydata['clsbdh'] = $("#clsbdh").val();
+				cydata['hphm'] = $("#hphm").textbox("getValue");
+			
+				printCYD(cydata);
+				//printCYD(printObj);
+			}else{
+				$.messager.alert("提示",data.message,"error");
+			}
+			
+		},"json").complete(function(){
+			$.messager.progress('close');
+		});
+	}
+	/////////
 }
 
 function CheckIsInstall() {
@@ -738,6 +754,60 @@ function loadParam(){
 function loadImplCarParam(index,row){
 	$("#myformImpl").form("load",row);
 	$("#win").window("close");
+}
+
+function shSaveAndPring() {
+	if($("#syr").text() == "" || $("#sfz").text() == "" || $("#dz").text() == ""){
+		$.messager.alert("提示","请将二代身份证放置在身份证识别区","info");
+		return;
+	}
+	if($("#clsbdh").text() == "" || $("#clxh").text() == "" || $("#fdjh").text() == "" || $("#csys").text() == ""){
+		$.messager.alert("提示","请扫描车辆合格证","info");
+		return;
+	}
+	var sjhm = $("#sjhm").val();
+	if(sjhm == ""){
+		$.messager.alert("提示","请输入手机号码","info");
+		return;
+	}
+	if (!(/^(13|15|18)\d{9}$/i.test(sjhm))){
+		$.messager.alert("提示","手机号码格式不正确","info");
+		return;
+	}
+	
+	$('#shForm').form({
+		url: "../../preCarRegister/savePreCarRegister"
+	});
+	var isValid = $('#shForm').form('validate');
+	if(isValid){
+		var params = $("#shForm").serializeJson();
+		$.post("../../preCarRegister/savePreCarRegister",params,function(data){
+			if(data.state==1){
+				$.messager.alert("提示","保存成功！","info",function(){
+					$('#shForm').form('clear');
+					$("#syr").text("");
+					$("#sfz").text("");
+					$("#dz").text("");
+					$("#clsbdh").text("");
+					$("#clxh").text("");
+					$("#fdjh").text("");
+					$("#csys").text("");
+					window.location.href="shIndex.html";
+				});
+				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
+				printCYD();
+			}else{
+				$.messager.alert("提示",data.message,"error");
+			}
+			
+		},"json").complete(function(){
+			$.messager.progress('close');
+			window.location.href="shIndex.html";
+		});
+	}
+	
+	
+	
 }
 
 

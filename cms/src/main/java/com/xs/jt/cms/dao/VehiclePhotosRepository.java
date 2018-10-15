@@ -11,5 +11,8 @@ public interface VehiclePhotosRepository extends JpaRepository<VehiclePhotos, In
 	
 	@Query(value = "select top 1  t.*  from TM_VehiclePhotos t where lsh = :lsh and zpzl=:zpzl order by jccs desc",nativeQuery = true)
 	public VehiclePhotos findLastPhotosByLshAndZpzl(@Param("lsh")String lsh,@Param("zpzl") String  zpzl);
+	
+	@Query(value = "select top 1  t.*  from TM_VehiclePhotos t where lsh = :lsh and zpzl=:zpzl and jccs=:jccs",nativeQuery = true)
+	public VehiclePhotos findPhotosByLshAndZpzlAndJccs(@Param("lsh")String lsh,@Param("zpzl") String  zpzl,@Param("jccs") int jccs);
 
 }

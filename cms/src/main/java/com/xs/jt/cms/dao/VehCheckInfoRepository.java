@@ -24,5 +24,8 @@ public interface VehCheckInfoRepository extends JpaRepository<VehCheckInfo, Inte
 	
 	@Query(value = "select TOP 1 v.* from TM_VHE_CHECKINFO v where hphm = :hphm and hpzl=:hpzl  order by cycs desc",nativeQuery = true)
 	VehCheckInfo findBhgVehCheckInfoByHphmHpzl(@Param("hphm")String hphm,@Param("hpzl")String hpzl);
+	
+	@Query(value = "from VehCheckInfo v where lsh = :lsh and cycs= :cycs")
+	VehCheckInfo findVehCheckInfoByLshAndCycs(@Param("lsh")String lsh,@Param("cycs")int cycs);
 
 }

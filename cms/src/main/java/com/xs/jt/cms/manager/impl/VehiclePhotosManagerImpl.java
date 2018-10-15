@@ -21,4 +21,10 @@ public class VehiclePhotosManagerImpl implements IVehiclePhotosManager {
 		return photos;
 	}
 
+	@Override
+	public VehiclePhotos findPhotosByLshAndZpzlAndJccs(String lsh, String zpzl, int jccs) {
+		VehiclePhotos photos = vehiclePhotosRepository.findPhotosByLshAndZpzlAndJccs(lsh, zpzl, jccs);
+		return photos;
+	}
+
 }

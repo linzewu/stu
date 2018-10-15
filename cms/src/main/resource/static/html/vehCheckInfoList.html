@@ -2,8 +2,7 @@
        <embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0></embed> 
 </object> 
 <table id="vehCheckInfoDG"   data-options="rownumbers:true,
-		fitColumns:true,
-		toolbar:'#toolbar2',
+		toolbar:'#CheckInfoToolbar2',
 		singleSelect:true,
 		pagination:true,
 		pageSize:10,
@@ -11,34 +10,112 @@
 		>  
     <thead>
         <tr>  
-            <th data-options="field:'lsh',width:80"    style="width: 180px" >流水号</th>
-            <th data-options="field:'clsbdh',width:80" style="width: 180px"  >车辆识别码</th>  
-            <th data-options="field:'cycs',width:80" style="width: 180px"  >查验次数</th>
-            <th data-options="field:'cyjg',width:80,formatter:cyjgFormatter" style="width: 180px"  >查验结果</th>
-            <th data-options="field:'hpzl',width:80"  formatter="formatterHpzl"  style="width: 180px" >号牌种类</th>
-             <th data-options="field:'hphm',width:80"  style="width: 180px" >号牌号码</th>
-            <th data-options="field:'ywlx',width:80" formatter="formatterYwlx" style="width: 80px" >业务类型</th>
-            <th data-options="field:'syxz',width:80" >使用性质</th>
-            <th data-options="field:'cllx',width:80" formatter="formatterCllx">车辆类型</th>
+            <th data-options="field:'lsh',width:150,resizable:false" >流水号</th>
+            <th data-options="field:'clsbdh',width:150,resizable:false" >车辆识别码</th>  
+            <th data-options="field:'cycs',width:80,resizable:false" >查验次数</th>
+            <th data-options="field:'cyjg',width:80,formatter:cyjgFormatter,resizable:false" >查验结果</th>
+            <th data-options="field:'hpzl',width:80,resizable:false"  formatter="formatterHpzl"  >号牌种类</th>
+             <th data-options="field:'hphm',width:80,resizable:false"  >号牌号码</th>
+            <th data-options="field:'ywlx',width:80,resizable:false" formatter="formatterYwlx" >业务类型</th>
+            <th data-options="field:'syxz',width:80,resizable:false" >使用性质</th>
+            <th data-options="field:'cllx',width:80,resizable:false" formatter="formatterCllx">车辆类型</th>
+            
+            <th data-options="field:'cyr',width:80,resizable:false" >查验人</th>
+            <th data-options="field:'cysj',width:150,resizable:false" >查验时间</th>
+            <th data-options="field:'bz',width:80,resizable:false" >备注</th>
         </tr>  
       </thead>  
 </table>
-<div id="toolbar2"  style="padding:5px;height:auto">
+<div id="CheckInfoToolbar2"  style="padding:5px;height:auto">
 	<div style="margin-bottom:5px">
-	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="print()">打印查验单</a> 
+	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="viewCheckInfo()">查看查验单</a>
+	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="printCheckInfo()">打印查验单</a>
+	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="tdCheckInfo()">套打查验单</a>
+	   <input class="easyui-checkbox" name="isView" id="isView" value="true" label="打印预览" labelWidth="80px" labelPosition="after"> 
     </div>
     <div style="margin-bottom:5px">
     	车辆识别代号：<input type="text" class="easyui-textbox" id="clsbdh" >
     	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryClsbdh()">查询</a>
     </div>
 </div>
-<div id="printTemplet"  style="display: none;"></div>
+<div id="printTemplet"  style="display: none;">
+	<img alt="" src="" style="border: 0;margin: 0; padding: 0">
+</div>
 <OBJECT ID="vehPrinter" CLASSID="CLSID:F1EFB37B-C778-4AF8-B0C2-B647C9E89E2D" CODEBASE="VehPlatForm_web.CAB#version=2,7,0,0">
 </OBJECT>
 <script type="text/javascript" src="../js/LodopFuncs.js"></script>
 <script type="text/javascript" src="../js/carRegister.js"></script>
 <script type="text/javascript" src="../js/dwf_0.1.js"></script>
 <script type="text/javascript">
+function viewCheckInfo() {
+	var row = $("#vehCheckInfoDG").datagrid("getSelected");
+	if (row != null) {
+		//
+		$.post("../../vheCheckInfo/printCheckInfo",{"lsh":row.lsh,"cycs":row.cycs},function(data){
+			if(data.state==1){
+				$("#printTemplet img").attr("src","../cache/report/template_pt_qd_01_"+data.data+".jpg");
+				var printObj = {};
+				printObj.prview = true;
+				printCYD(printObj);
+			}else{
+				$.messager.alert("提示",data.message,"error");
+			}
+			
+		},"json").complete(function(){
+			$.messager.progress('close');
+		});
+		//printCYD(row);
+	} else {
+		$.messager.alert("提示", "请选择需要查看的数据", "warning");
+	}
+}
+function printCheckInfo() {
+	var row = $("#vehCheckInfoDG").datagrid("getSelected");
+	if (row != null) {
+		//
+		$.post("../../vheCheckInfo/printCheckInfo",{"lsh":row.lsh,"cycs":row.cycs},function(data){
+			if(data.state==1){
+				$("#printTemplet img").attr("src","../cache/report/template_pt_qd_01_"+data.data+".jpg");
+				var isView = $("#isView").checkbox("options").checked;
+				var printObj = {};
+				printObj.prview = isView;
+				printCYD(printObj);
+			}else{
+				$.messager.alert("提示",data.message,"error");
+			}
+			
+		},"json").complete(function(){
+			$.messager.progress('close');
+		});
+		//printCYD(row);
+	} else {
+		$.messager.alert("提示", "请选择需要打印的数据", "warning");
+	}
+}
+
+function tdCheckInfo() {
+	var row = $("#vehCheckInfoDG").datagrid("getSelected");
+	if (row != null) {
+		//
+		$.post("../../vheCheckInfo/tdCheckInfo",{"lsh":row.lsh,"cycs":row.cycs},function(data){
+			if(data.state==1){
+				$("#printTemplet img").attr("src","../cache/report/template_pt_td_01_"+data.data+".jpg");
+				var isView = $("#isView").checkbox("options").checked;
+				var printObj = {};
+				printObj.prview = isView;
+				printCYD(printObj);
+			}else{
+				$.messager.alert("提示",data.message,"error");
+			}
+			
+		},"json").complete(function(){
+			$.messager.progress('close');
+		});
+		//printCYD(row);
+	} else {
+		$.messager.alert("提示", "请选择需要打印的数据", "warning");
+	}
+}
 function cyjgFormatter(value,row,index){
 	if(value == 0){
 		return "不合格";

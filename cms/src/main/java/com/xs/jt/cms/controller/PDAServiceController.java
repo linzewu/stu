@@ -124,7 +124,6 @@ public class PDAServiceController {
 			} else {
 				// 车辆没有被锁定，如果查验不合格，写入机动车业务锁定表 1：合格，0：不合格
 				if ("0".equals(vehCheckInfo.getCyjg())) {
-
 					VehicleLock vehicleLock = new VehicleLock();
 					vehicleLock.setSdr(user.getYhm());
 					vehicleLock.setSdsj(new Date());

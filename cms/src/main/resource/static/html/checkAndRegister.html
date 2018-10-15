@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" type="text/css"
+	href="../js/easyui/themes/gray/easyui.css">
+<link rel="stylesheet" type="text/css"
+	href="../js/easyui/themes/color.css">
+<link rel="stylesheet" type="text/css"
+	href="../js/easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css"
+	href="../css/buttonStyle.css">
+<link rel="stylesheet" type="text/css"
+	href="../css/mynumkb.css">
+<script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+<script type="text/javascript" src="../js/json2.js"></script>
+<script type="text/javascript"
+	src="../js/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript"
+	src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../js/mynumkb.js"></script>
+<script type="text/javascript" src="../js/common.js"></script>
+<script type="text/javascript" src="../js/extendValidate.js"></script>
+<object  id="LODOP_OB" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0>  
+       <embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0></embed> 
+</object> 
+
+<title>机动车查验自助终端</title>
+
+<style type="text/css">
+.subTitle{
+    width:400px;height:68px;  /*设置div的大小*/
+    display:table-cell; 
+    vertical-align:bottom;
+    padding-left: 100px;
+    color: white;
+    font-size: 18px;
+    font-weight:bold;
+    letter-spacing: 1px;
+    text-align: right;
+ }
+ .title{
+ color: white;padding-left: 100px;letter-spacing: 1px;float: left;
+ }
+ .label-date{
+    width:400px;height:68px;  /*设置div的大小*/
+    display:table-cell; 
+    vertical-align:bottom;
+    padding-left: 100px;
+    color: white;
+    font-size: 16px;
+    font-weight:bold;
+    letter-spacing: 1px;
+    text-align: right;
+ }
+ .line-bottom{
+ 	border-bottom: 1px dashed #987cb9;
+ }
+ 
+ .trHg{
+ 	height: 35px;
+ }
+</style>
+
+</head>
+<body class="easyui-layout">
+<form name="shForm" id="shForm" method="post">
+	<div data-options="region:'north'"
+		style="height: 100px; border: 0; background-color: rgb(40, 82, 180); overflow-x: hidden; overflow-y: hidden;">
+		<div class="title">
+			<H1 style="">机动车查验登记自助终端</H1>
+		</div>
+		<div class="subTitle">欢迎使用机动车查验自助终端</div>
+	</div>
+	<div data-options="region:'center'" style="background-color: rgb(242, 242, 245);text-align: center;">
+		<table border="0" style="width: 90%;height: 100%;font-size: 20px; margin:auto;">
+			<tr>
+				<td style="width: 5%;" class="line-bottom"><img alt="" src="../images/pointingright.png" align="middle"/></td>
+				<td align="center" style="width: 28%" class="line-bottom">请将二代身份证放置在身份证识别区</td>
+				<td class="line-bottom" align="left" style="padding-left: 40px;">
+					<table style="border: 0;">
+						<tr class="trHg">
+							<td align="right" width="140px">身份证：</td>
+							<td><span id="sfz"></span></td>
+						</tr>
+						<tr  class="trHg">
+							<td align="right">姓名：</td>
+							<td><span id="syr"></span></td>
+						</tr>
+						<tr  class="trHg">
+							<td align="right">地址：</td>
+							<td><span id="dz"></span></td>
+						</tr>
+						<tr  class="trHg">
+							<td align="right">手机号码：</td>
+							<td><input name="sjhm" id="sjhm" class="easyui-validatebox" data-options="required:true,validType:'mobile'"/></td>
+						</tr>
+					</table>
+										
+				</td>
+			</tr>
+			<tr id="secondBz">
+				<td style="width: 5%;"><img alt="" src="../images/pointingright.png" align="middle"/></td>
+				<td align="left">请扫描车辆合格证</td>
+				<td align="left" style="padding-left: 40px;">
+					<table style="border: 0;">
+						<tr  class="trHg">
+							<td align="right" width="140px">车辆识别代号：</td>
+							<td><span id="clsbdh"></span></td>
+						</tr>
+						<tr  class="trHg">
+							<td align="right">发动机号：</td>
+							<td><span id="fdjh"></span></td>
+						</tr>
+						<tr  class="trHg">
+							<td align="right">品牌/型号：</td>
+							<td><span id="clxh"></span></td>
+						</tr>
+						<tr  class="trHg">
+							<td align="right">车身颜色：</td>
+							<td><span id="csys"></span></td>
+						</tr>						
+					</table>					
+					<div style="display: none;" id="hideArea" >
+						<input type="hidden" value="A" name="ywlx" id="ywlx"/>
+						<input	type="hidden" id="clsbdh" name="clsbdh">
+						<input	type="hidden" id="hdzk" name="hdzk">
+						<input	type="hidden" id="csys" name="csys">
+						<input	type="hidden" id="clxh" name="clxh">
+					 	                      
+					 	<input	type="hidden" id="hgzbh" name="hgzbh">
+					 	<input	type="hidden" id="hbdbqk" name="hbdbqk">
+					 	<input	type="hidden" id="ccrq" name="ccrq">
+					 	<input	type="hidden" id="zzcmc" name="zzcmc">
+					 	<input	type="hidden" id="clpp1" name="clpp1">
+					 	<input	type="hidden" id="clpp2" name="clpp2">
+					 	<input	type="hidden" id="fdjxh" name="fdjxh">
+					 	<input	type="hidden" id="rlzl" name="rlzl">
+					 	<input	type="hidden" id="pl" name="pl">
+					 	<input	type="hidden" id="gl" name="gl">
+					 	<input	type="hidden" id="zxxs" name="zxxs">
+					 	<input	type="hidden" id="lts" name="lts">
+					 	<input	type="hidden" id="gbthps" name="gbthps">
+					 	<input	type="hidden" id="zs" name="zs">
+					 	<input	type="hidden" id="hxnbcd" name="hxnbcd">
+					 	<input	type="hidden" id="hxnbkd" name="hxnbkd">
+					 	<input	type="hidden" id="hxnbgd" name="hxnbgd">
+					 	<input	type="hidden" id="zzl" name="zzl">
+					 	<input	type="hidden" id="hdzzl" name="hdzzl">
+					 	<input	type="hidden" id="zbzl" name="zbzl">
+					 	<input	type="hidden" id="zqyzl" name="zqyzl">
+					 	<input	type="hidden" id="qpzk" name="qpzk">
+					 	<input	type="hidden" id="hpzk" name="hpzk">
+					 	<input	type="hidden" id="bz" name="bz">
+					 	
+					 	<input	type="hidden" id="fdjh" name="fdjh">
+					 	<input name="cwkc" id="cwkc" type="hidden" />
+						<input name="cwkk" id="cwkk" type="hidden" />
+						<input name="cwkg" id="cwkg" type="hidden" />
+						<input name="qlj" id="qlj" type="hidden"/>
+						<input name="hlj" id="hlj" type="hidden" />
+						<input name="zj" id="zj" type="hidden"  />
+						<input name="ltgg" id="ltgg" type="hidden"/>
+						
+						<input	type="hidden" id="gcjk" name="gcjk" value="A">
+						<input	type="hidden" id="dpid" name="dpid" >
+						
+						<input id="ewm"  name="ewm" type="hidden"/>
+					 </div>
+				</td>
+			</tr>
+			<tr style="height: 10%">
+				<td colspan="3" align="center">
+				<a href="#" class="easyui-linkbutton blue" style="width:100px;height: 50px;" onclick="shSaveAndPring()"><font style="font-size: 20px;">确 定</font></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="#" class="easyui-linkbutton blue" style="width:100px;height: 50px;" onclick="clearD()"><font style="font-size: 20px;">取 消</font></a>
+				</td>
+			</tr>
+		</table>		
+	</div>
+ </form>
+ <div id="printTemplet" >
+	<img alt="" src="" style="border: 0;margin: 0; padding: 0">
+</div>
+</body>
+<OBJECT ID="vehPrinter" CLASSID="CLSID:F1EFB37B-C778-4AF8-B0C2-B647C9E89E2D" CODEBASE="VehPlatForm_web.CAB#version=2,7,0,0">
+</OBJECT>
+<script type="text/javascript" src="../js/LodopFuncs.js"></script>
+<script type="text/javascript" src="../js/carRegister.js"></script>
+<script type="text/javascript" src="../js/dataCode.js"></script>
+<script type="text/javascript">
+$("#sjhm").mynumkb();
+$(function(){
+	qrtNumber=window.setInterval("readQrLabel();",200);
+});
+
+function readQrLabel() {
+	var barcodetemp = "";
+	try{
+		var strbarcode = vehPrinter.GetQrText();
+		if (strbarcode == "") {
+			return 0;
+		}
+		if (strbarcode == "-1") {
+			$.messager.alert("提示", "条码信息有误!");
+			return 0;
+		}
+		console.log(strbarcode)
+		var barArray = strbarcode.split("|");
+	
+		var strBarCodeType = barArray[0];
+		if (strBarCodeType.split("_")[0] == "ZCCCHGZ") {
+			loadCLHGZ(barArray, strbarcode);
+			return;
+		}
+	
+		if (strBarCodeType == "SFZXX_2.0") {
+			setSFZXX(barArray);
+			return;
+		}
+	}catch (e) {
+		alert(e);
+		return ;
+	}
+
+}
+
+function setSFZXX(barArray) {
+	$("#syr").text(barArray[1]);
+	$("#sfz").text( barArray[6]);
+	$("#dz").text(barArray[5]);
+	
+}
+
+function loadCLHGZ(barArray, strbarcode) {
+	var dataInfo = {};
+	dataInfo["hgzbh"] = barArray[2];
+	dataInfo["ccrq"] = barArray[3];
+
+	dataInfo["zzcmc"] = barArray[4];
+	// dataInfo["cllx"]=barArray[6];
+
+	var clpps = barArray[7].split("/");
+	if (clpps.length > 1) {
+		dataInfo["clpp1"] = clpps[0];
+		dataInfo["clpp2"] = clpps[1];
+	} else {
+		dataInfo["clpp1"] = clpps[0];
+	}
+	dataInfo["clxh"] = barArray[8];
+
+	dataInfo["csys"] = barArray[9];
+
+	dataInfo["clsbdh"] = barArray[13];
+	dataInfo["fdjh"] = barArray[15];
+	dataInfo["fdjxh"] = barArray[16];
+
+	dataInfo["rlzl"] = barArray[17];
+	dataInfo["pl"] = barArray[19];
+	dataInfo["gl"] = barArray[20];
+	dataInfo["zxxs"] = barArray[21];
+
+	var qljs = barArray[22].split("/");
+
+	dataInfo["qlj"] = qljs[0];
+
+	// 计算后轮距 29是轴数
+	var hlj = getHlj(barArray[23], barArray[29]);
+
+	dataInfo["hlj"] = hlj;
+
+	dataInfo["lts"] = barArray[24];
+	dataInfo["ltgg"] = barArray[25];
+	dataInfo['hbdbqk'] = barArray[18];
+	dataInfo['dpid'] = barArray[11];
+
+	var zxzs = 1;
+	if (qljs.length > 0) {
+		zxzs = qljs.length;
+	}
+
+	var gbthps = "";
+	if (barArray[6] == "挂车") {
+		gbthps = getGbthps("-/" + barArray[26], 1);
+	} else {
+		gbthps = getGbthps(barArray[26], zxzs);
+	}
+
+	dataInfo["gbthps"] = gbthps;
+	var zj = getZj(barArray[27]);
+	dataInfo["zj"] = zj;
+
+	dataInfo["zs"] = barArray[29];
+	dataInfo["cwkc"] = barArray[30];
+	dataInfo["cwkk"] = barArray[31];
+
+	dataInfo["cwkg"] = barArray[32];
+	dataInfo["hxnbcd"] = barArray[33];
+	dataInfo["hxnbkd"] = barArray[34];
+	dataInfo["hxnbgd"] = barArray[35];
+	dataInfo["zzl"] = barArray[36];
+
+	dataInfo["hdzzl"] = barArray[37];
+	dataInfo["zbzl"] = barArray[38];
+	dataInfo["zqyzl"] = barArray[40];
+
+	var hdzks = barArray[41].split("/");
+	dataInfo["hdzk"] = hdzks[0];
+
+	var qpzks = barArray[43].split("+");
+
+	dataInfo["qpzk"] = qpzks[0];
+	if (qpzks.length > 1) {
+		dataInfo["hpzk"] = qpzks[1];
+	}
+	dataInfo["bz"] = barArray[50];
+	$('#shForm').form('load', dataInfo);
+	$("#clsbdh").text(dataInfo["clsbdh"]);
+	$("#clxh").text(dataInfo["clxh"]);
+	$("#fdjh").text(dataInfo["fdjh"]);
+	$("#csys").text(getLabelByid("csys", dataInfo["csys"].toUpperCase()));
+}
+
+function clearD(){
+	$('#shForm').form('clear');
+	$("#syr").text("");
+	$("#sfz").text("");
+	$("#dz").text("");
+	$("#clsbdh").text("");
+	$("#clxh").text("");
+	$("#fdjh").text("");
+	$("#csys").text("");
+	window.location.href="shIndex.html";
+}
+</script>
+</html>

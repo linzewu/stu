@@ -31,8 +31,8 @@
 					<td class="info"><input name="syxz" id="syxz" class="easyui-combobox" 
 						data-options="data:datacode.syxz,valueField:'value',textField:'label'" /></td> -->
 					<td class="info_title">业务类型：</td>
-					<td class="info" ><input name="ywlx" id="ywlx" class="easyui-combobox" required="true"
-						data-options="data:datacode.ywlx,valueField:'value',textField:'label',onChange:changeBT" /></td>
+					<td class="info" ><input value="A" name="ywlx" id="ywlx" class="easyui-combobox" required="true"
+						data-options="data:datacode.ywlx,valueField:'value',textField:'label',onChange:changeBT,readonly:true" /></td>
 				</tr>
 				<tr>
 					<td class="info_title">车辆型号：</td>
@@ -56,7 +56,7 @@
 				</tr>
 				<tr>
 					<td class="info_title">地址：</td>
-					<td class="info" colspan="3">
+					<td class="info">
 					<input name="dz"  id="dz"  class="easyui-textbox longText" multiline="true" data-options="height:32,width:400" />
 					<input	type="hidden" id="bType" name="bType" value="preCarRegister">  
 					 <input type="hidden" id="method" name="method" value="saveRegister">
@@ -104,13 +104,14 @@
 						<input id="ewm"  name="ewm" type="hidden"/>
 					 </div>
 					 </td>
-					 
+					 <td class="info_title">手机号码：</td>
+					 <td class="info"><input name="sjhm" id="sjhm" class="easyui-textbox" data-options="validType:'mobile'"/></td>
 				</tr>
 			</tbody>
 		</table>
 		<div align="center" class="actionbar">		
 			<a href="javascript:saveAndPring()" class="easyui-linkbutton" data-options="iconCls:'icon-print'">保存并打印</a> 
-			<a href="javascript:clearData('myform')" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清除</a>&nbsp;&nbsp;
+			<a href="javascript:clearDatas('myform')" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清除</a>&nbsp;&nbsp;
 			<input class="easyui-checkbox" name="isView" value="true" label="打印预览" labelWidth="80px" labelPosition="after">
 		</div>
 	</div>
@@ -131,4 +132,9 @@ $(function(){
 	$("#win").window("refresh","gonggaoInfo.html");
 	qrtNumber=window.setInterval("readQrtext();",200);
 });
+
+function clearDatas(formId){
+	$('#'+formId).form('clear');
+	$("#ywlx").combobox("setValue","A");
+}
 </script>

@@ -110,4 +110,9 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 		return vehCheckInfoRepository.findMaxCsByLsh(lsh);
 	}
 
+	@Override
+	public VehCheckInfo findVehCheckInfoByLshAndCycs(String lsh, int cycs) {
+		return vehCheckInfoRepository.findVehCheckInfoByLshAndCycs(lsh, cycs);
+	}
+
 }

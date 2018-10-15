@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -197,4 +198,14 @@ public class Common {
         }
         return XFor;
     }
+	
+	/**
+	 * 判断是不是正整数
+	 * @param str
+	 * @return
+	 */
+	 public static boolean isInteger(String str) {  
+	        Pattern pattern = Pattern.compile("\\d+");  
+	        return pattern.matcher(str).matches();  
+	  }
 }
