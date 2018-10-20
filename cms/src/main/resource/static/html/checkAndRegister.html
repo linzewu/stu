@@ -23,6 +23,7 @@
 <script type="text/javascript" src="../js/mynumkb.js"></script>
 <script type="text/javascript" src="../js/common.js"></script>
 <script type="text/javascript" src="../js/extendValidate.js"></script>
+<script type="text/javascript" src="../js/selfHelp.js"></script>
 <object  id="LODOP_OB" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0>  
        <embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0></embed> 
 </object> 
@@ -83,15 +84,15 @@
 					<table style="border: 0;">
 						<tr class="trHg">
 							<td align="right" width="140px">身份证：</td>
-							<td><span id="sfz"></span></td>
+							<td><span id="sfz_s"></span></td>
 						</tr>
 						<tr  class="trHg">
 							<td align="right">姓名：</td>
-							<td><span id="syr"></span></td>
+							<td><span id="syr_s"></span></td>
 						</tr>
 						<tr  class="trHg">
 							<td align="right">地址：</td>
-							<td><span id="dz"></span></td>
+							<td><span id="dz_s"></span></td>
 						</tr>
 						<tr  class="trHg">
 							<td align="right">手机号码：</td>
@@ -108,27 +109,33 @@
 					<table style="border: 0;">
 						<tr  class="trHg">
 							<td align="right" width="140px">车辆识别代号：</td>
-							<td><span id="clsbdh"></span></td>
+							<td><span id="clsbdh_s"></span></td>
 						</tr>
 						<tr  class="trHg">
 							<td align="right">发动机号：</td>
-							<td><span id="fdjh"></span></td>
+							<td><span id="fdjh_s"></span></td>
 						</tr>
 						<tr  class="trHg">
 							<td align="right">品牌/型号：</td>
-							<td><span id="clxh"></span></td>
+							<td><span id="clxh_s"></span></td>
 						</tr>
 						<tr  class="trHg">
 							<td align="right">车身颜色：</td>
-							<td><span id="csys"></span></td>
+							<td><span id="csys_s"></span></td>
 						</tr>						
 					</table>					
 					<div style="display: none;" id="hideArea" >
+						<input type="hidden" name="syr" id="syr"/>
+						<input type="hidden" name="sfz" id="sfz"/>
+						<input type="hidden" name="dz" id="dz"/>
+						
 						<input type="hidden" value="A" name="ywlx" id="ywlx"/>
 						<input	type="hidden" id="clsbdh" name="clsbdh">
 						<input	type="hidden" id="hdzk" name="hdzk">
 						<input	type="hidden" id="csys" name="csys">
 						<input	type="hidden" id="clxh" name="clxh">
+						<input	type="hidden" id="ggbh" name="ggbh">
+						<input	type="hidden" id="cllx" name="cllx">
 					 	                      
 					 	<input	type="hidden" id="hgzbh" name="hgzbh">
 					 	<input	type="hidden" id="hbdbqk" name="hbdbqk">
@@ -166,7 +173,7 @@
 						
 						<input	type="hidden" id="gcjk" name="gcjk" value="A">
 						<input	type="hidden" id="dpid" name="dpid" >
-						
+						<input	type="hidden" id="veh_sfxc" name="veh_sfxc" >
 						<input id="ewm"  name="ewm" type="hidden"/>
 					 </div>
 				</td>
@@ -193,6 +200,19 @@
 $("#sjhm").mynumkb();
 $(function(){
 	qrtNumber=window.setInterval("readQrLabel();",200);
+	var url = decodeURI(window.location.href);
+
+	var argsIndex = url .split("?vehSfxc=");
+	var arg = "";
+	if(argsIndex.length > 1){
+		arg = argsIndex[1];
+	}
+	
+	if(arg == "Y"){
+		$("#veh_sfxc").val("Y")
+	}else{
+		$("#veh_sfxc").val("")
+	}
 });
 
 function readQrLabel() {
@@ -227,9 +247,13 @@ function readQrLabel() {
 }
 
 function setSFZXX(barArray) {
-	$("#syr").text(barArray[1]);
-	$("#sfz").text( barArray[6]);
-	$("#dz").text(barArray[5]);
+	$("#syr_s").text(barArray[1]);
+	$("#sfz_s").text( barArray[6]);
+	$("#dz_s").text(barArray[5]);
+	
+	$("#syr").val(barArray[1]);
+	$("#sfz").val( barArray[6]);
+	$("#dz").val(barArray[5]);
 	
 }
 
@@ -249,7 +273,16 @@ function loadCLHGZ(barArray, strbarcode) {
 		dataInfo["clpp1"] = clpps[0];
 	}
 	dataInfo["clxh"] = barArray[8];
-
+	if(dataInfo["clxh"] != null && dataInfo["clxh"] != ""){
+		$.post("../../preCarRegister/getGongGaoInfo",{"clxh":dataInfo["clxh"]},function(data){
+			if (data != null){
+				$("#ggbh").val(data['BH']);
+				$("#cllx").val(data['CLLX']);				
+			}
+			
+		},"json").complete(function(){
+		});
+	}
 	dataInfo["csys"] = barArray[9];
 
 	dataInfo["clsbdh"] = barArray[13];
@@ -316,21 +349,21 @@ function loadCLHGZ(barArray, strbarcode) {
 	}
 	dataInfo["bz"] = barArray[50];
 	$('#shForm').form('load', dataInfo);
-	$("#clsbdh").text(dataInfo["clsbdh"]);
-	$("#clxh").text(dataInfo["clxh"]);
-	$("#fdjh").text(dataInfo["fdjh"]);
-	$("#csys").text(getLabelByid("csys", dataInfo["csys"].toUpperCase()));
+	$("#clsbdh_s").text(dataInfo["clsbdh"]);
+	$("#clxh_s").text(dataInfo["clxh"]);
+	$("#fdjh_s").text(dataInfo["fdjh"]);
+	$("#csys_s").text(getLabelByid("csys", dataInfo["csys"].toUpperCase()));
 }
 
 function clearD(){
 	$('#shForm').form('clear');
-	$("#syr").text("");
-	$("#sfz").text("");
-	$("#dz").text("");
-	$("#clsbdh").text("");
-	$("#clxh").text("");
-	$("#fdjh").text("");
-	$("#csys").text("");
+	$("#syr_s").text("");
+	$("#sfz_s").text("");
+	$("#dz_s").text("");
+	$("#clsbdh_s").text("");
+	$("#clxh_s").text("");
+	$("#fdjh_s").text("");
+	$("#csys_s").text("");
 	window.location.href="shIndex.html";
 }
 </script>

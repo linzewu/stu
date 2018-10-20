@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.xs.jt.cms.entity.PreCarRegister;
+
 public class CommonUtil {
 
 	public static String convertCode(String key, String value,HttpServletRequest request) {
@@ -35,6 +37,16 @@ public class CommonUtil {
 			return value;
 		}
 		
+	}
+	
+	public static void setXczl(PreCarRegister bcr, Map<String, Object> data) {
+		if ("K18".equals(bcr.getCllx()) ||  "K28".equals(bcr.getCllx())|| "K38".equals(bcr.getCllx())) {
+			data.put("zyxc", "☑");
+			data.put("fzyxc", "□");
+		}else {
+			data.put("zyxc", "□");
+			data.put("fzyxc", "☑");
+		}
 	}
 
 }

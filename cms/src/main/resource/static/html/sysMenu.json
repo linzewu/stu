@@ -8,19 +8,19 @@
 					"icon": "../../static/images/car.png",
 					"title": "车辆预登记",
 					"href": "../../static/html/proCarRegister.html",
-					"permission":""
+					"permission":"preCarRegister.savePreCarRegister"
 				},
 				{
 					"icon": "../../static/images/impCar.png",
 					"title": "进口车登记",
 					"href": "../../static/html/importProCarRegister.html",
-					"permission":""
+					"permission":"preCarRegister.savePreCarRegister"
 				},
 				{
 					"icon": "../../static/images/list.png",
 					"title": "已登记信息",
 					"href": "../../static/html/proCarRegisterList.html",
-					"permission":""
+					"permission":"preCarRegister.getCarList"
 				}
 			]
 		}

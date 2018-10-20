@@ -60,4 +60,8 @@ public class PDAServiceManagerImpl implements IPDAServiceManager {
 		return returnList;
 	}
 
+	public Map<String, Object> getGongGaoInfo(String clxh) {
+		return pDAServiceRepository.getGongGaoInfo(clxh);
+	}
+
 }

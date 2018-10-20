@@ -171,6 +171,9 @@ public class PreCarRegister extends BaseEntity {
 	//手机号码
 	@Column(name="SJHM",length = 20)
 	private String sjhm;
+	//是否校车
+	@Column(name="VEH_SFXC",length = 1)
+	private String veh_sfxc;
 	
 	@Transient
 	private boolean sdzt;
@@ -613,6 +616,16 @@ public class PreCarRegister extends BaseEntity {
 
 	public void setSjhm(String sjhm) {
 		this.sjhm = sjhm;
+	}
+
+
+	public String getVeh_sfxc() {
+		return veh_sfxc;
+	}
+
+
+	public void setVeh_sfxc(String veh_sfxc) {
+		this.veh_sfxc = veh_sfxc;
 	}
 	
 	

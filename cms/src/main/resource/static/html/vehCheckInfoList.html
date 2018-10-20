@@ -53,7 +53,7 @@ function viewCheckInfo() {
 		//
 		$.post("../../vheCheckInfo/printCheckInfo",{"lsh":row.lsh,"cycs":row.cycs},function(data){
 			if(data.state==1){
-				$("#printTemplet img").attr("src","../cache/report/template_pt_qd_01_"+data.data+".jpg");
+				$("#printTemplet img").attr("src","../cache/report/"+data.data);
 				var printObj = {};
 				printObj.prview = true;
 				printCYD(printObj);
@@ -75,7 +75,7 @@ function printCheckInfo() {
 		//
 		$.post("../../vheCheckInfo/printCheckInfo",{"lsh":row.lsh,"cycs":row.cycs},function(data){
 			if(data.state==1){
-				$("#printTemplet img").attr("src","../cache/report/template_pt_qd_01_"+data.data+".jpg");
+				$("#printTemplet img").attr("src","../cache/report/"+data.data);
 				var isView = $("#isView").checkbox("options").checked;
 				var printObj = {};
 				printObj.prview = isView;
@@ -99,7 +99,7 @@ function tdCheckInfo() {
 		//
 		$.post("../../vheCheckInfo/tdCheckInfo",{"lsh":row.lsh,"cycs":row.cycs},function(data){
 			if(data.state==1){
-				$("#printTemplet img").attr("src","../cache/report/template_pt_td_01_"+data.data+".jpg");
+				$("#printTemplet img").attr("src","../cache/report/"+data.data);
 				var isView = $("#isView").checkbox("options").checked;
 				var printObj = {};
 				printObj.prview = isView;

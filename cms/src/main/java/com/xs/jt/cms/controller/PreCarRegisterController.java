@@ -43,6 +43,7 @@ import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutNewAccessServiceStub;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutService;
 import com.xs.jt.cms.common.BarcodeUtil;
+import com.xs.jt.cms.common.CommonUtil;
 import com.xs.jt.cms.common.MatrixToImageWriter;
 import com.xs.jt.cms.common.URLCodeUtil;
 import com.xs.jt.cms.entity.PreCarRegister;
@@ -92,8 +93,8 @@ public class PreCarRegisterController {
 			bcr.setStationCode(stationCode);
 			String lsh = null;
 			if ("A".equals(bcr.getYwlx())) {
-				lsh = getlsh();
-				//lsh = "123456789101111511";
+				//lsh = getlsh();
+				lsh = "123456789101111512";
 				bcr.setLsh(lsh);
 			}
 			if (null == bcr.getDpid() || "".equals(bcr.getDpid().trim())) {
@@ -106,9 +107,13 @@ public class PreCarRegisterController {
 				if(StringUtils.isEmpty(bcr.getHphm())) {
 					data.put("hphm", bcr.getClsbdh());
 				}
-				
+				String template = "template_pt_first.doc";
+				if ("Y".equals(bcr.getVeh_sfxc())) {
+					template = "template_pt_xc.doc";
+					CommonUtil.setXczl(bcr, data);
+				}
 				Map<String, List<BaseParams>> bpsMap = (Map<String, List<BaseParams>>) servletContext.getAttribute("bpsMap");
-				com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil("template_pt_first.doc", data,bpsMap);
+				com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil(template, data,bpsMap);
 				Sql2WordUtil.toCase(doc, cacheDir, "\\report\\template_ptc_01_"+lsh+".jpg");
 			}
 			return ResultHandler.resultHandle(result, lsh, Constant.ConstantMessage.SAVE_SUCCESS);
@@ -116,6 +121,8 @@ public class PreCarRegisterController {
 			return ResultHandler.toErrorJSON("数据校验失败");
 		}
 	}
+
+	
 	
 	@UserOperation(code="getCarList",name="查询已登记信息")
 	@RequestMapping(value = "getCarList", method = RequestMethod.POST)
@@ -341,7 +348,12 @@ public class PreCarRegisterController {
 				}
 				
 				Map<String, List<BaseParams>> bpsMap = (Map<String, List<BaseParams>>) servletContext.getAttribute("bpsMap");
-				com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil("template_pt_first.doc", data,bpsMap);
+				String template = "template_pt_first.doc";
+				if ("Y".equals(bcr.getVeh_sfxc())) {
+					template = "template_pt_xc.doc";
+					CommonUtil.setXczl(bcr, data);
+				}
+				com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil(template, data,bpsMap);
 				Sql2WordUtil.toCase(doc, cacheDir, "\\report\\template_ptc_01_"+bcr.getLsh()+".jpg");
 				
 			}
@@ -350,6 +362,16 @@ public class PreCarRegisterController {
 			throw new  ApplicationException("打印查验单异常",e);
 		}
 		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "打印查验单成功", lsh);
+	}
+	
+	@UserOperation(code = "getGongGaoInfo", name = "根据车辆型号查询第一条公告信息")
+	@RequestMapping(value = "getGongGaoInfo", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getGongGaoInfo(String clxh) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map = this.pDAServiceManager.getGongGaoInfo(clxh);
+//		map.put("BH", "001");
+//		map.put("CLLX", "K18");
+		return map;
 	}
 	
 	

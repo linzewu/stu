@@ -14,6 +14,7 @@
 	src="../js/easyui/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../js/selfHelp.js"></script>
 
 <title>机动车查验自助终端</title>
 <style type="text/css">
@@ -60,13 +61,16 @@
 		<div class="label-date">2018-09-09 14:21:59</div>
 	</div>
 	<div data-options="region:'center'" style="background-color: rgb(242, 242, 245);text-align: center;">
-		<a href="checkAndRegister.html" class="easyui-linkbutton c8" style="width:300px;height: 160px;margin-top: 140px;"><img alt="" src="../images/car_64.png" style="widows: 64px;height: 64px;"/><br><font style="font-size: 24px;">查验登记</font></a>
-		<a href="#" class="easyui-linkbutton c8" style="width:300px;height: 160px;margin-top: 140px;margin-left: 100px;" onclick="alert('222')"><img alt="" src="../images/search_64.png" style="widows: 64px;height: 64px;"/><br><font style="font-size: 24px;">流水查询</font></a>
+		<a href="#" class="easyui-linkbutton c8" style="width:300px;height: 160px;margin-top: 50px;" onclick="openPage('')"><img alt="" src="../images/car_64.png" style="widows: 64px;height: 64px;"/><br><font style="font-size: 24px;">查验登记</font></a>
+		<a href="#" class="easyui-linkbutton c8" style="width:300px;height: 160px;margin-top: 50px;margin-left: 100px;" onclick="alert('222')"><img alt="" src="../images/search_64.png" style="widows: 64px;height: 64px;"/><br><font style="font-size: 24px;">流水查询</font></a><br/>
+		
+		<a href="#" class="easyui-linkbutton c8" style="width:300px;height: 160px;margin-top: 50px;" onclick="openPage('Y')"><img alt="" src="../images/car_64.png" style="widows: 64px;height: 64px;"/><br><font style="font-size: 24px;">校车登记</font></a>
+		<a href="checkAndRegister.html" class="easyui-linkbutton c8" style="width:300px;height: 160px;margin-top: 50px;margin-left: 100px;"><img alt="" src="../images/car_64.png" style="widows: 64px;height: 64px;"/><br><font style="font-size: 24px;"></font></a>
 	</div>
 </body>
 <script type="text/javascript">
 $(function(){
-	var userName = "zouxiuling";
+	var userName = "admin";
 	var password = "888888";
 	$.post("../../user/login",{userName:userName,password:password}, function(data){
 		if(data.state==1){

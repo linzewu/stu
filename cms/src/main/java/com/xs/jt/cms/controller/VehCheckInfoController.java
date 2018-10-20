@@ -28,9 +28,11 @@ import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.common.Sql2WordUtil;
 import com.xs.jt.base.module.entity.BaseParams;
 import com.xs.jt.cms.common.BarcodeUtil;
+import com.xs.jt.cms.common.CommonUtil;
 import com.xs.jt.cms.entity.PreCarRegister;
 import com.xs.jt.cms.entity.VehCheckInfo;
 import com.xs.jt.cms.entity.VehiclePhotos;
+import com.xs.jt.cms.manager.IPreCarRegisterManager;
 import com.xs.jt.cms.manager.IVehCheckInfoManager;
 import com.xs.jt.cms.manager.IVehiclePhotosManager;
 
@@ -51,6 +53,9 @@ public class VehCheckInfoController {
 	
 	@Autowired
 	private IVehiclePhotosManager vehiclePhotosManager;
+	
+	@Autowired
+	private IPreCarRegisterManager preCarRegisterManager;
 
 	@UserOperation(code = "getCheckInfoList", name = "查询查验列表")
 	@RequestMapping(value = "getCheckInfoList", method = RequestMethod.POST)
@@ -69,38 +74,49 @@ public class VehCheckInfoController {
 	@UserOperation(code = "printCheckInfo", name = "打印查验单")
 	@RequestMapping(value = "printCheckInfo", method = RequestMethod.POST)
 	public @ResponseBody Map printCheckInfo(VehCheckInfo checkInfo) {
+		String imageName = "";
 		try {
 			if (StringUtils.isEmpty(checkInfo.getLsh())) {
 				return ResultHandler.toMyJSON(Constant.ConstantState.STATE_ERROR, "流水号不能为空", checkInfo.getLsh());
 			}
+			PreCarRegister pcr = preCarRegisterManager.findPreCarRegisterByLsh(checkInfo.getLsh());
 			String template = "template_pt_qd";
-			printing(checkInfo,template);
+			if ("Y".equals(pcr.getVeh_sfxc())) {
+				template = "template_pt_xc_qd";
+			}
+			imageName = printing(checkInfo,template,pcr);
 
 		} catch (Exception e) {
 			logger.error("打印查验单异常", e);
 			throw new ApplicationException("打印查验单异常", e);
 		}
-		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "打印查验单成功", checkInfo.getLsh());
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "打印查验单成功", imageName);
 	}
 	
 	@UserOperation(code = "tdCheckInfo", name = "套打查验单")
 	@RequestMapping(value = "tdCheckInfo", method = RequestMethod.POST)
 	public @ResponseBody Map tdCheckInfo(VehCheckInfo checkInfo) {
+		String imageName = "";
 		try {
 			if (StringUtils.isEmpty(checkInfo.getLsh())) {
 				return ResultHandler.toMyJSON(Constant.ConstantState.STATE_ERROR, "流水号不能为空", checkInfo.getLsh());
 			}
 			String template = "template_pt_td";
-			printing(checkInfo,template);
+			PreCarRegister pcr = preCarRegisterManager.findPreCarRegisterByLsh(checkInfo.getLsh());
+			if ("Y".equals(pcr.getVeh_sfxc())) {
+				template = "template_pt_xc_td";
+			}
+			imageName = printing(checkInfo,template,pcr);
 
 		} catch (Exception e) {
 			logger.error("套打查验单异常", e);
 			throw new ApplicationException("套打查验单异常", e);
 		}
-		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "套打查验单成功", checkInfo.getLsh());
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "套打查验单成功", imageName);
 	}
 	
-	private void printing(VehCheckInfo checkInfo,String template) {
+	private String printing(VehCheckInfo checkInfo,String template,PreCarRegister pcr) {
+		String imageName = "";
 		try {			
 
 			VehCheckInfo vci = vehCheckInfoManager.findVehCheckInfoByLshAndCycs(checkInfo.getLsh(),
@@ -114,6 +130,9 @@ public class VehCheckInfoController {
 			if (StringUtils.isEmpty(vci.getHphm())) {
 				data.put("hphm", vci.getClsbdh());
 			}
+			if ("Y".equals(pcr.getVeh_sfxc())) {
+				CommonUtil.setXczl(pcr, data);
+			}
 			//车前斜视45度
 			VehiclePhotos beforeImg = vehiclePhotosManager.findPhotosByLshAndZpzlAndJccs(vci.getLsh(),"11",vci.getCycs());
 			if(beforeImg != null) {
@@ -126,10 +145,12 @@ public class VehCheckInfoController {
 			}
 
 			com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil(template+".doc", data, bpsMap);
-			Sql2WordUtil.toCase(doc, cacheDir, "\\report\\"+template+"_01_" + vci.getLsh() + ".jpg");
+			imageName = template+"_01_" + vci.getLsh() + ".jpg";
+			Sql2WordUtil.toCase(doc, cacheDir, "\\report\\"+imageName);
 		}catch(Exception e) {
 			throw new ApplicationException(e);
 		}
+		return imageName;
 	}
 
 	public Map<String, Object> transformData(Map<String, Object> data, Map<String, List<BaseParams>> bpsMap) {

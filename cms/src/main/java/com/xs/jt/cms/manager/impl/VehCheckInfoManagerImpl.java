@@ -53,7 +53,7 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 		return vehCheckInfoRepository.findVehCheckInfoByLsh(lsh);
 	}
 
-	public Map<String, Object> getVehCheckInfoList(Integer page, Integer rows, VehCheckInfo vehCheckInfo) {
+	public Map<String, Object> getVehCheckInfoList(Integer page, Integer rows,final VehCheckInfo vehCheckInfo) {
 		
 		Pageable pageable = new QPageRequest(page, rows);
 
@@ -94,23 +94,19 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 		return Sql2WordUtil.toCase(doc, cacheDir, "\\report\\template_ptc_01"+id+".jpg");
 	}
 
-	@Override
 	public VehCheckInfo findBhgVehCheckInfoByLsh(String lsh) {
 		return this.vehCheckInfoRepository.findBhgVehCheckInfoByLsh(lsh);
 	}
 
-	@Override
 	public VehCheckInfo findBhgVehCheckInfoByHphmHpzl(String hphm, String hpzl) {
 		
 		return this.vehCheckInfoRepository.findBhgVehCheckInfoByHphmHpzl(hphm, hpzl);
 	}
 
-	@Override
 	public Integer findMaxCsByLsh(String lsh) {
 		return vehCheckInfoRepository.findMaxCsByLsh(lsh);
 	}
 
-	@Override
 	public VehCheckInfo findVehCheckInfoByLshAndCycs(String lsh, int cycs) {
 		return vehCheckInfoRepository.findVehCheckInfoByLshAndCycs(lsh, cycs);
 	}

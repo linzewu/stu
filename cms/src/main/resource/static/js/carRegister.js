@@ -757,11 +757,11 @@ function loadImplCarParam(index,row){
 }
 
 function shSaveAndPring() {
-	if($("#syr").text() == "" || $("#sfz").text() == "" || $("#dz").text() == ""){
+	if($("#syr_s").text() == "" || $("#sfz_s").text() == "" || $("#dz_s").text() == ""){
 		$.messager.alert("提示","请将二代身份证放置在身份证识别区","info");
 		return;
 	}
-	if($("#clsbdh").text() == "" || $("#clxh").text() == "" || $("#fdjh").text() == "" || $("#csys").text() == ""){
+	if($("#clsbdh_s").text() == "" || $("#clxh_s").text() == "" || $("#fdjh_s").text() == "" || $("#csys_s").text() == ""){
 		$.messager.alert("提示","请扫描车辆合格证","info");
 		return;
 	}
@@ -792,6 +792,7 @@ function shSaveAndPring() {
 					$("#clxh").text("");
 					$("#fdjh").text("");
 					$("#csys").text("");
+					vehSfxc = "";
 					window.location.href="shIndex.html";
 				});
 				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");

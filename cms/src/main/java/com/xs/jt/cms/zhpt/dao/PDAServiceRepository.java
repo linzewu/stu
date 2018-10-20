@@ -42,4 +42,9 @@ public class  PDAServiceRepository {
 		return jdbcTemplate.queryForList(sql, clxh + "%");
 	}
 	
+	public Map<String,Object> getGongGaoInfo(String clxh){
+		String sql = "SELECT * from trff_app.PCB_ST_VEHICLE PSV where PSV.CLXH = ? and rownum = 1 order by PSV.GGRQ desc";
+		return jdbcTemplate.queryForMap(sql, clxh);
+	}
+	
 }
