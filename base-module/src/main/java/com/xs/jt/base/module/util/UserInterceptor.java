@@ -38,7 +38,7 @@ public class UserInterceptor implements HandlerInterceptor {
 			map.put("session", request.getSession().getId());
 			 ObjectMapper mapper = new ObjectMapper();
 			 String message = mapper.writeValueAsString(map);
-			 //response.setCharacterEncoding("UTF-8");
+			 response.setCharacterEncoding("UTF-8");
 			 response.setContentType("application/json;charset=utf-8");
 			 response.getWriter().write(message);
 			return false;
