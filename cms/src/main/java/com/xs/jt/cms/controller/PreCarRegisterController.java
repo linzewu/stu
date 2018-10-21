@@ -93,8 +93,8 @@ public class PreCarRegisterController {
 			bcr.setStationCode(stationCode);
 			String lsh = null;
 			if ("A".equals(bcr.getYwlx())) {
-				//lsh = getlsh();
-				lsh = "123456789101111512";
+				lsh = getlsh();
+				//lsh = "123456789101111512";
 				bcr.setLsh(lsh);
 			}
 			if (null == bcr.getDpid() || "".equals(bcr.getDpid().trim())) {

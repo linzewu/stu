@@ -11,6 +11,8 @@ public interface IPDAServiceManager {
 	
 	List<Map<String,Object>> findGongGaoListbyCLXH(String clxh);
 	
+	List<Map<String,Object>> findAllGongGaoListbyCLXH(String clxh);
+	
 	List<Map<String,Object>> getListOfDPGG(String dpid);
 	
 	List<Map<String,Object>> getDPGG(String bh);

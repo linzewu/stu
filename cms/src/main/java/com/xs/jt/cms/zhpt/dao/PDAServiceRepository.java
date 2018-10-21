@@ -28,6 +28,14 @@ public class  PDAServiceRepository {
 		return jdbcTemplate.queryForList(sql,clxh+"%");
 	}
 	
+	
+	public  List<Map<String,Object>> findAllGongGaoListbyCLXH(String clxh) {
+		String sql = "SELECT PSV.*,TO_CHAR(PSV.GGRQ,'YYYY-MM-DD') ||' '|| PSV.CLXH  as GGRQ  FROM trff_app.PCB_ST_VEHICLE PSV"
+				+ " WHERE PSV.CLXH LIKE ? order by PSV.GGRQ desc";
+		return jdbcTemplate.queryForList(sql,clxh+"%");
+	}
+	
+	
 	public  List<Map<String,Object>> getListOfDPGG(String dpid){
 		String sql = "select c.* from trff_app.PCB_ST_CHASSIS c where dpid=?";
 		return jdbcTemplate.queryForList(sql, dpid);

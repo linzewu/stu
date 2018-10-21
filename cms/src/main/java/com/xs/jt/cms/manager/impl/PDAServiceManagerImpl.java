@@ -26,6 +26,10 @@ public class PDAServiceManagerImpl implements IPDAServiceManager {
 	public List<Map<String, Object>> findGongGaoListbyCLXH(String clxh) {
 		return pDAServiceRepository.findGongGaoListbyCLXH(clxh);
 	}
+	
+	public List<Map<String, Object>> findAllGongGaoListbyCLXH(String clxh) {
+		return pDAServiceRepository.findAllGongGaoListbyCLXH(clxh);
+	}
 
 	public List<Map<String, Object>> getListOfDPGG(String dpid) {
 		return pDAServiceRepository.getListOfDPGG(dpid);

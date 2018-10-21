@@ -401,6 +401,17 @@ public class PDAServiceController {
 		}
 		return list;
 	}
+	
+	
+	@UserOperation(code = "getAllGongGaoListbyCLXH", name = "获取完整公告列表")
+	@RequestMapping(value = "getAllGongGaoListbyCLXH", method = RequestMethod.POST)
+	public @ResponseBody List<Map<String, Object>> getAllGongGaoListbyCLXH(String clxh) {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		if (clxh != null) {
+			list = pDAServiceManager.findAllGongGaoListbyCLXH(clxh);
+		}
+		return list;
+	}
 
 	private void convertData(List list) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
