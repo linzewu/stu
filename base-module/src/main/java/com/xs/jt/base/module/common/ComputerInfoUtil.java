@@ -12,7 +12,7 @@ import java.util.Properties;
 
 public class ComputerInfoUtil {
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 
 		Properties p = System.getProperties();// 获取当前的系统属性
 
@@ -26,7 +26,7 @@ public class ComputerInfoUtil {
 
 
 	}
-
+*/
 	private static String toHexString(int i) {
 
 		String str = Integer.toHexString((int) (i & 0xff));
