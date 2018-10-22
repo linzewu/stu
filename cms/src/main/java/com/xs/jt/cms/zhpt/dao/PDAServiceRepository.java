@@ -55,4 +55,10 @@ public class  PDAServiceRepository {
 		return jdbcTemplate.queryForMap(sql, clxh);
 	}
 	
+	public List<String> getZPBHList(String bh){
+		String sql="Select PSPS.ZPBH from trff_app.PCB_ST_PHOTODES PSPS WHERE PSPS.BH=?";
+		return jdbcTemplate.queryForList(sql, String.class,bh);
+		
+	}
+	
 }

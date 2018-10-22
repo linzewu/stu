@@ -29,8 +29,19 @@ public class CMSConfig {
 		return DataSourceBuilder.create().build();
 	}
 	
+	@Bean(name = "oraImgDataSource")
+	@ConfigurationProperties(prefix = "spring.datasource.img")
+	public DataSource oraImgDataSource() {
+		return DataSourceBuilder.create().build();
+	}
+	
 	@Bean(name = "oraJdbcTemplate")
 	public JdbcTemplate oraJdbcTemplate(@Qualifier("oraDataSource") DataSource dataSource) {
+		return new JdbcTemplate(dataSource);
+	}
+	
+	@Bean(name = "oraImgJdbcTemplate")
+	public JdbcTemplate oraImgJdbcTemplate(@Qualifier("oraImgDataSource") DataSource dataSource) {
 		return new JdbcTemplate(dataSource);
 	}
 	
