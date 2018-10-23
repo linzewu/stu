@@ -4,8 +4,8 @@ import java.io.BufferedInputStream;
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.axiom.om.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,19 +22,19 @@ public class GongGaoImageManagerImpl implements IGongGaoImageManager {
 	private GongGaoImageRepository gongGaoImageRepository;
 
 	@Override
-	public List getGongGaoImagesByBh(String bh) {
-		List zpList=new ArrayList();
+	public List<String> getGongGaoImagesByBh(String bh) {
+		List<String> zpList=new ArrayList<String>();
 		List<String> imageBH = pDAServiceRepository.getZPBHList(bh);
 		byte[] b = null;
 		Blob blob = null;
-		//BASE64Encoder encoder=new BASE64Encoder();
 		if(imageBH!=null){
-			List list = gongGaoImageRepository.getGongGaoImageList(imageBH);
+			List<Blob> list = gongGaoImageRepository.getGongGaoImageList(imageBH);
 			for(int i=0;i<list.size();i++){
-				blob =(Blob)list.get(0);
+				blob =list.get(0);
 				b=blobToBytes(blob);
+				String strImage = Base64.encode(b);
 				//String strImage = encoder.encode(b);
-				//zpList.add(strImage);
+				zpList.add(strImage);
 				
 			}
 		}

@@ -51,6 +51,7 @@ import com.xs.jt.cms.manager.IVehiclePhotosManager;
 
 import net.sf.json.JSONObject;
 
+import com.xs.jt.cms.manager.IGongGaoImageManager;
 import com.xs.jt.cms.manager.IPDAServiceManager;
 import com.xs.jt.cms.manager.IVehCheckInfoManager;
 import com.xs.jt.cms.manager.IPreCarRegisterManager;
@@ -86,6 +87,9 @@ public class PDAServiceController {
 
 	@Resource(name = "baseParamsManager")
 	private IBaseParamsManager baseParamsManager;
+	
+	@Autowired
+	private IGongGaoImageManager gongGaoImageManager;
 
 	public static String YWLX_TYPE = "check.ywlx";
 
@@ -582,6 +586,18 @@ public class PDAServiceController {
 			return map;
 		}
 
+	}
+	
+	@UserOperation(code = "getGongGaoImagesByBh", name = "根据公告编号获取公告照片")
+	@RequestMapping(value = "getGongGaoImagesByBh", method = RequestMethod.POST)
+	public @ResponseBody List<String> getGongGaoImagesByBh(String bh) {
+		List<String> imageList = new ArrayList<String>();
+		try {
+			imageList = gongGaoImageManager.getGongGaoImagesByBh(bh);
+		} catch (Exception e) {
+			throw new ApplicationException("根据公告编号获取公告照片异常", e);
+		}
+		return imageList;
 	}
 
 }
