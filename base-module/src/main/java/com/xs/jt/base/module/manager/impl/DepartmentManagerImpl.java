@@ -19,25 +19,18 @@ import com.xs.jt.base.module.util.SortTools;
 @Service("departmentManager")
 public class DepartmentManagerImpl implements IDepartmentManager {
 	
-	//@Resource(name = "sysHibernateTemplate")
-//	private HibernateTemplate hibernateTemplate;
 	
 	@Autowired
 	private DepartmentRepository departmentRepository;
 
 	
 	public List<Department> getDepts() {
-//		DetachedCriteria dc = DetachedCriteria.forClass(Department.class);
-//		dc.addOrder(Order.asc("seq"));
-//		List<Department> depts = (List<Department>) this.hibernateTemplate
-//				.findByCriteria(dc);
 		return this.departmentRepository.findAll(SortTools.basicSort("asc", "seq"));//depts;
 	}
 
 	
 	public Department saveDept(Department dept) {
 		return this.departmentRepository.save(dept);
-//		return this.hibernateTemplate.merge(dept);
 	}
 
 	
@@ -46,7 +39,6 @@ public class DepartmentManagerImpl implements IDepartmentManager {
 		Department d = getdeptByCode(dept.getBmdm());
 		if(d!=null&&d.getId()!=null){
 			this.departmentRepository.delete(d);
-//			this.hibernateTemplate.delete(d);
 		}
 		
 	}

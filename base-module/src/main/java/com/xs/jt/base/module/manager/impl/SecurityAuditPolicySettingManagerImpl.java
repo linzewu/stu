@@ -23,56 +23,19 @@ import com.xs.jt.base.module.manager.ISecurityAuditPolicySettingManager;
 
 @Service("securityAuditPolicySettingManager")
 public class SecurityAuditPolicySettingManagerImpl implements ISecurityAuditPolicySettingManager {
-
-	//@Resource(name = "sysHibernateTemplate")
-//	private HibernateTemplate hibernateTemplate;
 	
 	@Autowired
 	private SecurityAuditPolicySettingRepository securityAuditPolicySettingRepository;
-	
-	/**public List<SecurityAuditPolicySetting> getList(Integer page, Integer rows,
-			SecurityAuditPolicySetting securityAuditPolicySetting) {
-		DetachedCriteria query = DetachedCriteria.forClass(SecurityAuditPolicySetting.class);
-
-		Integer firstResult = (page - 1) * rows;
-		if(securityAuditPolicySetting.getAqsjcllxmc()!=null&&!"".equals(securityAuditPolicySetting.getAqsjcllxmc().trim())){
-			query.add(Restrictions.eq("aqsjcllxmc", securityAuditPolicySetting.getAqsjcllxmc()));
-		}
-		
-		List<SecurityAuditPolicySetting> vcps = (List<SecurityAuditPolicySetting>) this.hibernateTemplate.findByCriteria(query, firstResult,
-				rows);
-
-		return vcps;
-	}
-
-	
-	public Integer getListCount(Integer page, Integer rows, SecurityAuditPolicySetting securityAuditPolicySetting) {
-		DetachedCriteria query = DetachedCriteria.forClass(SecurityAuditPolicySetting.class);
-
-		query.setProjection(Projections.rowCount());
-		if(securityAuditPolicySetting.getAqsjcllxmc()!=null&&!"".equals(securityAuditPolicySetting.getAqsjcllxmc().trim())){
-			query.add(Restrictions.eq("aqsjcllxmc", securityAuditPolicySetting.getAqsjcllxmc()));
-		}
-		List<Long> count = (List<Long>) hibernateTemplate.findByCriteria(query);
-
-		return count.get(0).intValue();
-	}**/
 
 	
 	public void updateSecurityAuditPolicySetting(List<SecurityAuditPolicySetting> list) {
 		for(SecurityAuditPolicySetting vo:list) {
-			//this.hibernateTemplate.update(vo);
 			securityAuditPolicySettingRepository.save(vo);
 		}
 	}
 
 	
 	public SecurityAuditPolicySetting getPolicyByCode(String aqsjclbm) {
-//		StringBuffer sb=new StringBuffer("from SecurityAuditPolicySetting where aqsjclbm=? AND sfkq = '0'");
-//		
-//		List<SecurityAuditPolicySetting> sets=(List<SecurityAuditPolicySetting> )this.hibernateTemplate.find(sb.toString(), aqsjclbm);
-//		
-//		return sets==null||sets.size()==0?null:sets.get(0);
 		SecurityAuditPolicySetting setting = this.securityAuditPolicySettingRepository.findByAqsjclbm(aqsjclbm);
 		return setting;
 	}

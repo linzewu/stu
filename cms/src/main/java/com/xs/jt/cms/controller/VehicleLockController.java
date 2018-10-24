@@ -36,7 +36,7 @@ public class VehicleLockController {
 	
 	@UserOperation(code="save",name="保存机动车业务锁定信息")
 	@RequestMapping(value = "save", method = RequestMethod.POST)
-	public @ResponseBody Map save(VehicleLock vehicleLock) {
+	public @ResponseBody Map<String,Object> save(VehicleLock vehicleLock) {
 		User user = (User) session.getAttribute("user");
 		vehicleLock.setSdr(user.getYhm());
 		vehicleLock.setSdsj(new Date());
@@ -48,7 +48,7 @@ public class VehicleLockController {
 	
 	@UserOperation(code="unLock",name="解锁机动车业务锁定信息")
 	@RequestMapping(value = "unLock", method = RequestMethod.POST)
-	public @ResponseBody Map unLock(VehicleLock vehicleLock) {
+	public @ResponseBody Map<String,Object> unLock(VehicleLock vehicleLock) {
 		User user = (User) session.getAttribute("user");
 		vehicleLock.setJsr(user.getYhm());
 		vehicleLock.setJssj(new Date());

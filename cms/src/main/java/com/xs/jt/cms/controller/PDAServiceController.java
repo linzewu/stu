@@ -93,8 +93,9 @@ public class PDAServiceController {
 
 	public static String YWLX_TYPE = "check.ywlx";
 
-	@RequestMapping(value = "addPoliceCheckInfo", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> addPoliceCheckInfo(VehCheckInfo vehCheckInfo, BindingResult result)
+	@UserOperation(code = "addVehCheckInfo", name = "保存查验信息")
+	@RequestMapping(value = "addVehCheckInfo", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> addVehCheckInfo(VehCheckInfo vehCheckInfo, BindingResult result)
 			throws Exception {
 		User user = (User) session.getAttribute("user");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd  HH:mm:ss");
@@ -313,6 +314,7 @@ public class PDAServiceController {
 		return seq;
 	}
 
+	@UserOperation(code = "findPreCarRegisterByLsh", name = "根据流水号查询车辆登记信息")
 	@RequestMapping(value = "findPreCarRegisterByLsh", method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> findPreCarRegisterByLsh(String lsh) {
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -328,7 +330,7 @@ public class PDAServiceController {
 		return map;
 	}
 
-	@UserOperation(code = "getCarInfoByCarNumber", name = "获取基础信息")
+	@UserOperation(code = "getCarInfoByCarNumber", name = "根据号牌号码,号牌种类获取基础信息")
 	@RequestMapping(value = "getCarInfoByCarNumber", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> getCarInfoByCarNumber(String hpzl, String hphm) {
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -472,9 +474,9 @@ public class PDAServiceController {
 
 	}
 
-	@UserOperation(code = "uploadFile", name = "上传图片")
-	@RequestMapping(value = "uploadFile", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> uploadFile(VehiclePhotos motorVehiclePhotos, MultipartFile file,
+	@UserOperation(code = "uploadImageFile", name = "上传图片")
+	@RequestMapping(value = "uploadImageFile", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> uploadImageFile(VehiclePhotos motorVehiclePhotos, MultipartFile file,
 			@ApiIgnore() BindingResult result) throws Exception {
 		User user = (User) session.getAttribute("user");
 		// 校验车辆是否被锁定，如果被锁定则不能保存(如果当前用户是锁定人则可以保存)
@@ -580,7 +582,7 @@ public class PDAServiceController {
 				map.put("lockData", lockList);
 
 			} catch (Exception e) {
-				throw new ApplicationException("获取基础信息异常", e);
+				throw new ApplicationException("在用车查验复检异常", e);
 			}
 
 			return map;

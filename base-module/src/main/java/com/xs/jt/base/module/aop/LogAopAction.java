@@ -60,7 +60,8 @@ public class LogAopAction {
 	@Autowired
 	private ServletContext servletContext;
 
-	@Pointcut("execution(* com.xs.jt.base.module.controller.*.*(..))")
+	//@Pointcut("execution(* com.xs.jt.base.module.controller.*.*(..))")
+	@Pointcut("execution(* com.xs.jt..*.controller.*.*(..))")
 	private void controllerAspect() {
 	}
 

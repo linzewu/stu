@@ -1,7 +1,6 @@
 package com.xs.jt.cms.controller;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +72,7 @@ public class VehCheckInfoController {
 
 	@UserOperation(code = "printCheckInfo", name = "打印查验单")
 	@RequestMapping(value = "printCheckInfo", method = RequestMethod.POST)
-	public @ResponseBody Map printCheckInfo(VehCheckInfo checkInfo) {
+	public @ResponseBody Map<String,Object> printCheckInfo(VehCheckInfo checkInfo) {
 		String imageName = "";
 		try {
 			if (StringUtils.isEmpty(checkInfo.getLsh())) {
@@ -95,7 +94,7 @@ public class VehCheckInfoController {
 	
 	@UserOperation(code = "tdCheckInfo", name = "套打查验单")
 	@RequestMapping(value = "tdCheckInfo", method = RequestMethod.POST)
-	public @ResponseBody Map tdCheckInfo(VehCheckInfo checkInfo) {
+	public @ResponseBody Map<String,Object> tdCheckInfo(VehCheckInfo checkInfo) {
 		String imageName = "";
 		try {
 			if (StringUtils.isEmpty(checkInfo.getLsh())) {
@@ -115,6 +114,7 @@ public class VehCheckInfoController {
 		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "套打查验单成功", imageName);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private String printing(VehCheckInfo checkInfo,String template,PreCarRegister pcr) {
 		String imageName = "";
 		try {			

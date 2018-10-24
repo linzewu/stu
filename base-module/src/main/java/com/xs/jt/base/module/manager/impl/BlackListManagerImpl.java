@@ -26,34 +26,26 @@ import com.xs.jt.base.module.manager.IBlackListManager;
 @Service("blackListManager")
 public class BlackListManagerImpl implements IBlackListManager {
 
-	//@Resource(name = "sysHibernateTemplate")
-//	private HibernateTemplate hibernateTemplate;
 	@Autowired
 	private BlackListRepository blackListRepository;
 	//@Override
 	public void saveBlackList(BlackList blackList) {
 		blackListRepository.save(blackList);
-//		this.hibernateTemplate.saveOrUpdate(blackList);
 	}
 
 	//@Override
 	public void deleteBlackList(BlackList blackList) {
 		blackListRepository.delete(blackList);
-//		this.hibernateTemplate.delete(blackList);
 
 	}
 
 	//@Override
 	public void deleteSystemBlackList() {
-//		List<BlackList> blackList = (List<BlackList>) hibernateTemplate.find("from BlackList where createBy=?",User.SYSTEM_USER);
-//		hibernateTemplate.deleteAll(blackList);
 		blackListRepository.deleteAll();
 	}
 
 	//@Override
 	public BlackList getBlackListByIp(String ip) {
-//		BlackList blackList = this.hibernateTemplate.get(BlackList.class, ip);
-//		return blackList;
 		return blackListRepository.findBlackListByIp(ip);
 	}
 
@@ -70,30 +62,6 @@ public class BlackListManagerImpl implements IBlackListManager {
 		}
 		return false;
 	}
-
-	//@Override
-//	public List<BlackList> getList(Integer page, Integer rows, BlackList blackList) {
-//		DetachedCriteria query = DetachedCriteria.forClass(BlackList.class);
-//
-//		Integer firstResult = (page - 1) * rows;
-//		query.add(Restrictions.eq("enableFlag", "Y"));
-//		
-//		List<BlackList> vcps = (List<BlackList>) this.hibernateTemplate.findByCriteria(query, firstResult,
-//				rows);
-//
-//		return vcps;
-//	}
-
-	//@Override
-//	public Integer getListCount(Integer page, Integer rows, BlackList blackList) {
-//		DetachedCriteria query = DetachedCriteria.forClass(BlackList.class);
-//
-//		query.setProjection(Projections.rowCount());
-//		
-//		List<Long> count = (List<Long>) hibernateTemplate.findByCriteria(query);
-//
-//		return count.get(0).intValue();
-//	}
 
 	//@Override
 	public List<BlackList> getEnableList() {

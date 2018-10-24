@@ -23,39 +23,12 @@ import com.xs.jt.base.module.manager.ISecurityLogManager;
 @Service("securityLogManager")
 public class SecurityLogManagerImpl implements ISecurityLogManager {
 	
-	//@Resource(name = "sysHibernateTemplate")
-//	private HibernateTemplate hibernateTemplate;
-	
 	@Autowired
 	private SecurityLogRepository securityLogRepository;
-
-	/**
-	public List<SecurityLog> getSecurityLog(Integer page, Integer rows, SecurityLog securityLog) {
-		DetachedCriteria query = DetachedCriteria.forClass(SecurityLog.class);
-
-		Integer firstResult = (page - 1) * rows;
-		
-		List<SecurityLog> vcps = (List<SecurityLog>) this.hibernateTemplate.findByCriteria(query, firstResult,
-				rows);
-
-		return vcps;
-	}
-
-	
-	public Integer getSecurityLogCount(Integer page, Integer rows, SecurityLog securityLog) {
-		DetachedCriteria query = DetachedCriteria.forClass(SecurityLog.class);
-
-		query.setProjection(Projections.rowCount());
-		
-		List<Long> count = (List<Long>) hibernateTemplate.findByCriteria(query);
-
-		return count.get(0).intValue();
-	}**/
 
 	
 	public void saveSecurityLog(SecurityLog securityLog) {
 		securityLogRepository.save(securityLog);
-		//this.hibernateTemplate.save(securityLog);
 	}
 
 
