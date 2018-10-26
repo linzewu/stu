@@ -5,9 +5,10 @@ import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.axiom.om.util.Base64;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Base64Utils;
 
 import com.xs.jt.cms.manager.IGongGaoImageManager;
 import com.xs.jt.cms.zhpt.dao.GongGaoImageRepository;
@@ -32,7 +33,7 @@ public class GongGaoImageManagerImpl implements IGongGaoImageManager {
 			for(int i=0;i<list.size();i++){
 				blob =list.get(0);
 				b=blobToBytes(blob);
-				String strImage = Base64.encode(b);
+				String strImage = Base64Utils.encodeToString(b);
 				//String strImage = encoder.encode(b);
 				zpList.add(strImage);
 				

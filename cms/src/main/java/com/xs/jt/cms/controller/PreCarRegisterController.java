@@ -287,13 +287,14 @@ public class PreCarRegisterController {
 	
 	@UserOperation(code = "getGongGaoInfoByGgbh", name = "获取公告信息")
 	@RequestMapping(value = "getGongGaoInfoByGgbh", method = RequestMethod.POST)
-	public @ResponseBody Map getGongGaoInfoByGgbh(String ggbh) {
-		Map map = new HashMap();
+	public @ResponseBody Map<String,Object> getGongGaoInfoByGgbh(String ggbh) {
+		Map<String,Object> map = new HashMap<String,Object>();
 		if (ggbh == null || "".equals(ggbh.trim())) {
 			return map;
 		}
 
 		List<Map<String, Object>> list = pDAServiceManager.findPcbStVehicle(ggbh);
+		
 
 		Map<String, Object> rMap = (Map) list.get(0);
 
@@ -303,7 +304,7 @@ public class PreCarRegisterController {
 			returnMap.put(key.toLowerCase(), rMap.get(key));
 		}
 
-		return returnMap;
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "获取公告信息成功", returnMap);//returnMap;
 
 	}
 	

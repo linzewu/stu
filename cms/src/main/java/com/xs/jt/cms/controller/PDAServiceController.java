@@ -15,7 +15,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.axiom.om.util.Base64;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -42,20 +41,18 @@ import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutNewAccessServiceStu
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutService;
 import com.xs.jt.cms.common.CommonUtil;
 import com.xs.jt.cms.common.URLCodeUtil;
-import com.xs.jt.cms.entity.VehiclePhotos;
+import com.xs.jt.cms.entity.PreCarRegister;
 import com.xs.jt.cms.entity.VehCheckInfo;
 import com.xs.jt.cms.entity.VehicleLock;
-import com.xs.jt.cms.entity.PreCarRegister;
+import com.xs.jt.cms.entity.VehiclePhotos;
+import com.xs.jt.cms.manager.IGongGaoImageManager;
+import com.xs.jt.cms.manager.IPDAServiceManager;
+import com.xs.jt.cms.manager.IPreCarRegisterManager;
+import com.xs.jt.cms.manager.IVehCheckInfoManager;
 import com.xs.jt.cms.manager.IVehicleLockManager;
 import com.xs.jt.cms.manager.IVehiclePhotosManager;
 
 import net.sf.json.JSONObject;
-
-import com.xs.jt.cms.manager.IGongGaoImageManager;
-import com.xs.jt.cms.manager.IPDAServiceManager;
-import com.xs.jt.cms.manager.IVehCheckInfoManager;
-import com.xs.jt.cms.manager.IPreCarRegisterManager;
-
 import springfox.documentation.annotations.ApiIgnore;
 
 @Controller
@@ -99,6 +96,7 @@ public class PDAServiceController {
 			throws Exception {
 		User user = (User) session.getAttribute("user");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd  HH:mm:ss");
+		vehCheckInfo.setCysj(new Date());
 		BaseParams baseParam = baseParamsManager.getBaseParam(YWLX_TYPE, vehCheckInfo.getYwlx());
 		String ywlx = baseParam == null ? "" : baseParam.getParamValue();
 		if (!result.hasErrors()) {
@@ -172,7 +170,7 @@ public class PDAServiceController {
 
 		String hphm = photo.getHphm();
 
-		String zp = Base64.encode(photo.getPhoto());
+		String zp = org.springframework.util.Base64Utils.encodeToString(photo.getPhoto());
 
 		String gxsj = sd.format(new Date());
 

@@ -352,11 +352,11 @@ $('#myform').form({
 			$.messager.alert('提示', "保存出错", 'error');
 		}
 	}
-});**/
+});
 
 $.post("a.html", null, function(data) {
 	$("#printTemplet").html(data);
-});
+});**/
 
 function loadCarInfo() {
 	var hpzl = $("#hpzl").combobox("getValue");

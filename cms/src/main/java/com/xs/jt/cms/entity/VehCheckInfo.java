@@ -5,10 +5,13 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.springframework.context.annotation.Scope;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.xs.jt.base.module.entity.BaseEntity;
 
 @Scope("prototype")
@@ -38,6 +41,8 @@ public class VehCheckInfo extends BaseEntity{
 	@Column(length=100)
 	private String cllx;
 	@Column
+	@DateTimeFormat(pattern = "yyyy-MM-dd")  
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date cysj;
 	@Column(length=20)
 	private String cyr;
@@ -147,6 +152,11 @@ public class VehCheckInfo extends BaseEntity{
 	private String jy49;
 	@Column(length=20)
 	private String jy50;
+	
+	@Transient
+	@DateTimeFormat(pattern = "yyyy-MM-dd")  
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	private Date cysjEnd;
 	public String getLsh() {
 		return lsh;
 	}
@@ -536,6 +546,12 @@ public class VehCheckInfo extends BaseEntity{
 	}
 	public void setCsys(String csys) {
 		this.csys = csys;
+	}
+	public Date getCysjEnd() {
+		return cysjEnd;
+	}
+	public void setCysjEnd(Date cysjEnd) {
+		this.cysjEnd = cysjEnd;
 	}
 	
 	

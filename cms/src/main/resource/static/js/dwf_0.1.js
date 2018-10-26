@@ -7,10 +7,10 @@ var qrtNumber=0;
 function testOnMove(left,top){
 	console.log(left+"\t"+top);
 }
-
+/**
 $(function() {
 	menuInit();
-});
+});**/
 
 function contexDestroy(){
 	alert("contexDestroy")
@@ -179,6 +179,7 @@ function baseEntityManager(id,beanType){
 			this.editIndex = undefined;
 		}
 }
+/**
 // 保存数据的方法
 function saveData(data) {
 	if(data['id']==null){
@@ -211,7 +212,7 @@ function deleteData(beanType,id) {
 	}).responseText;
 	
 	return $.parseJSON(text);
-}
+}**/
 
 function toedit(tid,url){
 	var row = $('#'+tid).datagrid("getSelected");
@@ -221,7 +222,7 @@ function toedit(tid,url){
 		$.messager.alert("提示","请选择需要修改的数据","warning");
 	}
 }
-
+/**
 function del(tid,beanType){
 	var row = $('#'+tid).datagrid("getSelected");
 	if(row!=null){
@@ -245,7 +246,7 @@ function delBaseEntity(beanType,id,callback){
 		   },"json");
 		}
 	});
-}
+}**/
 
 function savaDataByFrom(formId){
 	var isOK = $('#'+formId).form("validate");
@@ -309,7 +310,8 @@ function loadInfo(url,param,formId,callback){
 	
 	$.post(url,param,function(data){
 		try{
-			if(data.state==200&&data.data!=null){
+			
+			if(data.state==1&&data.data!=null){
 				var formData=data.data;
 				$("#"+formId).form("load",formData);
 				$(".readField").each(function(i,n){
@@ -332,19 +334,3 @@ function loadInfo(url,param,formId,callback){
 		}
 	},"json");
 }
-
-function logout(url){
-	$.post(url,null,function(data){
-		if(data.state==200){
-			window.location.href=window.location.href;
-		}
-	},"json");
-}
-
-$(document).ajaxStart(function(even,e){
-$.post('baseManager!!checkLogin.action',function(data){
-if(data=='false'){
-//window.location.href='login.jsp'
-}
-})
-});

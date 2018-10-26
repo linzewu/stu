@@ -18,7 +18,7 @@ public class GongGaoImageRepository {
 	
 	//trff_zjk.PCB_ST_PHOTO
 	public List<Blob> getGongGaoImageList(List<String> zpbh){
-	 	String sql = "SELECT ZP  FROM PCB_ST_PHOTO WHERE ZPBH IN (:zpbh)";
+	 	String sql = "SELECT ZP  FROM trff_zjk.PCB_ST_PHOTO WHERE ZPBH IN (:zpbh)";
 	 	
 	 	Map<String, Object> paramMap = new HashMap<String, Object>();
 	    paramMap.put("zpbh", zpbh);

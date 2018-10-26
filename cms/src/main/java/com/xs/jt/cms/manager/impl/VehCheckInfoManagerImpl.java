@@ -1,5 +1,6 @@
 package com.xs.jt.cms.manager.impl;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,6 +65,12 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 				List<Predicate> list = new ArrayList<Predicate>();
 				if(Common.isNotEmpty(vehCheckInfo.getClsbdh())) {
 					list.add(criteriaBuilder.like(root.get("clsbdh").as(String.class), "%"+ vehCheckInfo.getClsbdh()));
+				}
+				if(Common.isNotEmpty(vehCheckInfo.getCyr())) {
+					list.add(criteriaBuilder.equal(root.get("cyr").as(String.class), vehCheckInfo.getCyr()));
+				}
+				if(vehCheckInfo.getCysj() != null && vehCheckInfo.getCysjEnd() != null) {
+					list.add(criteriaBuilder.between(root.get("cysj").as(Date.class), vehCheckInfo.getCysj(),vehCheckInfo.getCysjEnd()));
 				}
 				//list.add(criteriaBuilder.equal(root.get("stationCode").as(String.class), "Y"));
 				

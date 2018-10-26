@@ -34,7 +34,9 @@
 	   <input class="easyui-checkbox" name="isView" id="isView" value="true" label="打印预览" labelWidth="80px" labelPosition="after"> 
     </div>
     <div style="margin-bottom:5px">
-    	车辆识别代号：<input type="text" class="easyui-textbox" id="clsbdh" >
+    	车辆识别代号：<input type="text" class="easyui-textbox" id="quer_clsbdh" style="width: 150px;">
+    	查验人：<input type="text" class="easyui-textbox" id="cyr" style="width: 150px;">
+    	查验时间：<input id="quer_cysj" class="easyui-datebox" style="width: 150px;">~<input id="quer_cysjEnd" class="easyui-datebox" style="width: 150px;">
     	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryClsbdh()">查询</a>
     </div>
 </div>
@@ -146,8 +148,11 @@ function toEdit(){
 }
 
 function queryClsbdh(){
-	var clsbdh=$("#clsbdh").textbox("getValue");
-	$('#vehCheckInfoDG').datagrid("reload",{clsbdh:clsbdh});
+	var quer_clsbdh=$("#quer_clsbdh").textbox("getValue");
+	var cyr=$("#cyr").textbox("getValue");
+	var cysj=$("#quer_cysj").datebox("getValue");
+	var cysjEnd=$("#quer_cysjEnd").datebox("getValue");
+	$('#vehCheckInfoDG').datagrid("reload",{clsbdh:quer_clsbdh,cyr:cyr,cysj:cysj,cysjEnd:cysjEnd});
 
 }
 
