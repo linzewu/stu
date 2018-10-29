@@ -122,6 +122,9 @@ public class BaseAopAction {
 					if (createUser.get(args[c]) == null) {
 						// 给变量赋值
 						createUser.set(args[c], yhm);
+					}
+					if (createTime.get(args[c]) == null) {
+						// 给变量赋值
 						createTime.set(args[c], sdf.format(new Date()));
 					}
 					

@@ -63,12 +63,12 @@ function save(){
 	data-options="url:'../../securityAuditPolicySetting/getPolicySettingList',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#policySetToolbar',onDblClickRow:onDBClickRow">
 	<thead> 
 		<tr>
-			<th data-options="field:'aqsjcllxmc',width:100">安全审计策略类型名称</th>
-			<th data-options="field:'aqsjclbm',width:100">安全审计策略子类型编码</th>
-			<th data-options="field:'aqsjclzlxmc',width:100">安全审计策略子类型名称</th>
-			<th data-options="field:'clz',width:100,editor:{type:'textbox'}">策略值</th>
+			<th data-options="field:'aqsjcllxmc',width:90">安全审计策略类型名称</th>
+			<th data-options="field:'aqsjclbm',width:90">安全审计策略子类型编码</th>
+			<th data-options="field:'aqsjclzlxmc',width:160">安全审计策略子类型名称</th>
+			<th data-options="field:'clz',width:40,editor:{type:'textbox'}">策略值</th>
 			<th data-options="field:'clzsm',width:100">策略值说明</th>
-			<th data-options="field:'sfkq',width:100,formatter:stateFormatter,editor:{type:'combobox',options:{required:true,data:comm.getBaseParames('sjclzt'),valueField: 'id',textField: 'value'}}">是否开启</th>
+			<th data-options="field:'sfkq',width:60,formatter:stateFormatter,editor:{type:'combobox',options:{required:true,data:comm.getBaseParames('sjclzt'),valueField: 'id',textField: 'value'}}">是否开启</th>
 		</tr>
 	</thead>
 </table>

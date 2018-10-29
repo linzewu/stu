@@ -29,7 +29,7 @@ public class DepartmentContorller {
 	@Resource(name = "departmentManager")
 	private DepartmentManagerImpl deptManager;
 
-	//@FunctionAnnotation(name = "部门查询")
+	
 	@UserOperation(code="getDepts",name="部门查询")
 	@RequestMapping(value = "getDepts", method = RequestMethod.POST)
 	public @ResponseBody List<Department> getDepts() {
@@ -37,10 +37,9 @@ public class DepartmentContorller {
 		return depts;
 	}
 
-	//@FunctionAnnotation(name = "部门信息修改", buttonName = "deptAdd,deptSave")
 	@UserOperation(code="save",name="部门信息修改")
 	@RequestMapping(value = "save", method = RequestMethod.POST)
-	public @ResponseBody Map saveDept(Department dept, BindingResult result) {
+	public @ResponseBody Map<String,Object> saveDept(Department dept, BindingResult result) {
 		
 		if(!result.hasErrors()){
 			Department d = this.deptManager.saveDept(dept);
@@ -53,10 +52,10 @@ public class DepartmentContorller {
 
 	}
 
-	//@FunctionAnnotation(name = "部门信息删除")
+	
 	@UserOperation(code="delete",name="部门信息删除")
 	@RequestMapping(value = "delete", method = RequestMethod.POST)
-	public @ResponseBody Map deleteDept(Department dept, BindingResult result) {
+	public @ResponseBody Map<String,Object> deleteDept(Department dept, BindingResult result) {
 		this.deptManager.deleteDept(dept);
 		return ResultHandler.toSuccessJSON("删除成功！");
 	}

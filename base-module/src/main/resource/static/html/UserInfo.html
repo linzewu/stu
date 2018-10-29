@@ -73,7 +73,7 @@
 						</td>
 						<td class="info_title">状态</td>
 						<td class="info">
-							<label for="zt_0">正常</label><input id="zt_0" value="0" name="zt" type="radio" checked="checked" />
+							<label for="zt_0">正常</label><input id="zt_0" value="0" name="zt" type="radio" />
 							<label for="zt_1">锁定</label><input id="zt_1" value="1" name="zt" type="radio" />
 							<label for="zt_2">停用</label><input id="zt_2" value="2" name="zt" type="radio" />
 							<!--<input type="hidden" name="jsqx" >-->
@@ -181,6 +181,8 @@ function initEditAttr(rows){
 		$("#permitBeginTime").val("08:00");
 		$("#permitEndTime").val("18:00");
 		setCurrentDeptNode();
+		
+		$("input[name='zt']").get(0).checked=true;
 		//createPowerList(0);
 		$("#userSave").linkbutton({
 			text:'保存',

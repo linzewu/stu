@@ -44,13 +44,10 @@ public class RoleController {
 	@Autowired
 	private ServletContext servletContext;
 
-	//@FunctionAnnotation(name = "角色查询")
+	
 	@UserOperation(code="getRoles",name="查询角色")
 	@RequestMapping(value = "getRoles", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> getRoles(Role role, Integer page, Integer rows) {
-//		List<Role> roles = roleManager.getRoleList(role, page, rows);
-//		Integer count = roleManager.getRoleCount(role);
-//		return ResultHandler.toMyJSON(roles, count);
 		return roleManager.getRoles(page-1, rows, role);
 	}
 
@@ -101,6 +98,7 @@ public class RoleController {
 	}**/
 
 	//@FunctionAnnotation(name = "角色新增")
+	@UserOperation(code="add",name="角色新增")
 	@RequestMapping(value = "add", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> add(Role role, BindingResult result) throws Exception {
 
@@ -115,7 +113,8 @@ public class RoleController {
 		}
 	}
 
-	//@FunctionAnnotation(name = "角色编辑")
+	
+	@UserOperation(code="save",name="角色编辑")
 	@RequestMapping(value = "save", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> save(Role role, BindingResult result) throws Exception {
 		if (!result.hasErrors()) {
@@ -126,19 +125,22 @@ public class RoleController {
 		}
 	}
 
-	//@FunctionAnnotation(name = "角色删除")
+	
+	@UserOperation(code="delete",name="角色删除")
 	@RequestMapping(value = "delete", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> delete(@RequestParam Integer id) throws Exception {
 		roleManager.delete(id);
 		return ResultHandler.toSuccessJSON("角色删除成功");
 	}
 	
+	@UserOperation(code="getPowerPoints",name="获取所有权限",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	@RequestMapping(value = "getPowerPoints", method = RequestMethod.POST)
 	public @ResponseBody List<PowerPoint> getPowerPoints() {
 		List<PowerPoint> powerPoints = (List<PowerPoint>) servletContext.getAttribute("powerPoints");
 		return powerPoints;
 	}
 	
+	@UserOperation(code="getRolePower",name="获取当前用户的权限",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	@RequestMapping(value = "getRolePower", method = RequestMethod.POST)
 	public @ResponseBody String getRolePower(HttpServletRequest request) {
 		HttpSession session = request.getSession();

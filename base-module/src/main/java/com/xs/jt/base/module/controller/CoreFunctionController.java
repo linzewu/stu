@@ -35,7 +35,7 @@ public class CoreFunctionController {
 	@UserOperation(code="save",name="保存核心功能")
 	@RequestMapping(value = "save", method = RequestMethod.POST)
 	@Transactional 
-	public @ResponseBody Map saveCoreFunction(@RequestParam("functionPoint") String functionPoint) {
+	public @ResponseBody Map<String,Object> saveCoreFunction(@RequestParam("functionPoint") String functionPoint) {
 			this.coreFunctionManager.deleteAllCoreFunction(0);
 			String[] functionPo = functionPoint.split(",");
 			List<CoreFunction> funs =new ArrayList<CoreFunction>();
@@ -76,7 +76,7 @@ public class CoreFunctionController {
 	@UserOperation(code="saveSpecialCoreFunction",name="保存非常规功能")
 	@RequestMapping(value = "saveSpecialCoreFunction", method = RequestMethod.POST)
 	@Transactional 
-	public @ResponseBody Map saveSpecialCoreFunction(@RequestParam("functionPoint") String functionPoint) {
+	public @ResponseBody Map<String,Object> saveSpecialCoreFunction(@RequestParam("functionPoint") String functionPoint) {
 			this.coreFunctionManager.deleteAllCoreFunction(1);
 			String[] functionPo = functionPoint.split(",");
 			List<CoreFunction> funs =new ArrayList<CoreFunction>();
@@ -94,7 +94,7 @@ public class CoreFunctionController {
 	@UserOperation(code="savePoliceCoreFunction",name="保存警员功能")
 	@RequestMapping(value = "savePoliceCoreFunction", method = RequestMethod.POST)
 	@Transactional 
-	public @ResponseBody Map savePoliceCoreFunction(@RequestParam("functionPoint") String functionPoint) {
+	public @ResponseBody Map<String,Object> savePoliceCoreFunction(@RequestParam("functionPoint") String functionPoint) {
 			this.coreFunctionManager.deleteAllCoreFunction(2);
 			String[] functionPo = functionPoint.split(",");
 			List<CoreFunction> funs =new ArrayList<CoreFunction>();

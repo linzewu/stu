@@ -62,7 +62,7 @@ public class BaseParamsController {
 
 		return ResultHandler.toMyJSON(1, requestContext.getMessage(Constant.ConstantKey.SUCCESS), bps);
 	}
-	//@FunctionAnnotation(name = "系统参数查询查询")
+	
 	@UserOperation(code="getComputerInfo",name="系统参数查询")
 	@RequestMapping(value = "getComputerInfo",method=RequestMethod.POST)
 	public @ResponseBody Map getComputer() {
@@ -76,14 +76,14 @@ public class BaseParamsController {
 		Map map = ComputerInfoUtil.getComputerInfo();
 		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, Constant.ConstantMessage.SUCCESS, map);
 	}
-	//@FunctionAnnotation(name = "保存系统参数")
+	
 	@UserOperation(code="save",name="保存系统参数")
 	@RequestMapping(value = "save", method = RequestMethod.POST)
 	public @ResponseBody Map save(BaseParams baseParams) {
 		baseParams = this.baseParamsManager.save(baseParams);
 		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "保存成功",baseParams);
 	}
-	//@FunctionAnnotation(name = "删除系统参数")
+	
 	@UserOperation(code="delete",name="删除系统参数")
 	@RequestMapping(value = "delete", method = RequestMethod.POST)
 	public @ResponseBody Map delete(@RequestParam Integer id) {
@@ -97,7 +97,7 @@ public class BaseParamsController {
 		Map data = this.baseParamsManager.getBaseParams(page-1,rows,param);
 		return data;
 	}
-	//@FunctionAnnotation(name = "刷新系统参数")
+	
 	@UserOperation(code="refresh",name="刷新系统参数")
 	@RequestMapping(value = "refresh",method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> refresh() {

@@ -30,14 +30,6 @@ public class SecurityAuditPolicySettingController {
 	@UserOperation(code="getPolicySettingList",name="查询安全策略")
 	@RequestMapping(value = "getPolicySettingList", method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> getPolicySettingList(Integer page, Integer rows, SecurityAuditPolicySetting securityAuditPolicySetting) {		
-//		List<SecurityAuditPolicySetting> vcps = securityAuditPolicySettingManager.getList(page, rows, securityAuditPolicySetting);
-//		
-//		Integer total = securityAuditPolicySettingManager.getListCount(page, rows, securityAuditPolicySetting);
-//		
-//		Map<String,Object> data =new HashMap<String,Object>();
-//		
-//		data.put("rows", vcps);
-//		data.put("total", total);		
 		
 		return securityAuditPolicySettingManager.getSecurityAuditPolicySettings(page-1, rows, securityAuditPolicySetting);
 	}

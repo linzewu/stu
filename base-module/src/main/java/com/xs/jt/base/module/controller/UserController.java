@@ -48,9 +48,6 @@ public class UserController {
 	private IUserManager userManager;
 	
 	@Autowired
-	private HttpServletRequest request;
-	
-	@Autowired
 	private IBlackListManager blackListManager;
 	
 	@Autowired
@@ -65,13 +62,10 @@ public class UserController {
 	@Resource(name = "roleManager")
 	private IRoleManager roleManager;
 
-	//@FunctionAnnotation(name = "用户查询")
+	
 	@UserOperation(code="getUsers",name="用户查询")
 	@RequestMapping(value = "getUsers", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> getUsers(User user, Integer page, Integer rows) {
-//		List<User> userList = userManager.getUsers(user, page, rows);
-//		Integer count = userManager.getUserCount(user);
-//		return ResultHandler.toMyJSON(userList, count);
 		return userManager.getUsers(page-1, rows, user);
 	}
 
@@ -82,7 +76,7 @@ public class UserController {
 		return user;
 	}
 
-	//@FunctionAnnotation(name = "编辑用户")
+	
 	@UserOperation(code="save",name="编辑用户")
 	@RequestMapping(value = "saveUser", method = RequestMethod.POST)
 	public @ResponseBody Map saveUser(User user, BindingResult result) {
@@ -110,7 +104,7 @@ public class UserController {
 		}
 	}
 
-	//@FunctionAnnotation(name = "密码重置")
+	
 	@UserOperation(code="passwordReset",name="密码重置",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	@RequestMapping(value = "passwordReset", method = RequestMethod.POST)
 	public @ResponseBody Map passwordReset(User user) {
@@ -122,7 +116,6 @@ public class UserController {
 		return ResultHandler.toSuccessJSON("密码重置成功");
 	}
 
-	//@FunctionAnnotation(name = "删除用户")
 	@UserOperation(code="delete",name="删除用户")
 	@RequestMapping(value = "delete", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> delete(User user) {
@@ -130,7 +123,6 @@ public class UserController {
 		return ResultHandler.toSuccessJSON("用户删除成功");
 	}
 
-	//@FunctionAnnotation(name = "编辑用户")
 	@UserOperation(code="save",name="校验用户名",isMain=false)
 	@RequestMapping(value = "validateUserName")
 	public @ResponseBody boolean validateUserName(User user) {

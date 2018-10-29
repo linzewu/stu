@@ -44,22 +44,14 @@ public class BlackListController {
 	
 	@UserOperation(code="getBlackList",name="查询黑名单")
 	@RequestMapping(value = "getBlackList", method = RequestMethod.POST)
-	public @ResponseBody Map<String,Object> getBlackList(Integer page, Integer rows, BlackList black) {		
-//		List<BlackList> vcps = blackListManager.getList(page, rows, black);
-//		
-//		Integer total = blackListManager.getListCount(page, rows, black);
-//		
-//		Map<String,Object> data =new HashMap<String,Object>();
-//		
-//		data.put("rows", vcps);
-//		data.put("total", total);		
+	public @ResponseBody Map<String,Object> getBlackList(Integer page, Integer rows, BlackList black) {				
 		
 		return blackListManager.getBlackLists(page-1, rows, black);
 	}
 	
 	@UserOperation(code="save",name="保存黑名单")
 	@RequestMapping(value = "save", method = RequestMethod.POST)
-	public @ResponseBody Map saveBlackList(HttpSession session,@Valid BlackList blackList, BindingResult result) {
+	public @ResponseBody Map<String,Object> saveBlackList(HttpSession session,@Valid BlackList blackList, BindingResult result) {
 		if (!result.hasErrors()) {
 			User user = (User)session.getAttribute("user");
 			blackList.setCreateBy(user.getYhm());
