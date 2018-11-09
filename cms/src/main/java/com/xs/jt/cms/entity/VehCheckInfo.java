@@ -153,6 +153,10 @@ public class VehCheckInfo extends BaseEntity{
 	@Column(length=20)
 	private String jy50;
 	
+	//核定载客
+	@Column
+	private Integer hdzk;
+	
 	@Transient
 	@DateTimeFormat(pattern = "yyyy-MM-dd")  
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -552,6 +556,12 @@ public class VehCheckInfo extends BaseEntity{
 	}
 	public void setCysjEnd(Date cysjEnd) {
 		this.cysjEnd = cysjEnd;
+	}
+	public Integer getHdzk() {
+		return hdzk;
+	}
+	public void setHdzk(Integer hdzk) {
+		this.hdzk = hdzk;
 	}
 	
 	
