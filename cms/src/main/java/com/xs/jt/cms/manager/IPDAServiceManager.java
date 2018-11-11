@@ -20,5 +20,7 @@ public interface IPDAServiceManager {
 	List<Map<String,Object>> getImplCarParam(String clxh);
 	
 	Map<String,Object> getGongGaoInfo(String clxh);
+	
+	String getFirstGGBH(String clxh);
 
 }

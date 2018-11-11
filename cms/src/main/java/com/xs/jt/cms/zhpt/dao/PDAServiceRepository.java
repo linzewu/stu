@@ -61,4 +61,19 @@ public class  PDAServiceRepository {
 		
 	}
 	
+	public String getFirstGGBH(String clxh) {
+
+		String sql = "SELECT PSV.BH,PSV.CLXH,TO_CHAR(PSV.GGRQ,'YYYY-MM-DD') ||' '|| PSV.CLXH  as GGRQ  FROM trff_app.PCB_ST_VEHICLE PSV"
+				+ " WHERE PSV.CLXH = ? order by PSV.GGRQ desc";
+		List<Map<String,Object>> list = jdbcTemplate.queryForList(sql, clxh);
+
+		if (list == null || list.size() == 0) {
+			return "";
+		} else {
+			Map<String,Object> map = list.get(0);
+			return (String) map.get("BH");
+		}
+
+	}
+	
 }

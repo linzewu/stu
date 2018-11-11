@@ -68,4 +68,10 @@ public class PDAServiceManagerImpl implements IPDAServiceManager {
 		return pDAServiceRepository.getGongGaoInfo(clxh);
 	}
 
+	@Override
+	public String getFirstGGBH(String clxh) {
+		// TODO Auto-generated method stub
+		return pDAServiceRepository.getFirstGGBH(clxh);
+	}
+
 }

@@ -3,11 +3,15 @@ package com.xs.jt.base.module.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.MultipartConfigElement;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -58,6 +62,15 @@ public class BaseConfig extends WebMvcConfigurationSupport  {
     public OpenEntityManagerInViewFilter openEntityManagerInViewFilter(){
     	return new OpenEntityManagerInViewFilter();
     }
-
+    
+    
+    @Bean  
+    public CommonsMultipartResolver commonsMultipartResolver() {
+    	CommonsMultipartResolver factory = new CommonsMultipartResolver();
+    	factory.setDefaultEncoding("UTF-8");
+    	factory.setMaxInMemorySize(1);
+    	factory.setMaxUploadSize(1024*1024*10);
+        return factory;  
+    }  
 
 }

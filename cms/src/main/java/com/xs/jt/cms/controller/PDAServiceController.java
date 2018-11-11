@@ -328,6 +328,12 @@ public class PDAServiceController {
 		return map;
 	}
 
+	/**
+	 * 查询本地区车辆基本信息
+	 * @param hpzl
+	 * @param hphm
+	 * @return
+	 */
 	@UserOperation(code = "getCarInfoByCarNumber", name = "根据号牌号码,号牌种类获取基础信息")
 	@RequestMapping(value = "getCarInfoByCarNumber", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> getCarInfoByCarNumber(String hpzl, String hphm) {
@@ -372,20 +378,95 @@ public class PDAServiceController {
 		}
 		return map;
 	}
+	
+	/**
+	 * 查询全国车辆信息
+	 * @param hpzl
+	 * @param hphm
+	 * @param sf
+	 * @return
+	 */
+	@UserOperation(code = "getAllCarInfoByCarNumber", name = "根据号牌号码,号牌种类获取全国车辆信息")
+	@RequestMapping(value = "getAllCarInfoByCarNumber", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getAllCarInfoByCarNumber(String hpzl,String hphm,String sf) {
+		Map<String, String> dataMap = new HashMap<String, String>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		try {
+			TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
+			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo = tmriJaxRpcOutService.createQueryObjectOut();
+
+			System.out.println("sf"+sf);
+			if(sf!=null){
+				sf=URLEncoder.encode(sf, "UTF-8");
+				
+			}
+			System.out.println("sf"+sf);
+			
+			
+
+			if (hpzl == null || "".equals(hpzl.trim()) || hphm == null
+					|| "".equals(hphm.trim())) {
+				return map;
+			}
+
+			qo.setJkid("01C49");
+			qo.setJkxlh("7F1C0909010517040815E3FF83F5F3E28BCC8F9B818DE7EA88DFD19EB8C7D894B9B9BCE0BFD8D6D0D0C4A3A8D0C5CFA2BCE0B9DCCFB5CDB3A3A9");
+			qo.setUTF8XmlDoc("<root><QueryCondition><hphm>" + hphm
+					+ "</hphm><hpzl>" + hpzl
+					+ "</hpzl><sf>"+sf+"</sf></QueryCondition></root>");
+			qo.setXtlb("01");
+
+			String returnXML = trias.queryObjectOut(qo)
+					.getQueryObjectOutReturn();
+			String xml = URLCodeUtil.urlDecode(returnXML);
+			Document doc = DocumentHelper.parseText(xml);
+			Element root = doc.getRootElement();
+			System.out.println(root.asXML());
+			Element dataElecmet = root.element("body").element("veh");
+
+			if (dataElecmet != null) {
+				
+				for (Object o : dataElecmet.elements()) {
+					Element element = (Element) o;
+					String key = element.getName();
+					String value = element.getText();
+					
+					dataMap.put(key, CommonUtil.convertCode(key,value,request));
+					if (key.equals("clsbdh")) {
+						List<VehicleLock> list = vehicleLockManager.findLockVehicle(value);
+						if (list != null && list.size() > 0) {
+							map.put("lockData", list);				
+						}
+					}
+				}
+				String clxh= (String)dataMap.get("clxh");
+				if(clxh!=null){
+					String ggbh = this.pDAServiceManager.getFirstGGBH(clxh);
+					dataMap.put("ggbh", ggbh);
+				}				
+				map.put("data", dataMap);
+			}
+			
+
+		} catch (Exception e) {
+			throw new ApplicationException("获取全国车辆信息异常", e);
+		}
+		return map;
+	}
 
 	@UserOperation(code = "getGongGaoInfoByGgbh", name = "获取公告信息")
 	@RequestMapping(value = "getGongGaoInfoByGgbh", method = RequestMethod.POST)
-	public @ResponseBody Map getGongGaoInfoByGgbh(String ggbh) {
-		Map map = new HashMap();
+	public @ResponseBody Map<String, Object> getGongGaoInfoByGgbh(String ggbh) {
+		Map<String, Object> map = new HashMap<String, Object>();
 		if (ggbh == null || "".equals(ggbh.trim())) {
 			return map;
 		}
 
 		List<Map<String, Object>> list = pDAServiceManager.findPcbStVehicle(ggbh);
 
-		Map<String, Object> rMap = (Map) list.get(0);
+		Map<String, Object> rMap = list.get(0);
 
-		Map returnMap = new HashMap();
+		Map<String, Object> returnMap = new HashMap<String, Object>();
 
 		for (String key : rMap.keySet()) {
 			returnMap.put(key.toLowerCase(), rMap.get(key));
@@ -498,7 +579,7 @@ public class PDAServiceController {
 		motorVehiclePhotos.setJccs(cycs);;
 		motorVehiclePhotos.setPhoto(file.getBytes());
 		vehiclePhotosManager.save(motorVehiclePhotos);
-		return ResultHandler.resultHandle(result, motorVehiclePhotos, Constant.ConstantMessage.SAVE_SUCCESS);
+		return ResultHandler.toSuccessJSON("上传成功");
 	}
 
 	@RequestMapping(value = "findLockMotorVehicleByClsbdh", method = RequestMethod.POST)
