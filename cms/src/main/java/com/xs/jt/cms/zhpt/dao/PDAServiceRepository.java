@@ -18,19 +18,19 @@ public class  PDAServiceRepository {
 	//List<Object> findPcbStVehicle(@Param("bh")String bh);
 	
 	public List<Map<String,Object>> findPcbStVehicle(String bh){
-		String sql = "SELECT v.* from TRFF_APP.PCB_ST_VEHICLE v where bh=?";
+		String sql = "SELECT v.* from TRFF_APP.PCB_FINAL_PARA v where bh=?";
 		return jdbcTemplate.queryForList(sql, bh);
 	}
 	//trff_app.
 	public  List<Map<String,Object>> findGongGaoListbyCLXH(String clxh) {
-		String sql = "SELECT PSV.BH,PSV.CLXH,TO_CHAR(PSV.GGRQ,'YYYY-MM-DD') ||' '|| PSV.CLXH  as GGRQ  FROM TRFF_APP.PCB_ST_VEHICLE PSV"
+		String sql = "SELECT PSV.BH,PSV.CLXH,TO_CHAR(PSV.GGRQ,'YYYY-MM-DD') ||' '|| PSV.CLXH  as GGRQ  FROM TRFF_APP.PCB_FINAL_PARA PSV"
 				+ " WHERE PSV.CLXH = ? order by PSV.GGRQ desc";
 		return jdbcTemplate.queryForList(sql,clxh);
 	}
 	
 	
 	public  List<Map<String,Object>> findAllGongGaoListbyCLXH(String clxh) {
-		String sql = "SELECT PSV.*,TO_CHAR(PSV.GGRQ,'YYYY-MM-DD') ||' '|| PSV.CLXH  as GGRQ  FROM TRFF_APP.PCB_ST_VEHICLE PSV"
+		String sql = "SELECT PSV.*,TO_CHAR(PSV.GGRQ,'YYYY-MM-DD') ||' '|| PSV.CLXH  as GGRQ  FROM TRFF_APP.PCB_FINAL_PARA PSV"
 				+ " WHERE PSV.CLXH = ? order by PSV.GGRQ desc";
 		return jdbcTemplate.queryForList(sql,clxh);
 	}
@@ -51,7 +51,7 @@ public class  PDAServiceRepository {
 	}
 	
 	public Map<String,Object> getGongGaoInfo(String clxh){
-		String sql = "SELECT * from TRFF_APP.PCB_ST_VEHICLE PSV where PSV.CLXH = ? and rownum = 1 order by PSV.GGRQ desc";
+		String sql = "SELECT * from TRFF_APP.PCB_FINAL_PARA PSV where PSV.CLXH = ? and rownum = 1 order by PSV.GGRQ desc";
 		return jdbcTemplate.queryForMap(sql, clxh);
 	}
 	
@@ -63,7 +63,7 @@ public class  PDAServiceRepository {
 	
 	public String getFirstGGBH(String clxh) {
 
-		String sql = "SELECT PSV.BH,PSV.CLXH,TO_CHAR(PSV.GGRQ,'YYYY-MM-DD') ||' '|| PSV.CLXH  as GGRQ  FROM trff_app.PCB_ST_VEHICLE PSV"
+		String sql = "SELECT PSV.BH,PSV.CLXH,TO_CHAR(PSV.GGRQ,'YYYY-MM-DD') ||' '|| PSV.CLXH  as GGRQ  FROM trff_app.PCB_FINAL_PARA PSV"
 				+ " WHERE PSV.CLXH = ? order by PSV.GGRQ desc";
 		List<Map<String,Object>> list = jdbcTemplate.queryForList(sql, clxh);
 

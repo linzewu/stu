@@ -28,6 +28,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.xs.jt.base.module.annotation.Modular;
+import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.entity.BaseEntity;
 import com.xs.jt.base.module.entity.CoreFunction;
@@ -94,10 +95,12 @@ public class LogAopAction {
 	@AfterThrowing(pointcut="controllerAspect()",throwing="e")
 	public void doAfterThrow(JoinPoint joinPoint,Throwable e) throws NoSuchMethodException, SecurityException {
 		OperationLog log = getLog(joinPoint);
-		log.setOperationResult(OperationLog.OPERATION_RESULT_ERROR);
-		log.setStatus(1);
-		log.setFailMsg(e.getMessage());
-		operationLogManager.saveOperationLog(log);
+		if(log!=null) {
+			log.setOperationResult(OperationLog.OPERATION_RESULT_ERROR);
+			log.setStatus(1);
+			log.setFailMsg(e.getMessage());
+			operationLogManager.saveOperationLog(log);
+		}
 	}
 
 	/**
@@ -168,13 +171,16 @@ public class LogAopAction {
 		log.setOperationCondition(sbStr.toString());
 		
 		// 拦截的放参数类型
-
 		MethodSignature msig = (MethodSignature) pjp.getSignature();
 
 		Class[] parameterTypes = msig.getMethod().getParameterTypes();
 		Object object = null;
 		Class targetClass =target.getClass();
 		Method method = targetClass.getMethod(methodName, parameterTypes);
+		//没有记录日志的注解则不进行记录日志
+		if (!method.isAnnotationPresent(RecordLog.class)) {
+			return null;
+		}
 		String functionP = "";
 		if(targetClass.isAnnotationPresent(Modular.class)) {
 			Modular modular=(Modular) targetClass.getAnnotation(Modular.class);

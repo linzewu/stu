@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.support.RequestContext;
 
 import com.xs.jt.base.module.annotation.Modular;
+import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Common;
 import com.xs.jt.base.module.common.Constant;
@@ -136,6 +137,7 @@ public class UserController {
 		return user;
 	}
 
+	@RecordLog
 	@RequestMapping(value = "login", method = RequestMethod.POST)
 	@UserOperation(code="login",name="登录",userOperationEnum=CommonUserOperationEnum.NoLogin)
 	public @ResponseBody Map login(HttpServletRequest request, String userName, String password) {

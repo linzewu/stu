@@ -1,7 +1,5 @@
 package com.xs.jt.cms.entity;
 
-import java.sql.Blob;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
@@ -10,7 +8,6 @@ import javax.persistence.Transient;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.xs.jt.base.module.entity.BaseEntity;
 
@@ -32,10 +29,14 @@ public class VehiclePhotos extends BaseEntity{
 	@Lob
 	@Column
 	private byte[] photo;
+	
 	@Column(length=100)
 	private String clsbdh;
 	@Column
 	private Integer jccs;
+	@Transient
+	private String imageStr;
+	
 	
 	public String getLsh() {
 		return lsh;
@@ -84,6 +85,12 @@ public class VehiclePhotos extends BaseEntity{
 	}
 	public void setJccs(Integer jccs) {
 		this.jccs = jccs;
+	}
+	public String getImageStr() {
+		return imageStr;
+	}
+	public void setImageStr(String imageStr) {
+		this.imageStr = imageStr;
 	}
 	
 

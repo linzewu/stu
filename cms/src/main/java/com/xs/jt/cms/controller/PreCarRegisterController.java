@@ -134,10 +134,10 @@ public class PreCarRegisterController {
 		String lsh = null;
 		try {
 			TmriJaxRpcOutNewAccessServiceStub trias =tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
-			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo = tmriJaxRpcOutService.createQueryObjectOut();
+			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNew qo = tmriJaxRpcOutService.createQueryObjectOut();
 			qo.setJkid("01C24");
 			qo.setUTF8XmlDoc("<root><QueryCondition><glbm>"+glbm+"</glbm></QueryCondition></root>");
-			String returnXML = trias.queryObjectOut(qo).getQueryObjectOutReturn();
+			String returnXML = trias.queryObjectOutNew(qo).getQueryObjectOutNewReturn();
 			Document doc = DocumentHelper.parseText(returnXML);
 			Element root = doc.getRootElement();
 			lsh = root.element("body").element("veh").element("lsh").getText();
@@ -247,7 +247,7 @@ public class PreCarRegisterController {
 		Map<String, String> dataMap = new HashMap<String, String>();
 		try {
 			TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
-			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo = tmriJaxRpcOutService.createQueryObjectOut();
+			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNew qo = tmriJaxRpcOutService.createQueryObjectOut();
 
 			if (hpzl == null || "".equals(hpzl.trim()) || hphm == null
 					|| "".equals(hphm.trim())) {
@@ -259,8 +259,8 @@ public class PreCarRegisterController {
 					+ "</hphm><hpzl>" + hpzl
 					+ "</hpzl></QueryCondition></root>");
 
-			String returnXML = trias.queryObjectOut(qo)
-					.getQueryObjectOutReturn();
+			String returnXML = trias.queryObjectOutNew(qo)
+					.getQueryObjectOutNewReturn();
 			String xml = URLCodeUtil.urlDecode(returnXML);
 			Document doc = DocumentHelper.parseText(xml);
 			Element root = doc.getRootElement();

@@ -45,6 +45,9 @@ public class TmriJaxRpcOutService {
 
 	@Value("${stu.properties.zdbs}")
 	private String zdbs;
+	
+	@Value("${stu.properties.cjsqbh}")
+	private String cjsqbh;
 
 	public TmriJaxRpcOutNewAccessServiceStub createTmriJaxRpcOutNewAccessServiceStub() throws AxisFault {
 		List<BaseParams> baseParams = baseParamsManager.getBaseParamsByType("ptip");
@@ -56,7 +59,7 @@ public class TmriJaxRpcOutService {
 		return new TmriJaxRpcOutNewAccessServiceStub();
 	}
 
-	public TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut createQueryObjectOut() {
+	public TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNew createQueryObjectOut() {
 		String yhbz = "";
 		String yhxm = "";
 		if (session != null) {
@@ -66,7 +69,8 @@ public class TmriJaxRpcOutService {
 				yhxm = user.getYhxm();
 			}
 		}
-		TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo = new TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut();
+		TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNew qo = new TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNew();
+		
 		qo.setJkxlh(jkxlh);
 		qo.setXtlb(xtlb);
 		qo.setDwmc(dwmc);
@@ -74,10 +78,11 @@ public class TmriJaxRpcOutService {
 		qo.setYhbz(yhbz);
 		qo.setYhxm(yhxm);
 		qo.setZdbs(zdbs);
+		qo.setCjsqbh(cjsqbh);      
 		return qo;
 	}
 
-	public TmriJaxRpcOutNewAccessServiceStub.WriteObjectOut createWriteObjectOut() {
+	public TmriJaxRpcOutNewAccessServiceStub.WriteObjectOutNew createWriteObjectOut() {
 
 		String yhbz = "";
 		String yhxm = "";
@@ -88,7 +93,7 @@ public class TmriJaxRpcOutService {
 				yhxm = user.getYhxm();
 			}
 		}
-		TmriJaxRpcOutNewAccessServiceStub.WriteObjectOut wo = new TmriJaxRpcOutNewAccessServiceStub.WriteObjectOut();
+		TmriJaxRpcOutNewAccessServiceStub.WriteObjectOutNew wo = new TmriJaxRpcOutNewAccessServiceStub.WriteObjectOutNew();
 		wo.setJkxlh(jkxlh);
 		wo.setXtlb(xtlb);
 		wo.setDwmc(dwmc);
@@ -96,7 +101,7 @@ public class TmriJaxRpcOutService {
 		wo.setYhbz(yhbz);
 		wo.setYhxm(yhxm);
 		wo.setZdbs(zdbs);
-
+		wo.setCjsqbh(cjsqbh);
 		return wo;
 	}
 

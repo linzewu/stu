@@ -23,9 +23,12 @@ import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Base64Utils;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -191,7 +194,7 @@ public class PDAServiceController {
 		JSONObject map = getImageMap(photo);
 		try {
 			TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
-			TmriJaxRpcOutNewAccessServiceStub.WriteObjectOut wo = tmriJaxRpcOutService.createWriteObjectOut();
+			TmriJaxRpcOutNewAccessServiceStub.WriteObjectOutNew wo = tmriJaxRpcOutService.createWriteObjectOut();
 
 			Document document = DocumentHelper.createDocument(); // 创建文档
 
@@ -204,7 +207,7 @@ public class PDAServiceController {
 			wo.setUTF8XmlDoc(document.asXML());
 			wo.setJkid("01C80");
 
-			return urlDecode(trias.writeObjectOut(wo).getWriteObjectOutReturn());
+			return urlDecode(trias.writeObjectOutNew(wo).getWriteObjectOutNewReturn());
 		} catch (Exception e) {
 			throw new ApplicationException("上传图片到综合平台异常", e);
 		}
@@ -213,7 +216,7 @@ public class PDAServiceController {
 
 	private void uploadPlatForm(VehCheckInfo vehCheckInfo) throws AxisFault {
 		TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
-		TmriJaxRpcOutNewAccessServiceStub.WriteObjectOut wo = tmriJaxRpcOutService.createWriteObjectOut();
+		TmriJaxRpcOutNewAccessServiceStub.WriteObjectOutNew wo = tmriJaxRpcOutService.createWriteObjectOut();
 		PreCarRegister carRegister = this.preCarRegisterManager.findPreCarRegisterByLsh(vehCheckInfo.getLsh());
 		JSONObject jo = JSONObject.fromObject(carRegister);
 		String xh = getNewCarSeq();
@@ -248,7 +251,7 @@ public class PDAServiceController {
 		wo.setUTF8XmlDoc(document.asXML());
 		wo.setJkid("01C77");
 		try {
-			urlDecode(trias.writeObjectOut(wo).getWriteObjectOutReturn());
+			urlDecode(trias.writeObjectOutNew(wo).getWriteObjectOutNewReturn());
 		} catch (Exception e) {
 			throw new ApplicationException("上传预录入信息到综合平台异常", e);
 		}
@@ -297,11 +300,11 @@ public class PDAServiceController {
 		String seq = null;
 		try {
 			TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
-			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo = tmriJaxRpcOutService.createQueryObjectOut();
+			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNew qo = tmriJaxRpcOutService.createQueryObjectOut();
 			qo.setJkid("01C23");
 			qo.setUTF8XmlDoc("<root><QueryCondition><glbm>"+glbm+"</glbm></QueryCondition></root>");
 
-			String returnXML1 = trias.queryObjectOut(qo).getQueryObjectOutReturn();
+			String returnXML1 = trias.queryObjectOutNew(qo).getQueryObjectOutNewReturn();
 			Document doc = DocumentHelper.parseText(returnXML1);
 			Element root = doc.getRootElement();
 			seq = root.element("body").element("veh").element("xh").getText();
@@ -341,7 +344,7 @@ public class PDAServiceController {
 		Map<String, String> dataMap = new HashMap<String, String>();
 		try {
 			TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
-			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo = tmriJaxRpcOutService.createQueryObjectOut();
+			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNew qo = tmriJaxRpcOutService.createQueryObjectOut();
 			if (hpzl == null || "".equals(hpzl.trim()) || hphm == null || "".equals(hphm.trim())) {
 				return map;
 			}
@@ -349,11 +352,17 @@ public class PDAServiceController {
 			qo.setUTF8XmlDoc(
 					"<root><QueryCondition><hphm>" + hphm + "</hphm><hpzl>" + hpzl + "</hpzl></QueryCondition></root>");
 
-			String returnXML = trias.queryObjectOut(qo).getQueryObjectOutReturn();
+			String returnXML = trias.queryObjectOutNew(qo).getQueryObjectOutNewReturn();
+			
 			String xml = URLCodeUtil.urlDecode(returnXML);
+			
 			Document doc = DocumentHelper.parseText(xml);
 			Element root = doc.getRootElement();
-			Element dataElecmet = root.element("body").element("veh");
+			Element bodyEle = root.element("body");
+			if(bodyEle == null) {
+				return map;
+			}
+			Element dataElecmet = bodyEle.element("veh");
 
 			if (dataElecmet != null) {
 				for (Object o : dataElecmet.elements()) {
@@ -393,7 +402,7 @@ public class PDAServiceController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		try {
 			TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
-			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo = tmriJaxRpcOutService.createQueryObjectOut();
+			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNew qo = tmriJaxRpcOutService.createQueryObjectOut();
 
 			System.out.println("sf"+sf);
 			if(sf!=null){
@@ -416,13 +425,17 @@ public class PDAServiceController {
 					+ "</hpzl><sf>"+sf+"</sf></QueryCondition></root>");
 			qo.setXtlb("01");
 
-			String returnXML = trias.queryObjectOut(qo)
-					.getQueryObjectOutReturn();
+			String returnXML = trias.queryObjectOutNew(qo)
+					.getQueryObjectOutNewReturn();
 			String xml = URLCodeUtil.urlDecode(returnXML);
 			Document doc = DocumentHelper.parseText(xml);
 			Element root = doc.getRootElement();
 			System.out.println(root.asXML());
-			Element dataElecmet = root.element("body").element("veh");
+			Element bodyEle = root.element("body");
+			if(bodyEle == null) {
+				return map;
+			}
+			Element dataElecmet = bodyEle.element("veh");
 
 			if (dataElecmet != null) {
 				
@@ -555,7 +568,7 @@ public class PDAServiceController {
 
 	@UserOperation(code = "uploadImageFile", name = "上传图片")
 	@RequestMapping(value = "uploadImageFile", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> uploadImageFile(VehiclePhotos motorVehiclePhotos, MultipartFile file,
+	public @ResponseBody Map<String, Object> uploadImageFile(@RequestBody VehiclePhotos motorVehiclePhotos ,
 			@ApiIgnore() BindingResult result) throws Exception {
 		User user = (User) session.getAttribute("user");
 		// 校验车辆是否被锁定，如果被锁定则不能保存(如果当前用户是锁定人则可以保存)
@@ -576,8 +589,9 @@ public class PDAServiceController {
 		Integer cycs = this.policeCheckInfoManager.findMaxCsByLsh(motorVehiclePhotos.getLsh());
 		cycs = cycs == null?0:cycs;
 		cycs++;
-		motorVehiclePhotos.setJccs(cycs);;
-		motorVehiclePhotos.setPhoto(file.getBytes());
+		motorVehiclePhotos.setJccs(cycs);
+		
+		motorVehiclePhotos.setPhoto(Base64Utils.decodeFromString(motorVehiclePhotos.getImageStr()));
 		vehiclePhotosManager.save(motorVehiclePhotos);
 		return ResultHandler.toSuccessJSON("上传成功");
 	}
@@ -630,12 +644,12 @@ public class PDAServiceController {
 			try {
 				TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService
 						.createTmriJaxRpcOutNewAccessServiceStub();
-				TmriJaxRpcOutNewAccessServiceStub.QueryObjectOut qo = tmriJaxRpcOutService.createQueryObjectOut();
+				TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNew qo = tmriJaxRpcOutService.createQueryObjectOut();
 				qo.setJkid("01C21");
 				qo.setUTF8XmlDoc("<root><QueryCondition><hphm>" + hphm + "</hphm><hpzl>" + hpzl
 						+ "</hpzl></QueryCondition></root>");
 
-				String returnXML = trias.queryObjectOut(qo).getQueryObjectOutReturn();
+				String returnXML = trias.queryObjectOutNew(qo).getQueryObjectOutNewReturn();
 				String xml = URLCodeUtil.urlDecode(returnXML);
 				Document doc = DocumentHelper.parseText(xml);
 				Element root = doc.getRootElement();
