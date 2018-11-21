@@ -94,6 +94,10 @@
                 me.close();
             }else if($target.hasClass("clearall")){//清除
                 me.$element.val("");
+                var link =me.$element.attr("link");
+                if(link){
+                	$("#"+link).text("");
+                }
             }else{//输入其他数字
                 var str = $target.text();
                 me.setValue("add",str);
@@ -115,6 +119,7 @@
             var curpos = me.getCursorPosition();
             var val = me.$element.val();
             var newstr = "";
+            var link =me.$element.attr("link");
             if(type == 'add'){
                 newstr = me.insertstr(val,str,curpos);
                 me.$element.val(newstr);
@@ -123,6 +128,10 @@
                 newstr = me.delstr(val,curpos);
                 me.$element.val(newstr);
                 me.$element.textFocus(curpos-1);
+            }
+            
+            if(link){
+            	$("#"+link).text(newstr);
             }
         	
         },

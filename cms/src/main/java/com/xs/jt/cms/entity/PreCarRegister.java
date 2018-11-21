@@ -21,6 +21,7 @@ public class PreCarRegister extends BaseEntity {
 	@Column(name = "HGZBH", length = 64)
 	private String hgzbh;
 	
+	//取的是发证日期
 	@Column(name = "CCRQ", length = 64)
 	private String ccrq;
 	

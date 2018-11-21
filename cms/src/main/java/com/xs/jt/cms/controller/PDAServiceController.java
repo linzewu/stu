@@ -404,14 +404,12 @@ public class PDAServiceController {
 			TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
 			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNew qo = tmriJaxRpcOutService.createQueryObjectOut();
 
-			System.out.println("sf"+sf);
+			
 			if(sf!=null){
 				sf=URLEncoder.encode(sf, "UTF-8");
 				
 			}
-			System.out.println("sf"+sf);
-			
-			
+						
 
 			if (hpzl == null || "".equals(hpzl.trim()) || hphm == null
 					|| "".equals(hphm.trim())) {
@@ -419,7 +417,6 @@ public class PDAServiceController {
 			}
 
 			qo.setJkid("01C49");
-			qo.setJkxlh("7F1C0909010517040815E3FF83F5F3E28BCC8F9B818DE7EA88DFD19EB8C7D894B9B9BCE0BFD8D6D0D0C4A3A8D0C5CFA2BCE0B9DCCFB5CDB3A3A9");
 			qo.setUTF8XmlDoc("<root><QueryCondition><hphm>" + hphm
 					+ "</hphm><hpzl>" + hpzl
 					+ "</hpzl><sf>"+sf+"</sf></QueryCondition></root>");
@@ -592,6 +589,10 @@ public class PDAServiceController {
 		motorVehiclePhotos.setJccs(cycs);
 		
 		motorVehiclePhotos.setPhoto(Base64Utils.decodeFromString(motorVehiclePhotos.getImageStr()));
+		VehiclePhotos photo = vehiclePhotosManager.findPhotosByLshAndZpzlAndJccsAndClsbdh(motorVehiclePhotos.getLsh(),motorVehiclePhotos.getZpzl(),motorVehiclePhotos.getJccs(),motorVehiclePhotos.getClsbdh());
+		if(photo != null) {
+			vehiclePhotosManager.deleteVehiclePhoto(photo);
+		}
 		vehiclePhotosManager.save(motorVehiclePhotos);
 		return ResultHandler.toSuccessJSON("上传成功");
 	}
@@ -609,6 +610,7 @@ public class PDAServiceController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		boolean flag= false;
 		VehCheckInfo checkInfo = this.policeCheckInfoManager.findBhgVehCheckInfoByLsh(lsh);
+		List<VehiclePhotos> photos = this.vehiclePhotosManager.findPhotosByLshAndJccs(checkInfo.getLsh(), checkInfo.getCycs());
 		//不合格
 		if (checkInfo != null && "0".equals(checkInfo.getCyjg())) {
 			flag = true;
@@ -616,6 +618,8 @@ public class PDAServiceController {
 		if (!flag) {
 			return map;
 		} else {
+			map.put("checkInfo", checkInfo);
+			map.put("vehPhotos", photos);
 			PreCarRegister register = this.preCarRegisterManager.findPreCarRegisterByLsh(lsh);
 			map.put("data", register);
 			//锁定信息
@@ -634,6 +638,7 @@ public class PDAServiceController {
 		Map<String, String> dataMap = new HashMap<String, String>();
 		boolean flag = false;
 		VehCheckInfo checkInfo = this.policeCheckInfoManager.findBhgVehCheckInfoByHphmHpzl(hphm, hpzl);
+		List<VehiclePhotos> photos = this.vehiclePhotosManager.findPhotosByLshAndJccs(checkInfo.getLsh(), checkInfo.getCycs());
 		//不合格
 		if (checkInfo != null && "0".equals(checkInfo.getCyjg())) {
 			flag = true;
@@ -673,6 +678,8 @@ public class PDAServiceController {
 				
 				List<VehicleLock> lockList = this.vehicleLockManager.findLockVehicle(checkInfo.getClsbdh());
 				map.put("lockData", lockList);
+				map.put("checkInfo", checkInfo);
+				map.put("vehPhotos", photos);
 
 			} catch (Exception e) {
 				throw new ApplicationException("在用车查验复检异常", e);
@@ -693,6 +700,13 @@ public class PDAServiceController {
 			throw new ApplicationException("根据公告编号获取公告照片异常", e);
 		}
 		return imageList;
+	}
+	
+	@UserOperation(code = "findVehPhotoById", name = "根据id查询照片")
+	@RequestMapping(value = "findVehPhotoById", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> findVehPhotoById(Integer id){
+		VehiclePhotos photo = this.vehiclePhotosManager.findVehPhotoById(id);
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "查看照片成功！", photo);
 	}
 
 }

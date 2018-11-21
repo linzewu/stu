@@ -1,7 +1,19 @@
+ <link href="../css/imageCropper/cropper.css" rel="stylesheet">
+<style type="text/css">
+.content-gif li{width:192px;height:192px;border:1px solid #EEE;float:left;margin:14px 14px 0 0;position:relative;overflow:hidden;cursor:pointer}
+.content-gif span{width:192px;height:192px;text-align:center;vertical-align:middle;display:table-cell}
+.content-gif span img{margin-top:expression(100-this.height/2)}
+.save{width:100%;height:30px;line-height:30px;top:192px;left:0;position:absolute;color:#fff;background:#000;
+font-size:12px;text-align:center;opacity:.8;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=80);-MS-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)"}
+.save a{color:#fff;display:block;cursor:pointer}
+.content-b{width:1100px;line-height:20px;font-size:14px;float:left;margin-bottom:30px;padding:10px 0;overflow:hidden}
+</style>
+<div id="vehCheckTab" class="easyui-tabs" data-options="fit:true">
+	<div data-options="title:'查验信息'">
 <object  id="LODOP_OB" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0>  
        <embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0></embed> 
-</object> 
-<table id="vehCheckInfoDG"   data-options="rownumbers:true,
+</object>
+<table id="vehCheckInfoDG" style="height:450px"  data-options="rownumbers:true,
 		toolbar:'#CheckInfoToolbar2',
 		singleSelect:true,
 		pagination:true,
@@ -32,6 +44,7 @@
 	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="printCheckInfo()">打印查验单</a>
 	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="tdCheckInfo()">套打查验单</a>
 	   <input class="easyui-checkbox" name="isView" id="isView" value="true" label="打印预览" labelWidth="80px" labelPosition="after"> 
+	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="viewImage()">查看图片</a>
     </div>
     <div style="margin-bottom:5px">
     	车辆识别代号：<input type="text" class="easyui-textbox" id="quer_clsbdh" style="width: 150px;">
@@ -40,14 +53,32 @@
     	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryClsbdh()">查询</a>
     </div>
 </div>
-<div id="printTemplet"  style="display: none;">
-	<img alt="" src="" style="border: 0;margin: 0; padding: 0">
+</div>
+</div>
+
+<div id="printTemplet"  style="display: none;" align="center">
+	<img alt="" src="" style="border: 0;margin: 0; padding: 0;">
+</div>
+<div id="imageWin" class="easyui-window" style="width:800px;height:600px"
+        data-options="iconCls:'icon-cut',modal:true,title:'裁剪图片',												    
+												    closable:false,
+												    minimizable:false,
+												    collapsible:false,
+												    maximizable:false,
+												    draggable:false,
+												    closed:true">
+    <div><img id="imageCorpp" src="" width="600px" height="500px"/></div><br />
+    <div align="right"><a href="#" class="easyui-linkbutton" iconCls="icon-print" onclick="printCropImg()">打印</a>
+    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',onClick:closeImageWin">关闭</a>
+    </div>
 </div>
 <OBJECT ID="vehPrinter" CLASSID="CLSID:F1EFB37B-C778-4AF8-B0C2-B647C9E89E2D" CODEBASE="VehPlatForm_web.CAB#version=2,7,0,0">
 </OBJECT>
+<script type="text/javascript" src="../js/imageCropper/cropper.js"></script>
 <script type="text/javascript" src="../js/LodopFuncs.js"></script>
 <script type="text/javascript" src="../js/carRegister.js"></script>
 <script type="text/javascript" src="../js/dwf_0.1.js"></script>
+<script type="text/javascript" src="../js/vehCheck.js"></script>
 <script type="text/javascript">
 function viewCheckInfo() {
 	var row = $("#vehCheckInfoDG").datagrid("getSelected");
@@ -134,7 +165,17 @@ function addProCar(){
 	$("#tabAll").tabs("getSelected").find(".menus li:contains('车辆预登记')").click();
 }
 $(function(){
-	$('#vehCheckInfoDG').datagrid();
+	$('#vehCheckInfoDG').datagrid({
+		onDblClickRow: function(index,row){
+			viewImage();
+		}
+	});
+	$("#imageCorpp").cropper({
+		  autoCropArea: 0.8,
+		  crop: function(data) {
+		    // 出来裁切后的图片数据.
+		  }
+		});
 });
 var ppRow=null;
 function toEdit(){

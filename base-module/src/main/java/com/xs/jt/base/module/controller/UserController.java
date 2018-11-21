@@ -33,6 +33,7 @@ import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.enums.CommonUserOperationEnum;
 import com.xs.jt.base.module.manager.IBlackListManager;
 import com.xs.jt.base.module.manager.ICoreFunctionManager;
+import com.xs.jt.base.module.manager.IDepartmentManager;
 import com.xs.jt.base.module.manager.IRoleManager;
 import com.xs.jt.base.module.manager.ISecurityAuditPolicySettingManager;
 import com.xs.jt.base.module.manager.ISecurityLogManager;
@@ -62,6 +63,9 @@ public class UserController {
 	
 	@Resource(name = "roleManager")
 	private IRoleManager roleManager;
+	
+	@Autowired
+	private IDepartmentManager departmentManager;
 
 	
 	@UserOperation(code="getUsers",name="用户查询")
@@ -204,7 +208,10 @@ public class UserController {
 			user.setIp(Common.getIpAdrress(request));
 			user.setLoginFailCou(0);
 			this.userManager.saveUser(user);
-			System.out.println(user.getZjdlsj());
+			if(StringUtils.isNotEmpty(user.getBmdm())) {
+				user.setBmmc(departmentManager.getdeptByCode(user.getBmdm()).getBmmc());
+			}
+			
 			session.setAttribute(Constant.ConstantKey.USER_SESSIO_NKEY, user);
 			Map data = ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS,
 					requestContext.getMessage(Constant.ConstantMessage.LOGIN_SUCCESS), user);

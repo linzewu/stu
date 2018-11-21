@@ -122,6 +122,8 @@ public class User extends BaseEntity {
 	
 	@Transient
 	private String pwOverdue;
+	@Transient
+	private String bmmc;
 
 	public String getMm() {
 		return mm;
@@ -331,6 +333,14 @@ public class User extends BaseEntity {
 
 	public void setPwOverdue(String pwOverdue) {
 		this.pwOverdue = pwOverdue;
+	}
+
+	public String getBmmc() {
+		return bmmc;
+	}
+
+	public void setBmmc(String bmmc) {
+		this.bmmc = bmmc;
 	}
 
 	public String encodePwd(String password) {

@@ -102,11 +102,12 @@ public class BaseParamsController {
 	@RequestMapping(value = "refresh",method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> refresh() {
 		ServletContext servletContext = request.getSession().getServletContext();
-		servletContext.setAttribute("bps", baseParamsManager.getBaseParams());
+		List<BaseParams> list = baseParamsManager.getBaseParams();
+		servletContext.setAttribute("bps", list);
 		Map<String, List<BaseParams>>  bpsMap = baseParamsManager.convertBaseParam2Map();
 		servletContext.setAttribute("bpsMap", bpsMap);
 		
-		return ResultHandler.toSuccessJSON("刷新成功");
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "刷新成功", list);
 	}
 	
 	@UserOperation(code="getBaseParamsByType",name="根据字典类型查询数据字典",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
@@ -114,6 +115,18 @@ public class BaseParamsController {
 	public @ResponseBody List<BaseParams> getBaseParamsByType(String type) {
 		List<BaseParams> list = this.baseParamsManager.getBaseParamsByType(type);
 		return list;
+	}
+	
+	@UserOperation(code="save",name="保存系统参数平台IP",isMain=false)
+	@RequestMapping(value = "savePtip", method = RequestMethod.POST)
+	public @ResponseBody Map savePtip(BaseParams baseParams) {
+		List<BaseParams> list = this.baseParamsManager.getBaseParamsByType("ptip");
+		if(list != null) {
+			BaseParams bp = list.get(0);
+			bp.setParamValue(baseParams.getParamValue());
+			this.baseParamsManager.save(bp);
+		}
+		return this.refresh();
 	}
 
 }

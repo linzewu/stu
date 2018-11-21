@@ -1,10 +1,15 @@
 package com.xs.jt.cms.controller;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 
 import org.slf4j.Logger;
@@ -143,6 +148,11 @@ public class VehCheckInfoController {
 			if(sbdhImg != null) {
 				data.put("clsbdhzp",new ByteArrayInputStream(sbdhImg.getPhoto()));
 			}
+			//签名
+			VehiclePhotos signImg = vehiclePhotosManager.findPhotosByLshAndZpzlAndJccs(vci.getLsh(),"49",vci.getCycs());
+			if(signImg != null) {
+				data.put("signzp",new ByteArrayInputStream(signImg.getPhoto()));
+			}
 
 			com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil(template+".doc", data, bpsMap);
 			imageName = template+"_01_" + vci.getLsh() + ".jpg";
@@ -173,6 +183,35 @@ public class VehCheckInfoController {
 			}
 		}
 		return data;
+	}
+	
+	
+	@UserOperation(code = "getPhotosByLsh", name = "查看照片")
+	@RequestMapping(value = "getPhotosByLsh", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getPhotosByLsh(String lsh) {
+		List<VehiclePhotos> photos = this.vehiclePhotosManager.findPhotosByLsh(lsh);
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "查看照片成功", photos);
+	}
+	
+	@UserOperation(code = "buildVehPhoto", name = "打印图片")
+	@RequestMapping(value = "buildVehPhoto", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> buildVehPhoto(Integer id){
+		VehiclePhotos photo = this.vehiclePhotosManager.findVehPhotoById(id);
+		try {
+			File imgFile = new File(cacheDir + "\\vehimage\\" + id + ".jpg");
+			if (!imgFile.exists()) {
+
+				ByteArrayInputStream bais = new ByteArrayInputStream(photo.getPhoto());
+				BufferedImage bi1 = ImageIO.read(bais);
+				File w2 = new File(cacheDir + "\\vehimage\\" + id + ".jpg");// 可以是jpg,png格式
+
+				ImageIO.write(bi1, "jpg", w2);
+
+			}
+		} catch (IOException e) {
+			throw new ApplicationException("打印图片异常", e);
+		}
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "打印图片成功", id);
 	}
 
 }

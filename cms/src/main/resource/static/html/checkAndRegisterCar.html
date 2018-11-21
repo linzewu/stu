@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" type="text/css"
+	href="../js/easyui/themes/gray/easyui.css">
+<link rel="stylesheet" type="text/css"
+	href="../js/easyui/themes/color.css">
+<link rel="stylesheet" type="text/css"
+	href="../js/easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css"
+	href="../css/buttonStyle.css">
+<link rel="stylesheet" type="text/css"
+	href="../css/mynumkb.css">
+<script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+<script type="text/javascript" src="../js/json2.js"></script>
+<script type="text/javascript"
+	src="../js/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript"
+	src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../js/mynumkb.js"></script>
+<script type="text/javascript" src="../js/common.js"></script>
+<script type="text/javascript" src="../js/extendValidate.js"></script>
+<script type="text/javascript" src="../js/selfHelp.js"></script>
+<object  id="LODOP_OB" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0>  
+       <embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0></embed> 
+</object> 
+<script type="text/javascript">
+function nextStep(){
+	if($("#sfz").val() == "" || $("#syr").val() == "" || $("#dz").val() == ""){
+		$.messager.alert('警告', "请放置身份证", 'error');		
+		return;
+	}
+	$("#sfzBlock").slideUp(function(){
+		$("#sjhm").mynumkb();
+	});
+	$("#hgzBlock").slideDown();
+}
+</script>	
+<title>机动车查验自助终端</title>
+<style type="text/css">
+.subTitle{
+    width:400px;height:68px;  /*设置div的大小*/
+    display:table-cell; 
+    vertical-align:bottom;
+    padding-left: 100px;
+    color: white;
+    font-size: 18px;
+    font-weight:bold;
+    letter-spacing: 1px;
+    text-align: right;
+ }
+ .title{
+ color: white;padding-left: 100px;letter-spacing: 1px;float: left;
+ }
+ .label-date{
+    width:400px;height:68px;  /*设置div的大小*/
+    display:table-cell; 
+    vertical-align:bottom;
+    padding-left: 100px;
+    color: white;
+    font-size: 16px;
+    font-weight:bold;
+    letter-spacing: 1px;
+    text-align: right;
+ }
+ .line-bottom{
+ 	border-bottom: 1px dashed #987cb9;
+ }
+ 
+ .trHg{
+ 	height: 35px;
+ }
+ 
+ .spanFont{
+ 	font-size: 24px;
+ }
+ 
+ .button-pill {
+  border-radius: 100px;
+  font-weight: bold;
+  overflow: visible;
+  }
+</style>
+</head>
+<body style="margin: 0;">
+<div style="width: 180px;position: absolute;top: 160px;left: 1088px;">
+		<a href="#" class="easyui-linkbutton button-pill" style="width:180px;height: 46px;" onclick="reloadIndex()"><font style="font-size: 20px;">退出</font></a>
+</div>
+<form name="shForm" id="shForm" method="post">
+<div id="sfzBlock" style="background-image: url('../images/sfz.jpg');width:1270px;height: 1000px;background-repeat: no-repeat;margin: 0;padding: 0;border: 0;">
+	<div style="width: 450px;position: absolute;top: 864px;left: 380px;">
+		<span id="syrs" class="spanFont" ></span>
+	</div>
+	<div style="width: 450px;position: absolute;top: 955px;left: 440px;">
+		<span id="sfzs" class="spanFont" ></span>
+	</div>
+	<!-- <div style="width: 180px;position: absolute;top: 678px;left: 1125px;">
+		<a href="#" class="easyui-linkbutton blue button-pill" style="width:180px;height: 46px;" onclick="nextStep()"><font style="font-size: 20px;">下 一 步</font></a>
+	</div> -->
+</div>
+<div id="hgzBlock" style="background-image: url('../images/hgz.jpg');width:1270px;height: 1000px;background-repeat: no-repeat;margin-left: 0px;display: none;margin: 0;padding: 0;border: 0;">
+	<div>
+		<table style="width: 610px;height: 500px;">
+			<tr>
+				<td align="right" valign="bottom"><input name="sjhm" id="sjhm" link="sjhm_text"  type="text" style="width: 0px;border: white;" /></td>
+			</tr>
+		</table>
+	</div>
+	<div style="position: absolute;top: 746px;left: 450px;width: 600px;height: 60px;padding-top: 20px;" onclick="$('#sjhm').click();">
+		<span id="sjhm_text" class="spanFont" ></span>
+	</div>
+	<div style="position: absolute;top: 856px;left: 450px;">
+		<span id="clxh_text" class="spanFont" ></span>
+	</div>
+	<div style="width: 450px;position: absolute;top: 946px;left: 500px;">
+		<span id="clsbdh_text" class="spanFont" ></span>
+	</div>
+	<div style="width: 200px;position: absolute;top: 920px;left: 1060px;">
+		<a href="#" class="easyui-linkbutton blue button-pill" style="width:180px;height: 46px;" onclick="shSaveAndPring()"><font style="font-size: 20px;">打 印</font></a>
+	</div>
+</div>
+<div style="display: none;" id="hideArea" >
+						<input type="hidden" name="syr" id="syr"/>
+						<input type="hidden" name="sfz" id="sfz"/>
+						<input type="hidden" name="dz" id="dz"/>
+						
+						<input type="hidden" value="A" name="ywlx" id="ywlx"/>
+						<input	type="hidden" id="clsbdh" name="clsbdh">
+						<input	type="hidden" id="hdzk" name="hdzk">
+						<input	type="hidden" id="csys" name="csys">
+						<input	type="hidden" id="clxh" name="clxh">
+						<input	type="hidden" id="ggbh" name="ggbh">
+						<input	type="hidden" id="cllx" name="cllx">
+					 	                      
+					 	<input	type="hidden" id="hgzbh" name="hgzbh">
+					 	<input	type="hidden" id="hbdbqk" name="hbdbqk">
+					 	<input	type="hidden" id="ccrq" name="ccrq">
+					 	<input	type="hidden" id="zzcmc" name="zzcmc">
+					 	<input	type="hidden" id="clpp1" name="clpp1">
+					 	<input	type="hidden" id="clpp2" name="clpp2">
+					 	<input	type="hidden" id="fdjxh" name="fdjxh">
+					 	<input	type="hidden" id="rlzl" name="rlzl">
+					 	<input	type="hidden" id="pl" name="pl">
+					 	<input	type="hidden" id="gl" name="gl">
+					 	<input	type="hidden" id="zxxs" name="zxxs">
+					 	<input	type="hidden" id="lts" name="lts">
+					 	<input	type="hidden" id="gbthps" name="gbthps">
+					 	<input	type="hidden" id="zs" name="zs">
+					 	<input	type="hidden" id="hxnbcd" name="hxnbcd">
+					 	<input	type="hidden" id="hxnbkd" name="hxnbkd">
+					 	<input	type="hidden" id="hxnbgd" name="hxnbgd">
+					 	<input	type="hidden" id="zzl" name="zzl">
+					 	<input	type="hidden" id="hdzzl" name="hdzzl">
+					 	<input	type="hidden" id="zbzl" name="zbzl">
+					 	<input	type="hidden" id="zqyzl" name="zqyzl">
+					 	<input	type="hidden" id="qpzk" name="qpzk">
+					 	<input	type="hidden" id="hpzk" name="hpzk">
+					 	<input	type="hidden" id="bz" name="bz">
+					 	
+					 	<input	type="hidden" id="fdjh" name="fdjh">
+					 	<input name="cwkc" id="cwkc" type="hidden" />
+						<input name="cwkk" id="cwkk" type="hidden" />
+						<input name="cwkg" id="cwkg" type="hidden" />
+						<input name="qlj" id="qlj" type="hidden"/>
+						<input name="hlj" id="hlj" type="hidden" />
+						<input name="zj" id="zj" type="hidden"  />
+						<input name="ltgg" id="ltgg" type="hidden"/>
+						
+						<input	type="hidden" id="gcjk" name="gcjk" value="A">
+						<input	type="hidden" id="dpid" name="dpid" >
+						<input	type="hidden" id="veh_sfxc" name="veh_sfxc" >
+						<input id="ewm"  name="ewm" type="hidden"/>
+					 </div>
+ </form>
+ <div id="printTemplet" style="display: none;">
+ 	<img alt="" src="" style="border: 0;margin: 0; padding: 0">
+</div>
+</body>
+<OBJECT ID="vehPrinter" CLASSID="CLSID:F1EFB37B-C778-4AF8-B0C2-B647C9E89E2D" CODEBASE="VehPlatForm_web.CAB#version=2,7,0,0">
+</OBJECT>
+<script type="text/javascript" src="../js/LodopFuncs.js"></script>
+<script type="text/javascript" src="../js/carRegister.js"></script>
+<script type="text/javascript" src="../js/dataCode.js"></script>
+<script type="text/javascript">
+$(function(){
+	qrtNumber=window.setInterval("readQrLabel();",200);
+	var url = decodeURI(window.location.href);
+
+	var argsIndex = url .split("?vehSfxc=");
+	var arg = "";
+	if(argsIndex.length > 1){
+		arg = argsIndex[1];
+	}
+	
+	if(arg == "Y"){
+		$("#veh_sfxc").val("Y")
+	}else{
+		$("#veh_sfxc").val("")
+	}
+});
+function reloadIndex(){
+	window.location.href = "shIndex.html?timestamp="+ new Date().getTime();
+}
+
+function readQrLabel() {
+	
+	var barcodetemp = "";
+	try{
+		var strbarcode = vehPrinter.GetQrText();
+		if (strbarcode == "") {
+			return 0;
+		}
+		if (strbarcode == "-1") {
+			$.messager.alert("提示", "条码信息有误!");
+			return 0;
+		}
+		console.log(strbarcode)
+		var barArray = strbarcode.split("|");
+	
+		var strBarCodeType = barArray[0];
+		if (strBarCodeType.split("_")[0] == "ZCCCHGZ") {
+			loadCLHGZ(barArray, strbarcode);
+			return;
+		}
+	
+		if (strBarCodeType == "SFZXX_2.0") {
+			setSFZXX(barArray);
+			return;
+		}
+	}catch (e) {
+		alert(e);
+		return ;
+	}
+
+}
+
+function setSFZXX(barArray) {
+	$("#syrs").text(barArray[1]);
+	$("#sfzs").text( barArray[6]);
+	//$("#dzs").text(barArray[5]);
+	
+	$("#syr").val(barArray[1]);
+	$("#sfz").val( barArray[6]);
+	$("#dz").val(barArray[5]);
+	
+	setTimeout(function(){
+		nextStep();		
+	},1500)
+	
+}
+
+function loadCLHGZ(barArray, strbarcode) {
+	var dataInfo = {};
+	dataInfo["hgzbh"] = barArray[2];
+	dataInfo["ccrq"] = barArray[3];
+
+	dataInfo["zzcmc"] = barArray[4];
+	// dataInfo["cllx"]=barArray[6];
+
+	var clpps = barArray[7].split("/");
+	if (clpps.length > 1) {
+		dataInfo["clpp1"] = clpps[0];
+		dataInfo["clpp2"] = clpps[1];
+	} else {
+		dataInfo["clpp1"] = clpps[0];
+	}
+	dataInfo["clxh"] = barArray[8];
+	if(dataInfo["clxh"] != null && dataInfo["clxh"] != ""){
+		$.post("../../preCarRegister/getGongGaoInfo",{"clxh":dataInfo["clxh"]},function(data){
+			if (data != null){
+				$("#ggbh").val(data['BH']);
+				$("#cllx").val(data['CLLX']);				
+			}
+			
+		},"json").complete(function(){
+		});
+	}
+	dataInfo["csys"] = barArray[9];
+
+	dataInfo["clsbdh"] = barArray[13];
+	dataInfo["fdjh"] = barArray[15];
+	dataInfo["fdjxh"] = barArray[16];
+
+	dataInfo["rlzl"] = barArray[17];
+	dataInfo["pl"] = barArray[19];
+	dataInfo["gl"] = barArray[20];
+	dataInfo["zxxs"] = barArray[21];
+
+	var qljs = barArray[22].split("/");
+
+	dataInfo["qlj"] = qljs[0];
+
+	// 计算后轮距 29是轴数
+	var hlj = getHlj(barArray[23], barArray[29]);
+
+	dataInfo["hlj"] = hlj;
+
+	dataInfo["lts"] = barArray[24];
+	dataInfo["ltgg"] = barArray[25];
+	dataInfo['hbdbqk'] = barArray[18];
+	dataInfo['dpid'] = barArray[11];
+
+	var zxzs = 1;
+	if (qljs.length > 0) {
+		zxzs = qljs.length;
+	}
+
+	var gbthps = "";
+	if (barArray[6] == "挂车") {
+		gbthps = getGbthps("-/" + barArray[26], 1);
+	} else {
+		gbthps = getGbthps(barArray[26], zxzs);
+	}
+
+	dataInfo["gbthps"] = gbthps;
+	var zj = getZj(barArray[27]);
+	dataInfo["zj"] = zj;
+
+	dataInfo["zs"] = barArray[29];
+	dataInfo["cwkc"] = barArray[30];
+	dataInfo["cwkk"] = barArray[31];
+
+	dataInfo["cwkg"] = barArray[32];
+	dataInfo["hxnbcd"] = barArray[33];
+	dataInfo["hxnbkd"] = barArray[34];
+	dataInfo["hxnbgd"] = barArray[35];
+	dataInfo["zzl"] = barArray[36];
+
+	dataInfo["hdzzl"] = barArray[37];
+	dataInfo["zbzl"] = barArray[38];
+	dataInfo["zqyzl"] = barArray[40];
+
+	var hdzks = barArray[41].split("/");
+	dataInfo["hdzk"] = hdzks[0];
+
+	var qpzks = barArray[43].split("+");
+
+	dataInfo["qpzk"] = qpzks[0];
+	if (qpzks.length > 1) {
+		dataInfo["hpzk"] = qpzks[1];
+	}
+	dataInfo["bz"] = barArray[50];
+	$("#ewm").val(strbarcode);
+	$('#shForm').form('load', dataInfo);
+	$("#clsbdh_text").text(dataInfo["clsbdh"]);
+	$("#clxh_text").text(dataInfo["clxh"]);
+	if($("#sjhm_text").text() == ""){
+		$("#sjhm").click();
+	}
+	//$("#clsbdh_s").text(dataInfo["clsbdh"]);
+	//$("#clxh_s").text(dataInfo["clxh"]);
+	//$("#fdjh_s").text(dataInfo["fdjh"]);
+	//$("#csys_s").text(getLabelByid("csys", dataInfo["csys"].toUpperCase()));
+}
+
+function clearD(){
+	$('#shForm').form('clear');
+	$("#syrs").text("");
+	$("#sfzs").text("");
+	//$("#dz_s").text("");
+	$("#clsbdh_s").text("");
+	$("#clxh_s").text("");
+	$("#fdjh_s").text("");
+	$("#csys_s").text("");
+	window.location.href="shIndex.html";
+}
+</script>
+</html>

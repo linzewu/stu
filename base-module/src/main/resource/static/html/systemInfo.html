@@ -28,7 +28,7 @@ baseParamManager.refresh=function(){
 	},"json");	
 }
 </script>
-<div class="easyui-tabs" data-options="fit:true">
+<div id="sysTab" class="easyui-tabs" data-options="fit:true">
 	<div data-options="title:'数据字典'">
 		<div class="center-div">
 			<table id="datagrid-baseparam" title="数据字典" class="easyui-datagrid" style="width:100%;height:400px"
@@ -93,6 +93,11 @@ baseParamManager.refresh=function(){
 						<label id="lab_ipmac"></label>
 					</td>
 				</tr>
+				<tr>
+					<td class="info_title">平台IP设置：</td>
+					<td class="info2" colspan="3"><input id="currIp" name="currIp" class="easyui-combobox"  data-options="required:true,editable:false,data:comm.getBaseParames('iplist'),	valueField: 'id',
+		textField: 'id'"   /></td>
+				</tr>
 			</table>
 		</form>
 	</div>
@@ -100,8 +105,33 @@ baseParamManager.refresh=function(){
 </div>
 
 <script type="text/javascript">
-	$(function(){
+	$(function(){		
 		loadComputer();
+		$("#datagrid-baseparam").datagrid({
+			onLoadSuccess:function(data){
+				if($('#currIp').combobox("getValue") == ""){
+					
+					$('#currIp').combobox({
+						onChange:function(newValue,oldValue){
+							if(oldValue != ""){
+							$.post("../../bps/savePtip",{paramValue:newValue},function(data){
+								if(data.state=="1"){
+									$.messager.alert("提示","修改成功！","info");
+									bps = data.data;
+								}
+							});
+							}
+						}
+					});
+					
+					var currIp = comm.getBaseParames('ptip');
+					if (currIp.length > 0){
+						$('#currIp').combobox('setValue', currIp[0].id);
+					}
+				}
+			}			
+		});	
+		
 	});
 
 	function loadComputer(){

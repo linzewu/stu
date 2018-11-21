@@ -708,21 +708,38 @@ function print() {
 
 function printCYD(option) {
 	var prview=false;
+	var setup=false;
 	if(option){
 		if(option.prview){
 			prview=option.prview
+		}
+		if(option.setup){
+			setup=option.setup
 		}
 	}
 	var LODOP = getLodop(document.getElementById('LODOP_OB'),
 			document.getElementById('LODOP_EM'));
 	LODOP.ADD_PRINT_HTM(0, 0, 1024, 1200, document
 			.getElementById("printTemplet").innerHTML);
-	if(prview){
-		LODOP.PREVIEW();
+	
+	if(setup){
+		LODOP.PRINT_SETUP();
 	}else{
-		LODOP.PRINT();
+		if(prview){
+			LODOP.PREVIEW();
+		}else{
+			LODOP.PRINT();
+		}
 	}
 }
+
+function getLodopObj() {
+	var LODOP = getLodop(document.getElementById('LODOP_OB'),
+			document.getElementById('LODOP_EM'));
+	return LODOP;
+}
+
+
 
 function deving(){
 	$.messager.alert("提示","正在开发中....")
@@ -757,21 +774,23 @@ function loadImplCarParam(index,row){
 }
 
 function shSaveAndPring() {
-	if($("#syr_s").text() == "" || $("#sfz_s").text() == "" || $("#dz_s").text() == ""){
+	if($("#syrs").text() == "" || $("#sfzs").text() == ""){
 		$.messager.alert("提示","请将二代身份证放置在身份证识别区","info");
 		return;
 	}
-	if($("#clsbdh_s").text() == "" || $("#clxh_s").text() == "" || $("#fdjh_s").text() == "" || $("#csys_s").text() == ""){
+	if($("#clsbdh_text").text() == "" || $("#clxh_text").text() == ""){
 		$.messager.alert("提示","请扫描车辆合格证","info");
 		return;
 	}
 	var sjhm = $("#sjhm").val();
 	if(sjhm == ""){
 		$.messager.alert("提示","请输入手机号码","info");
+		$("#sjhm").click();
 		return;
 	}
 	if (!(/^(13|15|18)\d{9}$/i.test(sjhm))){
 		$.messager.alert("提示","手机号码格式不正确","info");
+		$("#sjhm").click();
 		return;
 	}
 	

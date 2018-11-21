@@ -99,9 +99,10 @@ public class PreCarRegisterController {
 			if (null == bcr.getDpid() || "".equals(bcr.getDpid().trim())) {
 				bcr.setDpid(null);
 			}
-			this.preCarRegisterManager.save(bcr); 
+			bcr = this.preCarRegisterManager.save(bcr); 
 			if ("A".equals(bcr.getYwlx())) {
 				Map<String,Object> data =MapUtil.object2Map(bcr);
+				data.put("createtime", bcr.getCreateTime());
 				data.put("lshCode", BarcodeUtil.generateInputStream(lsh));
 				if(StringUtils.isEmpty(bcr.getHphm())) {
 					data.put("hphm", bcr.getClsbdh());

@@ -15,7 +15,39 @@
 <script type="text/javascript"
 	src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="../js/selfHelp.js"></script>
+<script type="text/javascript">
+intervalLogin();
 
+function intervalLogin(){
+	var userName = "admin";
+	var password = "888888";
+	var param = {};
+	param.userName = userName;
+	param.password = password;
+
+	$.ajax({ 
+	    type : "post", 
+	    url : "../../user/login", 
+	    data : param,
+	    async : false, 
+	    success : function(data){
+	    		var datajson = data;
+	    		if (datajson['state'] == 1) {
+	    		}else{
+	    			$.messager.alert("登陆失败",datajson['message'],"info");
+	    			
+	    		}
+	    	},
+	    	dataType:"json"
+	    }); 
+}
+
+$(function(){
+	window.setInterval("intervalLogin();",1200000);
+});
+
+
+</script>
 <title>机动车查验自助终端</title>
 <style type="text/css">
 .subTitle{
@@ -46,42 +78,15 @@
 </style>
 
 </head>
-<body class="easyui-layout">
-	<div data-options="region:'north'"
-		style="height: 100px; border: 0; background-color: rgb(40, 82, 180); overflow-x: hidden; overflow-y: hidden;">
-		<div class="title">
-			<H1 style="">机动车查验登记自助终端</H1>
-		</div>
-		<div class="subTitle">欢迎使用机动车查验自助终端</div>
-	</div>
-	<div data-options="region:'south'" style="height: 100px;border: 0; background-color: rgb(40, 82, 180); overflow-y: hidden;">
-		<div class="title">
-			<H3 style="">盐城市公安局交通警察支队车辆管理所</H3>
-		</div>
-		<div class="label-date">2018-09-09 14:21:59</div>
-	</div>
-	<div data-options="region:'center'" style="background-color: rgb(242, 242, 245);text-align: center;">
-		<a href="#" class="easyui-linkbutton c8" style="width:300px;height: 160px;margin-top: 50px;" onclick="openPage('')"><img alt="" src="../images/car_64.png" style="widows: 64px;height: 64px;"/><br><font style="font-size: 24px;">查验登记</font></a>
-		<a href="#" class="easyui-linkbutton c8" style="width:300px;height: 160px;margin-top: 50px;margin-left: 100px;" onclick="alert('222')"><img alt="" src="../images/search_64.png" style="widows: 64px;height: 64px;"/><br><font style="font-size: 24px;">流水查询</font></a><br/>
-		
-		<a href="#" class="easyui-linkbutton c8" style="width:300px;height: 160px;margin-top: 50px;" onclick="openPage('Y')"><img alt="" src="../images/car_64.png" style="widows: 64px;height: 64px;"/><br><font style="font-size: 24px;">校车登记</font></a>
-		<a href="checkAndRegister.html" class="easyui-linkbutton c8" style="width:300px;height: 160px;margin-top: 50px;margin-left: 100px;"><img alt="" src="../images/car_64.png" style="widows: 64px;height: 64px;"/><br><font style="font-size: 24px;"></font></a>
-	</div>
+<body style="background-color: rgb(5,84,163);">
+<div style="background-image: url('../images/selfHelpLogin.jpg');width: 1270px;height: 1000px;background-repeat: no-repeat;">
+	<div style="width: 270px;position: absolute;top: 524px;left: 870px;height: 135px;" onclick="openPage('');"></div>
+	<div style="width: 270px;position: absolute;top: 687px;left: 870px;height: 135px;" onclick="openPage('Y');"></div>
+</div>
 </body>
 <script type="text/javascript">
-$(function(){
-	var userName = "admin";
-	var password = "888888";
-	$.post("../../user/login",{userName:userName,password:password}, function(data){
-		if(data.state==1){
-			//window.location.href="index.html";
-		}else{
-			$.messager.alert("登陆失败",data.message,"info");
-		}
-	},"json").error(function(e){
-		$.messager.alert("提示",e.responseText);
-	}).complete(function(){
-	})
-});
+function checkCar(){
+	window.location.href="checkAndRegister.html";
+}
 </script>
 </html>
