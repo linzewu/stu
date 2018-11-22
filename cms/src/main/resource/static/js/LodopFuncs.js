@@ -62,7 +62,7 @@ function getLodop(oOBJECT,oEMBED){
 	                 
 	             return LODOP;
 	     } else if (LODOP.VERSION<"6.1.9.8") {
-	    	 console.log("LODOP.VERSION " + LODOP.VERSION)
+	    	 //console.log("LODOP.VERSION " + LODOP.VERSION)
 	             if (is64IE){
 	            	 $.messager.alert("警告", strHtml2, 'warn', function() {
 		 					window.open('../print/install_lodop64.exe');

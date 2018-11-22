@@ -46,7 +46,7 @@ public class BaseParamsController {
 		List<BaseParams> bps = (List<BaseParams>) servletContext.getAttribute("bps");
 
 		ObjectMapper objectMapper = new ObjectMapper();
-		String js = " var bps=" + objectMapper.writeValueAsString(bps);
+		String js = " var bps=" + objectMapper.writeValueAsString(bps)+";";
 		return js;
 	}
 

@@ -3733,8 +3733,7 @@
 				if ( o.customData.length === 1 ) { hRow.css( "width", "90%" ); }
 				for ( i=0; i < lineArr.length; i++ ) {
 					tmp = ( i !== o.customDataLen ) ? o.themeOpt : o.themeOptPick;
-					console.log(i + " " + o.customDataLen);
-					console.log(typeof i + " " + typeof o.customDataLen);
+					
 					$( "<li>", { "class": "ui-body-" + tmp } )
 						.html( "<span>" + lineArr[i] + "</span>" )
 						.appendTo( hRowIn );

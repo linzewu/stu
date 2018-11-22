@@ -610,7 +610,7 @@ public class PDAServiceController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		boolean flag= false;
 		VehCheckInfo checkInfo = this.policeCheckInfoManager.findBhgVehCheckInfoByLsh(lsh);
-		List<VehiclePhotos> photos = this.vehiclePhotosManager.findPhotosByLshAndJccs(checkInfo.getLsh(), checkInfo.getCycs());
+		List<Map> photos = this.vehiclePhotosManager.findPhotosByLshAndJccs(checkInfo.getLsh(), checkInfo.getCycs());
 		//不合格
 		if (checkInfo != null && "0".equals(checkInfo.getCyjg())) {
 			flag = true;
@@ -638,7 +638,7 @@ public class PDAServiceController {
 		Map<String, String> dataMap = new HashMap<String, String>();
 		boolean flag = false;
 		VehCheckInfo checkInfo = this.policeCheckInfoManager.findBhgVehCheckInfoByHphmHpzl(hphm, hpzl);
-		List<VehiclePhotos> photos = this.vehiclePhotosManager.findPhotosByLshAndJccs(checkInfo.getLsh(), checkInfo.getCycs());
+		List<Map> photos = this.vehiclePhotosManager.findPhotosByLshAndJccs(checkInfo.getLsh(), checkInfo.getCycs());
 		//不合格
 		if (checkInfo != null && "0".equals(checkInfo.getCyjg())) {
 			flag = true;
@@ -705,8 +705,8 @@ public class PDAServiceController {
 	@UserOperation(code = "findVehPhotoById", name = "根据id查询照片")
 	@RequestMapping(value = "findVehPhotoById", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> findVehPhotoById(Integer id){
-		VehiclePhotos photo = this.vehiclePhotosManager.findVehPhotoById(id);
-		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "查看照片成功！", photo);
+		String imgPath = this.vehiclePhotosManager.findVehPhotoById(id);
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "查看照片成功！", imgPath);
 	}
 
 }

@@ -5,7 +5,7 @@
 var qrtNumber=0;
 
 function testOnMove(left,top){
-	console.log(left+"\t"+top);
+	//console.log(left+"\t"+top);
 }
 /**
 $(function() {

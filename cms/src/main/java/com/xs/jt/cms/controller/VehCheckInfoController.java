@@ -85,7 +85,7 @@ public class VehCheckInfoController {
 			}
 			PreCarRegister pcr = preCarRegisterManager.findPreCarRegisterByLsh(checkInfo.getLsh());
 			String template = "template_pt_qd";
-			if ("Y".equals(pcr.getVeh_sfxc())) {
+			if ("Y".equals(checkInfo.getVeh_sfxc())) {
 				template = "template_pt_xc_qd";
 			}
 			imageName = printing(checkInfo,template,pcr);
@@ -107,7 +107,7 @@ public class VehCheckInfoController {
 			}
 			String template = "template_pt_td";
 			PreCarRegister pcr = preCarRegisterManager.findPreCarRegisterByLsh(checkInfo.getLsh());
-			if ("Y".equals(pcr.getVeh_sfxc())) {
+			if ("Y".equals(checkInfo.getVeh_sfxc())) {
 				template = "template_pt_xc_td";
 			}
 			imageName = printing(checkInfo,template,pcr);
@@ -135,7 +135,7 @@ public class VehCheckInfoController {
 			if (StringUtils.isEmpty(vci.getHphm())) {
 				data.put("hphm", vci.getClsbdh());
 			}
-			if ("Y".equals(pcr.getVeh_sfxc())) {
+			if ("Y".equals(vci.getVeh_sfxc())) {
 				CommonUtil.setXczl(pcr, data);
 			}
 			//车前斜视45度
@@ -189,29 +189,16 @@ public class VehCheckInfoController {
 	@UserOperation(code = "getPhotosByLsh", name = "查看照片")
 	@RequestMapping(value = "getPhotosByLsh", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> getPhotosByLsh(String lsh) {
-		List<VehiclePhotos> photos = this.vehiclePhotosManager.findPhotosByLsh(lsh);
+		List<Map> photos = this.vehiclePhotosManager.findPhotosByLsh(lsh);
 		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "查看照片成功", photos);
 	}
 	
-	@UserOperation(code = "buildVehPhoto", name = "打印图片")
+	@UserOperation(code = "buildVehPhoto", name = "生成图片")
 	@RequestMapping(value = "buildVehPhoto", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> buildVehPhoto(Integer id){
-		VehiclePhotos photo = this.vehiclePhotosManager.findVehPhotoById(id);
-		try {
-			File imgFile = new File(cacheDir + "\\vehimage\\" + id + ".jpg");
-			if (!imgFile.exists()) {
-
-				ByteArrayInputStream bais = new ByteArrayInputStream(photo.getPhoto());
-				BufferedImage bi1 = ImageIO.read(bais);
-				File w2 = new File(cacheDir + "\\vehimage\\" + id + ".jpg");// 可以是jpg,png格式
-
-				ImageIO.write(bi1, "jpg", w2);
-
-			}
-		} catch (IOException e) {
-			throw new ApplicationException("打印图片异常", e);
-		}
-		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "打印图片成功", id);
+		this.vehiclePhotosManager.findVehPhotoById(id);
+		
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "生成图片成功", id);
 	}
 
 }

@@ -187,7 +187,7 @@ function nextStep(){
 <script type="text/javascript">
 $(function(){
 	qrtNumber=window.setInterval("readQrLabel();",200);
-	var url = decodeURI(window.location.href);
+	/**var url = decodeURI(window.location.href);
 
 	var argsIndex = url .split("?vehSfxc=");
 	var arg = "";
@@ -199,7 +199,7 @@ $(function(){
 		$("#veh_sfxc").val("Y")
 	}else{
 		$("#veh_sfxc").val("")
-	}
+	}**/
 });
 function reloadIndex(){
 	window.location.href = "shIndex.html?timestamp="+ new Date().getTime();
@@ -217,7 +217,7 @@ function readQrLabel() {
 			$.messager.alert("提示", "条码信息有误!");
 			return 0;
 		}
-		console.log(strbarcode)
+		
 		var barArray = strbarcode.split("|");
 	
 		var strBarCodeType = barArray[0];

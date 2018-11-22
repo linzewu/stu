@@ -84,7 +84,7 @@ function viewCheckInfo() {
 	var row = $("#vehCheckInfoDG").datagrid("getSelected");
 	if (row != null) {
 		//
-		$.post("../../vheCheckInfo/printCheckInfo",{"lsh":row.lsh,"cycs":row.cycs},function(data){
+		$.post("../../vheCheckInfo/printCheckInfo",{"lsh":row.lsh,"cycs":row.cycs,"veh_sfxc":row.veh_sfxc},function(data){
 			if(data.state==1){
 				$("#printTemplet img").attr("src","../cache/report/"+data.data);
 				var printObj = {};
@@ -106,7 +106,7 @@ function printCheckInfo() {
 	var row = $("#vehCheckInfoDG").datagrid("getSelected");
 	if (row != null) {
 		//
-		$.post("../../vheCheckInfo/printCheckInfo",{"lsh":row.lsh,"cycs":row.cycs},function(data){
+		$.post("../../vheCheckInfo/printCheckInfo",{"lsh":row.lsh,"cycs":row.cycs,"veh_sfxc":row.veh_sfxc},function(data){
 			if(data.state==1){
 				$("#printTemplet img").attr("src","../cache/report/"+data.data);
 				var isView = $("#isView").checkbox("options").checked;
@@ -130,7 +130,7 @@ function tdCheckInfo() {
 	var row = $("#vehCheckInfoDG").datagrid("getSelected");
 	if (row != null) {
 		//
-		$.post("../../vheCheckInfo/tdCheckInfo",{"lsh":row.lsh,"cycs":row.cycs},function(data){
+		$.post("../../vheCheckInfo/tdCheckInfo",{"lsh":row.lsh,"cycs":row.cycs,"veh_sfxc":row.veh_sfxc},function(data){
 			if(data.state==1){
 				$("#printTemplet img").attr("src","../cache/report/"+data.data);
 				var isView = $("#isView").checkbox("options").checked;

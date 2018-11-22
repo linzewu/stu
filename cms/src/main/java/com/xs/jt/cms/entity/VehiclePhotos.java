@@ -92,6 +92,5 @@ public class VehiclePhotos extends BaseEntity{
 	public void setImageStr(String imageStr) {
 		this.imageStr = imageStr;
 	}
-	
 
 }

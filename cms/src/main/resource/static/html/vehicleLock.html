@@ -13,7 +13,6 @@ function endEditing(){
     }
 }
 function onDBClickRow(index, field){
-	debugger;
     if (editIndex != index){
         if (endEditing()){
             $('#datagrid-vehicleLock').datagrid('selectRow', index)
@@ -26,12 +25,12 @@ function onDBClickRow(index, field){
         }
     }
 }
-
+var rowD = "";
 vehicleLockManager.unLock=function(){
-	$("#datagrid-vehicleLock" ).datagrid('acceptChanges');
-var row = $("#datagrid-vehicleLock").datagrid("getSelected");
-console.log(row)
+	//$("#datagrid-vehicleLock" ).datagrid('acceptChanges');
+	rowD = $("#datagrid-vehicleLock").datagrid("getSelected");
 	
+	/**
 	if(!row){
 		$.messager.alert("提示","请选择要解锁的数据！","info");
 		return;
@@ -52,7 +51,39 @@ console.log(row)
 				},"json");	
 			}
 		});
+	}**/
+	if(!rowD){
+		$.messager.alert("提示","请选择要解锁的数据！","info");
+		return;
+	}else{
+		$.messager.confirm("确认","您是否确认解锁该数据？",function(r){
+			if(r){
+				$('#unlockDlg').dialog('open');
+			}else{
+				rowD = "";
+			}
+		});
+		
 	}
+}
+
+function ywUnLock(){
+	var jsyyVal = $("#jsyy").textbox("getValue");
+	if(jsyyVal == null || jsyyVal == ""){
+		$.messager.alert("提示","请输入解锁原因！","info");
+		return;
+	}
+	
+	rowD.jsyy = jsyyVal;
+	$.post("../../vehicleLock/unLock",rowD,function(data){
+		if(data.state==1){
+			$.messager.alert("提示","解锁成功！","info");
+			$('#unlockDlg').dialog('close');
+			rowD = "";
+			$("#jsyy").textbox("setValue","");
+			$("#datagrid-vehicleLock").datagrid("reload");
+		}
+	},"json");	
 }
 
 </script>
@@ -69,7 +100,7 @@ console.log(row)
 	                <th  width="80px" data-options="field:'sdzt',formatter:sdztFormatter">锁定状态</th>
 	                <th  width="100px" data-options="field:'jsr'">解锁人</th> 
 	                <th  width="150px" data-options="field:'jssj'">解锁时间</th> 
-	                <th  width="150px" data-options="field:'jsyy',editor:{type:'textbox'}">解锁原因</th> 
+	                <th  width="150px" data-options="field:'jsyy'">解锁原因</th> 
 	                <th  width="150px" data-options="field:'sdyy',editor:{type:'textbox',options:{required:true}}">锁定原因</th> 
 	            </tr>
 	        </thead>
@@ -82,14 +113,39 @@ console.log(row)
 	    	</div>
 	    	
 	    </div>
-	    
+ <div id="unlockDlg" class="easyui-dialog" title="业务解锁" style="width:400px;height:150px;padding:10px"
+            data-options="
+                iconCls: 'icon-save',
+                closed: true,
+                buttons: [{
+                    text:'确定',
+                    iconCls:'icon-ok',
+                    handler:function(){
+                        ywUnLock();
+                    }
+                },{
+                    text:'关闭',
+                    iconCls:'icon-no',
+                    handler:function(){
+                        closeDlg();
+                    }
+                }]
+            ">
+       <div align="center"><br> <label>解锁原因：</label>
+        <input name="jsyy" id="jsyy" class="easyui-textbox"  required="true"  />
+        </div>
+    </div>	    
 <script type="text/javascript">
 function sdztFormatter(value,row,index){
 	if(value == 0){
-		return "未锁定";
+		return "已解锁";
 	}else if (value == 1){
 		return "锁定";
 	}
 	return  "";
+}
+
+function closeDlg(){
+	$('#unlockDlg').dialog('close')
 }
 </script>

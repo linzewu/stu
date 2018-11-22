@@ -157,6 +157,10 @@ public class VehCheckInfo extends BaseEntity{
 	@Column
 	private Integer hdzk;
 	
+	//是否校车
+	@Column(name="VEH_SFXC",length = 1)
+	private String veh_sfxc;
+	
 	@Transient
 	@DateTimeFormat(pattern = "yyyy-MM-dd")  
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -562,6 +566,12 @@ public class VehCheckInfo extends BaseEntity{
 	}
 	public void setHdzk(Integer hdzk) {
 		this.hdzk = hdzk;
+	}
+	public String getVeh_sfxc() {
+		return veh_sfxc;
+	}
+	public void setVeh_sfxc(String veh_sfxc) {
+		this.veh_sfxc = veh_sfxc;
 	}
 	
 	

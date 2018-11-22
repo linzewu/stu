@@ -34,6 +34,7 @@
 <script type="text/javascript" src="../js/createMenus.js"></script>
 <script type="text/javascript" src="../js/jquery.rotate.min.js"></script>
 <script type="text/javascript" src="../js/viewer/viewer.min.js"></script>
+<script type="text/javascript" src="../js/validIEVersion.js"></script>
 <title>机动车查验管理系统</title>
 <style type="text/css">
 #mask {
@@ -217,7 +218,6 @@
 </body>
 <script type="text/javascript">
 $(window).load(function() {
-	console.log(userInfo)
 	$("#realName").text(userInfo.yhxm);
 	var d = new Date();
 	var userNameValidDate = new Date(userInfo.zhyxq);

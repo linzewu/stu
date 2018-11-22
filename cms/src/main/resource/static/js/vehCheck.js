@@ -11,7 +11,7 @@ function viewImage(){
 					$.each(photos,function(i,n){
 						var li=$("<li></li>");
 						var span = $("<span></span>");
-						var img = $("<label>检验次数"+n[4]+"<br>"+comm.getParamNameByValue("zpzl",n[5])+"</label><br/><img id='"+n[0]+"Img' width='80px' height='80px'/><br/><input type='button' value='裁剪及打印' onclick='cropperImg("+n[0]+")'>");
+						var img = $("<label>检验次数"+n.jccs+"<br>"+comm.getParamNameByValue("zpzl",n.zpzl)+"</label><br/><img id='"+n.id+"Img' width='80px' height='80px'/><br/><input type='button' value='裁剪及打印' onclick='cropperImg("+n.id+")'>");
 						img.attr("src","../images/loading.gif")
 						span.append(img);
 						li.append(span);
@@ -39,9 +39,9 @@ function viewImage(){
 					$("#photoView").viewer({});
 					//请求刷新图片
 					$.each(photos,function(i,n){
-						$.post("../../vheCheckInfo/buildVehPhoto",{"id":n[0]},function(data){
+						$.post("../../vheCheckInfo/buildVehPhoto",{"id":n.id},function(data){
 							if(data.state==1){
-								$("#"+n[0]+"Img").attr("src","../cache/vehimage/"+n[0]+".jpg");
+								$("#"+n.id+"Img").attr("src","../cache/vehimage/"+n.id+".jpg");
 							}else{
 								$.messager.alert("提示",data.message,"error");
 							}

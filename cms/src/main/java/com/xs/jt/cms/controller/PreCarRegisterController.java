@@ -42,7 +42,6 @@ import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutNewAccessServiceStub;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutService;
 import com.xs.jt.cms.common.BarcodeUtil;
-import com.xs.jt.cms.common.CommonUtil;
 import com.xs.jt.cms.common.MatrixToImageWriter;
 import com.xs.jt.cms.common.URLCodeUtil;
 import com.xs.jt.cms.entity.PreCarRegister;
@@ -108,10 +107,10 @@ public class PreCarRegisterController {
 					data.put("hphm", bcr.getClsbdh());
 				}
 				String template = "template_pt_first.doc";
-				if ("Y".equals(bcr.getVeh_sfxc())) {
-					template = "template_pt_xc.doc";
-					CommonUtil.setXczl(bcr, data);
-				}
+//				if ("Y".equals(bcr.getVeh_sfxc())) {
+//					template = "template_pt_xc.doc";
+//					CommonUtil.setXczl(bcr, data);
+//				}
 				Map<String, List<BaseParams>> bpsMap = (Map<String, List<BaseParams>>) servletContext.getAttribute("bpsMap");
 				com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil(template, data,bpsMap);
 				Sql2WordUtil.toCase(doc, cacheDir, "\\report\\template_ptc_01_"+lsh+".jpg");
@@ -350,10 +349,10 @@ public class PreCarRegisterController {
 				
 				Map<String, List<BaseParams>> bpsMap = (Map<String, List<BaseParams>>) servletContext.getAttribute("bpsMap");
 				String template = "template_pt_first.doc";
-				if ("Y".equals(bcr.getVeh_sfxc())) {
-					template = "template_pt_xc.doc";
-					CommonUtil.setXczl(bcr, data);
-				}
+//				if ("Y".equals(bcr.getVeh_sfxc())) {
+//					template = "template_pt_xc.doc";
+//					CommonUtil.setXczl(bcr, data);
+//				}
 				com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil(template, data,bpsMap);
 				Sql2WordUtil.toCase(doc, cacheDir, "\\report\\template_ptc_01_"+bcr.getLsh()+".jpg");
 				

@@ -90,7 +90,7 @@ var comm = {
 	createMumeOfTemp : function(temp, data,context) {
 		var ul = temp.find(".menus" );
 		ul.empty();
-		console.log(ul);
+		
 		$.each(data,function(i,n){
 			var li = $("<li><a id='_menu"+i+"' href=\"javascript:void(0)\"><img></a></li>");
 			li.find("img").attr("src", n.icon);

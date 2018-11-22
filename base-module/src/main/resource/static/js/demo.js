@@ -124,7 +124,7 @@ function createJd(id,title,datas){
 }
 
 function createYue(id,title,datas){
-	console.log(datas)
+	
 	 $(id).highcharts({
 	        title: {
 	            text: title
