@@ -40,6 +40,10 @@ public class VehCheckInfo extends BaseEntity{
 	private String jczbh;
 	@Column(length=100)
 	private String cllx;
+	
+	@Column(length=100)
+	private String bh;
+	
 	@Column
 	@DateTimeFormat(pattern = "yyyy-MM-dd")  
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -161,10 +165,21 @@ public class VehCheckInfo extends BaseEntity{
 	@Column(name="VEH_SFXC",length = 1)
 	private String veh_sfxc;
 	
+	//查验机构
+	@Column(length=200)
+	private String jg;
+	
 	@Transient
 	@DateTimeFormat(pattern = "yyyy-MM-dd")  
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date cysjEnd;
+	
+	public String getBh() {
+		return bh;
+	}
+	public void setBh(String bh) {
+		this.bh = bh;
+	}
 	public String getLsh() {
 		return lsh;
 	}
@@ -572,6 +587,12 @@ public class VehCheckInfo extends BaseEntity{
 	}
 	public void setVeh_sfxc(String veh_sfxc) {
 		this.veh_sfxc = veh_sfxc;
+	}
+	public String getJg() {
+		return jg;
+	}
+	public void setJg(String jg) {
+		this.jg = jg;
 	}
 	
 	

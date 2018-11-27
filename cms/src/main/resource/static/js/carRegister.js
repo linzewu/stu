@@ -682,6 +682,10 @@ function formatterYwlx(value) {
 	return getLabelByid("ywlx", value);
 }
 
+function formatterSyxz(value) {
+	return getLabelByid("syxz", value);
+}
+
 function print() {
 	var row = $("#preCarRegisterDG").datagrid("getSelected");
 	if (row != null) {
@@ -719,7 +723,7 @@ function printCYD(option) {
 	}
 	var LODOP = getLodop(document.getElementById('LODOP_OB'),
 			document.getElementById('LODOP_EM'));
-	LODOP.ADD_PRINT_HTM(0, 0, 1024, 1200, document
+	LODOP.ADD_PRINT_HTM(-35, 0, 1024, 1200, document
 			.getElementById("printTemplet").innerHTML);
 	
 	if(setup){

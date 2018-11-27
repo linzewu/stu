@@ -1,5 +1,9 @@
 package com.xs.jt.cms.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -12,11 +16,14 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.axis2.AxisFault;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -28,9 +35,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
@@ -62,6 +67,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping(value = "/pdaService")
 @Modular(modelCode = "pdaService", modelName = "PDA对外接口")
 public class PDAServiceController {
+	protected static Log log = LogFactory.getLog(PDAServiceController.class);
 	
 	@Value("${stu.properties.glbm}")
 	private String glbm;
@@ -91,7 +97,7 @@ public class PDAServiceController {
 	@Autowired
 	private IGongGaoImageManager gongGaoImageManager;
 
-	public static String YWLX_TYPE = "check.ywlx";
+	public static String YWLX_TYPE = "ywlx";
 
 	@UserOperation(code = "addVehCheckInfo", name = "保存查验信息")
 	@RequestMapping(value = "addVehCheckInfo", method = RequestMethod.POST)
@@ -100,8 +106,8 @@ public class PDAServiceController {
 		User user = (User) session.getAttribute("user");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd  HH:mm:ss");
 		vehCheckInfo.setCysj(new Date());
-		BaseParams baseParam = baseParamsManager.getBaseParam(YWLX_TYPE, vehCheckInfo.getYwlx());
-		String ywlx = baseParam == null ? "" : baseParam.getParamValue();
+		BaseParams baseParam = baseParamsManager.getBaseParamByValue(YWLX_TYPE, vehCheckInfo.getYwlx());
+		String ywlx = baseParam == null ? "" : baseParam.getParamName();
 		if (!result.hasErrors()) {
 			// 校验车辆是否被锁定，如果被锁定则不能保存(如果当前用户是锁定人则可以保存)
 			List<VehicleLock> list = vehicleLockManager.findLockVehicle(vehCheckInfo.getClsbdh());
@@ -148,8 +154,9 @@ public class PDAServiceController {
 			vehCheckInfo.setCycs(cycs);
 
 			policeCheckInfoManager.save(vehCheckInfo);
+			log.info("流水号："+vehCheckInfo.getLsh()+",业务类型："+vehCheckInfo.getYwlx()+",查验结果："+vehCheckInfo.getCyjg());
 			// 注册登记（A） 并且 查验结果是合格，则上传预录入信息到综合平台
-			if (vehCheckInfo.getLsh() != null && "A".equals(ywlx) && "1".equals(vehCheckInfo.getCyjg())) {
+			if (vehCheckInfo.getLsh() != null && "A".equals(vehCheckInfo.getYwlx()) && "1".equals(vehCheckInfo.getCyjg())) {
 				// 上传预录入信息到综合平台
 				uploadPlatForm(vehCheckInfo);
 				// 上传图片
@@ -213,36 +220,61 @@ public class PDAServiceController {
 		}
 
 	}
+	
+	private void reomveBaseAtt(JSONObject jo) {
+		
+		if(jo!=null) {
+			jo.remove("createTime");
+			jo.remove("createUser");
+			jo.remove("id");
+			jo.remove("sdzt");
+			jo.remove("stationCode");
+			jo.remove("updateTime");
+			jo.remove("updateUser");
+			jo.remove("seq");
+		}
+		
+	}
 
 	private void uploadPlatForm(VehCheckInfo vehCheckInfo) throws AxisFault {
+		log.info("上传预录入信息到综合平台...............");
 		TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
 		TmriJaxRpcOutNewAccessServiceStub.WriteObjectOutNew wo = tmriJaxRpcOutService.createWriteObjectOut();
 		PreCarRegister carRegister = this.preCarRegisterManager.findPreCarRegisterByLsh(vehCheckInfo.getLsh());
 		JSONObject jo = JSONObject.fromObject(carRegister);
+		
+		User user = (User)request.getSession().getAttribute("user");
+		
 		String xh = getNewCarSeq();
-		jo.put("XH", xh);
-		jo.put("SFZMHM", jo.remove("SFZ"));
-		jo.put("GCJK", "A");
-		String bh = (String) jo.remove("GGBH");
-		jo.put("BH", bh);
-		jo.remove("BZ");
-		String cyry = (String) vehCheckInfo.getCyr();
-		String zzg = (String) jo.get("ZZG");
+		jo.put("xh", xh);
+		jo.put("sfzmhm", jo.remove("sfz"));
+		if(!jo.has("GCJK")&&!jo.has("gcjk")) {
+			jo.put("gcjk", "A");
+		}
+		String bh = vehCheckInfo.getBh();
+		if(bh==null) {
+			bh = (String) jo.remove("ggbh");
+		}
+		jo.put("bh", bh);
+		jo.remove("bz");
+		
+		String zzg = (String) jo.get("zzg");
 		if ((zzg == null || "".equals(zzg)) && bh != null && !"".equals(bh)) {
 			List<Map<String, Object>> gglist = pDAServiceManager.findPcbStVehicle(bh);
 			if (gglist != null && gglist.size() > 0) {
 				JSONObject gonggao = JSONObject.fromObject(gglist.get(0));
-				jo.put("ZZG", gonggao.get("ZZG"));
+				jo.put("zzg", gonggao.get("ZZG"));
 			}
 
 		}
-		jo.put("SYXZ", vehCheckInfo.getSyxz());
-		jo.put("CLLX", vehCheckInfo.getCllx());
-		jo.put("CSYS", vehCheckInfo.getCsys());
-
-		if (cyry != null) {
-			jo.put("CYRY", cyry);
-		}
+		jo.put("syxz", vehCheckInfo.getSyxz());
+		jo.put("cllx", vehCheckInfo.getCllx());
+		jo.put("csys", vehCheckInfo.getCsys());
+		jo.put("cjdw", carRegister.getStationCode());
+		
+		jo.put("cyry", user.getSfzh());
+		
+		reomveBaseAtt(jo);
 
 		Document document = DocumentHelper.createDocument(); // 创建文档
 		document.setXMLEncoding("UTF-8");
@@ -250,9 +282,13 @@ public class PDAServiceController {
 		veh = JSONConvertXML(veh, jo);
 		wo.setUTF8XmlDoc(document.asXML());
 		wo.setJkid("01C77");
+		log.info("jo:"+jo.toString());
+		log.info("UTF8XmlDoc:"+document.asXML());
 		try {
-			urlDecode(trias.writeObjectOutNew(wo).getWriteObjectOutNewReturn());
+			String resultStr = urlDecode(trias.writeObjectOutNew(wo).getWriteObjectOutNewReturn());
+			log.info("返回结果："+resultStr);
 		} catch (Exception e) {
+			log.error(e.toString());
 			throw new ApplicationException("上传预录入信息到综合平台异常", e);
 		}
 	}
@@ -306,10 +342,12 @@ public class PDAServiceController {
 
 			String returnXML1 = trias.queryObjectOutNew(qo).getQueryObjectOutNewReturn();
 			Document doc = DocumentHelper.parseText(returnXML1);
+			log.info("getNewCarSeq()  returnXML1:"+returnXML1);
 			Element root = doc.getRootElement();
 			seq = root.element("body").element("veh").element("xh").getText();
-
+			log.info("获取机动车序号"+seq);
 		} catch (Exception e) {
+			log.error(e.toString());
 			throw new ApplicationException("获取机动车序号异常", e);
 		}
 		return seq;
@@ -588,7 +626,19 @@ public class PDAServiceController {
 		cycs++;
 		motorVehiclePhotos.setJccs(cycs);
 		
-		motorVehiclePhotos.setPhoto(Base64Utils.decodeFromString(motorVehiclePhotos.getImageStr()));
+		byte[] photoByte = Base64Utils.decodeFromString(motorVehiclePhotos.getImageStr());
+		//如果是车辆识别代号，如果宽小于高做旋转的功能
+		if("30".equals(motorVehiclePhotos.getZpzl())) {
+			InputStream buffIn = new ByteArrayInputStream(photoByte, 0, photoByte.length); 
+			BufferedImage imageBuff = ImageIO.read(buffIn);
+			if(imageBuff.getWidth() < imageBuff.getHeight()) {
+				BufferedImage buff = CommonUtil.Rotate(imageBuff, 90);
+				ByteArrayOutputStream bos = new ByteArrayOutputStream(); 
+				ImageIO.write(buff, "jpg", bos); 
+				photoByte = bos.toByteArray(); 
+			}
+		}
+		motorVehiclePhotos.setPhoto(photoByte);
 		VehiclePhotos photo = vehiclePhotosManager.findPhotosByLshAndZpzlAndJccsAndClsbdh(motorVehiclePhotos.getLsh(),motorVehiclePhotos.getZpzl(),motorVehiclePhotos.getJccs(),motorVehiclePhotos.getClsbdh());
 		if(photo != null) {
 			vehiclePhotosManager.deleteVehiclePhoto(photo);
@@ -692,11 +742,12 @@ public class PDAServiceController {
 	
 	@UserOperation(code = "getGongGaoImagesByBh", name = "根据公告编号获取公告照片")
 	@RequestMapping(value = "getGongGaoImagesByBh", method = RequestMethod.POST)
-	public @ResponseBody List<String> getGongGaoImagesByBh(String bh) {
-		List<String> imageList = new ArrayList<String>();
+	public @ResponseBody List<Map<String,String>> getGongGaoImagesByBh(String bh) {
+		List<Map<String,String>> imageList = new ArrayList<Map<String,String>>();
 		try {
 			imageList = gongGaoImageManager.getGongGaoImagesByBh(bh);
 		} catch (Exception e) {
+			log.error(e.toString());
 			throw new ApplicationException("根据公告编号获取公告照片异常", e);
 		}
 		return imageList;

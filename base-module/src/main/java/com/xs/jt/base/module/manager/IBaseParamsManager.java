@@ -30,6 +30,8 @@ public interface IBaseParamsManager {
 	
 	public Map<String,List<BaseParams>> convertBaseParam2Map();
 	
+	public BaseParams getBaseParamByValue(String type, String paramValue);
+	
 	public static void convertData(Map<String, Object> data) {
 		
 		ServletContext servletContext = ContextLoader.getCurrentWebApplicationContext().getServletContext();

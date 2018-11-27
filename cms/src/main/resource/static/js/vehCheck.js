@@ -105,3 +105,11 @@ function printCropImg(){
 	LODOP.PRINT_SETUP();
 	
 }
+
+function rotate(i){
+	if (i == '0'){
+		$("#imageCorpp").cropper('rotate',-90);
+	}else{
+		$("#imageCorpp").cropper('rotate',90);
+	}
+}

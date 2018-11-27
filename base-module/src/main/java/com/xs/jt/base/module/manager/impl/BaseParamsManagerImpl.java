@@ -128,4 +128,18 @@ public class BaseParamsManagerImpl implements IBaseParamsManager {
 		return mapParam;
 	}
 
+	@Override
+	public BaseParams getBaseParamByValue(String type, String paramValue) {
+		List<BaseParams> bps = (List<BaseParams>) servletContext.getAttribute("bps");
+		if (bps == null) {
+			bps = getBaseParams();
+		}
+		for (BaseParams param : bps) {
+			if (param.getType().equals(type) && param.getParamValue().equals(paramValue)) {
+				return param;
+			}
+		}
+		return null;
+	}
+
 }

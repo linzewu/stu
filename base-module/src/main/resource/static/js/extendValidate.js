@@ -102,14 +102,14 @@ $.extend(
 		},
 		passwordValide: {
 	        validator: function(value){
-	        	var patrn=/^(?![a-zA-Z0-9]+$)(?![^a-zA-Z\/D]+$)(?![^0-9\/D]+$).{8,16}$/;// /^(\w){8,16}$/;
+	        	var patrn=/^(?![a-zA-Z0-9]+$)(?![^a-zA-Z\/D]+$)(?![^0-9\/D]+$).{6,16}$/;// /^(\w){8,16}$/;
 	        	if (!patrn.exec(value)||value=='888888'){
 	        		 return false
 	        	} else{
 	        		return true 
 	        	}
 	        },
-	        message: '不能使用默认密码，只能输入8-16个字母、数字、特殊符号'
+	        message: '不能使用默认密码，只能输入6-16个字母、数字、特殊符号'
 	    },
 	    passwordEquals: {
 	        validator: function(value,param){

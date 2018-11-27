@@ -13,7 +13,7 @@ font-size:12px;text-align:center;opacity:.8;filter:progid:DXImageTransform.Micro
 <object  id="LODOP_OB" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0>  
        <embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0></embed> 
 </object>
-<table id="vehCheckInfoDG" style="height:450px"  data-options="rownumbers:true,
+<table id="vehCheckInfoDG" style="height:560px"  data-options="rownumbers:true,
 		toolbar:'#CheckInfoToolbar2',
 		singleSelect:true,
 		pagination:true,
@@ -29,7 +29,7 @@ font-size:12px;text-align:center;opacity:.8;filter:progid:DXImageTransform.Micro
             <th data-options="field:'hpzl',width:80,resizable:false"  formatter="formatterHpzl"  >号牌种类</th>
              <th data-options="field:'hphm',width:80,resizable:false"  >号牌号码</th>
             <th data-options="field:'ywlx',width:80,resizable:false" formatter="formatterYwlx" >业务类型</th>
-            <th data-options="field:'syxz',width:80,resizable:false" >使用性质</th>
+            <th data-options="field:'syxz',width:80,resizable:false" formatter="formatterSyxz">使用性质</th>
             <th data-options="field:'cllx',width:80,resizable:false" formatter="formatterCllx">车辆类型</th>
             
             <th data-options="field:'cyr',width:80,resizable:false" >查验人</th>
@@ -47,9 +47,22 @@ font-size:12px;text-align:center;opacity:.8;filter:progid:DXImageTransform.Micro
 	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="viewImage()">查看图片</a>
     </div>
     <div style="margin-bottom:5px">
-    	车辆识别代号：<input type="text" class="easyui-textbox" id="quer_clsbdh" style="width: 150px;">
-    	查验人：<input type="text" class="easyui-textbox" id="cyr" style="width: 150px;">
-    	查验时间：<input id="quer_cysj" class="easyui-datebox" style="width: 150px;">~<input id="quer_cysjEnd" class="easyui-datebox" style="width: 150px;">
+    	<label style="width: 100px; display: inline-block; text-align: right;">车辆识别代号：</label><input type="text" class="easyui-textbox" id="quer_clsbdh" style="width: 150px;">
+    	<label style="width: 100px; display: inline-block; text-align: right;">查验机构：</label><input type="text" class="easyui-textbox" id="quer_jg" style="width: 150px;">
+    	<label style="width: 100px; display: inline-block; text-align: right;">查验人：</label><input type="text" class="easyui-textbox" id="cyr" style="width: 150px;">
+    	<label style="width: 100px; display: inline-block; text-align: right;">业务类型：</label><input id="quer_ywlx"   prompt='请选择业务类型' data-options="editable:false,data:comm.getBaseParames('ywlx'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 150px;">
+    	<br/>
+    	<label style="width: 100px; display: inline-block; text-align: right;">号牌种类：</label><input id="quer_hpzl"   prompt='请选择号牌种类' data-options="editable:false,data:comm.getBaseParames('hpzl'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 150px;">
+		<label style="width: 100px; display: inline-block; text-align: right;">车辆类型：</label><input id="quer_cllx"   prompt='请选择车辆类型' data-options="editable:false,data:comm.getBaseParames('cllx'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 150px;">
+		<label style="width: 100px; display: inline-block; text-align: right;">使用性质：</label><input id="quer_syxz"   prompt='请选择使用性质' data-options="editable:false,data:comm.getBaseParames('syxz'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 150px;">
+		<label style="width: 100px; display: inline-block; text-align: right;">号牌号码：</label><input type="text" class="easyui-textbox" id="quer_hphm" style="width: 150px;"><br/>
+		<label style="width: 100px; display: inline-block; text-align: right;">查验结果：</label><input id="quer_cyjg"   prompt='请选择查验结果' data-options="editable:false,data:comm.getBaseParames('jyjg'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 150px;">
+		<label style="width: 100px; display: inline-block; text-align: right;">查验时间：</label><input id="quer_cysj" class="easyui-datebox" style="width: 150px;">~<input id="quer_cysjEnd" class="easyui-datebox" style="width: 150px;">
     	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryClsbdh()">查询</a>
     </div>
 </div>
@@ -68,7 +81,10 @@ font-size:12px;text-align:center;opacity:.8;filter:progid:DXImageTransform.Micro
 												    draggable:false,
 												    closed:true">
     <div><img id="imageCorpp" src="" width="600px" height="500px"/></div><br />
-    <div align="right"><a href="#" class="easyui-linkbutton" iconCls="icon-print" onclick="printCropImg()">打印</a>
+    <div align="right">
+    <a href="#" class="easyui-linkbutton" iconCls="icon-undo" onclick="rotate('0')">左旋转</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-redo" onclick="rotate('1')">右旋转</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-print" onclick="printCropImg()">打印</a>
     <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',onClick:closeImageWin">关闭</a>
     </div>
 </div>
@@ -193,7 +209,16 @@ function queryClsbdh(){
 	var cyr=$("#cyr").textbox("getValue");
 	var cysj=$("#quer_cysj").datebox("getValue");
 	var cysjEnd=$("#quer_cysjEnd").datebox("getValue");
-	$('#vehCheckInfoDG').datagrid("reload",{clsbdh:quer_clsbdh,cyr:cyr,cysj:cysj,cysjEnd:cysjEnd});
+	
+	var quer_jg = $("#quer_jg").textbox("getValue");
+	var quer_ywlx = $("#quer_ywlx").combobox("getValue");
+	var quer_cllx = $("#quer_cllx").combobox("getValue");
+	var quer_hpzl = $("#quer_hpzl").combobox("getValue");
+	var quer_syxz = $("#quer_syxz").combobox("getValue");
+	var quer_hphm = $("#quer_hphm").textbox("getValue");
+	var quer_cyjg = $("#quer_cyjg").combobox("getValue");
+	$('#vehCheckInfoDG').datagrid("reload",{clsbdh:quer_clsbdh,cyr:cyr,cysj:cysj,cysjEnd:cysjEnd,jg:quer_jg,ywlx:quer_ywlx,
+		cllx:quer_cllx,hpzl:quer_hpzl,syxz:quer_syxz,hphm:quer_hphm,cyjg:quer_cyjg});
 
 }
 

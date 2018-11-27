@@ -194,6 +194,9 @@ public class Sql2WordUtil {
 		if(map.get(key) instanceof Character){
 			return ((Character)map.get(key)).toString();
 		}
+		if(map.get(key) instanceof Integer){
+			return map.get(key).toString();
+		}
 		return (String) map.get(key);
 	}
 }

@@ -73,6 +73,28 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 					list.add(criteriaBuilder.between(root.get("cysj").as(Date.class), vehCheckInfo.getCysj(),vehCheckInfo.getCysjEnd()));
 				}
 				//list.add(criteriaBuilder.equal(root.get("stationCode").as(String.class), "Y"));
+				if(Common.isNotEmpty(vehCheckInfo.getCyjg())) {
+					list.add(criteriaBuilder.equal(root.get("cyjg").as(String.class), vehCheckInfo.getCyjg()));
+				}
+				if(Common.isNotEmpty(vehCheckInfo.getYwlx())) {
+					list.add(criteriaBuilder.equal(root.get("ywlx").as(String.class), vehCheckInfo.getYwlx()));
+				}
+				if(Common.isNotEmpty(vehCheckInfo.getHpzl())) {
+					list.add(criteriaBuilder.equal(root.get("hpzl").as(String.class), vehCheckInfo.getHpzl()));
+				}
+				if(Common.isNotEmpty(vehCheckInfo.getCllx())) {
+					list.add(criteriaBuilder.equal(root.get("cllx").as(String.class), vehCheckInfo.getCllx()));
+				}
+				if(Common.isNotEmpty(vehCheckInfo.getSyxz())) {
+					list.add(criteriaBuilder.equal(root.get("syxz").as(String.class), vehCheckInfo.getSyxz()));
+				}
+				if(Common.isNotEmpty(vehCheckInfo.getHphm())) {
+					list.add(criteriaBuilder.equal(root.get("hphm").as(String.class), vehCheckInfo.getHphm()));
+				}
+				if(Common.isNotEmpty(vehCheckInfo.getJg())) {
+					list.add(criteriaBuilder.like(root.get("jg").as(String.class), "%"+ vehCheckInfo.getJg()+"%"));
+				}
+				
 				
 				List<Order> orders = new ArrayList<Order>();
 				orders.add(criteriaBuilder.desc(root.get("createTime")));

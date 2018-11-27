@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.krysalis.barcode4j.impl.code128.Code128Bean;
 import org.krysalis.barcode4j.impl.code39.Code39Bean;
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import org.krysalis.barcode4j.tools.UnitConv;
@@ -44,16 +45,15 @@ public class BarcodeUtil {
 		if (StringUtils.isEmpty(msg) || ous == null) {
 			return;
 		}
-		Code39Bean bean = new Code39Bean();
+		Code128Bean bean = new Code128Bean();
 		// 精细度
 
-		final int dpi = 150;
+		final int dpi = 90;
 		// module宽度
 		final double moduleWidth = UnitConv.in2mm(1.0f / dpi);
 		// 配置对象
 		bean.setModuleWidth(moduleWidth);
 
-		bean.setWideFactor(3);
 
 		bean.doQuietZone(false);
 		String format = "image/png";
