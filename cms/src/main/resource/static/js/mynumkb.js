@@ -116,12 +116,15 @@
         },
         setValue:function(type,str){
             var me = this;
-            var curpos = me.getCursorPosition();
+            
             var val = me.$element.val();
+            var curpos = val.length;//me.getCursorPosition();
             var newstr = "";
             var link =me.$element.attr("link");
             if(type == 'add'){
+            	//alert(val +" "+str+" "+curpos);
                 newstr = me.insertstr(val,str,curpos);
+                //alert(newstr);
                 me.$element.val(newstr);
                 me.$element.textFocus(curpos+1);
             }else if(type == 'del'){
