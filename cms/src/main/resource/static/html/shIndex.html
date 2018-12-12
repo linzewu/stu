@@ -16,10 +16,26 @@
 	src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="../js/selfHelp.js"></script>
 <script type="text/javascript">
-intervalLogin();
+var zzjUser = "";
+//intervalLogin();
+getCurrIp();
 
-function intervalLogin(){
-	var userName = "admin";
+function getCurrIp(){
+	$.ajax({ 
+	    type : "post", 
+	    url : "../../user/getZzjUser", 
+	    data : null,
+	    async : false, 
+	    success : function(data){
+	    		zzjUser = data;
+	    		intervalLogin();
+	    	},
+	    	dataType:"text"
+	    });
+}
+
+function intervalLogin(){ 
+	var userName = zzjUser;
 	var password = "888888";
 	var param = {};
 	param.userName = userName;

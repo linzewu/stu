@@ -50,9 +50,9 @@ public class RoleManagerImpl implements IRoleManager {
 
 	
 	public Role save(Role role) throws Exception {
-		if (role.getJslx() == 0) {
-			throw new Exception("系统超级管理员无法修改！");
-		}
+//		if (role.getJslx() == 0) {
+//			throw new Exception("系统超级管理员无法修改！");
+//		}
 		return this.roleRepository.save(role);
 	}
 

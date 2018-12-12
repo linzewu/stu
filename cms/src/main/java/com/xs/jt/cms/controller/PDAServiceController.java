@@ -3,6 +3,7 @@ package com.xs.jt.cms.controller;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -43,8 +44,10 @@ import com.xs.jt.base.module.common.ApplicationException;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.entity.BaseParams;
+import com.xs.jt.base.module.entity.SignaturePhoto;
 import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.manager.IBaseParamsManager;
+import com.xs.jt.base.module.manager.ISignaturePhotoManager;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutNewAccessServiceStub;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutService;
 import com.xs.jt.cms.common.CommonUtil;
@@ -96,6 +99,9 @@ public class PDAServiceController {
 	
 	@Autowired
 	private IGongGaoImageManager gongGaoImageManager;
+	
+	@Resource(name = "signaturePhotoManager")
+	private ISignaturePhotoManager signaturePhotoManager;
 
 	public static String YWLX_TYPE = "ywlx";
 
@@ -106,6 +112,7 @@ public class PDAServiceController {
 		User user = (User) session.getAttribute("user");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd  HH:mm:ss");
 		vehCheckInfo.setCysj(new Date());
+		vehCheckInfo.setCyr(user.getYhm());
 		BaseParams baseParam = baseParamsManager.getBaseParamByValue(YWLX_TYPE, vehCheckInfo.getYwlx());
 		String ywlx = baseParam == null ? "" : baseParam.getParamName();
 		if (!result.hasErrors()) {
@@ -162,6 +169,18 @@ public class PDAServiceController {
 				// 上传图片
 				VehiclePhotos photo = this.vehiclePhotosManager.findLast45degPhotosByLsh(vehCheckInfo.getLsh());
 				xrzp(photo);
+			}
+			SignaturePhoto signaturePhoto = signaturePhotoManager.findByYhm(vehCheckInfo.getCyr());
+			if(signaturePhoto != null) {
+				VehiclePhotos vehiclePhotos = new VehiclePhotos();
+				vehiclePhotos.setClsbdh(vehCheckInfo.getClsbdh());
+				vehiclePhotos.setHphm(vehCheckInfo.getHphm());
+				vehiclePhotos.setZpzl("49");
+				vehiclePhotos.setHpzl(vehCheckInfo.getHpzl());
+				vehiclePhotos.setJccs(vehCheckInfo.getCycs());
+				vehiclePhotos.setLsh(vehCheckInfo.getLsh());
+				vehiclePhotos.setPhoto(signaturePhoto.getPhoto());
+				uploadVehImage(vehiclePhotos);
 			}
 			return ResultHandler.resultHandle(result, vehCheckInfo, Constant.ConstantMessage.SAVE_SUCCESS);
 		} else {
@@ -273,6 +292,9 @@ public class PDAServiceController {
 		jo.put("cjdw", carRegister.getStationCode());
 		
 		jo.put("cyry", user.getSfzh());
+		jo.put("sfxny", vehCheckInfo.getSfxny());
+		jo.put("xnyzl", vehCheckInfo.getXnyzl());
+		jo.put("zsxxdz", carRegister.getDz());
 		
 		reomveBaseAtt(jo);
 
@@ -605,6 +627,11 @@ public class PDAServiceController {
 	@RequestMapping(value = "uploadImageFile", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> uploadImageFile(@RequestBody VehiclePhotos motorVehiclePhotos ,
 			@ApiIgnore() BindingResult result) throws Exception {
+		return uploadVehImage(motorVehiclePhotos);
+		
+	}
+	
+	private Map<String, Object> uploadVehImage(VehiclePhotos motorVehiclePhotos) throws IOException {
 		User user = (User) session.getAttribute("user");
 		// 校验车辆是否被锁定，如果被锁定则不能保存(如果当前用户是锁定人则可以保存)
 		List<VehicleLock> list = vehicleLockManager.findLockVehicle(motorVehiclePhotos.getClsbdh());
@@ -621,12 +648,15 @@ public class PDAServiceController {
 			}
 		}
 		//获取检验次数
-		Integer cycs = this.policeCheckInfoManager.findMaxCsByLsh(motorVehiclePhotos.getLsh());
+		if(motorVehiclePhotos.getJccs() == null) {
+			motorVehiclePhotos.setJccs(1);
+		}
+		/**Integer cycs = this.policeCheckInfoManager.findMaxCsByLsh(motorVehiclePhotos.getLsh());
 		cycs = cycs == null?0:cycs;
 		cycs++;
-		motorVehiclePhotos.setJccs(cycs);
+		motorVehiclePhotos.setJccs(cycs);**/
 		
-		byte[] photoByte = Base64Utils.decodeFromString(motorVehiclePhotos.getImageStr());
+		byte[] photoByte = motorVehiclePhotos.getPhoto() == null ? Base64Utils.decodeFromString(motorVehiclePhotos.getImageStr()) : motorVehiclePhotos.getPhoto();
 		//如果是车辆识别代号，如果宽小于高做旋转的功能
 		if("30".equals(motorVehiclePhotos.getZpzl())) {
 			InputStream buffIn = new ByteArrayInputStream(photoByte, 0, photoByte.length); 
@@ -759,5 +789,26 @@ public class PDAServiceController {
 		String imgPath = this.vehiclePhotosManager.findVehPhotoById(id);
 		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "查看照片成功！", imgPath);
 	}
-
+	
+	@UserOperation(code = "uploadSignature", name = "上传签名图片")
+	@RequestMapping(value = "uploadSignature", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> uploadSignature(@RequestBody SignaturePhoto signaturePhoto) throws Exception {
+		byte[] photoByte = Base64Utils.decodeFromString(signaturePhoto.getImageStr());
+		signaturePhoto.setPhoto(photoByte);
+		signaturePhotoManager.saveSignaturePhoto(signaturePhoto);
+		
+		return ResultHandler.toSuccessJSON("上传签名照片成功！");
+	}
+	
+	@UserOperation(code = "getCurrentUser", name = "获取当前用户信息")
+	@RequestMapping(value = "getCurrentUser", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getCurrentUser() {
+		Map<String, Object> map = new HashMap<String,Object>();
+		User user = (User) session.getAttribute("user");
+		SignaturePhoto photo = signaturePhotoManager.findByYhm(user.getYhm());
+		
+		map.put("user", user);
+		map.put("signaturePhoto", photo);
+		return map;
+	}
 }

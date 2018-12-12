@@ -3,11 +3,8 @@ package com.xs.jt.base.module.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.MultipartConfigElement;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
@@ -16,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import com.xs.jt.base.module.util.SecurityInterceptor;
 import com.xs.jt.base.module.util.UserInterceptor;
 
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -50,12 +48,16 @@ public class BaseConfig extends WebMvcConfigurationSupport  {
 	
 	@Autowired
 	private UserInterceptor userInterceptor;
+	@Autowired
+	private SecurityInterceptor SecurityInterceptor;
 
 	public void addInterceptors(InterceptorRegistry registry) {
 		List<String> excludeList = new ArrayList<String>();
+		excludeList.add("/user/getZzjUser");
 		excludeList.add("/user/login");
 		excludeList.add("/static/**");
 		registry.addInterceptor(userInterceptor).addPathPatterns("/**").excludePathPatterns(excludeList);
+		registry.addInterceptor(SecurityInterceptor).addPathPatterns("/**").excludePathPatterns(excludeList);
 	}
 	
 	@Bean

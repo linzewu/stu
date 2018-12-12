@@ -38,6 +38,7 @@ import com.xs.jt.base.module.manager.ICoreFunctionManager;
 import com.xs.jt.base.module.manager.IOperationLogManager;
 
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 
 
@@ -158,10 +159,12 @@ public class LogAopAction {
 		// 拦截的方法参数
 		Object[] args = pjp.getArgs();
 		StringBuffer sbStr = new StringBuffer("");
+		JsonConfig jsonConfig = new JsonConfig();
+		jsonConfig.setExcludes(new String[]{"qmFile"});
 		if (args != null && args.length > 0) {
 			for(int c=0;c<args.length;c++) {
 				if(args[c].getClass().getSuperclass() == BaseEntity.class || args[c].getClass() == LinkedHashMap.class) {
-					sbStr.append("参数"+(c+1)+"="+JSONObject.fromObject(args[c]).toString()+",");
+					sbStr.append("参数"+(c+1)+"="+JSONObject.fromObject(args[c],jsonConfig).toString()+",");
 				}else if(args[c].getClass() == String.class || args[c].getClass() == Integer.class) {
 					sbStr.append("参数"+(c+1)+"="+args[c]+",");
 				}

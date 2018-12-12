@@ -44,9 +44,9 @@ public class BaseParamsController {
 	public @ResponseBody String getBaseParamsOfJS() throws JsonProcessingException {
 		ServletContext servletContext = request.getSession().getServletContext();
 		List<BaseParams> bps = (List<BaseParams>) servletContext.getAttribute("bps");
-
 		ObjectMapper objectMapper = new ObjectMapper();
 		String js = " var bps=" + objectMapper.writeValueAsString(bps)+";";
+		
 		return js;
 	}
 

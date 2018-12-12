@@ -102,10 +102,11 @@ function viewCheckInfo() {
 		//
 		$.post("../../vheCheckInfo/printCheckInfo",{"lsh":row.lsh,"cycs":row.cycs,"veh_sfxc":row.veh_sfxc},function(data){
 			if(data.state==1){
-				$("#printTemplet img").attr("src","../cache/report/"+data.data);
+				//$("#printTemplet img").attr("src","../cache/report/"+data.data);
 				var printObj = {};
+				printObj.src="../cache/report/"+data.data;
 				printObj.prview = true;
-				printCYD(printObj);
+				printImgCYD(printObj);
 			}else{
 				$.messager.alert("提示",data.message,"error");
 			}
@@ -124,11 +125,12 @@ function printCheckInfo() {
 		//
 		$.post("../../vheCheckInfo/printCheckInfo",{"lsh":row.lsh,"cycs":row.cycs,"veh_sfxc":row.veh_sfxc},function(data){
 			if(data.state==1){
-				$("#printTemplet img").attr("src","../cache/report/"+data.data);
+				//$("#printTemplet img").attr("src","../cache/report/"+data.data);
 				var isView = $("#isView").checkbox("options").checked;
 				var printObj = {};
 				printObj.prview = isView;
-				printCYD(printObj);
+				printObj.src="../cache/report/"+data.data;
+				printImgCYD(printObj);
 			}else{
 				$.messager.alert("提示",data.message,"error");
 			}
@@ -152,7 +154,8 @@ function tdCheckInfo() {
 				var isView = $("#isView").checkbox("options").checked;
 				var printObj = {};
 				printObj.prview = isView;
-				printCYD(printObj);
+				printObj.src="../cache/report/"+data.data
+				printImgCYD(printObj);
 			}else{
 				$.messager.alert("提示",data.message,"error");
 			}

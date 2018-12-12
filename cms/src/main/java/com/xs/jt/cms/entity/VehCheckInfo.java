@@ -169,6 +169,15 @@ public class VehCheckInfo extends BaseEntity{
 	@Column(length=200)
 	private String jg;
 	
+	//是否新能源
+	@Column(length=2)
+	private String sfxny;
+	
+	//新能源种类
+	@Column(length=200)
+	private String xnyzl;
+	
+	
 	@Transient
 	@DateTimeFormat(pattern = "yyyy-MM-dd")  
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -594,7 +603,18 @@ public class VehCheckInfo extends BaseEntity{
 	public void setJg(String jg) {
 		this.jg = jg;
 	}
-	
+	public String getSfxny() {
+		return sfxny;
+	}
+	public void setSfxny(String sfxny) {
+		this.sfxny = sfxny;
+	}
+	public String getXnyzl() {
+		return xnyzl;
+	}
+	public void setXnyzl(String xnyzl) {
+		this.xnyzl = xnyzl;
+	}
 	
 
 }

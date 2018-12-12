@@ -37,6 +37,9 @@ public class VehiclePhotosManagerImpl implements IVehiclePhotosManager {
 
 	public VehiclePhotos findPhotosByLshAndZpzlAndJccs(String lsh, String zpzl, int jccs) {
 		VehiclePhotos photos = vehiclePhotosRepository.findPhotosByLshAndZpzlAndJccs(lsh, zpzl, jccs);
+		if(photos==null&&jccs>1) {
+			photos = findPhotosByLshAndZpzlAndJccs(lsh,zpzl,jccs-1);
+		}
 		return photos;
 	}
 

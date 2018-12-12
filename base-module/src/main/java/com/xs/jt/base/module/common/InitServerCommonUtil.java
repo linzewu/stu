@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.xs.jt.base.module.entity.Department;
+import com.xs.jt.base.module.entity.PowerPoint;
 import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.manager.IDepartmentManager;
@@ -142,15 +143,28 @@ public class InitServerCommonUtil {
 		}
 	}
 
-	public void initAdminRole() {
-
+	public void initAdminRole(List<PowerPoint> powerPoints) throws Exception {
+		StringBuffer sb = new StringBuffer("");
+		for(PowerPoint power:powerPoints) {
+			sb.append(power.getCode()).append(",");
+		}
+		String powerStr = "";
+		if(sb.length()>0) {
+			powerStr = sb.substring(0,sb.length()-1);
+		}
+		System.out.println("&&&&&&&&&&&&&&&& "+powerStr);
 		int count = roleManager.getRoleCount();
 		if (count == 0) {
 			Role role = new Role();
 			role.setJsjb(0);
 			role.setJslx(0);
+			role.setJsqx(powerStr);
 			role.setJsmc("系统超级管理员");
 			this.roleManager.add(role);
+		}else {
+			Role sysRole = roleManager.getRole("系统超级管理员");
+			sysRole.setJsqx(powerStr);
+			roleManager.save(sysRole);
 		}
 	}
 

@@ -12,8 +12,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Scope("prototype")
 @Component("user")
@@ -124,6 +127,9 @@ public class User extends BaseEntity {
 	private String pwOverdue;
 	@Transient
 	private String bmmc;
+	@Transient
+	@JsonIgnore
+	private MultipartFile qmFile;
 
 	public String getMm() {
 		return mm;
@@ -354,6 +360,14 @@ public class User extends BaseEntity {
 				return null;
 			}
 		}
+	}
+
+	public MultipartFile getQmFile() {
+		return qmFile;
+	}
+
+	public void setQmFile(MultipartFile qmFile) {
+		this.qmFile = qmFile;
 	}
 	
 }

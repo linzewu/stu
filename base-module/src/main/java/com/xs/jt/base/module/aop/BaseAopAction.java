@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.aspectj.lang.JoinPoint;
@@ -19,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.xs.jt.base.module.entity.BaseEntity;
 import com.xs.jt.base.module.entity.User;
@@ -79,11 +82,14 @@ public class BaseAopAction {
 	@Around("daoAspect()")
 	public Object around(ProceedingJoinPoint pjp) throws Throwable {
 		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
-		// 获取当前登陆用户信息
-		User loginUser = (User) session.getAttribute("user");
 		String yhm = "—— ——";
-		if (loginUser != null) {
-			yhm = loginUser.getYhm();
+		if(RequestContextHolder.getRequestAttributes() != null) {
+			// 获取当前登陆用户信息
+			User loginUser = (User) session.getAttribute("user");
+			
+			if (loginUser != null) {
+				yhm = loginUser.getYhm();
+			}
 		}
 		
 		// 拦截的方法参数

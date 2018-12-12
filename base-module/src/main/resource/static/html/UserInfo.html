@@ -1,13 +1,13 @@
 
-<div class="easyui-layout" fit=true style="min-height: 480px;min-width: 800px;">
+<div class="easyui-layout" fit=true style="min-height: 540px;min-width: 800px;">
 	  <div data-options="region:'center'" style="padding:5px" >
 	  	<div class="easyui-tabs"  data-options="fit:true" id="user-info-tab" >
 			<div data-options="title:'基本信息'" >
-			<form id="userInfoForm" method="post"> 
+			<form id="userInfoForm" method="post" enctype ="multipart/form-data"> 
 				<table class="base_table" cellspacing="0" cellpadding="0"> 
 					<tr><td class="info_title">部门代码：</td>
 						<td class="info"><input name="bmdm" class="easyui-validatebox readonly" readonly="readonly" data-options="required:true">
-							 <a href="#" class="easyui-linkbutton" style="width:40px" onclick="setCurrentDeptNode()">变更</a>
+							 <a href="#" class="easyui-linkbutton" style="width:50px" onclick="setCurrentDeptNode()">变更</a>
 						</td>
 						<td class="info_title">部门名称：</td>
 						<td class="info"><input name="bmmc" class="easyui-validatebox readonly" data-options="required:true"> </td>
@@ -78,6 +78,10 @@
 							<label for="zt_2">停用</label><input id="zt_2" value="2" name="zt" type="radio" />
 							<!--<input type="hidden" name="jsqx" >-->
 						</td>
+					</tr>
+					<tr>
+						<td class="info_title">签名照</td>
+						<td class="info" colspan="3"><input name="qmFile" class="easyui-filebox" style="width:300px" data-options="buttonText:'选择图片',accept: 'image/*'">&nbsp;<a href="#" onclick="showQM()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查看照片</a></td>
 					</tr>
 				</table>
 				<input type="hidden" name="id" >
@@ -316,8 +320,38 @@ function saveUser(url,callback){
 		msg:"数据保存中..."
 	});
 	
-	$.post(url,$('#user-info-tab').tabs('getSelected').find("form").serializeJson(),callback).error(function(){
+	$('#userInfoForm').form('submit', {
+		url: url,
+	    success: function(data){
+	    	callback();
+	        /**var data = eval('(' + data + ')');  // change the JSON string to javascript object
+	        if (data.success){
+	            alert(data.message)
+	        }**/
+	    	$.messager.progress("close");
+	    }
+	});
+	
+	/**$.post(url,$('#user-info-tab').tabs('getSelected').find("form").serializeJson(),callback).error(function(){
 		$.messager.alert("错误","保存错误","error");
+	}).complete(function() {
+		$.messager.progress("close");
+	});**/
+}
+
+function showQM(){
+	$.post('../../user/findSignaturePhotoByYhm',{"yhm":$("#yhm").textbox("getValue")},function(data){
+		if(data.state==1){
+			if(data.data != ''){
+				window.open("../cache"+data.data,"_blank");
+			}else{
+				$.messager.alert("错误","没有签名照片可查看！","error");
+			}
+		}else{
+			$.messager.alert("提示",data.message,"error");
+		}
+	},"json").error(function(){
+		$.messager.alert("错误","查看签名照片失败！","error");
 	}).complete(function() {
 		$.messager.progress("close");
 	});

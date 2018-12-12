@@ -26,6 +26,15 @@ var comm = {
 		}
 		return value;
 	},
+	getParamValueByName:function(type,value){
+		for ( var i in bps) {
+			var bp = bps[i];
+			if (bp.type == type && bp.paramName==value) {
+				 return bp.paramValue;
+			}
+		}
+		return value;
+	},
 	toPage : function(target, title, url, param) {
 		
 		$(target).panel({
@@ -71,7 +80,7 @@ var comm = {
 			$(target).append("<option value=''>--"+title+"--</option>");
 		}
 		if(typeof data=="string"){
-			data = getBaseParames(data);
+			data = comm.getBaseParames(data);
 		}
 		for(var i in data){
 			$(target).append("<option value='"+data[i].id+"'>"+data[i].value+"</option>");
@@ -331,6 +340,11 @@ $(function($){
             	}
                 if(temp['state'] == 600) {
                     window.location.href="login.html";
+                    return;
+                }
+                if(temp['state'] == 403) {                	
+                	$.messager.alert("无权限", "您没有权限访问！请联系管理员进行设置！",'error')
+                    //window.location.href="notPermission.html";
                     return;
                 }
                 fn.success(data, textStatus);

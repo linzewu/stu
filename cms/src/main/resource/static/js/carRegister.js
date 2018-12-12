@@ -66,13 +66,15 @@ function saveAndPring() {
 					$('#myform').form('clear');
 					$("#ywlx").combobox("setValue","A");
 				});
-				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
+				//$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
 				var printObj = {};
 				printObj.prview = false;
 				if(params.isView == "true"){
 					printObj.prview = true;
 				}
-				printCYD(printObj);
+				printObj.src="../cache/report/template_ptc_01_"+data.data+".jpg";
+				printImgCYD(printObj);
+				//printCYD(printObj);
 			}else{
 				$.messager.alert("提示",data.message,"error");
 			}
@@ -100,13 +102,15 @@ function implSaveAndPring() {
 					$('#myformImpl').form('clear');
 					$("#ywlx").combobox("setValue","A");
 				});
-				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
+				//$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
 				var printObj = {};
 				printObj.prview = false;
 				if(params.isView == "true"){
 					printObj.prview = true;
 				}
-				printCYD(printObj);
+				printObj.src="../cache/report/template_ptc_01_"+data.data+".jpg";
+				printImgCYD(printObj);
+				//printCYD(printObj);
 			}else{
 				$.messager.alert("提示",data.message,"error");
 			}
@@ -136,9 +140,10 @@ function updateAndPring() {
 				$.messager.alert("提示","保存成功！","info",function(){
 					$('#myformEdit').form("clear");
 				});
-				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
+				//$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
 				
 				var cydata = {};
+				cydata.src="../cache/report/template_ptc_01_"+data.data+".jpg";
 				cydata.prview = false;
 				if(params.isView == "true"){
 					cydata.prview = true;
@@ -149,7 +154,7 @@ function updateAndPring() {
 				cydata['clsbdh'] = $("#clsbdh").val();
 				cydata['hphm'] = $("#hphm").textbox("getValue");
 			
-				printCYD(cydata);
+				printImgCYD(cydata);
 				//printCYD(printObj);
 			}else{
 				$.messager.alert("提示",data.message,"error");
@@ -675,7 +680,7 @@ function formatterCsys(value) {
 }
 
 function formatterHpzl(value) {
-	return getLabelByid("hpzl", value);
+	return comm.getParamNameByValue("hpzl", value);
 }
 
 function formatterYwlx(value) {
@@ -692,11 +697,13 @@ function print() {
 		//
 		$.post("../../preCarRegister/printCarInfo",{"lsh":row.lsh},function(data){
 			if(data.state==1){
-				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
+				//$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
 				var isView = $("#isView").checkbox("options").checked;
 				var printObj = {};
 				printObj.prview = isView;
-				printCYD(printObj);
+				printObj.src="../cache/report/template_ptc_01_"+data.data+".jpg";
+				printImgCYD(printObj)
+				//printCYD(printObj);
 			}else{
 				$.messager.alert("提示",data.message,"error");
 			}
@@ -726,6 +733,33 @@ function printCYD(option) {
 	LODOP.ADD_PRINT_HTM(-35, 0, 1024, 1200, document
 			.getElementById("printTemplet").innerHTML);
 	
+	if(setup){
+		LODOP.PRINT_SETUP();
+	}else{
+		if(prview){
+			LODOP.PREVIEW();
+		}else{
+			LODOP.PRINT();
+		}
+	}
+}
+
+
+function printImgCYD(option) {
+	var prview=false;
+	var setup=false;
+	if(option){
+		if(option.prview){
+			prview=option.prview
+		}
+		if(option.setup){
+			setup=option.setup
+		}
+	}
+	var LODOP = getLodop(document.getElementById('LODOP_OB'),
+			document.getElementById('LODOP_EM'));
+	LODOP.ADD_PRINT_IMAGE(-35,0,1024,1200,"<img border='0' src='"+option.src+"' />");
+	LODOP.SET_PRINT_STYLEA(0,"Stretch",2);//按原图比例(不变形)缩放模式
 	if(setup){
 		LODOP.PRINT_SETUP();
 	}else{

@@ -1,5 +1,6 @@
 package com.xs.jt.base.module.controller;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.RequestContext;
 
 import com.xs.jt.base.module.annotation.Modular;
@@ -24,19 +26,23 @@ import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Common;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
+import com.xs.jt.base.module.entity.BaseParams;
 import com.xs.jt.base.module.entity.BlackList;
 import com.xs.jt.base.module.entity.CoreFunction;
 import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.base.module.entity.SecurityAuditPolicySetting;
 import com.xs.jt.base.module.entity.SecurityLog;
+import com.xs.jt.base.module.entity.SignaturePhoto;
 import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.enums.CommonUserOperationEnum;
+import com.xs.jt.base.module.manager.IBaseParamsManager;
 import com.xs.jt.base.module.manager.IBlackListManager;
 import com.xs.jt.base.module.manager.ICoreFunctionManager;
 import com.xs.jt.base.module.manager.IDepartmentManager;
 import com.xs.jt.base.module.manager.IRoleManager;
 import com.xs.jt.base.module.manager.ISecurityAuditPolicySettingManager;
 import com.xs.jt.base.module.manager.ISecurityLogManager;
+import com.xs.jt.base.module.manager.ISignaturePhotoManager;
 import com.xs.jt.base.module.manager.IUserManager;
 
 
@@ -66,6 +72,14 @@ public class UserController {
 	
 	@Autowired
 	private IDepartmentManager departmentManager;
+	
+	@Autowired
+	private HttpServletRequest request;
+	
+	@Resource(name = "baseParamsManager")
+	private IBaseParamsManager baseParamsManager;
+	@Resource(name = "signaturePhotoManager")
+	private ISignaturePhotoManager signaturePhotoManager;
 
 	
 	@UserOperation(code="getUsers",name="用户查询")
@@ -83,8 +97,8 @@ public class UserController {
 
 	
 	@UserOperation(code="save",name="编辑用户")
-	@RequestMapping(value = "saveUser", method = RequestMethod.POST)
-	public @ResponseBody Map saveUser(User user, BindingResult result) {
+	@RequestMapping(value = "saveUser", method = RequestMethod.POST,produces = "text/html;charset=UTF-8")
+	public @ResponseBody Map saveUser(User user, BindingResult result) throws IOException {
 		if (!result.hasErrors()) {
 			if(!"Y".equals(String.valueOf(user.getIsPolice())) && checkIsPolice(user)) {
 				return ResultHandler.toMyJSON(Constant.ConstantState.STATE_VALIDATE_ERROR, "该角色包含警员功能，不允许授予非警员账号！");
@@ -102,7 +116,14 @@ public class UserController {
 				user.setSfzh(oldUser.getSfzh());
 				user.setZjdlsj(oldUser.getZjdlsj());
 			}
+			MultipartFile qmFile = user.getQmFile();
 			user = userManager.saveUser(user);
+			if(qmFile != null) {
+				SignaturePhoto signaturePhoto = new SignaturePhoto();
+				signaturePhoto.setYhm(user.getYhm());
+				signaturePhoto.setPhoto(qmFile.getBytes());
+				signaturePhotoManager.saveSignaturePhoto(signaturePhoto);
+			}
 			return ResultHandler.resultHandle(result, user, Constant.ConstantMessage.SAVE_SUCCESS);
 		} else {
 			return ResultHandler.resultHandle(result, null, null);
@@ -481,5 +502,26 @@ public class UserController {
 		}
 
 	}
+	
+	@RequestMapping(value = "getZzjUser", method = RequestMethod.POST)
+	@UserOperation(code="getZzjUser",name="获取自助机账号",userOperationEnum=CommonUserOperationEnum.NoLogin)
+	public @ResponseBody String getZzjUser() {
+		String userName = "";
+		String ip = Common.getIpAdrress(request);
+		BaseParams bp = baseParamsManager.getBaseParam("zzjzh", ip);
+		if(bp != null) {
+			userName = bp.getParamValue();
+		}
+		return userName;
+	}
+	
+	@UserOperation(code="save",name="查看签名照片",isMain=false)
+	@RequestMapping(value = "findSignaturePhotoByYhm", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> findSignaturePhotoByYhm(String yhm){
+		
+		String imgPath = this.signaturePhotoManager.findSignaturePhotoByYhm(yhm);
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "查看签名照片成功！", imgPath);
+	}
+		
 	
 }

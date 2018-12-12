@@ -11,26 +11,18 @@
   <link rel="stylesheet" href="../js/viewer/viewer.min.css">  
 <link rel="stylesheet" type="text/css"
 	href="../js/easyui/themes/icon.css">
-<script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+	
 <script type="text/javascript" src="../js/json2.js"></script>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="../../bps/all.js"></script>
 <script type="text/javascript"
 	src="../js/easyui/jquery.easyui.min.js"></script>
 <script type="text/javascript"
 	src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript" src="../js/my97/WdatePicker.js"></script>
 <script type="text/javascript"
 	src="../js/easyui/datagrid-groupview.js"></script>
-<script type="text/javascript" src="../js/highcharts/highcharts.js"></script>
-<script type="text/javascript"
-	src="../js/highcharts/highcharts-3d.js"></script>
 <script type="text/javascript" src="../js/common.js"></script>
 <script type="text/javascript" src="../js/extendValidate.js"></script>
-<script type="text/javascript" src="../js/datas.js"></script>
-<script type="text/javascript" src="../js/drag_map.js"></script>
-<script type="text/javascript" src="../js/jquery.printPage.js"></script>
-<script type="text/javascript" src="../js/jQuery.print.js"></script>
-<!-- <script type="text/javascript" src="/dzyxh/role/menu.js"></script> -->
 <script type="text/javascript" src="../js/createMenus.js"></script>
 <script type="text/javascript" src="../js/jquery.rotate.min.js"></script>
 <script type="text/javascript" src="../js/viewer/viewer.min.js"></script>
@@ -212,12 +204,11 @@
 		<img onmousewheel="return onWheelZoom(this)" style="zoom: 1" src=""
 			border="0" name="images1" class="bigImg">
 	</div>
-	<a href="" id="printImg"></a>
 </div>
-<div id="win" class="easyui-window"  collapsible="false" ></div>
+<div id="win" class="easyui-window"  collapsible="false" closed="true" ></div>
 </body>
 <script type="text/javascript">
-$(window).load(function() {
+ $(function() {
 	$("#realName").text(userInfo.yhxm);
 	var d = new Date();
 	var userNameValidDate = new Date(userInfo.zhyxq);
@@ -234,7 +225,7 @@ $(window).load(function() {
 	",<br/>距离用户到期还剩"+time+"天,距离密码到期还剩"+timePw+"天"+
 	",<br/>上次登录失败的时间："+userInfo.lastTimeLoginFailDate+",上次登录失败IP："+userInfo.lastTimeLoginFailIP;
 	
-	
+	//alert('还没报错，版本1')
 	 $('#tipMsg').tooltip({
          position: 'left',
          content: cont,
@@ -245,11 +236,12 @@ $(window).load(function() {
              });
          }
      });
-	 
+	//alert('还没报错，版本2')
 	 if(userInfo.pwOverdue=="Y"){
 		 updataPassword();
 	 }
-});
+	 //alert('还没报错，版本3')
+}); 
 	
 function updataPassword(){
 	$('#win_password').window('open');
@@ -259,8 +251,5 @@ function logout(){
 		 window.location.href="login.html";
 	});
 }
-$(function(){
-	$("#printImg").printPage();
-})
 </script>
 </html>

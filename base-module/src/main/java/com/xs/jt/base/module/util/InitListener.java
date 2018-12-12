@@ -68,7 +68,7 @@ public class InitListener implements ServletContextListener {
 			//初始化部门
 			initServerCommonUtil.initRootDepartment();
 			
-			initServerCommonUtil.initAdminRole();
+			initServerCommonUtil.initAdminRole(powerPoints);
 			
 			initServerCommonUtil.initAdmin();
 			

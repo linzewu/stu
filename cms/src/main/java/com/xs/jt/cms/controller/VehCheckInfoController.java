@@ -31,6 +31,8 @@ import com.xs.jt.base.module.common.MapUtil;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.common.Sql2WordUtil;
 import com.xs.jt.base.module.entity.BaseParams;
+import com.xs.jt.base.module.entity.User;
+import com.xs.jt.base.module.manager.IUserManager;
 import com.xs.jt.cms.common.BarcodeUtil;
 import com.xs.jt.cms.common.CommonUtil;
 import com.xs.jt.cms.entity.PreCarRegister;
@@ -60,6 +62,8 @@ public class VehCheckInfoController {
 	
 	@Autowired
 	private IPreCarRegisterManager preCarRegisterManager;
+	@Autowired
+	private IUserManager userManager;
 
 	@UserOperation(code = "getCheckInfoList", name = "查询查验列表")
 	@RequestMapping(value = "getCheckInfoList", method = RequestMethod.POST)
@@ -152,6 +156,12 @@ public class VehCheckInfoController {
 			VehiclePhotos signImg = vehiclePhotosManager.findPhotosByLshAndZpzlAndJccs(vci.getLsh(),"49",vci.getCycs());
 			if(signImg != null) {
 				data.put("signzp",new ByteArrayInputStream(signImg.getPhoto()));
+			}
+			
+			//查验人姓名
+			User cyUser = userManager.getUser(vci.getCyr());
+			if (cyUser != null) {
+				data.put("cyrxm", cyUser.getYhxm());
 			}
 
 			com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil(template+".doc", data, bpsMap);

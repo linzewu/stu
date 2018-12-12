@@ -182,7 +182,7 @@ var zjlx=[{
 	"id" : 9,
 	"text" : "港澳通行证等"
 }]
-function getBaseParames(type) {
+/**function getBaseParames(type) {
 	var array = [];
 	for ( var i in bps) {
 		var bp = bps[i];
@@ -194,7 +194,7 @@ function getBaseParames(type) {
 		}
 	}
 	return array;
-}
+}**/
 
 var jdcdata=[{
 	"dzpdh":"01234",
