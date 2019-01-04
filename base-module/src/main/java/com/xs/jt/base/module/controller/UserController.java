@@ -281,8 +281,8 @@ public class UserController {
 	}
 	
 	@UserOperation(code="updatePassword",name="修改用户密码",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
-	@RequestMapping(value = "updatePassword", method = RequestMethod.POST)
-	public @ResponseBody Map updatePassword(HttpSession session,String newPassword) {
+	@RequestMapping(value = "updatePassword", method = RequestMethod.POST,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8")
+	public @ResponseBody String updatePassword(HttpSession session,String newPassword) {
 		User sessionUser = (User)session.getAttribute("user");
 		User user = this.userManager.getUser(sessionUser.getId());
 		
@@ -295,7 +295,7 @@ public class UserController {
 		user.setMmyxq(calendar.getTime());
 		this.userManager.saveUser(user);
 		session.invalidate();
-		return ResultHandler.toSuccessJSON("密碼修改成功！");
+		return JSONObject.fromObject(ResultHandler.toSuccessJSON("密碼修改成功！")).toString();
 	}
 	
 	private User failLoginCount(User u,HttpServletRequest request) {

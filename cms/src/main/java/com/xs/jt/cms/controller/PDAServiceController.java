@@ -691,7 +691,7 @@ public class PDAServiceController {
 			InputStream buffIn = new ByteArrayInputStream(photoByte, 0, photoByte.length); 
 			BufferedImage imageBuff = ImageIO.read(buffIn);
 			if(imageBuff.getWidth() < imageBuff.getHeight()) {
-				BufferedImage buff = CommonUtil.Rotate(imageBuff, 90);
+				BufferedImage buff = CommonUtil.Rotate(imageBuff, 270);
 				ByteArrayOutputStream bos = new ByteArrayOutputStream(); 
 				ImageIO.write(buff, "jpg", bos); 
 				photoByte = bos.toByteArray(); 
