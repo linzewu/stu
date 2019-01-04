@@ -9,7 +9,7 @@
 				<tr>
 					<td class="info_title">号牌种类：</td>
 					<td class="info"><input name="hpzl" id="hpzl" class="easyui-combobox" required="true"
-							data-options="data:datacode.hpzl,valueField:'value',textField:'label'" /></td>
+							data-options="data:comm.getBaseParames('hpzl'),valueField:'id',textField:'value'" /></td>
 					<td class="info_title">号牌号码：</td>
 					<td class="info"><input name="hphm" id="hphm" class="easyui-textbox"  />
 						<a href="#" id="query_hphm" class="easyui-linkbutton" data-options="iconCls:'icon-search',onClick:loadCarInfo">查询</a>
@@ -25,13 +25,13 @@
 				<tr>
 					<td class="info_title">	车辆类型：</td>
 					<td class="info"><input  name="cllx" id="cllx" class="easyui-combobox" required="true"
-						data-options="data:datacode.cllx,codevalueField:'value',textField:'label',readonly:true" /></td>
+						data-options="data:comm.getBaseParames('cllx'),valueField:'id',textField:'value',readonly:true" /></td>
 					<!--<td class="info_title">使用性质：</td>
 					<td class="info"><input name="syxz" id="syxz" class="easyui-combobox" required="true"
 						data-options="data:datacode.syxz,valueField:'value',textField:'label'" /></td>-->
 					<td class="info_title">业务类型：</td>
 					<td class="info"><input name="ywlx" id="ywlx" class="easyui-combobox" required="true"
-						data-options="data:datacode.ywlx,valueField:'value',textField:'label',onChange:changeBT,readonly:true" style="background-color: gray;" /></td>
+						data-options="data:comm.getBaseParames('ywlx'),valueField:'id',textField:'value',onChange:changeBT,readonly:true" style="background-color: gray;" /></td>
 				</tr>
 				<tr>
 					<td class="info_title">车辆型号：</td>
@@ -49,7 +49,7 @@
 				</tr>
 				<tr>
 					<td class="info_title">所有人：</td>
-					<td class="info"><input name="syr" id="syr" class="easyui-textbox" required="true" /></td>
+					<td class="info"><input name="syr" id="syr" class="easyui-textbox" /></td>
 					<td class="info_title">身份证：</td>
 					<td class="info" colspan="2"><input name="sfz"  id="sfz" class="easyui-textbox" /></td>
 				</tr>

@@ -16,6 +16,7 @@ import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.entity.Department;
+import com.xs.jt.base.module.enums.CommonUserOperationEnum;
 import com.xs.jt.base.module.manager.impl.DepartmentManagerImpl;
 
 
@@ -58,6 +59,13 @@ public class DepartmentContorller {
 	public @ResponseBody Map<String,Object> deleteDept(Department dept, BindingResult result) {
 		this.deptManager.deleteDept(dept);
 		return ResultHandler.toSuccessJSON("删除成功！");
+	}
+	
+	@UserOperation(code="getAllDepts",name="所有部门查询",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
+	@RequestMapping(value = "getAllDepts", method = RequestMethod.POST)
+	public @ResponseBody List<Department> getAllDepts() {
+		List<Department> depts = deptManager.getDepts();
+		return depts;
 	}
 
 }

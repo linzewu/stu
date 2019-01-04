@@ -100,16 +100,24 @@ $.extend(
 			},
 			message : '身份证号码错误'
 		},
-		passwordValide: {
-	        validator: function(value){
-	        	var patrn=/^(?![a-zA-Z0-9]+$)(?![^a-zA-Z\/D]+$)(?![^0-9\/D]+$).{6,16}$/;// /^(\w){8,16}$/;
+		passwordValide: {			
+	        validator: function(value, param){
+	        	var paramValue = "/^(?![a-zA-Z0-9]+$)(?![^a-zA-Z\/D]+$)(?![^0-9\/D]+$).{6,16}$/";
+	        	var memo = "不能使用默认密码，只能输入6-16个字母、数字、特殊符号";
+	        	var bpObj = comm.getBaseParamObjs("mmjygz");
+	        	if (bpObj.length > 0){
+	        		paramValue = bpObj[0].paramValue;
+	        		memo = bpObj[0].memo;
+	        	}
+	        	param[0] = memo;
+	        	var patrn=eval(paramValue);// /^(\w){8,16}$/;
 	        	if (!patrn.exec(value)||value=='888888'){
 	        		 return false
 	        	} else{
 	        		return true 
 	        	}
 	        },
-	        message: '不能使用默认密码，只能输入6-16个字母、数字、特殊符号'
+	        message: '{0}'
 	    },
 	    passwordEquals: {
 	        validator: function(value,param){
@@ -119,7 +127,7 @@ $.extend(
 	    },
 	    mobile : {// 验证手机号码
 	        validator : function(value) {
-	            return /^(13|15|18)\d{9}$/i.test(value);
+	            return /^(13|15|18|17|14|19)\d{9}$/i.test(value);
 	        },
 	        message : '手机号码格式不正确'
 	    }

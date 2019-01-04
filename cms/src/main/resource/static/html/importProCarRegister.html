@@ -9,20 +9,20 @@
 				<tr>
 					<td class="info_title3">业务类型：</td>
 					<td class="info3"><input value="A" name="ywlx" id="ywlx" class="easyui-combobox" required="true" tabindex="999"
-						data-options="data:datacode.ywlx,valueField:'value',textField:'label',onChange:changeBT,readonly:true" /></td>
+						data-options="data:comm.getBaseParames('ywlx'),valueField:'id',textField:'value',onChange:changeBT,readonly:true" /></td>
 						
 					<td class="info_title3">号牌种类：</td>
 					<td class="info3"><input name="hpzl" id="hpzl" class="easyui-combobox" required="true"
-							data-options="data:datacode.hpzl,valueField:'value',textField:'label'" tabindex="999" /></td>
+							data-options="data:comm.getBaseParames('hpzl'),valueField:'id',textField:'value'" tabindex="999" /></td>
 					<td class="info_title3">	车辆类型：</td>
 					<td class="info3"><input  name="cllx" id="cllx" class="easyui-combobox" required="true"
-						data-options="data:datacode.cllx,codevalueField:'value',textField:'label'" tabindex="999"  /></td>
+						data-options="data:comm.getBaseParames('cllx'),valueField:'id',textField:'value'" tabindex="999"  /></td>
 				</tr>
 				
 				<tr>
 					<td class="info_title3">使用性质：</td>
 					<td class="info3"><input name="syxz" id="syxz" class="easyui-combobox" required="true"
-						data-options="data:datacode.syxz,valueField:'value',textField:'label'" tabindex="999" /></td>
+						data-options="data:comm.getBaseParames('syxz'),valueField:'id',textField:'value'" tabindex="999" /></td>
 					<td class="info_title3">车辆型号：</td>
 					<td class="info3">
 						<input id="clxh"  name="clxh"  required="true" class="easyui-textbox" style="width: 100px;" />
@@ -47,7 +47,7 @@
 					<td class="info_title3">额定载人：</td>
 					<td class="info3"><input name="hdzk" id="hdzk" class="easyui-textbox"   /></td> 
 					<td class="info_title3">车身颜色：</td>
-					<td class="info3"><input name="csys" id="csys"  class="easyui-combobox" data-options="data:datacode.csys,multiple:true,valueField:'label',textField:'label'"    required="true" tabindex="999"  /></td>
+					<td class="info3"><input name="csys" id="csys"  class="easyui-combobox" data-options="data:comm.getBaseParames('csys'),multiple:true,valueField:'value',textField:'value'"    required="true" tabindex="999"  /></td>
 					<td class="info_title3">车辆识别代号：</td>
 					<td class="info3">	<input	id="clsbdh" name="clsbdh" class="easyui-textbox"   required="true" data-options="validType:'length[17,17]'"></td>
 				</tr>
@@ -104,9 +104,9 @@
 				<tr>
 					
 					<td class="info_title3">所有人：</td>
-					<td class="info3"><input name="syr" id="syr" class="easyui-textbox" required="true" /></td>
+					<td class="info3"><input name="syr" id="syr" class="easyui-textbox" /></td>
 					<td class="info_title3">身份证：</td>
-					<td class="info3"><input name="sfz"  id="sfz" class="easyui-textbox" required="true"/></td>
+					<td class="info3"><input name="sfz"  id="sfz" class="easyui-textbox"/></td>
 					<td class="info_title3">手机号码：</td>
 					 <td class="info3"><input name="sjhm" id="sjhm" class="easyui-textbox" data-options="validType:'mobile'"/></td>
 				</tr>

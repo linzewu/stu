@@ -1,8 +1,30 @@
-
-
-
-
+var wdapp;
 var comm = {
+
+	getRootPath:function(){
+	    var curWwwPath=window.document.location.href;
+	    var pathName=window.document.location.pathname;
+	    var pos=curWwwPath.indexOf(pathName);
+	    var localhostPaht=curWwwPath.substring(0,pos);
+	    var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+	    return(localhostPaht+projectName);
+	 },
+	printOut:function(url){
+		var wdapp=null;
+		try{
+			// 获取Word 过程
+			// 请设置IE的可信任站点
+			 wdapp = new ActiveXObject("Word.Application");
+		}catch(e){
+			alert("无法调用Office对象，请确保您的机器已安装了Office并已将本系统的站点名加入到IE的信任站点列表中！");
+			wdapp = null;
+			return; 
+		}
+		wdapp.Documents.Open(comm.getRootPath()+url + "_.doc");//打开word模板url
+		wdapp.Application.Printout();//调用自动打印功能
+		wdapp.quit();
+		wdapp = null;
+	},
 	getBaseParames : function(type) {
 		var array = [];
 		for ( var i in bps) {
@@ -12,6 +34,16 @@ var comm = {
 				map['value'] = bp.paramName;
 				map['id'] = bp.paramValue;
 				array.push(map);
+			}
+		}
+		return array;
+	},
+	getBaseParamObjs : function(type) {
+		var array = [];
+		for ( var i in bps) {
+			var bp = bps[i];
+			if (bp.type == type) {
+				array.push(bp);
 			}
 		}
 		return array;
@@ -46,7 +78,7 @@ var comm = {
 	createMume : function(id, data) {
 		var ul = $("#" + id);	
 		ul.empty();
-		//此处的data为自定义Map，详见createMenus.js
+		// 此处的data为自定义Map，详见createMenus.js
 		data.each(function(key,n,i){
 			var li = $("<li><a id='_menu"+i+"' href=\"javascript:void(0)\"><img></a></li>");
 			li.find("img").attr("src", n.icon);
@@ -302,12 +334,12 @@ var gridUtil = {
 })(jQuery);
 
 $(function($){  
-    //备份jquery的ajax方法  
+    // 备份jquery的ajax方法
     var _ajax=$.ajax;  
       
-    //重写jquery的ajax方法  
+    // 重写jquery的ajax方法
     $.ajax=function(opt){  
-        //备份opt中error和success方法  
+        // 备份opt中error和success方法
         var fn = {  
             error:function(XMLHttpRequest, textStatus, errorThrown){},  
             success:function(data, textStatus){}  
@@ -319,7 +351,7 @@ $(function($){
             fn.success=opt.success;  
         }  
           
-        //扩展增强处理  
+        // 扩展增强处理
         var _opt = $.extend(opt,{  
             error:function(XMLHttpRequest, textStatus, errorThrown){  
                 fn.error(XMLHttpRequest, textStatus, errorThrown);  
@@ -333,7 +365,7 @@ $(function($){
             				temp=$.parseJSON(data);
                          }
             		}catch (e) {
-            			//console.log("返回非JSON对象");
+            			// console.log("返回非JSON对象");
         			}
             	}else if(typeof(data) == "object"&&!$.isArray(data)){
             		temp=data;
@@ -344,7 +376,7 @@ $(function($){
                 }
                 if(temp['state'] == 403) {                	
                 	$.messager.alert("无权限", "您没有权限访问！请联系管理员进行设置！",'error')
-                    //window.location.href="notPermission.html";
+                    // window.location.href="notPermission.html";
                     return;
                 }
                 fn.success(data, textStatus);
@@ -365,3 +397,6 @@ $(document).ajaxComplete(function(){
 	$.messager.progress('close');
 
 });
+
+
+

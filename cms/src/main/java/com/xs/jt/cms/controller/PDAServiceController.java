@@ -20,6 +20,7 @@ import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 
 import org.apache.axis2.AxisFault;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.jt.base.module.annotation.Modular;
+import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.ApplicationException;
 import com.xs.jt.base.module.common.Constant;
@@ -47,6 +49,7 @@ import com.xs.jt.base.module.entity.BaseParams;
 import com.xs.jt.base.module.entity.SignaturePhoto;
 import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.manager.IBaseParamsManager;
+import com.xs.jt.base.module.manager.IOperationLogManager;
 import com.xs.jt.base.module.manager.ISignaturePhotoManager;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutNewAccessServiceStub;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutService;
@@ -102,17 +105,31 @@ public class PDAServiceController {
 	
 	@Resource(name = "signaturePhotoManager")
 	private ISignaturePhotoManager signaturePhotoManager;
+	
+	@Autowired
+	private IOperationLogManager operationLogManager;
 
 	public static String YWLX_TYPE = "ywlx";
+	
+	@Value("${stu.properties.cjsqbh2}")
+	private String cjsqbh2;
+	
+	@Value("${stu.properties.cjsqbh}")
+	private String cjsqbh;
 
+	@RecordLog
+	@Transactional
 	@UserOperation(code = "addVehCheckInfo", name = "保存查验信息")
 	@RequestMapping(value = "addVehCheckInfo", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> addVehCheckInfo(VehCheckInfo vehCheckInfo, BindingResult result)
 			throws Exception {
 		User user = (User) session.getAttribute("user");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd  HH:mm:ss");
+		//部门
+		vehCheckInfo.setJg(user.getBmdm());
 		vehCheckInfo.setCysj(new Date());
 		vehCheckInfo.setCyr(user.getYhm());
+		vehCheckInfo.setCyrName(user.getYhxm());
 		BaseParams baseParam = baseParamsManager.getBaseParamByValue(YWLX_TYPE, vehCheckInfo.getYwlx());
 		String ywlx = baseParam == null ? "" : baseParam.getParamName();
 		if (!result.hasErrors()) {
@@ -155,13 +172,14 @@ public class PDAServiceController {
 			}
 			
 			//获取查验次数
-			Integer cycs = this.policeCheckInfoManager.findMaxCsByLsh(vehCheckInfo.getLsh());
+			/**Integer cycs = this.policeCheckInfoManager.findMaxCsByLsh(vehCheckInfo.getLsh());
 			cycs = cycs == null?0:cycs;
 			cycs++;
-			vehCheckInfo.setCycs(cycs);
+			vehCheckInfo.setCycs(cycs);**/
 
 			policeCheckInfoManager.save(vehCheckInfo);
 			log.info("流水号："+vehCheckInfo.getLsh()+",业务类型："+vehCheckInfo.getYwlx()+",查验结果："+vehCheckInfo.getCyjg());
+			
 			// 注册登记（A） 并且 查验结果是合格，则上传预录入信息到综合平台
 			if (vehCheckInfo.getLsh() != null && "A".equals(vehCheckInfo.getYwlx()) && "1".equals(vehCheckInfo.getCyjg())) {
 				// 上传预录入信息到综合平台
@@ -231,9 +249,12 @@ public class PDAServiceController {
 			JSONConvertXML(veh, map);
 
 			wo.setUTF8XmlDoc(document.asXML());
+			
 			wo.setJkid("01C80");
-
-			return urlDecode(trias.writeObjectOutNew(wo).getWriteObjectOutNewReturn());
+			String resultStr = urlDecode(trias.writeObjectOutNew(wo).getWriteObjectOutNewReturn());
+			log.info("上传图片到综合平台返回结果："+resultStr);
+			this.operationLogManager.addExceLog(resultStr,"","上传图片到综合平台","/pdaService/addVehCheckInfo","01C80","PDA对外接口");
+			return resultStr;
 		} catch (Exception e) {
 			throw new ApplicationException("上传图片到综合平台异常", e);
 		}
@@ -255,7 +276,7 @@ public class PDAServiceController {
 		
 	}
 
-	private void uploadPlatForm(VehCheckInfo vehCheckInfo) throws AxisFault {
+	public void uploadPlatForm(VehCheckInfo vehCheckInfo) throws AxisFault {
 		log.info("上传预录入信息到综合平台...............");
 		TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
 		TmriJaxRpcOutNewAccessServiceStub.WriteObjectOutNew wo = tmriJaxRpcOutService.createWriteObjectOut();
@@ -267,9 +288,13 @@ public class PDAServiceController {
 		String xh = getNewCarSeq();
 		jo.put("xh", xh);
 		jo.put("sfzmhm", jo.remove("sfz"));
-		if(!jo.has("GCJK")&&!jo.has("gcjk")) {
+		
+		String gcjk=(String)jo.get("gcjk");
+		if(StringUtils.isEmpty(gcjk)) {
 			jo.put("gcjk", "A");
 		}
+		
+		
 		String bh = vehCheckInfo.getBh();
 		if(bh==null) {
 			bh = (String) jo.remove("ggbh");
@@ -308,7 +333,9 @@ public class PDAServiceController {
 		log.info("UTF8XmlDoc:"+document.asXML());
 		try {
 			String resultStr = urlDecode(trias.writeObjectOutNew(wo).getWriteObjectOutNewReturn());
-			log.info("返回结果："+resultStr);
+			log.info("上传预录入信息到综合平台返回结果："+resultStr);
+			this.operationLogManager.addExceLog(resultStr,document.asXML(),"上传预录入信息到综合平台","/pdaService/addVehCheckInfo","01C77","PDA对外接口");
+			
 		} catch (Exception e) {
 			log.error(e.toString());
 			throw new ApplicationException("上传预录入信息到综合平台异常", e);
@@ -409,6 +436,7 @@ public class PDAServiceController {
 				return map;
 			}
 			qo.setJkid("01C21");
+			qo.setCjsqbh(cjsqbh); 
 			qo.setUTF8XmlDoc(
 					"<root><QueryCondition><hphm>" + hphm + "</hphm><hpzl>" + hpzl + "</hpzl></QueryCondition></root>");
 
@@ -477,6 +505,7 @@ public class PDAServiceController {
 			}
 
 			qo.setJkid("01C49");
+			qo.setCjsqbh(cjsqbh2);
 			qo.setUTF8XmlDoc("<root><QueryCondition><hphm>" + hphm
 					+ "</hphm><hpzl>" + hpzl
 					+ "</hpzl><sf>"+sf+"</sf></QueryCondition></root>");
@@ -731,6 +760,7 @@ public class PDAServiceController {
 						.createTmriJaxRpcOutNewAccessServiceStub();
 				TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNew qo = tmriJaxRpcOutService.createQueryObjectOut();
 				qo.setJkid("01C21");
+				qo.setCjsqbh(cjsqbh); 
 				qo.setUTF8XmlDoc("<root><QueryCondition><hphm>" + hphm + "</hphm><hpzl>" + hpzl
 						+ "</hpzl></QueryCondition></root>");
 
@@ -811,4 +841,5 @@ public class PDAServiceController {
 		map.put("signaturePhoto", photo);
 		return map;
 	}
+	
 }

@@ -10,10 +10,10 @@
 				<tr>
 					<td class="info_title">号牌种类：</td>
 					<td class="info"><input name="hpzl" id="hpzl" class="easyui-combobox" required="true"
-							data-options="data:datacode.hpzl,valueField:'value',textField:'label'" /></td>
+							data-options="data:comm.getBaseParames('hpzl'),valueField:'id',textField:'value'" /></td>
 					<td class="info_title">使用性质：</td>
 					<td class="info">
-						 <input name="syxz" id="syxz" class="easyui-combobox" data-options="data:datacode.syxz,valueField:'value',textField:'label'"   />
+						 <input name="syxz" id="syxz" class="easyui-combobox" data-options="data:comm.getBaseParames('syxz'),valueField:'id',textField:'value'"   />
 					</td>
 				</tr>
 				<tr>
@@ -26,13 +26,13 @@
 				<tr>
 					<td class="info_title">	车辆类型：</td>
 					<td class="info"><input  name="cllx" id="cllx" class="easyui-combobox" required="true"
-						data-options="data:datacode.cllx,codevalueField:'value',textField:'label'" /></td>
+						data-options="data:comm.getBaseParames('cllx'),valueField:'id',textField:'value'" /></td>
 				<!-- 	<td class="info_title">使用性质：</td>
 					<td class="info"><input name="syxz" id="syxz" class="easyui-combobox" 
 						data-options="data:datacode.syxz,valueField:'value',textField:'label'" /></td> -->
 					<td class="info_title">业务类型：</td>
 					<td class="info" ><input value="A" name="ywlx" id="ywlx" class="easyui-combobox" required="true"
-						data-options="data:datacode.ywlx,valueField:'value',textField:'label',onChange:changeBT,readonly:true" /></td>
+						data-options="data:comm.getBaseParames('ywlx'),valueField:'id',textField:'value',onChange:changeBT,readonly:true" /></td>
 				</tr>
 				<tr>
 					<td class="info_title">车辆型号：</td>
@@ -50,9 +50,9 @@
 				</tr>
 				<tr>
 					<td class="info_title">所有人：</td>
-					<td class="info"><input name="syr" id="syr" class="easyui-textbox" required="true" /></td>
+					<td class="info"><input name="syr" id="syr" class="easyui-textbox" /></td>
 					<td class="info_title">身份证：</td>
-					<td class="info" colspan="2"><input name="sfz"  id="sfz" class="easyui-textbox" required="true"/></td>
+					<td class="info" colspan="2"><input name="sfz"  id="sfz" class="easyui-textbox"/></td>
 				</tr>
 				<tr>
 					<td class="info_title">地址：</td>
@@ -118,7 +118,7 @@
 	</div>
 </form>
 <div id="printTemplet"  style="display: none;">
-	<img alt="" src="" style="border: 0;margin: 0; padding: 0">
+	<img alt="" src="" style="border: 0;margin: 0; padding: 0;">
 </div>
 <OBJECT ID="vehPrinter" CLASSID="CLSID:F1EFB37B-C778-4AF8-B0C2-B647C9E89E2D" CODEBASE="VehPlatForm_web.CAB#version=2,7,0,0">
 </OBJECT>

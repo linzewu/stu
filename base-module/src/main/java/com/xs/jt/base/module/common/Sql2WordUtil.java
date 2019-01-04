@@ -18,7 +18,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.util.ServletContextPropertyUtils;
 
+import com.aspose.words.ColorMode;
 import com.aspose.words.Document;
+import com.aspose.words.ImageColorMode;
 import com.aspose.words.ImageSaveOptions;
 import com.aspose.words.Node;
 import com.aspose.words.NodeCollection;
@@ -55,13 +57,23 @@ public class Sql2WordUtil {
 	}
 	
 	public static String toCase(Document doc,String paht,String fileName) throws Exception{
+		return toCase(doc,paht,fileName,null);
+	}
+	
+	
+	public static String toCase(Document doc,String paht,String fileName,Float resolution) throws Exception{
 		
 		if(doc!=null) {
 			ImageSaveOptions iso = new ImageSaveOptions(SaveFormat.JPEG);
 			iso.setPrettyFormat(true);
 			iso.setUseAntiAliasing(true);
-			iso.setJpegQuality(80);
+			iso.setJpegQuality(100);
+			if(resolution!=null) {
+				iso.setResolution(resolution);
+			}
 			doc.save(paht+fileName,iso);
+			
+			doc.save(paht+fileName+"_"+".doc");
 			return fileName;
 		}else {
 			return null;

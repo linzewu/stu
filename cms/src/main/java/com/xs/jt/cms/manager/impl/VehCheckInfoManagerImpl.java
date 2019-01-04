@@ -22,8 +22,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONPObject;
 import com.aspose.words.Document;
 import com.xs.jt.base.module.common.Common;
 import com.xs.jt.base.module.common.Sql2WordUtil;
@@ -47,6 +45,14 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 	private ServletContext servletContext;
 	
 	public VehCheckInfo save(VehCheckInfo vehCheckInfo) {
+		VehCheckInfo vci = this.findVehCheckInfoByLshAndCycs(vehCheckInfo.getLsh(),
+				vehCheckInfo.getCycs());
+		if(vci != null) {
+			vehCheckInfo.setId(vci.getId());
+			vehCheckInfo.setSfdy(vci.getSfdy());
+		}else {
+			vehCheckInfo.setSfdy("N");
+		}
 		return vehCheckInfoRepository.save(vehCheckInfo);
 	}
 
@@ -66,8 +72,11 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 				if(Common.isNotEmpty(vehCheckInfo.getClsbdh())) {
 					list.add(criteriaBuilder.like(root.get("clsbdh").as(String.class), "%"+ vehCheckInfo.getClsbdh()));
 				}
-				if(Common.isNotEmpty(vehCheckInfo.getCyr())) {
-					list.add(criteriaBuilder.equal(root.get("cyr").as(String.class), vehCheckInfo.getCyr()));
+				if(Common.isNotEmpty(vehCheckInfo.getLsh())) {
+					list.add(criteriaBuilder.like(root.get("lsh").as(String.class), "%"+ vehCheckInfo.getLsh()+"%"));
+				}
+				if(Common.isNotEmpty(vehCheckInfo.getCyrName())) {
+					list.add(criteriaBuilder.like(root.get("cyrName").as(String.class), "%"+vehCheckInfo.getCyrName()+"%"));
 				}
 				if(vehCheckInfo.getCysj() != null && vehCheckInfo.getCysjEnd() != null) {
 					list.add(criteriaBuilder.between(root.get("cysj").as(Date.class), vehCheckInfo.getCysj(),vehCheckInfo.getCysjEnd()));
@@ -89,10 +98,24 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 					list.add(criteriaBuilder.equal(root.get("syxz").as(String.class), vehCheckInfo.getSyxz()));
 				}
 				if(Common.isNotEmpty(vehCheckInfo.getHphm())) {
-					list.add(criteriaBuilder.equal(root.get("hphm").as(String.class), vehCheckInfo.getHphm()));
+					list.add(criteriaBuilder.like(root.get("hphm").as(String.class), "%"+vehCheckInfo.getHphm()+"%"));
 				}
 				if(Common.isNotEmpty(vehCheckInfo.getJg())) {
-					list.add(criteriaBuilder.like(root.get("jg").as(String.class), "%"+ vehCheckInfo.getJg()+"%"));
+					list.add(criteriaBuilder.equal(root.get("jg").as(String.class), vehCheckInfo.getJg()));
+				}
+				if(Common.isNotEmpty(vehCheckInfo.getSfdy())) {
+					/**if("Y".equals(vehCheckInfo.getSfdy())) {
+						list.add(criteriaBuilder.equal(root.get("sfdy").as(String.class), vehCheckInfo.getSfdy()));
+					}else {
+						Predicate pre = criteriaBuilder.or(criteriaBuilder.isNull(root.get("sfdy").as(String.class)));
+						pre = criteriaBuilder.or(pre, criteriaBuilder.equal(root.get("sfdy").as(String.class), vehCheckInfo.getSfdy()));
+						list.add(pre);
+					}**/
+					list.add(criteriaBuilder.equal(root.get("sfdy").as(String.class), vehCheckInfo.getSfdy()));
+				}
+				//判断是否是自动出单 ,是的话查询合格的查验单
+				if("1".equals(vehCheckInfo.getSfzddy())) {
+					list.add(criteriaBuilder.equal(root.get("cyjg").as(String.class), "1"));
 				}
 				
 				

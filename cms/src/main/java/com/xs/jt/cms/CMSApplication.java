@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import com.aspose.words.License;
 
@@ -20,6 +21,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableAutoConfiguration(exclude = {MultipartAutoConfiguration.class})
 @ComponentScan({"com.xs.jt.base.module","com.xs.jt.cms"})
 @EnableSwagger2
+@EnableAsync
 public class CMSApplication 
 {
 	

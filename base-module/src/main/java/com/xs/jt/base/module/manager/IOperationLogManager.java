@@ -1,9 +1,9 @@
 package com.xs.jt.base.module.manager;
 
-import java.util.List;
 import java.util.Map;
 
-import com.xs.jt.base.module.entity.BlackList;
+import org.dom4j.DocumentException;
+
 import com.xs.jt.base.module.entity.OperationLog;
 
 
@@ -23,4 +23,5 @@ public interface IOperationLogManager {
 	
 	public Map<String,Object> getLoginOperationLogs(Integer page, Integer rows,OperationLog operationLog);
 
+	public void addExceLog(String resultStr,String condition,String operationType,String actionUrl,String jkid,String module)throws DocumentException;
 }

@@ -3,6 +3,7 @@ package com.xs.jt.base.module.controller;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,11 +13,12 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.RequestContext;
 
@@ -45,9 +47,11 @@ import com.xs.jt.base.module.manager.ISecurityLogManager;
 import com.xs.jt.base.module.manager.ISignaturePhotoManager;
 import com.xs.jt.base.module.manager.IUserManager;
 
+import net.sf.json.JSONObject;
 
-@Controller
+
 @RequestMapping(value = "/user")
+@RestController
 @Modular(modelCode="user",modelName="用户管理",isEmpowered=false)
 //@ModuleAnnotation(modeName = Constant.ConstantDZYXH.MODE_NAME_SYSTEM, appName = Constant.ConstantDZYXH.APP_NAME_USER,href="/dzyxh/page/system/UserManager.html",icoUrl="/dzyxh/images/user.png",modeIndex=4,appIndex=1)
 public class UserController {
@@ -97,11 +101,11 @@ public class UserController {
 
 	
 	@UserOperation(code="save",name="编辑用户")
-	@RequestMapping(value = "saveUser", method = RequestMethod.POST,produces = "text/html;charset=UTF-8")
-	public @ResponseBody Map saveUser(User user, BindingResult result) throws IOException {
+	@RequestMapping(value = "saveUser", method = RequestMethod.POST,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8")
+	public @ResponseBody String saveUser(User user, BindingResult result) throws IOException {
 		if (!result.hasErrors()) {
 			if(!"Y".equals(String.valueOf(user.getIsPolice())) && checkIsPolice(user)) {
-				return ResultHandler.toMyJSON(Constant.ConstantState.STATE_VALIDATE_ERROR, "该角色包含警员功能，不允许授予非警员账号！");
+				return JSONObject.fromObject((ResultHandler.toMyJSON(Constant.ConstantState.STATE_VALIDATE_ERROR, "该角色包含警员功能，不允许授予非警员账号！"))).toString();
 			}
 
 			if (user.getId() == null) {
@@ -118,15 +122,15 @@ public class UserController {
 			}
 			MultipartFile qmFile = user.getQmFile();
 			user = userManager.saveUser(user);
-			if(qmFile != null) {
+			if(qmFile != null&&qmFile.getSize()!=0) {
 				SignaturePhoto signaturePhoto = new SignaturePhoto();
 				signaturePhoto.setYhm(user.getYhm());
 				signaturePhoto.setPhoto(qmFile.getBytes());
 				signaturePhotoManager.saveSignaturePhoto(signaturePhoto);
 			}
-			return ResultHandler.resultHandle(result, user, Constant.ConstantMessage.SAVE_SUCCESS);
+			return JSONObject.fromObject(ResultHandler.resultHandle(result, user, Constant.ConstantMessage.SAVE_SUCCESS)).toString();
 		} else {
-			return ResultHandler.resultHandle(result, null, null);
+			return JSONObject.fromObject(ResultHandler.resultHandle(result, null, null)).toString();
 		}
 	}
 
@@ -505,14 +509,17 @@ public class UserController {
 	
 	@RequestMapping(value = "getZzjUser", method = RequestMethod.POST)
 	@UserOperation(code="getZzjUser",name="获取自助机账号",userOperationEnum=CommonUserOperationEnum.NoLogin)
-	public @ResponseBody String getZzjUser() {
+	public @ResponseBody Map<String, String> getZzjUser() {
+		Map<String, String> map = new HashMap<String, String>();
 		String userName = "";
 		String ip = Common.getIpAdrress(request);
 		BaseParams bp = baseParamsManager.getBaseParam("zzjzh", ip);
 		if(bp != null) {
 			userName = bp.getParamValue();
 		}
-		return userName;
+		map.put("zzjzh", userName);
+		map.put("curIp", Common.getIpAdrress(request));
+		return map;
 	}
 	
 	@UserOperation(code="save",name="查看签名照片",isMain=false)
@@ -522,6 +529,12 @@ public class UserController {
 		String imgPath = this.signaturePhotoManager.findSignaturePhotoByYhm(yhm);
 		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "查看签名照片成功！", imgPath);
 	}
+	
+	@UserOperation(code="save",name="跳到登录页面",userOperationEnum=CommonUserOperationEnum.NoLogin)
+	@RequestMapping("/toLogin")
+    public String toLogin(){ 
+        return "login";
+    }
 		
 	
 }

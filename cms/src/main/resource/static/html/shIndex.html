@@ -17,6 +17,7 @@
 <script type="text/javascript" src="../js/selfHelp.js"></script>
 <script type="text/javascript">
 var zzjUser = "";
+var curIp = "";
 //intervalLogin();
 getCurrIp();
 
@@ -27,10 +28,11 @@ function getCurrIp(){
 	    data : null,
 	    async : false, 
 	    success : function(data){
-	    		zzjUser = data;
+	    		zzjUser = data.zzjzh;
+	    		curIp = data.curIp;
 	    		intervalLogin();
 	    	},
-	    	dataType:"text"
+	    	dataType:"json"
 	    });
 }
 
@@ -50,7 +52,7 @@ function intervalLogin(){
 	    		var datajson = data;
 	    		if (datajson['state'] == 1) {
 	    		}else{
-	    			$.messager.alert("登陆失败",datajson['message'],"info");
+	    			alert(datajson['message']);
 	    			
 	    		}
 	    	},
@@ -59,6 +61,7 @@ function intervalLogin(){
 }
 
 $(function(){
+	$("#curIp").text(curIp);
 	window.setInterval("intervalLogin();",1200000);
 });
 
@@ -98,6 +101,7 @@ $(function(){
 <div style="background-image: url('../images/selfHelpLogin.jpg');width: 1270px;height: 1000px;background-repeat: no-repeat;">
 	<div style="width: 270px;position: absolute;top: 524px;left: 870px;height: 135px;" onclick="checkCar();"></div>
 	<!--<div style="width: 270px;position: absolute;top: 687px;left: 870px;height: 135px;" onclick="openPage('Y');"></div>-->
+	<div style="position: absolute;top: 2px;left: 2px;" id="tt">当前ip：<span id="curIp"></span></div>
 </div>
 </body>
 <script type="text/javascript">

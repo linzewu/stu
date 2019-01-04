@@ -1,6 +1,7 @@
 package com.xs.jt.base.module.manager.impl;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,16 +12,27 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.querydsl.QPageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.xs.jt.base.module.common.Common;
 import com.xs.jt.base.module.dao.OperationLogRepository;
 import com.xs.jt.base.module.entity.OperationLog;
+import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.manager.IOperationLogManager;
 
 @Service("operationLogManager")
@@ -28,6 +40,13 @@ public class OperationLogManagerImpl implements IOperationLogManager {
 	@Autowired
 	private OperationLogRepository operationLogRepository;
 	
+	@Autowired
+	private HttpServletRequest request;
+	
+	@Autowired
+	private HttpSession session;
+	
+	@Async 
 	public void saveOperationLog(OperationLog operationLog) {
 		this.operationLogRepository.save(operationLog);
 	}
@@ -121,6 +140,32 @@ public class OperationLogManagerImpl implements IOperationLogManager {
 		data.put("total", bookPage.getTotalElements());
 
 		return data;
+	}
+	
+	public void addExceLog(String resultStr,String condition,String operationType,String actionUrl,String jkid,String module) throws DocumentException  {
+		Document resultDocument = DocumentHelper.parseText(resultStr);
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+		Element root = resultDocument.getRootElement();
+		Element head = root.element("head");
+		Element code = head.element("code");
+		Element message = head.element("message");
+		//失败
+		if("0".equals(code.getText())) {
+			User loginUser = (User) session.getAttribute("user");
+			OperationLog operationLog =new OperationLog();
+			operationLog.setOperationResult(OperationLog.OPERATION_RESULT_ERROR);
+			operationLog.setStatus(1);
+			operationLog.setFailMsg(message.getText());
+			operationLog.setOperationUser(loginUser.getYhm());
+			operationLog.setOperationCondition(condition);
+			operationLog.setOperationDate(new java.util.Date());
+			operationLog.setOperationType(operationType);
+			operationLog.setIpAddr(Common.getIpAdrress(request));
+			operationLog.setActionUrl(actionUrl);
+			operationLog.setModule(module);
+			operationLog.setContent("用户"+operationLog.getOperationUser()+"在"+sdf.format(new java.util.Date())+"时间,IP为"+operationLog.getIpAddr()+"操作了"+operationLog.getOperationType()+",接口标识："+jkid);
+			this.saveOperationLog(operationLog);
+		}
 	}
 
 }

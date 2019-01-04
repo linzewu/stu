@@ -1,17 +1,14 @@
 package com.xs.jt.cms.controller;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 
+import org.apache.axis2.AxisFault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.druid.util.StringUtils;
 import com.xs.jt.base.module.annotation.Modular;
+import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.ApplicationException;
 import com.xs.jt.base.module.common.Common;
@@ -64,11 +62,13 @@ public class VehCheckInfoController {
 	private IPreCarRegisterManager preCarRegisterManager;
 	@Autowired
 	private IUserManager userManager;
+	@Autowired
+	private PDAServiceController pDAServiceController;
 
+	
 	@UserOperation(code = "getCheckInfoList", name = "查询查验列表")
 	@RequestMapping(value = "getCheckInfoList", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> getCheckInfoList(Integer page, Integer rows, VehCheckInfo vehCheckInfo) {
-		
 		return vehCheckInfoManager.getVehCheckInfoList(page - 1, rows, vehCheckInfo);
 	}
 
@@ -159,14 +159,54 @@ public class VehCheckInfoController {
 			}
 			
 			//查验人姓名
-			User cyUser = userManager.getUser(vci.getCyr());
-			if (cyUser != null) {
-				data.put("cyrxm", cyUser.getYhxm());
+			data.put("cyrxm", vci.getCyrName());
+//			User cyUser = userManager.getUser(vci.getCyr());
+//			if (cyUser != null) {
+//				data.put("cyrxm", cyUser.getYhxm());
+//			}
+			//准乘人数
+			if (pcr == null) {
+				data.put("zcrs", vci.getHdzk());
+			}else {
+				if((!StringUtils.isEmpty(vci.getQpzk())) && (!StringUtils.isEmpty(vci.getHpzk()))) {
+					data.put("zcrs", vci.getQpzk()+"+"+vci.getHpzk());
+				}else {
+					data.put("zcrs", vci.getHdzk());
+				}
 			}
-
+			//查验时间
+			Calendar c = Calendar.getInstance();
+			c.setTime(vci.getCysj());
+			data.put("cyyear", c.get(Calendar.YEAR));
+			data.put("cymonth", c.get(Calendar.MONTH) + 1);
+			data.put("cydate", c.get(Calendar.DATE));
+			
+			//转换车身颜色
+			if(data.get("csys") != null) {
+				String ys = data.get("csys").toString();
+				if(ys.length() > 1) {
+					String[] ysArr = ys.split(",");
+					List<BaseParams> bpList = bpsMap.get("csys");
+					StringBuffer ysStr = new StringBuffer("");
+					for(int k=0;k<ysArr.length;k++) {
+						for(BaseParams b:bpList) {
+							if(b.getParamValue().equals(ysArr[k])) {
+								ysStr.append(b.getParamName()).append(",");
+							}
+						}
+					}
+					data.put("csys", ysStr.substring(0,ysStr.length()-1));
+				}
+			}
 			com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil(template+".doc", data, bpsMap);
 			imageName = template+"_01_" + vci.getLsh() + ".jpg";
 			Sql2WordUtil.toCase(doc, cacheDir, "\\report\\"+imageName);
+			
+			//判断是否是自动出单 ,是的话修改为已打印
+			if("1".equals(checkInfo.getSfzddy())) {
+				vci.setSfdy("Y");
+				this.vehCheckInfoManager.save(vci);
+			}
 		}catch(Exception e) {
 			throw new ApplicationException(e);
 		}
@@ -209,6 +249,24 @@ public class VehCheckInfoController {
 		this.vehiclePhotosManager.findVehPhotoById(id);
 		
 		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "生成图片成功", id);
+	}	
+	
+	@UserOperation(code = "uploadPlat", name = "上传预录入信息到综合平台")
+	@RequestMapping(value = "uploadPlat", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> uploadPlat(VehCheckInfo checkInfo) throws AxisFault {
+		VehCheckInfo vehCheckInfo = this.vehCheckInfoManager.findVehCheckInfoByLshAndCycs(checkInfo.getLsh(),
+				checkInfo.getCycs());
+		// 注册登记（A） 并且 查验结果是合格，则上传预录入信息到综合平台
+		if (vehCheckInfo.getLsh() != null && "A".equals(vehCheckInfo.getYwlx()) && "1".equals(vehCheckInfo.getCyjg())) {
+			// 上传预录入信息到综合平台
+			pDAServiceController.uploadPlatForm(vehCheckInfo);
+			// 上传图片
+			VehiclePhotos photo = this.vehiclePhotosManager.findLast45degPhotosByLsh(vehCheckInfo.getLsh());
+			pDAServiceController.xrzp(photo);
+		}else {
+			return ResultHandler.toSuccessJSON("查验结果是合格并且业务类型为注册登记的才能上传到综合平台！");
+		}
+		return ResultHandler.toSuccessJSON("上传预录入信息到综合平台成功！");
 	}
 
 }

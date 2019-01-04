@@ -7,6 +7,22 @@
 font-size:12px;text-align:center;opacity:.8;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=80);-MS-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)"}
 .save a{color:#fff;display:block;cursor:pointer}
 .content-b{width:1100px;line-height:20px;font-size:14px;float:left;margin-bottom:30px;padding:10px 0;overflow:hidden}
+
+.querParamList li{
+list-style:none;
+float: left;
+width: 280px;
+margin: 2px 0 2px 0;
+}
+.querParamList li label{
+width: 120px; display: inline-block; text-align: right;
+}
+.querParamList{
+	display: inline-block;
+	margin: 0;
+    border: 0;
+    padding: 0;
+}
 </style>
 <div id="vehCheckTab" class="easyui-tabs" data-options="fit:true">
 	<div data-options="title:'查验信息'">
@@ -22,48 +38,54 @@ font-size:12px;text-align:center;opacity:.8;filter:progid:DXImageTransform.Micro
 		>  
     <thead>
         <tr>  
-            <th data-options="field:'lsh',width:150,resizable:false" >流水号</th>
-            <th data-options="field:'clsbdh',width:150,resizable:false" >车辆识别码</th>  
+            <th data-options="field:'lsh',width:155,resizable:false" >流水号</th>
+            <th data-options="field:'clsbdh',width:165,resizable:false" >车辆识别码</th>  
             <th data-options="field:'cycs',width:80,resizable:false" >查验次数</th>
             <th data-options="field:'cyjg',width:80,formatter:cyjgFormatter,resizable:false" >查验结果</th>
             <th data-options="field:'hpzl',width:80,resizable:false"  formatter="formatterHpzl"  >号牌种类</th>
              <th data-options="field:'hphm',width:80,resizable:false"  >号牌号码</th>
             <th data-options="field:'ywlx',width:80,resizable:false" formatter="formatterYwlx" >业务类型</th>
             <th data-options="field:'syxz',width:80,resizable:false" formatter="formatterSyxz">使用性质</th>
-            <th data-options="field:'cllx',width:80,resizable:false" formatter="formatterCllx">车辆类型</th>
+            <th data-options="field:'cllx',width:90,resizable:false" formatter="formatterCllx">车辆类型</th>
             
-            <th data-options="field:'cyr',width:80,resizable:false" >查验人</th>
+            <th data-options="field:'cyrName',width:80,resizable:false" >查验人</th>
             <th data-options="field:'cysj',width:150,resizable:false" >查验时间</th>
             <th data-options="field:'bz',width:80,resizable:false" >备注</th>
         </tr>  
       </thead>  
 </table>
 <div id="CheckInfoToolbar2"  style="padding:5px;height:auto">
-	<div style="margin-bottom:5px">
+	<div >
 	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="viewCheckInfo()">查看查验单</a>
 	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="printCheckInfo()">打印查验单</a>
 	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="tdCheckInfo()">套打查验单</a>
-	   <input class="easyui-checkbox" name="isView" id="isView" value="true" label="打印预览" labelWidth="80px" labelPosition="after"> 
+	   <input class="easyui-checkbox" name="isView" id="isView" value="true" label="打印预览" labelWidth="80px" labelPosition="after">
+	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-print" plain="true" onclick="autoPrint()">自动出单</a>
 	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="viewImage()">查看图片</a>
+	   
+	    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="uploadPlat()">上传综合平台</a>
     </div>
-    <div style="margin-bottom:5px">
-    	<label style="width: 100px; display: inline-block; text-align: right;">车辆识别代号：</label><input type="text" class="easyui-textbox" id="quer_clsbdh" style="width: 150px;">
-    	<label style="width: 100px; display: inline-block; text-align: right;">查验机构：</label><input type="text" class="easyui-textbox" id="quer_jg" style="width: 150px;">
-    	<label style="width: 100px; display: inline-block; text-align: right;">查验人：</label><input type="text" class="easyui-textbox" id="cyr" style="width: 150px;">
-    	<label style="width: 100px; display: inline-block; text-align: right;">业务类型：</label><input id="quer_ywlx"   prompt='请选择业务类型' data-options="editable:false,data:comm.getBaseParames('ywlx'),	valueField: 'id',
-		textField: 'value'"  class="easyui-combobox" style="width: 150px;">
-    	<br/>
-    	<label style="width: 100px; display: inline-block; text-align: right;">号牌种类：</label><input id="quer_hpzl"   prompt='请选择号牌种类' data-options="editable:false,data:comm.getBaseParames('hpzl'),	valueField: 'id',
-		textField: 'value'"  class="easyui-combobox" style="width: 150px;">
-		<label style="width: 100px; display: inline-block; text-align: right;">车辆类型：</label><input id="quer_cllx"   prompt='请选择车辆类型' data-options="editable:false,data:comm.getBaseParames('cllx'),	valueField: 'id',
-		textField: 'value'"  class="easyui-combobox" style="width: 150px;">
-		<label style="width: 100px; display: inline-block; text-align: right;">使用性质：</label><input id="quer_syxz"   prompt='请选择使用性质' data-options="editable:false,data:comm.getBaseParames('syxz'),	valueField: 'id',
-		textField: 'value'"  class="easyui-combobox" style="width: 150px;">
-		<label style="width: 100px; display: inline-block; text-align: right;">号牌号码：</label><input type="text" class="easyui-textbox" id="quer_hphm" style="width: 150px;"><br/>
-		<label style="width: 100px; display: inline-block; text-align: right;">查验结果：</label><input id="quer_cyjg"   prompt='请选择查验结果' data-options="editable:false,data:comm.getBaseParames('jyjg'),	valueField: 'id',
-		textField: 'value'"  class="easyui-combobox" style="width: 150px;">
-		<label style="width: 100px; display: inline-block; text-align: right;">查验时间：</label><input id="quer_cysj" class="easyui-datebox" style="width: 150px;">~<input id="quer_cysjEnd" class="easyui-datebox" style="width: 150px;">
-    	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryClsbdh()">查询</a>
+    <div>
+    <ul class="querParamList">
+    	<li><label>车辆识别代号：</label><input type="text" class="easyui-textbox" id="quer_clsbdh" style="width: 160px;"></li>
+    	<li><label>查验机构：</label><input id="quer_jg"   prompt='请选择查验机构' data-options="editable:false,valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
+    	<li><label>查验人：</label><input type="text" class="easyui-textbox" id="cyr" style="width: 160px;"></li>
+    	<li><label>业务类型：</label><input id="quer_ywlx"   prompt='请选择业务类型' data-options="data:comm.getBaseParames('ywlx'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
+    	<li><label>号牌种类：</label><input id="quer_hpzl"   prompt='请选择号牌种类' data-options="data:comm.getBaseParames('hpzl'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
+		<li><label>车辆类型：</label><input id="quer_cllx"   prompt='请选择车辆类型' data-options="data:comm.getBaseParames('cllx'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
+		<li><label>使用性质：</label><input id="quer_syxz"   prompt='请选择使用性质' data-options="data:comm.getBaseParames('syxz'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
+		<li><label>号牌号码：</label><input type="text" class="easyui-textbox" id="quer_hphm" style="width: 160px;"></li>
+		<li><label>流水号：</label><input type="text" class="easyui-textbox" id="quer_lsh" style="width: 160px;"></li>
+		<li><label>查验结果：</label><input id="quer_cyjg"   prompt='请选择查验结果' data-options="data:comm.getBaseParames('jyjg'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
+		<li style="width: 560px;"><label>查验时间：</label><input id="quer_cysj" class="easyui-datebox" style="width: 150px;">~<input id="quer_cysjEnd" class="easyui-datebox" style="width: 150px;">
+    	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryClsbdh()">查询</a></li>
+    </ul>
     </div>
 </div>
 </div>
@@ -72,22 +94,33 @@ font-size:12px;text-align:center;opacity:.8;filter:progid:DXImageTransform.Micro
 <div id="printTemplet"  style="display: none;" align="center">
 	<img alt="" src="" style="border: 0;margin: 0; padding: 0;">
 </div>
-<div id="imageWin" class="easyui-window" style="width:800px;height:600px"
+<div id="imageWin" class="easyui-window" style="width:1000px;height:750px"
         data-options="iconCls:'icon-cut',modal:true,title:'裁剪图片',												    
-												    closable:false,
+												    closable:true,
 												    minimizable:false,
 												    collapsible:false,
-												    maximizable:false,
+												    maximizable:true,
 												    draggable:false,
 												    closed:true">
-    <div><img id="imageCorpp" src="" width="600px" height="500px"/></div><br />
+    <div><img id="imageCorpp" src="" width="600px" height="650px"/></div>
+    <br />
     <div align="right">
+    <label style="width: 100px; display: inline-block; text-align: right;">裁剪尺寸：</label><input id="cjcc_c"   prompt='请选择裁剪尺寸' data-options="editable:false,data:comm.getBaseParames('cjcc'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 100px;">
+	<a href="#" class="easyui-linkbutton" iconCls="icon-print" onclick="restCrop()">重置尺寸</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-print" onclick="printImg()">打印</a>
+    &nbsp;&nbsp;&nbsp;
     <a href="#" class="easyui-linkbutton" iconCls="icon-undo" onclick="rotate('0')">左旋转</a>
-    <a href="#" class="easyui-linkbutton" iconCls="icon-redo" onclick="rotate('1')">右旋转</a>
-    <a href="#" class="easyui-linkbutton" iconCls="icon-print" onclick="printCropImg()">打印</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-redo" onclick="rotate('1')">右旋转</a>    
+    <a href="#" class="easyui-linkbutton" iconCls="icon-print" onclick="printCropImg()">打印维护</a>
     <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',onClick:closeImageWin">关闭</a>
-    </div>
+    </div> 
 </div>
+<div id="divMMHeight" style="height:65mm;width:105mm;display:none;"></div>
+<div id="printWin" class="easyui-window" title="自动出单" data-options="modal:true,closed:true,iconCls:'icon-print',collapsible:false,minimizable:false,maximizable:false,closable:false" style="width:300px;height:150px;padding:10px;" align="center">
+   <div style="font-size: 28px; height: 50px;vertical-align: middle;">打印中...</div><br/> 
+   <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',onClick:closePrintWin">终止打印</a>
+</div> 
 <OBJECT ID="vehPrinter" CLASSID="CLSID:F1EFB37B-C778-4AF8-B0C2-B647C9E89E2D" CODEBASE="VehPlatForm_web.CAB#version=2,7,0,0">
 </OBJECT>
 <script type="text/javascript" src="../js/imageCropper/cropper.js"></script>
@@ -96,17 +129,19 @@ font-size:12px;text-align:center;opacity:.8;filter:progid:DXImageTransform.Micro
 <script type="text/javascript" src="../js/dwf_0.1.js"></script>
 <script type="text/javascript" src="../js/vehCheck.js"></script>
 <script type="text/javascript">
+var autoP = false;
 function viewCheckInfo() {
 	var row = $("#vehCheckInfoDG").datagrid("getSelected");
 	if (row != null) {
 		//
 		$.post("../../vheCheckInfo/printCheckInfo",{"lsh":row.lsh,"cycs":row.cycs,"veh_sfxc":row.veh_sfxc},function(data){
 			if(data.state==1){
-				//$("#printTemplet img").attr("src","../cache/report/"+data.data);
+				$("#printTemplet img").attr("src","../cache/report/"+data.data);
 				var printObj = {};
 				printObj.src="../cache/report/"+data.data;
 				printObj.prview = true;
-				printImgCYD(printObj);
+				//printImgCYD(printObj);
+				printCYD(printObj);
 			}else{
 				$.messager.alert("提示",data.message,"error");
 			}
@@ -121,16 +156,27 @@ function viewCheckInfo() {
 }
 function printCheckInfo() {
 	var row = $("#vehCheckInfoDG").datagrid("getSelected");
+	var bp = comm.getBaseParamObjs('dyfs');
+	var dyfs="word";
+	if(bp.length >0){
+		dyfs = bp[0].paramValue;
+	}
 	if (row != null) {
 		//
 		$.post("../../vheCheckInfo/printCheckInfo",{"lsh":row.lsh,"cycs":row.cycs,"veh_sfxc":row.veh_sfxc},function(data){
 			if(data.state==1){
-				//$("#printTemplet img").attr("src","../cache/report/"+data.data);
+				$("#printTemplet img").attr("src","../cache/report/"+data.data);
 				var isView = $("#isView").checkbox("options").checked;
 				var printObj = {};
 				printObj.prview = isView;
 				printObj.src="../cache/report/"+data.data;
-				printImgCYD(printObj);
+				//printImgCYD(printObj);
+				//printCYD(printObj);
+				if(dyfs == "word"){
+					comm.printOut("/static/cache/report/"+data.data);
+				}else if(dyfs == "image"){
+					printCYD(printObj);
+				}
 			}else{
 				$.messager.alert("提示",data.message,"error");
 			}
@@ -155,7 +201,8 @@ function tdCheckInfo() {
 				var printObj = {};
 				printObj.prview = isView;
 				printObj.src="../cache/report/"+data.data
-				printImgCYD(printObj);
+				//printImgCYD(printObj);
+				printCYD(printObj);
 			}else{
 				$.messager.alert("提示",data.message,"error");
 			}
@@ -187,15 +234,91 @@ $(function(){
 	$('#vehCheckInfoDG').datagrid({
 		onDblClickRow: function(index,row){
 			viewImage();
+		},
+		onLoadSuccess : function(data){
+			if(autoP){				
+			    for(var j=0;j<data.rows.length;j++){
+			    	var row = data.rows[j];
+			    	$.post("../../vheCheckInfo/printCheckInfo",{"lsh":row.lsh,"cycs":row.cycs,"veh_sfxc":row.veh_sfxc,"sfzddy":"1"},function(data){
+						if(data.state==1){
+							$("#printTemplet img").attr("src","../cache/report/"+data.data);
+							var printObj = {};
+							printObj.prview = false;
+							printObj.src="../cache/report/"+data.data;
+							/////printImgCYD(printObj);
+							//console.log(data.data)
+							//printCYD(printObj);
+							comm.printOut("/static/cache/report/"+data.data);
+						}else{
+							$.messager.alert("提示",data.message,"error");
+						}
+						
+					},"json").complete(function(){
+												
+					});
+			    }
+			    setTimeout(autoPrintLoad,8000);
+			}
 		}
 	});
 	$("#imageCorpp").cropper({
 		  autoCropArea: 0.8,
+		  //strict : false,
 		  crop: function(data) {
 		    // 出来裁切后的图片数据.
 		  }
 		});
+	
+	$("#imageCorpp").on("built.cropper",function(e){
+		var hhtoPx=$("#divMMHeight").height();
+		var wwtoPx=$("#divMMHeight").width();
+		
+		$("#imageCorpp").cropper("setCropBoxData",{"width":wwtoPx,"height":hhtoPx});
+	});
+	
+	$("#cjcc_c").combobox({
+		onChange:function(newValue,oldValue){
+			var ccArr = newValue.split("*");
+			
+			$("#divMMHeight").css("width",ccArr[0]+"mm");
+			$("#divMMHeight").css("height",ccArr[1]+"mm");
+			var hhtoPx=$("#divMMHeight").height();
+			var wwtoPx=$("#divMMHeight").width();
+			
+			$("#imageCorpp").cropper("setCropBoxData",{"width":wwtoPx,"height":hhtoPx});
+		}
+	});
+	//获取查验机构
+	var array = [];
+	$.post("../../dept/getAllDepts",null,function(data){
+		for(var i in data){
+			var map = {};
+			map['value'] = data[i].bmmc;
+			map['id'] = data[i].bmdm;
+			array.push(map);
+		}
+		$("#quer_jg").combobox("loadData",array);
+		$("#quer_jg").combobox("setValue",userInfo.bmdm);
+	},"json").complete(function(){
+		$.messager.progress('close');
+	});
+	
+	
 });
+
+function restCrop(){
+	var mrcjcc = comm.getBaseParames("mrcjcc");
+	if (mrcjcc.length > 0){
+		$("#cjcc_c").combobox("setValue",mrcjcc[0].id);
+		var ccArr = mrcjcc[0].id.split("*");
+		
+		$("#divMMHeight").css("width",ccArr[0]+"mm");
+		$("#divMMHeight").css("height",ccArr[1]+"mm");
+	}
+	var hhtoPx=$("#divMMHeight").height();
+	var wwtoPx=$("#divMMHeight").width();
+	$("#imageCorpp").cropper("setCropBoxData",{"width":wwtoPx,"height":hhtoPx});
+}
 var ppRow=null;
 function toEdit(){
 	var row = $("#vehCheckInfoDG").datagrid("getSelected");
@@ -209,21 +332,64 @@ function toEdit(){
 
 function queryClsbdh(){
 	var quer_clsbdh=$("#quer_clsbdh").textbox("getValue");
+	var quer_lsh = $("#quer_lsh").textbox("getValue");
 	var cyr=$("#cyr").textbox("getValue");
 	var cysj=$("#quer_cysj").datebox("getValue");
 	var cysjEnd=$("#quer_cysjEnd").datebox("getValue");
 	
-	var quer_jg = $("#quer_jg").textbox("getValue");
+	var quer_jg = $("#quer_jg").combobox("getValue");
 	var quer_ywlx = $("#quer_ywlx").combobox("getValue");
 	var quer_cllx = $("#quer_cllx").combobox("getValue");
 	var quer_hpzl = $("#quer_hpzl").combobox("getValue");
 	var quer_syxz = $("#quer_syxz").combobox("getValue");
 	var quer_hphm = $("#quer_hphm").textbox("getValue");
 	var quer_cyjg = $("#quer_cyjg").combobox("getValue");
-	$('#vehCheckInfoDG').datagrid("reload",{clsbdh:quer_clsbdh,cyr:cyr,cysj:cysj,cysjEnd:cysjEnd,jg:quer_jg,ywlx:quer_ywlx,
-		cllx:quer_cllx,hpzl:quer_hpzl,syxz:quer_syxz,hphm:quer_hphm,cyjg:quer_cyjg});
+	$('#vehCheckInfoDG').datagrid("reload",{clsbdh:quer_clsbdh,cyrName:cyr,cysj:cysj,cysjEnd:cysjEnd,jg:quer_jg,ywlx:quer_ywlx,
+		cllx:quer_cllx,hpzl:quer_hpzl,syxz:quer_syxz,hphm:quer_hphm,cyjg:quer_cyjg,lsh:quer_lsh});
 
 }
+
+function autoPrint(){	
+	var quer_jg = $("#quer_jg").combobox("getValue");	
+	if (quer_jg == ""){
+		$.messager.alert("提示","请输入查验机构","warning");
+		return;
+	}
+	autoP = true;
+	$("#printWin").window('open');	
+	setTimeout(autoPrintLoad,500);
+}
+
+function autoPrintLoad(){	
+	if(autoP){		
+		var quer_clsbdh=$("#quer_clsbdh").textbox("getValue");
+		var quer_lsh = $("#quer_lsh").textbox("getValue");
+		var cyr=$("#cyr").textbox("getValue");
+		var cysj=$("#quer_cysj").datebox("getValue");
+		var cysjEnd=$("#quer_cysjEnd").datebox("getValue");
+		
+		var quer_jg = $("#quer_jg").combobox("getValue");
+		var quer_ywlx = $("#quer_ywlx").combobox("getValue");
+		var quer_cllx = $("#quer_cllx").combobox("getValue");
+		var quer_hpzl = $("#quer_hpzl").combobox("getValue");
+		var quer_syxz = $("#quer_syxz").combobox("getValue");
+		var quer_hphm = $("#quer_hphm").textbox("getValue");
+		var quer_cyjg = $("#quer_cyjg").combobox("getValue");
+		if (quer_jg == ""){
+			$.messager.alert("提示","请输入查验机构","warning");
+			return;
+		}
+		$('#vehCheckInfoDG').datagrid("reload",{clsbdh:quer_clsbdh,cyrName:cyr,cysj:cysj,cysjEnd:cysjEnd,jg:quer_jg,ywlx:quer_ywlx,
+			cllx:quer_cllx,hpzl:quer_hpzl,syxz:quer_syxz,hphm:quer_hphm,cyjg:quer_cyjg,sfdy:"N",lsh:quer_lsh,sfzddy:"1"});
+	}
+}
+
+function closePrintWin(){
+	autoP = false;
+	$("#printWin").window('close');
+	queryClsbdh();
+}
+
 
 
 </script>

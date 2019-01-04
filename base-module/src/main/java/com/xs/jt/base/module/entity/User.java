@@ -25,6 +25,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class User extends BaseEntity {
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public final static Integer ZT_TY=2;
 	
 	public final static Integer ZT_CZMM=0;

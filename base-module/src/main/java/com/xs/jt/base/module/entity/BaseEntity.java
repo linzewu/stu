@@ -1,5 +1,6 @@
 package com.xs.jt.base.module.entity;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -17,8 +18,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass
 @JsonIgnoreProperties(value ={"hibernateLazyInitializer","handler","fieldHandler"})
-public abstract class BaseEntity {
+public abstract class BaseEntity implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
 	@Id
 	@GenericGenerator(name = "idGenerator", strategy = "identity")
 	@GeneratedValue(generator = "idGenerator")

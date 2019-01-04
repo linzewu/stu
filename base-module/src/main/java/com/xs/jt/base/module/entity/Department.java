@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 @Table(name = "TB_Department")
 public class Department extends BaseEntity {
 	
-	@Column(length=32,unique=true)
+	@Column(length=32)
 	private String sjbmdm;
 	
-	@Column(length=32)
+	@Column(length=32,unique=true)
 	private String bmdm;
 	
 	@Column

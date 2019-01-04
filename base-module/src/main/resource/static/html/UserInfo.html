@@ -323,11 +323,13 @@ function saveUser(url,callback){
 	$('#userInfoForm').form('submit', {
 		url: url,
 	    success: function(data){
-	    	callback();
-	        /**var data = eval('(' + data + ')');  // change the JSON string to javascript object
-	        if (data.success){
-	            alert(data.message)
-	        }**/
+	        var data = $.parseJSON(data);
+	        
+	        if (data.state == "1"){
+	        	callback();	            
+	        }else{
+	        	$.messager.alert("错误",data.message,"error");
+	        }
 	    	$.messager.progress("close");
 	    }
 	});

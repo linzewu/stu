@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.xs.jt.cms.entity.PreCarRegister;
 
+import net.sf.json.JSONObject;
+
 public class CommonUtil {
 
 	public static String convertCode(String key, String value,HttpServletRequest request) {
@@ -45,12 +47,14 @@ public class CommonUtil {
 	}
 	
 	public static void setXczl(PreCarRegister bcr, Map<String, Object> data) {
-		if ("K18".equals(bcr.getCllx()) ||  "K28".equals(bcr.getCllx())|| "K38".equals(bcr.getCllx())) {
-			data.put("zyxc", "☑");
-			data.put("fzyxc", "□");
-		}else {
-			data.put("zyxc", "□");
-			data.put("fzyxc", "☑");
+		if (bcr != null) {
+			if ("K18".equals(bcr.getCllx()) ||  "K28".equals(bcr.getCllx())|| "K38".equals(bcr.getCllx())) {
+				data.put("zyxc", "☑");
+				data.put("fzyxc", "□");
+			}else {
+				data.put("zyxc", "□");
+				data.put("fzyxc", "☑");
+			}
 		}
 	}
 	
@@ -102,6 +106,5 @@ public class CommonUtil {
 		return new java.awt.Rectangle(new Dimension(des_width, des_height));
 	}
     
-
 
 }

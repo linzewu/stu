@@ -77,6 +77,9 @@ public class PreCarRegisterController {
 	
 	@Autowired
 	private IVehicleLockManager vehicleLockManager;
+	
+	@Value("${stu.properties.cjsqbh}")
+	private String cjsqbh;
 
 	@UserOperation(code = "savePreCarRegister", name = "保存")
 	@RequestMapping(value = "savePreCarRegister", method = RequestMethod.POST)
@@ -92,7 +95,7 @@ public class PreCarRegisterController {
 			String lsh = null;
 			if ("A".equals(bcr.getYwlx())) {
 				lsh = getlsh();
-				//lsh = "123456789101111512";
+				//lsh = "123456789101111515";
 				bcr.setLsh(lsh);
 			}
 			if (null == bcr.getDpid() || "".equals(bcr.getDpid().trim())) {
@@ -141,6 +144,7 @@ public class PreCarRegisterController {
 			Document doc = DocumentHelper.parseText(returnXML);
 			Element root = doc.getRootElement();
 			lsh = root.element("body").element("veh").element("lsh").getText();
+			logger.info("获取流水号返回信息："+returnXML);
 		} catch (Exception e) {
 			logger.error("获取平台流水号异常",e);
 			throw new  ApplicationException("获取平台流水号异常",e);
@@ -255,6 +259,7 @@ public class PreCarRegisterController {
 			}
 
 			qo.setJkid("01C21");
+			qo.setCjsqbh(cjsqbh);
 			qo.setUTF8XmlDoc("<root><QueryCondition><hphm>" + hphm
 					+ "</hphm><hpzl>" + hpzl
 					+ "</hpzl></QueryCondition></root>");

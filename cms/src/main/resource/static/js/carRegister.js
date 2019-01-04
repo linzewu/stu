@@ -66,15 +66,15 @@ function saveAndPring() {
 					$('#myform').form('clear');
 					$("#ywlx").combobox("setValue","A");
 				});
-				//$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
+				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
 				var printObj = {};
 				printObj.prview = false;
 				if(params.isView == "true"){
 					printObj.prview = true;
 				}
 				printObj.src="../cache/report/template_ptc_01_"+data.data+".jpg";
-				printImgCYD(printObj);
-				//printCYD(printObj);
+				//printImgCYD(printObj);
+				printCYD(printObj);
 			}else{
 				$.messager.alert("提示",data.message,"error");
 			}
@@ -102,15 +102,15 @@ function implSaveAndPring() {
 					$('#myformImpl').form('clear');
 					$("#ywlx").combobox("setValue","A");
 				});
-				//$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
+				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
 				var printObj = {};
 				printObj.prview = false;
 				if(params.isView == "true"){
 					printObj.prview = true;
 				}
 				printObj.src="../cache/report/template_ptc_01_"+data.data+".jpg";
-				printImgCYD(printObj);
-				//printCYD(printObj);
+				//printImgCYD(printObj);
+				printCYD(printObj);
 			}else{
 				$.messager.alert("提示",data.message,"error");
 			}
@@ -140,7 +140,7 @@ function updateAndPring() {
 				$.messager.alert("提示","保存成功！","info",function(){
 					$('#myformEdit').form("clear");
 				});
-				//$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
+				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
 				
 				var cydata = {};
 				cydata.src="../cache/report/template_ptc_01_"+data.data+".jpg";
@@ -154,8 +154,8 @@ function updateAndPring() {
 				cydata['clsbdh'] = $("#clsbdh").val();
 				cydata['hphm'] = $("#hphm").textbox("getValue");
 			
-				printImgCYD(cydata);
-				//printCYD(printObj);
+				//printImgCYD(cydata);
+				printCYD(cydata);
 			}else{
 				$.messager.alert("提示",data.message,"error");
 			}
@@ -422,7 +422,7 @@ function loadGonggao() {
 }
 
 function colorChange(value) {
-	$("#csys").textbox("setValue", getLabelByid("csys", value.toUpperCase()));
+	$("#csys").textbox("setValue", comm.getParamNameByValue("csys", value.toUpperCase()));
 }
 
 function getHlj(m_SourceValue, m_zs) {
@@ -514,7 +514,7 @@ function loadSFZXX(barArray) {
 
 function loadScanInfo(barArray, strbarcode) {
 	var dataInfo = {};
-
+	console.log(barArray)
 	dataInfo["hgzbh"] = barArray[2];
 	dataInfo["ccrq"] = barArray[3];
 
@@ -672,11 +672,11 @@ function getGbthps(m_SourceValue, m_zxzs) {
 // /////////////// 列表页面js ///////////////////////////
 
 function formatterCllx(value) {
-	return getLabelByid("cllx", value);
+	return comm.getParamNameByValue("cllx", value);
 }
 
 function formatterCsys(value) {
-	return getLabelByid("csys", value);
+	return comm.getParamNameByValue("csys", value);
 }
 
 function formatterHpzl(value) {
@@ -684,11 +684,11 @@ function formatterHpzl(value) {
 }
 
 function formatterYwlx(value) {
-	return getLabelByid("ywlx", value);
+	return comm.getParamNameByValue("ywlx", value);
 }
 
 function formatterSyxz(value) {
-	return getLabelByid("syxz", value);
+	return comm.getParamNameByValue("syxz", value);
 }
 
 function print() {
@@ -697,13 +697,13 @@ function print() {
 		//
 		$.post("../../preCarRegister/printCarInfo",{"lsh":row.lsh},function(data){
 			if(data.state==1){
-				//$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
+				$("#printTemplet img").attr("src","../cache/report/template_ptc_01_"+data.data+".jpg");
 				var isView = $("#isView").checkbox("options").checked;
 				var printObj = {};
 				printObj.prview = isView;
 				printObj.src="../cache/report/template_ptc_01_"+data.data+".jpg";
-				printImgCYD(printObj)
-				//printCYD(printObj);
+				//printImgCYD(printObj)
+				printCYD(printObj);
 			}else{
 				$.messager.alert("提示",data.message,"error");
 			}
@@ -826,7 +826,7 @@ function shSaveAndPring() {
 		$("#sjhm").click();
 		return;
 	}
-	if (!(/^(13|15|18)\d{9}$/i.test(sjhm))){
+	if (!(/^(13|15|18|17|14|19)\d{9}$/i.test(sjhm))){
 		$.messager.alert("提示","手机号码格式不正确","info");
 		$("#sjhm").click();
 		return;

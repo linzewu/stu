@@ -183,6 +183,37 @@ public class VehCheckInfo extends BaseEntity{
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date cysjEnd;
 	
+	//是否打印 N或空:未打印   Y：已打印
+	@Column(length=1)
+	private String sfdy;
+	
+	@Transient
+	//是否自动打印 0:否    1：是
+	private String sfzddy;
+	
+	@Column(length=30)
+	//查验人姓名
+	private String cyrName;
+	
+	@Column(length=10)
+	private String qpzk;
+	
+	@Column(length=10)
+	private String hpzk;
+	
+	
+	public String getQpzk() {
+		return qpzk;
+	}
+	public void setQpzk(String qpzk) {
+		this.qpzk = qpzk;
+	}
+	public String getHpzk() {
+		return hpzk;
+	}
+	public void setHpzk(String hpzk) {
+		this.hpzk = hpzk;
+	}
 	public String getBh() {
 		return bh;
 	}
@@ -615,6 +646,25 @@ public class VehCheckInfo extends BaseEntity{
 	public void setXnyzl(String xnyzl) {
 		this.xnyzl = xnyzl;
 	}
+	public String getSfdy() {
+		return sfdy;
+	}
+	public void setSfdy(String sfdy) {
+		this.sfdy = sfdy;
+	}
+	public String getSfzddy() {
+		return sfzddy;
+	}
+	public void setSfzddy(String sfzddy) {
+		this.sfzddy = sfzddy;
+	}
+	public String getCyrName() {
+		return cyrName;
+	}
+	public void setCyrName(String cyrName) {
+		this.cyrName = cyrName;
+	}
+	
 	
 
 }

@@ -78,7 +78,7 @@ public class TmriJaxRpcOutService {
 		qo.setYhbz(yhbz);
 		qo.setYhxm(yhxm);
 		qo.setZdbs(zdbs);
-		qo.setCjsqbh(cjsqbh);      
+		//qo.setCjsqbh(cjsqbh);      
 		return qo;
 	}
 
@@ -101,7 +101,7 @@ public class TmriJaxRpcOutService {
 		wo.setYhbz(yhbz);
 		wo.setYhxm(yhxm);
 		wo.setZdbs(zdbs);
-		wo.setCjsqbh(cjsqbh);
+		//wo.setCjsqbh(cjsqbh);
 		return wo;
 	}
 

@@ -23,7 +23,10 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -40,30 +43,27 @@ import com.xs.jt.base.module.manager.IOperationLogManager;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-
-
 @Aspect
 @Component
 public class LogAopAction {
-
-
 
 	@Autowired
 	private HttpSession session;
 
 	@Autowired
 	private HttpServletRequest request;
-	
+
 	@Autowired
 	private IOperationLogManager operationLogManager;
 	@Autowired
 	private ICoreFunctionManager coreFunctionManager;
-	
+
 	@Autowired
 	private ServletContext servletContext;
 
-	//@Pointcut("execution(* com.xs.jt.base.module.controller.*.*(..))")
+	// @Pointcut("execution(* com.xs.jt.base.module.controller.*.*(..))")
 	@Pointcut("execution(* com.xs.jt..*.controller.*.*(..))")
+	@Order(0)
 	private void controllerAspect() {
 	}
 
@@ -90,18 +90,21 @@ public class LogAopAction {
 
 	/**
 	 * 方法有异常时的操作
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
+	 * 
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
 	 */
-	@AfterThrowing(pointcut="controllerAspect()",throwing="e")
-	public void doAfterThrow(JoinPoint joinPoint,Throwable e) throws NoSuchMethodException, SecurityException {
+	@AfterThrowing(pointcut = "controllerAspect()", throwing = "e")
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	public void doAfterThrow(JoinPoint joinPoint, Throwable e) throws NoSuchMethodException, SecurityException {
 		OperationLog log = getLog(joinPoint);
-		if(log!=null) {
+		if (log != null) {
 			log.setOperationResult(OperationLog.OPERATION_RESULT_ERROR);
 			log.setStatus(1);
 			log.setFailMsg(e.getMessage());
 			operationLogManager.saveOperationLog(log);
 		}
+
 	}
 
 	/**
@@ -113,35 +116,35 @@ public class LogAopAction {
 	 */
 	@Around("controllerAspect()")
 	public Object around(ProceedingJoinPoint pjp) throws Throwable {
-		
-		Date beginDate=new Date();
-        OperationLog log =getLog(pjp);
-        Object object = pjp.proceed();
-        if(log!=null) {
+
+		Date beginDate = new Date();
+		OperationLog log = getLog(pjp);
+		Object object = pjp.proceed();
+		if (log != null) {
 			log.setOperationResult(OperationLog.OPERATION_RESULT_SUCCESS);
 			log.setStatus(1);
 			Date endtime = new Date();
-			log.setActionTime(endtime.getTime()-beginDate.getTime());
-	        log.setOperationDate(beginDate);
-	        operationLogManager.saveOperationLog(log);
-        }
+			log.setActionTime(endtime.getTime() - beginDate.getTime());
+			log.setOperationDate(beginDate);
+			operationLogManager.saveOperationLog(log);
+		}
 		return object;
+
 	}
-	
-	
+
 	private OperationLog getLog(JoinPoint pjp) throws NoSuchMethodException, SecurityException {
 		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
-		List<CoreFunction> coreList = (List<CoreFunction>)servletContext.getAttribute("coreFunctionList");
-		if(coreList == null) {
-			//获取核心功能
+		List<CoreFunction> coreList = (List<CoreFunction>) servletContext.getAttribute("coreFunctionList");
+		if (coreList == null) {
+			// 获取核心功能
 			coreList = this.coreFunctionManager.getAllCoreFunction(0);
-			if(coreList == null || coreList.size() == 0) {
+			if (coreList == null || coreList.size() == 0) {
 				coreList = new ArrayList<CoreFunction>();
 			}
 			servletContext.setAttribute("coreFunctionList", coreList);
 		}
-		
-		OperationLog log =new OperationLog();
+
+		OperationLog log = new OperationLog();
 		// 日志实体对象
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 				.getRequest();
@@ -160,33 +163,34 @@ public class LogAopAction {
 		Object[] args = pjp.getArgs();
 		StringBuffer sbStr = new StringBuffer("");
 		JsonConfig jsonConfig = new JsonConfig();
-		jsonConfig.setExcludes(new String[]{"qmFile"});
+		jsonConfig.setExcludes(new String[] { "qmFile" });
 		if (args != null && args.length > 0) {
-			for(int c=0;c<args.length;c++) {
-				if(args[c].getClass().getSuperclass() == BaseEntity.class || args[c].getClass() == LinkedHashMap.class) {
-					sbStr.append("参数"+(c+1)+"="+JSONObject.fromObject(args[c],jsonConfig).toString()+",");
-				}else if(args[c].getClass() == String.class || args[c].getClass() == Integer.class) {
-					sbStr.append("参数"+(c+1)+"="+args[c]+",");
+			for (int c = 0; c < args.length; c++) {
+				if (args[c].getClass().getSuperclass() == BaseEntity.class
+						|| args[c].getClass() == LinkedHashMap.class) {
+					sbStr.append("参数" + (c + 1) + "=" + JSONObject.fromObject(args[c], jsonConfig).toString() + ",");
+				} else if (args[c].getClass() == String.class || args[c].getClass() == Integer.class) {
+					sbStr.append("参数" + (c + 1) + "=" + args[c] + ",");
 				}
-            //args[0] = "改变后的参数1";
+				// args[0] = "改变后的参数1";
 			}
-        }
+		}
 		log.setOperationCondition(sbStr.toString());
-		
+
 		// 拦截的放参数类型
 		MethodSignature msig = (MethodSignature) pjp.getSignature();
 
 		Class[] parameterTypes = msig.getMethod().getParameterTypes();
 		Object object = null;
-		Class targetClass =target.getClass();
+		Class targetClass = target.getClass();
 		Method method = targetClass.getMethod(methodName, parameterTypes);
-		//没有记录日志的注解则不进行记录日志
+		// 没有记录日志的注解则不进行记录日志
 		if (!method.isAnnotationPresent(RecordLog.class)) {
 			return null;
 		}
 		String functionP = "";
-		if(targetClass.isAnnotationPresent(Modular.class)) {
-			Modular modular=(Modular) targetClass.getAnnotation(Modular.class);
+		if (targetClass.isAnnotationPresent(Modular.class)) {
+			Modular modular = (Modular) targetClass.getAnnotation(Modular.class);
 			log.setModule(modular.modelName());
 			functionP = modular.modelCode();
 		}
@@ -196,10 +200,11 @@ public class LogAopAction {
 			log.setOperationType(userOperation.name());
 			log.setIpAddr(getIpAdrress());
 			log.setActionUrl(request.getRequestURI());
-			log.setContent("用户"+log.getOperationUser()+"在"+sdf.format(new Date())+"时间,IP为"+log.getIpAddr()+"操作了"+userOperation.name());
-			functionP = functionP+"."+userOperation.code();
-			for(CoreFunction cf:coreList) {
-				if(functionP.equals(cf.getFunctionPoint())) {
+			log.setContent("用户" + log.getOperationUser() + "在" + sdf.format(new Date()) + "时间,IP为" + log.getIpAddr()
+					+ "操作了" + userOperation.name());
+			functionP = functionP + "." + userOperation.code();
+			for (CoreFunction cf : coreList) {
+				if (functionP.equals(cf.getFunctionPoint())) {
 					log.setCoreFunction("Y");
 					break;
 				}
@@ -208,7 +213,6 @@ public class LogAopAction {
 		}
 		return null;
 	}
-	
 
 	private String getIpAdrress() {
 		String Xip = request.getHeader("X-Real-IP");
