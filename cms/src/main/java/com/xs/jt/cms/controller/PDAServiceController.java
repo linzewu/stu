@@ -12,12 +12,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
@@ -43,8 +45,10 @@ import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.ApplicationException;
+import com.xs.jt.base.module.common.Common;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
+import com.xs.jt.base.module.common.Sql2WordUtil;
 import com.xs.jt.base.module.entity.BaseParams;
 import com.xs.jt.base.module.entity.SignaturePhoto;
 import com.xs.jt.base.module.entity.User;
@@ -116,6 +120,9 @@ public class PDAServiceController {
 	
 	@Value("${stu.properties.cjsqbh}")
 	private String cjsqbh;
+	
+	@Autowired
+	private ServletContext servletContext;
 
 	@RecordLog
 	@Transactional
@@ -429,6 +436,8 @@ public class PDAServiceController {
 	public @ResponseBody Map<String, Object> getCarInfoByCarNumber(String hpzl, String hphm) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		Map<String, String> dataMap = new HashMap<String, String>();
+		Map<String, List<BaseParams>> bpsMap = (Map<String, List<BaseParams>>) servletContext
+				.getAttribute("bpsMap");
 		try {
 			TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
 			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNew qo = tmriJaxRpcOutService.createQueryObjectOut();
@@ -466,6 +475,10 @@ public class PDAServiceController {
 							map.put("lockData", list);				
 						}
 					}
+					
+					if(bpsMap!=null&&bpsMap.containsKey(key.toLowerCase())){
+						dataMap.put(key, Common.translateParamVlaue(dataMap.get(key),bpsMap.get(key.toLowerCase())).toString());			
+					}
 				}
 				map.put("data", dataMap);
 			}
@@ -488,6 +501,8 @@ public class PDAServiceController {
 	public @ResponseBody Map<String, Object> getAllCarInfoByCarNumber(String hpzl,String hphm,String sf) {
 		Map<String, String> dataMap = new HashMap<String, String>();
 		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String, List<BaseParams>> bpsMap = (Map<String, List<BaseParams>>) servletContext
+				.getAttribute("bpsMap");
 		try {
 			TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
 			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNew qo = tmriJaxRpcOutService.createQueryObjectOut();
@@ -537,6 +552,10 @@ public class PDAServiceController {
 							map.put("lockData", list);				
 						}
 					}
+					
+					if(bpsMap!=null&&bpsMap.containsKey(key.toLowerCase())){
+						dataMap.put(key, Common.translateParamVlaue(dataMap.get(key),bpsMap.get(key.toLowerCase())).toString());			
+					} 
 				}
 				String clxh= (String)dataMap.get("clxh");
 				if(clxh!=null){
@@ -593,6 +612,20 @@ public class PDAServiceController {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		if (clxh != null) {
 			list = pDAServiceManager.findAllGongGaoListbyCLXH(clxh);
+			Map<String, List<BaseParams>> bpsMap = (Map<String, List<BaseParams>>) servletContext
+					.getAttribute("bpsMap");
+			
+			for(Map<String,Object> gg:list) {
+				Set<String> set = gg.keySet(); //取出所有的key值
+				for (String str : set) {   
+					if(bpsMap!=null&&bpsMap.containsKey(str.toLowerCase())){
+						
+						gg.put(str, Common.translateParamVlaue(gg.get(str),bpsMap.get(str.toLowerCase())));
+						
+					}  
+				} 
+				
+			}
 		}
 		return list;
 	}

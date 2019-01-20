@@ -27,9 +27,10 @@ public abstract class BaseEntity implements Serializable {
 
 
 	@Id
-	@GenericGenerator(name = "idGenerator", strategy = "identity")
-	@GeneratedValue(generator = "idGenerator")
+//	@GenericGenerator(name = "idGenerator", strategy = "identity")
+//	@GeneratedValue(generator = "idGenerator")
 	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
 	private Integer id;
 	

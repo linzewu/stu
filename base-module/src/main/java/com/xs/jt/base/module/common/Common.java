@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -16,6 +17,8 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.xs.jt.base.module.entity.BaseParams;
 
 //import org.apache.commons.lang.StringUtils;
 
@@ -208,4 +211,17 @@ public class Common {
 	        Pattern pattern = Pattern.compile("\\d+");  
 	        return pattern.matcher(str).matches();  
 	  }
+	 
+	 public static Object translateParamVlaue(Object object, List<BaseParams> list) {
+			
+			if(object!=null) {
+				for(BaseParams param : list) {
+					if(param.getParamValue().equals(object.toString())) {
+						return param.getParamName();
+					}
+				}
+			}
+			
+			return object;
+		}
 }

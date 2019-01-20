@@ -158,7 +158,7 @@ function uploadPlat(){
 }
 
 function pichc(canvasImg,picW,picH,LODOP,preview){
-	debugger;
+	//debugger;
 	//需要合成的图片张数
 	var picCou = 1;
 	var tphe = comm.getBaseParames("tphc");
@@ -190,9 +190,9 @@ function pichc(canvasImg,picW,picH,LODOP,preview){
             }
         }else{
             //保存生成作品图片
-        	LODOP.ADD_PRINT_IMAGE(0,0,picW,picH*picCou,"<img border='0' src='"+c.toDataURL()+"'width='"+picW+"' height='"+c.height+"'/>");
+        	LODOP.ADD_PRINT_IMAGE(0,0,picW,c.height,"<img border='0' src='"+c.toDataURL()+"'width='"+picW+"' height='"+c.height+"'/>");
             //convertCanvasToImage(c);
-            //Canvas2Image.saveAsJPEG(c); //保存到电脑
+            //Canvas2Image.saveAsJPEG("D:\\111.jpg"); //保存到电脑
         	if(preview == "Y"){
         		LODOP.PREVIEW();
         	}else{
