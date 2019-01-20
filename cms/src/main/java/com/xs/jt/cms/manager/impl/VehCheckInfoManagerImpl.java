@@ -70,7 +70,7 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> list = new ArrayList<Predicate>();
 				if(Common.isNotEmpty(vehCheckInfo.getClsbdh())) {
-					list.add(criteriaBuilder.like(root.get("clsbdh").as(String.class), "%"+ vehCheckInfo.getClsbdh()));
+					list.add(criteriaBuilder.like(root.get("clsbdh").as(String.class), "%"+ vehCheckInfo.getClsbdh()+"%"));
 				}
 				if(Common.isNotEmpty(vehCheckInfo.getLsh())) {
 					list.add(criteriaBuilder.like(root.get("lsh").as(String.class), "%"+ vehCheckInfo.getLsh()+"%"));

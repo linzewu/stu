@@ -165,15 +165,15 @@ public class VehCheckInfoController {
 //				data.put("cyrxm", cyUser.getYhxm());
 //			}
 			//准乘人数
-			if (pcr == null) {
-				data.put("zcrs", vci.getHdzk());
-			}else {
+//			if (pcr == null) {
+//				data.put("zcrs", vci.getHdzk());
+//			}else {
 				if((!StringUtils.isEmpty(vci.getQpzk())) && (!StringUtils.isEmpty(vci.getHpzk()))) {
 					data.put("zcrs", vci.getQpzk()+"+"+vci.getHpzk());
 				}else {
 					data.put("zcrs", vci.getHdzk());
 				}
-			}
+//			}
 			//查验时间
 			Calendar c = Calendar.getInstance();
 			c.setTime(vci.getCysj());
