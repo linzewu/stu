@@ -1,0 +1,42 @@
+<div id="staReport">
+	<DIV style="MARGIN-BOTTOM: 10px; FONT-SIZE: 20px; FONT-WEIGHT: bold; TEXT-ALIGN: center; MARGIN-TOP: 15px"><span id=""></span>区县分类合格率汇总表 </DIV>
+	 <table class="easyui-datagrid"
+            data-options="
+                url: '',
+                method: 'post',
+                fitColumns: true,
+                singleSelect: true,
+                rownumbers: true,
+                showFooter: true,
+                toolbar:'#countryToolbar'
+            ">
+        <thead>
+            <tr>
+                <th data-options="field:'cllx',width:200" rowspan="2">区县名称</th>
+                <th data-options="field:'zj',align:'center'" colspan="5">总检</th>
+                <th colspan="2">一次合格</th>
+                <th colspan="2">复检合格</th>
+                
+            </tr>
+            <tr>
+            	<th data-options="field:'cls',width:250">车辆数</th>
+                <th data-options="field:'hgs',width:250">合格数</th>
+                <th data-options="field:'hgl',width:250">合格率</th>
+                <th data-options="field:'bhgs',width:250">不合格数</th>
+                <th data-options="field:'bhgl',width:250">不合格率</th>
+                <th data-options="field:'onecls',width:250">车辆数</th>
+                <th data-options="field:'onehgl',width:250">合格率</th>
+                <th data-options="field:'repcls',width:250">车辆数</th>
+                <th data-options="field:'rephgl',width:250">合格率</th>
+            </tr>
+        </thead>
+    </table>
+    
+    <div id="countryToolbar">
+	<div>
+		机动车安全技术检验机构名称：
+	    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>统计范围：</label> <input id="quer_operationDate" class="easyui-datebox" style="width: 100px;">~<input id="quer_operationDateEnd" class="easyui-datebox" style="width: 100px;">
+		<a class="easyui-linkbutton" href="#" data-options="iconCls:'icon-search'" onclick="query()"></a>
+	</div>
+</div>
+</div>

@@ -1,0 +1,71 @@
+<DIV style="MARGIN-BOTTOM: 10px; FONT-SIZE: 20px; FONT-WEIGHT: bold; TEXT-ALIGN: center; MARGIN-TOP: 15px"><span id=""></span>人员工作量统计表 </DIV>
+	 <table id="workEstimateManager" class="easyui-datagrid"
+            data-options="
+                url: '',
+                method: 'post',
+                fitColumns: true,
+                singleSelect: true,
+                rownumbers: true,
+                toolbar:'#workEstimateToolbar'
+            ">
+        <thead>
+            <tr>
+            	<th data-options="field:'ycy',width:250">工作人员</th>
+                <th data-options="field:'cllx',width:250">车辆类型</th>
+                <th data-options="field:'zsl',width:250">车辆数</th>
+                <th data-options="field:'hgs',width:250">合格数</th>
+                <th data-options="field:'hgl',width:250">合格率</th>
+                <th data-options="field:'bhgs',width:250">不合格数</th>
+                <th data-options="field:'bhgl',width:250">不合格率</th>
+            </tr>
+        </thead>
+    </table>
+    
+    <div id="workEstimateToolbar">
+	<div>
+		机动车安全技术检验机构名称：
+	    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>日期范围：</label> <input id="quer_beginDate" data-options="required:true" class="easyui-datebox" style="width: 100px;">~<input id="quer_endDate" data-options="required:true" class="easyui-datebox" style="width: 100px;">
+	    <label>车辆类型：</label><input data-options="data:comm.getBaseParames('cllx'),	valueField: 'id',
+		textField: 'value'" prompt='请选择车辆类型' id="quer_cllx"  name="cllx" class="easyui-combobox vehInfoInput">
+		<a class="easyui-linkbutton" href="#" data-options="iconCls:'icon-search'" onclick="query()"></a>
+	</div>
+</div>
+
+<script type="text/javascript">
+function query(){
+	var operationDate = $("#quer_beginDate").datebox("getValue");
+	var operationDateEnd = $("#quer_endDate").datebox("getValue");
+	var cllx = $("#quer_cllx").combobox("getValue");
+	
+	var param={};
+	if(operationDate&&$.trim(operationDate)!=""){
+		param["begin"]=operationDate;
+	}else{
+		param["begin"]="";
+	}
+	if(operationDateEnd&&$.trim(operationDateEnd)!=""){
+		param["end"]=operationDateEnd;
+	}else{
+		param["end"]="";
+	}
+	if(cllx&&$.trim(cllx)!=""){
+		param["type"]=cllx;
+	}else{
+		param["type"]="";
+	}
+	
+	 var opts = $("#workEstimateManager").datagrid("options");
+	 opts.url = "/veh/statistic/getRygzltj";
+	$("#workEstimateManager").datagrid("reload",param);
+	
+}
+
+$(function(){
+	
+		var date = new Date();
+		var str1 =  (date.getFullYear())+"-"+(date.getMonth()+1)+"-"+date.getDate();
+		$("#quer_endDate").val(str1);
+		var str2 =  (date.getFullYear()-1)+"-"+(date.getMonth()+1)+"-"+date.getDate();
+		$("#quer_beginDate").val(str2);
+});
+</script>

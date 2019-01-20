@@ -1,0 +1,127 @@
+
+<script type="text/javascript">
+
+function createReport4(title,index){
+	var panel = $("#zdltabs").tabs("getTab",index);
+	var options =panel.panel("options");
+	var baseInfo = options.baseInfo;
+	var obj =panel.panel("options");
+
+	if(obj.ckey.indexOf("chqx")>=0){
+		createCHReport(title,index);
+		return;
+	}else{
+		createQXReport(title,index);
+	}
+	
+	
+}
+
+function createQXReport(title,index){
+	var panel = $("#zdltabs").tabs("getTab",index);
+	var options =panel.panel("options");
+	var baseInfo = options.baseInfo;
+	var rdata=options.rdata;
+	var ldata=options.ldata;
+	var obj =panel.panel("options");
+	var data=obj.data;
+	var tt=obj.title;
+	var ckey=obj.ckey;
+	var dw=obj.dw;
+	if(!data){
+		return ;
+	}
+	$('#container'+ckey).highcharts({
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: baseInfo.hphm
+        },
+        subtitle: {
+            text: tt
+        },
+        yAxis: {
+            title: {
+                text: dw=="N"?"制动力(N)":"轮重(KG)"
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: dw
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [{
+            name: '左'+ (dw=="N"?"制动力":"轮重"),
+            data: ldata
+        }, {
+            name: '右'+ (dw=="N"?"制动力":"轮重"),
+            data: rdata
+        }]
+    });
+}
+
+function createCHReport(title,index){
+	var panel = $("#zdltabs").tabs("getTab",index);
+	var options =panel.panel("options");
+	var baseInfo = options.baseInfo;
+	var ldata=options.ldata;
+	var obj =panel.panel("options");
+	var data=obj.data;
+	var tt=obj.title;
+	var ckey=obj.ckey;
+	var dw=obj.dw;
+	if(!data){
+		return ;
+	}
+	$('#container'+ckey).highcharts({
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: baseInfo.hphm
+        },
+        subtitle: {
+            text: tt
+        },
+        yAxis: {
+            title: {
+                text:"侧滑值(m/km)"
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: dw
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [{
+            name: '侧滑值',
+            data: ldata
+        }]
+    });
+}
+
+
+</script>
+
+<div class="easyui-tabs" fit="true" id="zdltabs" data-options="onSelect:createReport4">
+</div>
+

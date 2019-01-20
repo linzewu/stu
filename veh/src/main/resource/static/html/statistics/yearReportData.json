@@ -1,0 +1,8 @@
+{"rows":[
+	{"cllb":"客车(座椅)","jyclsl":200,"fjychgs":100,"fjlzgwjxm":"H1","fjl":0},
+	{"cllb":"客车(卧铺)","jyclsl":150,"fjychgs":100,"fjlzgwjxm":"B1","fjl":0},
+	{"cllb":"危货(易燃易爆)","jyclsl":170,"fjychgs":98,"fjlzgwjxm":"H4","fjl":100},
+	{"cllb":"危货(非易燃易爆)","jyclsl":170,"fjychgs":90,"fjlzgwjxm":"H4","fjl":100},
+	{"cllb":"校车","jyclsl":200,"fjychgs":100,"fjlzgwjxm":"B2","fjl":0},
+	{"cllb":"合计","jyclsl":890,"fjychgs":97.6,"fjlzgwjxm":"","fjl":100}
+]}

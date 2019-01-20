@@ -1,0 +1,42 @@
+<table id="recordInfoOfCheckStaffManager" class="easyui-datagrid"
+	data-options="url:'/veh/recordInfoOfCheckStaff/getRecordInfoOfCheckStaffList',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#checkStaffToolbar'">
+	<thead> 
+		<tr>
+			<th data-options="field:'sfzmhm',width:100">身份证明号码</th>
+			<th data-options="field:'xm',width:100">姓名</th>
+			<th data-options="field:'rylb',width:100">人员类别</th>
+			<th data-options="field:'glbm',width:100">管理部门</th>
+			<th data-options="field:'fzjg',width:100">发证机关</th>
+			<th data-options="field:'jczbh',width:100">检验机构编号</th>
+			<th data-options="field:'gxrq',width:100">更新日期</th>
+			<th data-options="field:'bz',width:100">备注</th>			
+			<th data-options="field:'shbj',width:100">审核标记</th>
+			<th data-options="field:'shyj',width:100">审核意见</th>
+			<th data-options="field:'zt',width:100">状态标记</th>
+			<th data-options="field:'sgzbh',width:100">上岗证编号</th>
+			<th data-options="field:'sgzyxqz',width:100">上岗证有效期止</th>
+			<th data-options="field:'sgzffdw',width:100">上岗证发放单位</th>
+			<th data-options="field:'syglbm',width:100">使用管理部门</th>
+		</tr>
+	</thead>
+</table>
+
+<div id="checkStaffToolbar">
+	<div>
+		<a id="btn" href="#" class="easyui-linkbutton" onclick="downloadRecord()">下载</a>
+	</div>
+</div>
+
+<script type="text/javascript">
+function downloadRecord(){
+	$.messager.progress({
+        title:'Please waiting',
+        msg:'Loading data...'
+    });
+	$.post("/veh/recordInfoOfCheckStaff/downloadRecords",function(data){
+		$("#recordInfoOfCheckStaffManager").datagrid('reload');
+	}).complete(function(){
+		 $.messager.progress('close');
+	});
+}
+</script>

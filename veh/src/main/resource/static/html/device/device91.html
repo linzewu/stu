@@ -1,0 +1,117 @@
+<form id="form-gdkg" class="device-form">
+<div style="margin:0 auto;width:96%;padding-top: 10px;">
+	<div class="easyui-panel" title="基本信息" 
+			data-options="href:'/veh/html/device/device-common.html',onLoad:deviceInfoLoad"
+	        style="padding:10px;background:#fafafa;height:220px;width:100%;">
+	</div>
+	<div class="easyui-tabs" style="width:98%;">
+		<div title="通讯协议"   
+		        style="padding:10px;background:#fafafa;height:330px;width:100%;">
+			<table class="simpletable" cellpadding="0" cellspacing="0" >
+				<tr>
+					<td class="simpletable-l"><label>协议类型：</label></td>
+					<td class="simpletable-r"><input id="device90-xylx" name="xylx" data-options="required:true,data:comm.getBaseParames('protocol'),valueField: 'id',textField: 'value'" class="easyui-combobox"></td>
+					<td class="simpletable-l"><label>带回车符：</label></td>
+					<td class="simpletable-r"><label for="device90-dhcf0">是</label><input type="radio" id="device90-dhcf0" name="dhcf" value="0" checked="checked">&nbsp;&nbsp;&nbsp;&nbsp;
+						<label for="device90-dhcf1">否</label><input type="radio" id="device90-dhcf1" name="dhcf"  value="1">&nbsp;&nbsp;&nbsp;&nbsp;
+					</td>
+				</tr>
+				<tr>
+					<td class="simpletable-l"><label>上屏协议：</label></td>
+					<td class="simpletable-r" colspan="3"><input data-options="required:true" id="device90-dsj" name="spxy" class="easyui-textbox" style="width: 400px;">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				</tr>
+				<tr>
+					<td class="simpletable-l"><label>下屏协议：</label></td>
+					<td class="simpletable-r" colspan="3"><input data-options="required:true" id="device90-dsj" name="xpxy" class="easyui-textbox" style="width: 400px;">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				</tr>
+				
+				<tr>
+					<td class="simpletable-l"><label>上屏默认文字：</label></td>
+					<td class="simpletable-r" colspan="3"><input data-options="required:true" id="device90-spmr" name="spmr" class="easyui-textbox" style="width: 400px;">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				</tr>
+				<tr>
+					<td class="simpletable-l"><label>下屏默认文字：</label></td>
+					<td class="simpletable-r" colspan="3"><input data-options="required:true" id="device90-xpmr" name="xpmr" class="easyui-textbox" style="width: 400px;">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				</tr>
+				<tr>
+					<td class="simpletable-r" colspan="4" style="text-align: center;">
+						<a href="#" class="easyui-linkbutton" onclick="saveGdkg()" data-options="iconCls:'icon-save'">保存</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div title="控制台"   
+		        style="padding:10px;background:#fafafa;height:330px;width:100%;">
+			<table class="simpletable" cellpadding="0" cellspacing="0" >
+				<tr>
+					<td class="simpletable-l" style="width: 15%"><label>端口状态：</label></td>
+					<td class="simpletable-r" style="width: 85%" colspan="3"><span id="isOpen"></span>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="#" class="easyui-linkbutton" onclick="getState()">刷新状态</a>
+					</td>
+				</tr>
+				<tr>
+					<td class="simpletable-l"><label>测试文本：</label></td>
+					<td class="simpletable-r" colspan="3">
+						<input name="test-ph" value="0" checked="checked" type="radio"><label>上屏：</label>
+						<input name="test-ph" value="1" type="radio"><label>下屏：</label><br><br>
+						<input class="easyui-textbox" id="device_console"  data-options="editable:true" style="width: 400px;">
+						<a href="#" class="easyui-linkbutton" onclick="sendMessageDisplay()">发送</a>
+					</td>
+				</tr>
+				<tr>
+					<td class="simpletable-l" colspan="4" style="text-align: center;">
+						<a href="#" class="easyui-linkbutton" onclick="deviceDisplayStart()">启动设备</a>&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="#" class="easyui-linkbutton" onclick="deviceStop()">停止设备</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+</form>
+<script type="text/javascript">
+
+function sendMessageDisplay(){
+	
+	var text = $("#device_console").textbox("getValue");
+	
+	if($.trim(text)==""){
+		$.messager.alert("提示","消息不能为空");
+		return ;
+	}
+	
+	var row = $("#deviceManager").datagrid("getSelected");
+	var call=function(data){
+		$.messager.alert("提示",data.message);
+	}
+	var param ={'id':row.id};
+	
+	param.message=text;
+	
+	var ph = $("input[name=test-ph]:checked").val();
+	
+	param.ph=ph;
+	
+	$.post("/veh/device/sendMessageDisplay",param,call,"json");
+	
+}
+
+function getState(){
+	var row = $("#deviceManager").datagrid("getSelected");
+	var call=function(data){
+		if(data.isOpen){
+			$("#isOpen").html("打开");
+		}else{
+			$("#isOpen").html("关闭");
+		}
+	}
+	$.post("/veh/device/getState",{'id':row.id},call,"json");
+}
+
+
+
+$(function(){
+	getState();
+});
+</script>

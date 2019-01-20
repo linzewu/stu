@@ -1,0 +1,27 @@
+<table id="grid_process">
+   
+</table>
+
+<script type="text/javascript">
+
+$(function(){
+	var reportData = $("#checkingVeh").datagrid("getSelected");
+	$("#grid_process").datagrid({
+		url:'/veh/report/getProcess?jylsh='+reportData.jylsh,
+	    columns:[[
+	        {field:'jylsh',title:'检验流水号',width:120},
+	        {field:'hphm',title:'号牌号码',width:80},
+	        {field:'hpzl',title:'号牌种类',width:80},
+	        {field:'clsbdh',title:'车辆识别代号',width:140},
+	        {field:'jyxm',title:'检验项目',width:60},
+	        {field:'jycs',title:'检验次数',width:60},
+	        {field:'kssj',title:'开始时间',width:100},
+	        {field:'jssj',title:'结束时间',width:100},
+	        {field:'jygcxrsj',title:'检验过程写入时间',width:110},
+	        {field:'jysbbh',title:'检验设备编码',width:120},
+	        {field:'jyzt',title:'检验状态',width:60}
+	    ]]
+	});
+})
+
+</script>

@@ -31,7 +31,15 @@
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
       <scope>test</scope>
-    </dependency>-->
+    </dependency>
+    
+    <dependency>
+            <groupId>com.lzw</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>2.3</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/jar/pass.jar</systemPath>
+        </dependency>-->
   </dependencies>
   
   <!--maven的插件 -->

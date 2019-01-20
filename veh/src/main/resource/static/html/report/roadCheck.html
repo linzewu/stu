@@ -1,0 +1,197 @@
+
+<form method="post" id="roleCheckForm" >
+<table style="margin: 0 auto;padding-top: 50px;width: 800px;" >
+<tr>
+	<td colspan="4" style="text-align: center; font-size: 24px;">路试检验信息<br><br></td>
+</tr>
+<tr>
+	<td>检验流水号：</td><td><span id="commit_jylsh"></span></td>
+	<td>号牌号码：</td><td><span id="commit_hphm"></span></td>
+</tr>
+<tr>
+	<td>行车制动初速度：</td><td><input class="easyui-numberbox" name="zdcsd" precision=1 id="road_zdcsd" required="true"  ></td>
+	<td>行车制动协调时间：</td><td><input class="easyui-numberbox" name="zdxtsj" precision=2  id="road_zdxtsj" required="true"  ></td>
+</tr>
+<tr>
+	<td>行车制动稳定性：</td><td><input  name="zdwdx" id="road_zdwdx" ></td>
+	<td>行车空载制动距离：</td><td><input class="easyui-numberbox" precision=1  required="true" name="xckzzdjl" id="road_xckzzdjl"></td>
+</tr>
+<tr>
+	<td>行车空载MFDD：</td><td><input class="easyui-numberbox" required="true" precision=1  name="xckzmfdd" id="road_xckzmfdd" ></td>
+	<td>行车制动踏板力值：</td><td><input class="easyui-numberbox" name="xczdczlz" id="road_xczdczlz"></td>
+</tr>
+<tr>
+	<td>行车满载制动距离：</td><td><input class="easyui-numberbox" precision=1   name="xcmzzdjl" id="road_xcmzzdjl" ></td>
+	<td>行车满载MFDD：</td><td><input class="easyui-numberbox" precision=1  name="xcmzmfdd" id="road_xcmzmfdd"></td>
+</tr>
+<tr>
+	<td>驻车坡度：</td><td><input  name="zcpd" id="road_zcpd" ></td>
+	<td>路试驻车制动判定：</td><td><input name="lszczdpd" id="road_lszczdpd"></td>
+</tr>
+<tr>
+	<td>车速表实测值：</td><td><input class="easyui-numberbox" name="csdscz" precision=1  id="road_csdscz" ></td>
+	<td>车速表判定：</td><td><input  name="csbpd" precision=1  id="road_csbpd" ></td>
+</tr>
+
+<tr>
+	<td>应急制动初速度：</td><td><input class="easyui-numberbox" name="yjzdcsd" precision=1 id="road_yjzdcsd"   ></td>
+	<td>应急空载制动距离：</td><td><input  name="yjkzzdjl" class="easyui-numberbox" id="road_yjkzzdjl" ></td>
+</tr>
+<tr>
+	<td>应急空载MFDD：</td><td><input class="easyui-numberbox"   precision=1  name="yjkzmfdd" id="road_yjkzmfdd" ></td>
+	<td>应急操纵力值：</td><td><input class="easyui-numberbox" name="yjzdczlz" precision=2  id="road_yjzdczlz"  ></td>
+</tr>
+<tr>
+	<td>应急满载制动距离：</td><td><input class="easyui-numberbox" precision=1   name="yjmzzdjl" id="road_yjmzzdjl" ></td>
+	<td>应急满载MFDD：</td><td><input class="easyui-numberbox" precision=1  name="yjmzmfdd" id="road_yjmzmfdd"></td>
+</tr>
+<tr>
+	<td>应急操纵力方式：</td><td><input name="yjzdczlfs" id="road_yjzdczlfs"></td>
+	<td>应急路试制动判定：</td><td><input  name="yjzdpd" id="road_yjzdpd"></td>
+</tr>
+
+<tr>
+<td>行车路试制动判定：</td><td><input  name="lszdpd" id="road_lszdpd"></td>
+<td>路试结果：</td><td><input  name="lsjg" id="road_lsjg"></td>
+</tr>
+<tr>
+<td>路试员：</td><td colspan="3"><input  name="lsy" id="road_lsy"></td>
+</tr>
+<tr>
+	<td colspan="4" style="text-align: center;height: 80px;">
+		<input name="jylsh" type="hidden">
+		<input name="jyjgbh" type="hidden">
+		<input name="jcxdh" type="hidden">
+		<input name="hpzl" type="hidden">
+		<input name="hphm" type="hidden">
+		<input name="jycs" type="hidden">
+		<input name="clsbdh" type="hidden">
+		<input name="id" type="hidden">
+		<a href="#" class="c6" id="btn_roadCheck">保存上传</a>&nbsp;&nbsp;&nbsp;&nbsp;
+	</td>
+</tr>
+</table>
+</form>
+<script type="text/javascript">
+var reportData = $("#checkingVeh").datagrid("getSelected");
+
+	$(function(){
+
+		var pd=[{id:'0',text:'未检'},{id:'1',text:'合格'},{id:'2',text:'不合格'}];
+		
+		$("#commit_jylsh").text(reportData.jylsh);
+		$("#commit_hphm").text(reportData.hphm);
+
+		
+		$("#road_yjzdczlfs").combobox({
+			valueField:'id',
+			textField:'text',
+			data:[{id:'0',text:'手操纵'},{id:'1',text:'脚操纵'}]
+		});
+		
+		
+
+		$("#road_zcpd").combobox({
+			required:"true",
+			valueField:'id',
+			textField:'text',
+			data:[{id:'0',text:'20%'},{id:'1',text:'15%'}]
+		});
+		$("#road_zdwdx").combobox({
+			required:"true",
+			valueField:'id',
+			textField:'text',
+			data:[{id:1,text:'未跑偏'},{id:1,text:'左跑偏'},{id:1,text:'右跑偏'}]
+		});
+
+		
+		$("#road_lszczdpd").combobox({
+			required:"true",
+			valueField:'id',
+			textField:'text',
+			data:pd
+		});
+		
+		$("#road_csbpd").combobox({
+			valueField:'id',
+			textField:'text',
+			data:pd,
+			disabled:true
+		});
+		
+		$("#road_lszdpd").combobox({
+			valueField:'id',
+			textField:'text',
+			data:pd,
+			disabled:true
+		});
+		
+		$("#road_lsjg").combobox({
+			valueField:'id',
+			textField:'text',
+			data:pd,
+			disabled:true
+		});
+		
+		
+		$("#road_yjzdpd").combobox({
+			valueField:'id',
+			textField:'text',
+			data:pd,
+		});
+		
+		
+
+		$("#road_lsy").combobox({
+			url:'/veh/user/getAllUsers',
+			required:"true",
+			valueField:'realName',
+			textField:'realName'
+		});
+		
+		$.post("/veh/report/getRoadCheck",{jylsh:reportData.jylsh},function(data){
+			 $("#roleCheckForm").form("load",data);
+		},"json");
+
+		$("#roleCheckForm").form({
+			url:'/veh/report/saveRoadCheck',
+			success:function(data){
+				data=$.parseJSON(data);
+				if(data.data){
+					$("#roleCheckForm [name=id]").val(data.data.id);
+					$.messager.alert("提示","保存成功");
+				}
+		    }
+		});
+		$("#btn_roadCheck").linkbutton({
+			text:'路试保存',
+			onClick:roadCheckSave
+		});
+	
+
+		if(reportData.jyxm.indexOf("R")<0){
+			$("#btn_roadCheck").linkbutton("disable");
+		}
+		
+	});
+
+	function roadCheckSave(){
+
+		 var flag = $("#roleCheckForm").form("validate");
+		 if(!flag){
+			return;
+		}
+		$("#roleCheckForm [name=jylsh]").val(reportData.jylsh);
+        $("#roleCheckForm [name=jyjgbh]").val(reportData.jyjgbh);
+        $("#roleCheckForm [name=jcxdh]").val(reportData.jcxdh);
+        $("#roleCheckForm [name=hpzl]").val(reportData.hpzl);
+        $("#roleCheckForm [name=jycs]").val(reportData.jycs);
+        $("#roleCheckForm [name=hphm]").val(reportData.hphm);
+		$("#roleCheckForm").form("submit",{
+			success:function(data){
+		        alert(data)
+		    }
+		});
+	}
+	
+</script>

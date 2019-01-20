@@ -1,0 +1,202 @@
+
+<style>
+
+.xx{
+table-layout: fixed;
+display:flex;
+position:relative;
+}
+
+.xx div{
+height: 1px;
+background:black;
+margin: auto;
+position: absolute;  
+top: 0; bottom: 0; right: 0; 
+}
+
+.out{
+width: 43px;
+overflow: hidden;
+}
+
+</style>
+<div style="text-align: center;margin-top: 10px;">
+	<a  class="easyui-linkbutton"   data-options="iconCls:'icon-print'" onclick="report.createReport($('#print_area1'))">打印</a>
+	<span>检验次数：</span><input id="query_jycs"  style="width: 80px;">
+</div>
+<div id="print_area1">
+<div id="report">
+	<DIV style="MARGIN-BOTTOM: 10px; FONT-SIZE: 20px; FONT-WEIGHT: bold; TEXT-ALIGN: center; MARGIN-TOP: 15px"><span id=""></span>三轮车设备仪器报告单 </DIV>
+	<TABLE cellSpacing=0 cellPadding=0 border=0 >
+		<TBODY>
+			<TR>
+				<TD colSpan=7>一、基本信息</TD>
+			</TR>
+			<TR>
+				<TD class=l width="15%">检验流水号</TD>
+				<TD class=r width="18%" name="report-baseInfo-jylsh"></TD>
+				<TD class=l width="15%">引&nbsp;&nbsp;车&nbsp;&nbsp;员</TD>
+				<TD class=r width="19%" name="report-baseInfo-ycy"></TD>
+				<TD class=l width="15%">检&nbsp;验&nbsp;日&nbsp;期</TD>
+				<TD class=r colSpan=2 name="report-baseInfo-upLineDate"></TD>
+			</TR>
+			<TR>
+				<TD class=l>检&nbsp;验&nbsp;类&nbsp;别</TD>
+				<TD class=r name="report-baseInfo-jylb"></TD>
+				<TD class=l>检&nbsp;验&nbsp;项&nbsp;目</TD>
+				<TD class=r name="report-baseInfo-jyxm"></TD>
+				<TD class=l>登&nbsp;&nbsp;录&nbsp;&nbsp;员</TD>
+				<TD class=r colSpan=2 name="report-baseInfo-dly"></TD>
+			</TR>
+			<TR>
+				<TD class=l>号牌（自编）号</TD>
+				<TD class=r name="report-baseInfo-hphm"></TD>
+				<TD class=l>所&nbsp;&nbsp;有&nbsp;&nbsp;人</TD>
+				<TD class=r colSpan=4 name="report-baseInfo-syr"></TD>
+			</TR>
+			<TR>
+				<TD class=l>号&nbsp;牌&nbsp;种&nbsp;类</TD>
+				<TD class=r name="report-baseInfo-hpzl"></TD>
+				<TD class=l>车&nbsp;辆&nbsp;类&nbsp;型</TD>
+				<TD class=r name="report-baseInfo-cllx"></TD>
+				<TD class=l>品&nbsp;牌&nbsp;/&nbsp;型&nbsp;号</TD>
+				<TD class=r colSpan=2><span name="report-baseInfo-clpp1"></span>/<span name="report-baseInfo-clxh"></span></TD>
+			</TR>
+			<TR>
+				<TD class=l>车辆识别代号</TD>
+				<TD class=r name="report-baseInfo-clsbdh"></TD>
+				<TD class=l>发&nbsp;动&nbsp;机&nbsp;号</TD>
+				<TD class=r name="report-baseInfo-fdjh"></TD>
+				<TD class=l>燃&nbsp;料&nbsp;类&nbsp;别</TD>
+				<TD class=r colSpan=2 name="report-baseInfo-rlzl"></TD>
+			</TR>
+			<TR>
+				<TD class=l>初次登记日期</TD>
+				<TD class=r name="report-baseInfo-ccdjrq"></TD>
+				<TD class=l>出厂年月</TD>
+				<TD class=r name="report-baseInfo-ccrq"></TD>
+				<TD class=l>里程表读数</TD>
+				<TD class=r colSpan=2 name="report-baseInfo-rlzl"></TD><!-- aaaa -->
+			</TR>
+			<TR>
+				<TD class="l no-bot">整备质量（kg）</TD>
+				<TD class="r no-bot" name="report-baseInfo-zbzl"></TD>
+				<TD class="l no-bot">前&nbsp;照&nbsp;灯&nbsp;制</TD>
+				<TD class="r no-bot" name="report-baseInfo-qzdz"></TD>
+				<TD class="l no-bot">前照灯远光光束能否单独调整</TD>
+				<TD class="l no-bot" colSpan=2 name="report-baseInfo-ygddtz"></TD>
+			</TR>
+		</TBODY>
+	</TABLE>
+	<TABLE cellSpacing=0 cellPadding=0 border=0 >
+		<TBODY>
+			<TR>
+				<TD colSpan=17>二、检验结果</TD>
+			</TR>
+			<TR>
+				<TD class=l rowSpan=2 width="15%" colSpan=2>台&nbsp;式&nbsp;检&nbsp;测<BR>项&nbsp;目
+				</TD>
+				<TD class=l width="26%" colSpan=2>轮荷（kg）</TD>
+				<TD class=l width="26%" colSpan=2>制动力（10N）
+				</TD>
+				<TD class=l width="15%" rowSpan=2>制动率(%)
+				</TD>
+				<TD class=l rowSpan=2 width="9%">项目<BR>判定
+				</TD>
+				<TD class=l rowSpan=2 width="9%">单项<BR>次数
+				</TD>
+			</TR>
+			<TR>
+				<TD class=l>左</TD>
+				<TD class=l width="13%">右</TD>
+				<TD class=l>左</TD>
+				<TD class=l width="13%">右</TD>
+			</TR>
+			<TR name="B1">
+				<TD class="l" rowSpan=3 width="5%">制<BR>动<BR>B
+				</TD>
+				<TD class=l width="10%">前轮</TD>
+				<TD class=l name="zd_zlh"></TD>
+				<TD class=l name="zd_ylh"></TD>
+				<TD class=l name=""></TD>
+				<TD class=l name=""></TD>				
+				<TD class=l name=""></TD>
+				<TD class=l name="">—</TD>
+				<TD class=l name="dxcs"></TD>
+			</TR>
+			<TR name="B2">
+				<TD class=l>后轮(轴)</TD>
+				<TD class=l name="zd_zlh"></TD>
+				<TD class=l name="zd_ylh"></TD>
+				<TD class=l name="zd_zzdl"></TD>
+				<TD class=l name="zd_yzdl"></TD>				
+				<TD class=l name="zd_kzxczdl"></TD>				
+				<TD class=l name="xmpd">—</TD>
+				<TD class=l name="dxcs"></TD>
+			</TR>
+			<TR name="par">
+				<TD class=l>驻车</TD>
+				<TD class=l colSpan=2 name="par_tczclh"></TD>
+				<TD class=l colSpan=2 name="par_zczczdl"></TD>
+				<TD class=l name="par_tczdl"></TD>
+				<TD class=l name="xmpd">—</TD>
+				<TD class=l name="dxcs"></TD>
+			</TR>
+			
+		</TBODY>
+	</TABLE>
+	<TABLE cellSpacing=0 cellPadding=0 border=0>
+		<TBODY>
+			<TR>
+				<TD class="l no-top" rowSpan=3 width="5%">前<BR>照<BR>灯<BR>H
+				</TD>
+				<TD class="l no-top" width="10%">项目</TD>
+				<TD class="l no-top" width="67%">远光发光强度（cd）
+				</TD>
+				<TD class="l no-top" width="9%">项目<BR>判定
+				</TD>
+				<TD class="l no-top" width="9%">单项<BR>次数
+				</TD>
+			</TR>
+			<TR name="H1">
+				<TD class=l>左(单)灯</TD>
+				<TD class=l name="y_gq"></TD>
+				<TD class=l name="xmpd" ></TD>
+				<TD class=l name="dxcs"></TD>
+			</TR>
+			<TR name="H4">
+				<TD class=l>右灯</TD>
+				<TD class=l name="y_gq"></TD>
+				<TD class=l name="xmpd" ></TD>
+				<TD class=l name="dxcs"></TD>
+			</TR>
+		</TBODY>
+	</TABLE>
+	<TABLE cellSpacing=0 cellPadding=0 border=0>
+		<TBODY>			
+			<TR>
+				<TD class="l no-top" width="20%">路试制动性能</TD>
+				<TD class="l no-top" width="33%" name="roadCheck_info">未检</TD>
+				<TD class="l no-top" width="14%" >路试检验员</TD>
+				<TD class="l no-top" name="roadCheck_lsy" width="15%"></TD>
+				<TD class="l no-top" name="roadCheck_pd" width="9%" colSpan=2>—</TD>
+				<TD class="l no-top" name="roadCheck_dxcs" width="9%" colSpan=2></TD>
+			</TR>
+			<TR>
+				<TD class="r no-rig" colSpan=2>车辆外廓尺寸（mm×mm×mm）：<span name="wkcc">xx</span></TD>
+				<TD class="r no-left" colSpan=2>整备质量(kg)：<span name="other_zczbzl"></span></TD>
+				<TD class=l ><span name="wkcc_pd"></span></TD>
+				<TD class=l ><span name="wkcc_jycs"></span></TD>
+				<TD class=l  name="other_zczbzl_jgpd"></TD>
+				<TD class=l  name="other_zczbzl_jycs"></TD>
+			</TR>
+			<TR>
+				<TD class=r colSpan=3 >备注</TD>
+				<TD class=l width="15%">总检次数</TD>
+				<TD class=l colSpan=4 name="zjycs"></TD>
+			</TR>
+		</TBODY>
+	</TABLE>
+</div>
+</div>

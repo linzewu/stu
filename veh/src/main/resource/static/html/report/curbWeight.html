@@ -1,0 +1,165 @@
+
+<form method="post" id="curbWeightForm" >
+<table style="margin: 0 auto;padding-top: 50px;width: 600px;" >
+<tr>
+	<td colspan="4" style="text-align: center; font-size: 24px;">整备质量录入<br><br></td>
+</tr>
+
+<tr>
+	<td>检验流水号：</td><td><span id="commit_jylsh"></span></td>
+	<td>号牌号码：</td><td><span id="commit_hphm"></span></td>
+</tr>
+<tr>
+	<td>出厂整备质量：</td><td><span id="commit_zbzl" ></span>KG</td>
+	<td>检测整备质量：</td><td><input class="easyui-numberbox" data-options="onChange:zbzlchange" name="zbzl" id="zbzl" required="true" max="99999999" min="1">KG</td>
+	
+</tr>
+<tr>
+<td>整备质量判定：</td>
+<td colspan="3"><label for="zbzlpd_hg">合格</label><input type="radio" name="zbzlpd" id="zbzlpd_hg" value="1" readonly="readonly" >
+	<label for="zbzlpd_bhg">不合格</label><input type="radio" name="zbzlpd" id="zbzlpd_bhg" value="2"  readonly="readonly">
+	</td>
+</tr>
+<tr>
+	<td colspan="4" style="text-align: center;height: 80px;">
+		<input name="jylsh" type="hidden">
+		<input name="jyjgbh" type="hidden">
+		<input name="jcxdh" type="hidden">
+		<input name="hpzl" type="hidden">
+		<input name="hphm" type="hidden">
+		<input name="clsbdh" type="hidden">
+		<input name="id" type="hidden">
+		<a href="#" class="easyui-linkbutton c6" data-options="onClick:startCurbWeight" id="btn_startCurbWeight">开始检测整备质量</a>
+		<a href="#" class="easyui-linkbutton c6" data-options="onClick:curbWeightForm" id="btn_curbWeightForm">保&nbsp;&nbsp;&nbsp;&nbsp;存</a>
+	</td>
+</tr>
+</table>
+</form>
+<script type="text/javascript">
+
+
+function zbzlchange(value){
+	var cz =value-reportData.zbzl;
+	var czbfj = (cz/reportData.zbzl)*100;
+	var cllx = reportData.cllx;
+	var xzgj=100;
+	var percent=3;
+	if(cllx.indexOf('H1')==0||cllx.indexOf('H2')==0||cllx.indexOf('Z1')==0||cllx.indexOf('Z2')==0||cllx.indexOf('Z5')==0||cllx.indexOf('G')==0||cllx.indexOf('B')==0){
+		xzgj=500;
+	}else if(cllx.indexOf('H3')==0||cllx.indexOf('H4')==0||cllx.indexOf('Z3')==0||cllx.indexOf('Z4')==0){
+		xzgj=100;
+	}else if(cllx.indexOf('N')==0){
+		xzgj=100;
+		percent=5;
+	}else if(cllx.indexOf('M')==0){
+		xzgj=10;
+	}
+	
+	if((cz>=xzgj||cz<=-xzgj)&&(czbfj>=percent||czbfj<=-percent)){
+		$("#curbWeightForm #zbzlpd_bhg").prop("checked",true);
+	}else{
+		$("#curbWeightForm #zbzlpd_hg").prop("checked",true);
+	}
+}
+
+var reportData = $("#checkingVeh").datagrid("getSelected");
+$("#commit_jylsh").text(reportData.jylsh);
+$("#commit_hphm").text(reportData.hphm);
+$("#commit_zbzl").text(reportData.zbzl);
+
+	$(function(){
+		
+		$.post("/veh/pda/getCurbWeight",{jylsh:reportData.jylsh},function(data){
+			 $("#curbWeightForm").form("load",data);
+		},"json");
+		
+		$.post("/veh/report/getProcess?jylsh="+reportData.jylsh,function(data){
+			$("#btn_curbWeightForm").linkbutton('disable');
+			$("#btn_startCurbWeight").linkbutton('disable');
+			$.each(data,function(i,n){
+				if(n.jyxm=="Z1"&&n.kssj!=""&&n.kssj!=null){
+					$("#btn_curbWeightForm").linkbutton('enable');
+				}
+				if(n.jyxm=="Z1"&&(n.kssj==""||n.kssj==null)){
+					$("#btn_startCurbWeight").linkbutton('enable');
+				}
+				
+				if(n.jyxm=="Z1"&&n.jssj!=null&&n.jssj!=""){
+					$("#btn_curbWeightForm").linkbutton('disable');
+					$("#btn_startCurbWeight").linkbutton('disable');
+				}
+				
+			});
+		},"json");
+		
+	});
+
+	function curbWeightForm(){
+		
+		 if($("#curbWeightForm [name=id]").val()!=""){
+			$.messager.alert("提示","整备质量已经检测结束！","info");
+			return;
+		}
+		if(reportData.vehjczt==2){
+			$.messager.alert("提示","车辆检测结束，不允许提交整备质量！","info");
+			return;
+		}
+		if(reportData.jyxm.indexOf("Z1")==-1){
+			$.messager.alert("提示","该检测项目无整备质量","info");
+			return;
+		}
+		
+		var flag = $("#curbWeightForm").form("validate");
+		 if(!flag){
+			return;
+		}
+		 var zbzlpd = $("#curbWeightForm [name=zbzlpd]:checked").val();
+		 
+		 if(zbzlpd==2||zbzlpd==""){
+			 $.messager.alert("提示","检验结果不合格！不允许上传。","info");
+				return;
+		 }
+		 
+		$("#curbWeightForm [name=jylsh]").val(reportData.jylsh);
+        $("#curbWeightForm [name=jyjgbh]").val(reportData.jyjgbh);
+        $("#curbWeightForm [name=jcxdh]").val(reportData.jcxdh);
+        $("#curbWeightForm [name=hpzl]").val(reportData.hpzl);
+        $("#curbWeightForm [name=hphm]").val(reportData.hphm);
+        $("#curbWeightForm [name=clsbdh]").val(reportData.clsbdh);
+        var data={};
+
+        data.jylsh=$("#curbWeightForm [name=jylsh]").val();
+        data.jyjgbh=$("#curbWeightForm [name=jyjgbh]").val();
+        data.jcxdh=$("#curbWeightForm [name=jcxdh]").val();
+        data.hpzl=$("#curbWeightForm [name=hpzl]").val();
+        data.hphm=$("#curbWeightForm [name=hphm]").val();
+        data.clsbdh=$("#curbWeightForm [name=clsbdh]").val();
+        data.id=$("#curbWeightForm [name=id]").val();
+        data.zbzl=$("#curbWeightForm [name=zbzl]").val();
+        data.zbzlpd=$("#curbWeightForm [name=zbzlpd]").val();
+        data.jycs=reportData.jycs;
+        
+		console.log(data)
+        $.post("/veh/pda/zbzlUpload",data,function(data){
+        	 if(data.state==1){
+	        	 $.messager.alert("提示",data.message);
+	        	 $("#commitForm [name=id]").val(data.id);
+		    }
+         },"json");
+		//$("#commitForm").form("submit");
+	}
+	
+	function startCurbWeight(){
+		
+		 $.post("/veh/pda/processStart",{jyxm:'Z1',jylsh:reportData.jylsh,jycs:reportData.jycs},function(data){
+        	 if(data.state==1){
+	        	$.messager.alert("提示",data.message);
+	        	$("#btn_curbWeightForm").linkbutton('enable');
+	        	$("#btn_startCurbWeight").linkbutton('disable');
+		    }
+         },"json");
+		$.messager.alert("提示","车辆未开始检测，或已经检测结束！","info");
+		
+	}
+	
+</script>

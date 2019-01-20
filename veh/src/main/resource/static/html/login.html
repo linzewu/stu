@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"/>
+<link rel="stylesheet" type="text/css" href="../js/easyui/themes/color.css"/>
+<link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"/>
+<script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+<script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+
+<script type="text/javascript" src="../js/login.js"></script>
+
+<title>上海翔尚机动车检测系统</title>
+<style type="text/css">
+
+body {
+	MARGIN: 0px;
+}
+.STYLE1 {
+font-size: 15px;
+font-weight: 300;
+font-family: '微软雅黑';
+color: #616396;
+}
+.STYLE2 {
+font-size: 15px;
+font-weight: 400;
+font-family: '微软雅黑';
+color: #616396;
+}
+input{
+		border:0;
+	font-size:18px;	
+	}
+
+.t1{
+width: 543px;
+height: 255px;
+}
+
+.t2{
+width: 320px;
+}
+
+.head{
+font-size: 28px;
+height: 180px;
+font-weight: 600;
+font-family: '微软雅黑';
+text-align: center;
+color: #696b90;
+white-space: 5px;
+letter-spacing: 10px;
+vertical-align:bottom;
+padding-bottom: 20px;
+}
+</style>
+
+</head>
+<body>
+<form id="loginForm">
+<img src="../images/bg.jpg" width="100%" height="100%" style="z-index:-100;position:absolute;left:0;top:0">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td class="head">上海翔尚机动车安全技术检验系统</td>
+  </tr>
+</table>
+<table class="t1" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td background="../images/kuang.png">
+    <table class="t2" border="0" align="center" cellpadding="0" cellspacing="15">
+      <tr>
+        <td width="25%"><span class="STYLE2">用户名：</span></td>
+        <td width="75%">
+        <div class="">
+          <input class="easyui-textbox" data-options="prompt:'请输入用户名',iconCls:'icon-man',iconWidth:38,missingMessage:'请输入用户名',required:true,validateOnCreate:false" name="userName" type="text" id="userName"  style="height:24px;width:157px;" tabindex="1"  />
+        </div></td>
+      </tr>
+      <tr>
+        <td width="25%"><span class="STYLE2">密　码：</span></td>
+        <td width="75%">
+        <div class="">
+          <input class="easyui-textbox" data-options="prompt:'请输入密码',iconCls:'icon-lock',iconWidth:38,required:true,missingMessage:'请输入密码',validateOnCreate:false"  name="password" type="password" id="password" style="height:24px;width:157px;" tabindex="2"/>
+        </div></td>
+      </tr>
+      <tr>
+        <td colspan="2"><div align="center">
+       	 <a class="easyui-linkbutton" data-options="iconCls:'icon-ok',onClick:login"  href="#" style="width: 100px;height: 28px;">登&nbsp;&nbsp;陆</a>
+        </div></td>
+        </tr>
+    </table></td>
+  </tr>
+</table>
+<table width="100%" style="height: 140px;"  border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td height="26"><div align="center" class="STYLE1">版权信息V1.0　联系电话：13612912695</div></td>
+  </tr>
+</table>
+</form>
+</body>
+</html>

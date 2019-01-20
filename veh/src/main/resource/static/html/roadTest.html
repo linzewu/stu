@@ -1,0 +1,67 @@
+<div class="easyui-layout" fit="true">
+	<div data-options="region:'north'" style="height: 80px;">
+		<table>
+			<tr>
+				<td><label>检验流水号：</label></td>
+				<td><input class="easyui-textbox"  data-options="disabled:true" name="jylsh" id="checkItem_info_jylsh"></td>
+				<td>号牌号码：</td>
+				<td><input class="easyui-textbox"  data-options="disabled:true" name="hphm" id="checkItem_info_hphm"></td>
+				<td>号牌种类：</td>
+				<td><input class="easyui-textbox"  data-options="disabled:true" name="hpzl" id="checkItem_info_hpzl"></td>
+				<td>检验次数：</td>
+				<td><input class="easyui-numberbox"  data-options="disabled:true" name="jycs" id="checkItem_info_hpzl"></td>
+			</tr>
+			<tr>
+				<td>开始时间：</td>
+				<td><input class="easyui-datebox"  data-options="disabled:true" name="hpzl" id="checkItem_info_hpzl"></td>
+				<td>结束时间：</td>
+				<td><input class="easyui-datebox"  data-options="disabled:true" name="hpzl" id="checkItem_info_hpzl"></td>
+				<td colspan="4">
+					<a href="#" class="easyui-linkbutton" onclick="mainConsole.startRoadTest()">开始路试</a>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div data-options="region:'east',border:0" style="width: 500px;">
+		<div class="easyui-tabs"  fit="true">
+			<div data-options="title:'路试照片'"></div>
+			<div data-options="title:'路试曲线'"></div>
+		</div>
+	</div>
+	<div data-options="region:'center'">
+		<table class="road_table" cellpadding="0"  cellspacing="0">
+			<tr>
+				<td  class="road_tl">制动距离:</td>
+				<td class="road_tc"><input class="easyui-textbox" disabled="true" style="width: 120px;" name="zdjl" id="roadTest_zdjl"></td>
+				<td class="road_pd" >判定:</td>
+				<td class="road_tc"><label for="res_zdjl_1">合格</label><input disabled="true" type="radio" value="1" name="res_zdjl" id="res_zdjl_1">&nbsp;&nbsp;
+					<label for="res_zdjl_2">不合格</label><input type="radio" disabled="true" value="2" name="res_zdjl" id="res_zdjl_2">
+				</td>
+			</tr>
+			<tr>
+				<td class="road_tl">制动初速度:</td>
+				<td class="road_tc"><input class="easyui-textbox" disabled="true" style="width: 120px;" name="zdcsd" id="roadTest_zdcsd"></td>
+				<td class="road_pd" >判定:</td>
+				<td class="road_tc"><label for="res_zdcsd_1">合格</label><input type="radio" disabled="true" value="1" name="res_zdcsd" id="res_zdcsd_1">&nbsp;&nbsp;
+					<label for="res_zdcsd_2">不合格</label><input type="radio" disabled="true" value="2" name="res_zdcsd" id="res_zdcsd_2">
+				</td>
+			</tr>
+			<tr>
+				<td class="road_tl">制动协调时间:</td>
+				<td class="road_tc" ><input class="easyui-textbox" disabled="true" style="width: 120px;" name="zdxtsj" id="roadTest_zdxtsj"></td>
+				<td class="road_pd" >判定:</td>
+				<td class="road_tc"><label for="res_zdxtsj_1">合格</label><input disabled="true" type="radio" value="1" name="res_zdxtsj" id="res_zdxtsj_1">&nbsp;&nbsp;
+					<label for="res_zdxtsj_2">不合格</label><input type="radio" disabled="true" value="2" name="res_zdxtsj" id="res_zdxtsj_2">
+				</td>
+			</tr>
+			<tr>
+				<td class="road_tl">MFDD:</td>
+				<td class="road_tc" ><input class="easyui-textbox" disabled="true" style="width: 120px;"  name="mfdd" id="roadTest_mfdd"></td>
+				<td class="road_pd" >判定:</td>
+				<td class="road_tc"><label for="res_mfdd_1">合格</label><input disabled="true" type="radio" value="1" name="res_mfdd" id="res_mfdd_1">&nbsp;&nbsp;
+					<label for="res_mfdd_2" >不合格</label><input type="radio" disabled="true" value="2" name="res_mfdd" id="res_mfdd_2">
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>

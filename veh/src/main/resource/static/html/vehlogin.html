@@ -1,0 +1,179 @@
+<div class="easyui-layout" data-options="fit:true">
+	<div data-options="region:'east',border: 0" style="width: 350px;">
+		<div class="easyui-tabs" data-options="fit:true,justified:true,border: 0">
+			<div title="查验中车辆信息">
+				<table class="easyui-datagrid" id="checkingVehList"
+					data-options="url:'/veh/veh/getVehChecking',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#checkingVehToolbar',footer:'#checkingVehFooter',queryParams:{statusArry:'0,1'},onDblClickRow:veh.loadVehCheckInfo">
+					<thead>
+						<tr>
+							<th data-options="field:'hphm',width:80">号牌号码</th>
+							<th data-options="field:'hpzl',width:80,formatter:function(value){return comm.getParamNameByValue('hpzl',value)}">号牌种类</th>
+							<th data-options="field:'jcxdh',width:50">检测线</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div title="查验结束车辆信息">
+				<table class="easyui-datagrid" id="checkedVehList"
+					data-options="url:'/veh/veh/getVehChecking',singleSelect:true,height:'100%',queryParams:{statusArry:'2,3'},pagination:true,pageSize:20,toolbar:'#checkedVehToolbar',footer:'#checkedVehFooter',onDblClickRow:veh.loadVehCheckInfo">
+					<thead>
+						<tr>
+							<th data-options="field:'clxh',width:80">车辆型号</th>
+							<th data-options="field:'jylsh',width:100">检验流水号</th>
+							<th data-options="field:'hphm',width:80">号牌号码</th>
+							<th data-options="field:'hpzl',width:80,formatter:function(value){return comm.getParamNameByValue('hpzl',value)}">号牌种类</th>
+							<th data-options="field:'jcxdh',width:50">检测线</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div data-options="region:'center',border: 0">
+		<form id="vehinfo" method="post" style="height: 100%;width: 100%;">
+		<div class="easyui-layout" data-options="fit:true">
+			<div data-options="region:'center',title:'车辆基本信息',href:'vehInfo_.html',onLoad:veh.intiEvents" id="panel-vheInfo" style="padding: 10px;">
+			</div>
+			<div data-options="region:'south',border:0" style="height: 220px;" >
+				<div title="车辆检验项目"  class="easyui-panel panel_cyxm" data-options="fit:true">
+					<label>&nbsp;&nbsp;&nbsp;&nbsp;检测类型:&nbsp;&nbsp;&nbsp;&nbsp;</label><input class="easyui-combobox" data-options="editable:false,data:comm.getBaseParames('flowType'),valueField: 'id',textField: 'value'" value="0" style="width: 55px;" name="checkType" id="_checkType" >
+					<table  cellspacing="0" border="0" cellpadding="1" style="min-width: 872px;" id="jyxmT">
+						<!--<tr>
+							<td><span><label for="i_clwgjy">车辆外观检验:</label><input id="i_clwgjy" name="jyxm" type="checkbox" checked="checked" value="F1"></span></td>
+							<td><span><label for="i_dpjy">底盘检验:</label><input id="i_dpjy" name="jyxm" type="checkbox" value="C1"  ></span></td>
+							<td><span><label for="i_dtdpjy">底盘动态检验:</label><input id="i_dtdpjy" name="jyxm" type="checkbox" value="DC" ></span></td>
+							<td><span><label for="i_yzzd">一轴制动:</label><input id="i_yzzd" name="jyxm" type="checkbox" value="B1"></span></td>
+							<td><span><label for="i_ezzd">二轴制动:</label><input id="i_ezzd" name="jyxm" type="checkbox" value="B2"></span></td>
+							<td><span><label for="i_sanzzd">三轴制动:</label><input id="i_sanzzd" name="jyxm" type="checkbox" value="B3"></span></td>
+						</tr>
+						<tr>
+							<td><span><label for="i_sizzd">四轴制动:</label><input id="i_sizzd" name="jyxm" type="checkbox" value="B4"></span></td>
+							<td><span><label for="i_wzzd">五轴制动:</label><input id="i_wzzd" name="jyxm" type="checkbox" value="B5"></span></td>
+							<td><span><label for="i_lzzd">六轴制动:</label><input id="i_lzzd" name="jyxm" type="checkbox" value="B6"></span></td>
+							<td><span><label for="i_zczd">驻车制动:</label><input id="i_zczd" name="jyxm" type="checkbox" value="B0"></span></td>
+							<td><span><label for="i_zwd">左外灯:</label><input id="i_zwd" name="jyxm" type="checkbox" value="H1"></span></td>
+							<td><span><label for="i_znd">左内灯:</label><input id="i_znd" name="jyxm" type="checkbox" value="H2"></span></td>
+						</tr>
+						<tr>
+							<td><span><label for="i_ynd">右内灯:</label><input id="i_ynd" name="jyxm" type="checkbox" value="H3"></span></td>
+							<td><span><label for="i_ywd">右外灯:</label><input id="i_ywd" name="jyxm" type="checkbox" value="H4"></span></td>
+							<td><span><label for="i_csb">车速表:</label><input id="i_csb" name="jyxm" type="checkbox" value="S1"></span></td>
+							<td ><span><label for="i_ch">侧滑:</label><input id="i_ch" name="jyxm" type="checkbox" value="A1"></span></td>
+							<td><span><label for="i_yzjz">一轴加载:</label><input id="i_yzjz" name="jyxm" type="checkbox" value="L1"></span></td>
+							<td><span><label for="i_ezjz">二轴加载:</label><input id="i_ezjz" name="jyxm" type="checkbox" value="L2"></span></td>
+						</tr>
+						<tr>
+							<td><span><label for="i_szjz">三轴加载:</label><input id="i_szjz" name="jyxm" type="checkbox" value="L3"></span></td>
+							<td><span><label for="i_sijz">四轴加载:</label><input id="i_sizjz" name="jyxm" type="checkbox" value="L4"></span></td>
+							<td><span><label for="i_lszd">路试制动:</label><input id="i_lszd" name="jyxm" type="checkbox" value="R1"></span></td>
+							<td><span><label for="i_lspdzc">路试坡道驻车:</label><input id="i_lspdzc" name="jyxm" type="checkbox" value="R2"></span></td>
+							<td><span><label for="i_lscsb">路试车速表:</label><input id="i_lscsb" name="jyxm" type="checkbox" value="R3"></span></td>
+							<td><span><label for="i_wkcc">外廓尺寸测量:</label><input id="i_wkcc" name="jyxm" type="checkbox" value="M1"></span></td>
+						</tr>-->
+						<tr>
+							<!--<td><span><label for="i_zbzl">整备质量测量:</label><input id="i_zbzl" name="jyxm" type="checkbox" value="Z1"></span></td>-->
+							<td  colspan="3">&nbsp;</td>
+							<td  style="" >
+								<label>引车员:&nbsp;&nbsp;&nbsp;&nbsp;</label><input class="easyui-combobox" data-options="editable:false,url:'/veh/user/getAllUsers',valueField: 'idCard',textField: 'realName'" style="width: 75px;" name="ycy" id="_ycy" >
+								<input type="hidden" name="ycysfzh" id="_ycysfzh">
+							</td>
+							<td  style="" >
+								<label>检测线:&nbsp;&nbsp;&nbsp;&nbsp;</label><input class="easyui-combobox" data-options="editable:false,data:comm.getBaseParames('lineType'),valueField: 'id',textField: 'value'" value="1" style="width: 75px;" name="jcxdh" id="_jcxdh" >
+							</td>
+							<td  style="">
+								
+							</td>
+						</tr>
+					</table>
+					<div style="text-align: center;">
+						<a href="javascript:void(0)" class="easyui-linkbutton c1" style="width:100px" onclick="veh.login()">登录</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        				<a href="javascript:void(0)" class="easyui-linkbutton c7" style="width:100px"  onclick="veh.loginPageReload()" >清除</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		</form>
+	</div>
+</div>
+
+<div id="checkingVehToolbar">
+	<div><label>号牌种类：</label><input value="" class="easyui-combobox" id="quer_checking_hpzl" data-options="data:comm.getBaseParames('hpzl'),	valueField: 'id',
+		textField: 'value'" style="width: 110px;">
+	    <label>号牌号码：</label><input value="" class="easyui-textbox" data-options="onChange:veh.uphphm" id="quer_checking_hphm" style="width: 70px;"  />
+		<a class="easyui-linkbutton" href="#" data-options="iconCls:'icon-search'" onclick="veh.vehCheckingQuery()"></a>
+	</div>
+</div>
+<div id="checkingVehFooter">
+	<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" onclick="veh.vehUnlogin()">退办</a>
+</div>
+
+<div id="checkedVehToolbar">
+	<div>
+	    <label>车辆型号：</label><input value="" class="easyui-textbox" data-options="onChange:veh.uphphm" id="quer_checked_clxh" style="width: 70px;"  />
+		<a class="easyui-linkbutton" href="#" data-options="iconCls:'icon-search'" onclick="veh.vehCheckedQuery()"></a>
+	</div>
+</div>
+<div id="checkedVehFooter">
+	<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cut'" onclick="veh.clone()">克隆车辆信息</a>
+</div>
+
+<div class="easyui-window" id="win_checke_veh_info"   data-options="iconCls:'icon-save',modal:true,title:'车辆基本信息',border:0,closed:true"  style="width:940px;height:620px;">
+	<form id="win_form_veh" style="width: 100%;height: 100%">
+	<div class="easyui-layout" data-options="fit:true,border:0" >
+		<div data-options="region:'center',href:'vehInfo_.html'" style="padding: 10px;"></div>
+		<div data-options="region:'south'"  style="height: 80px;" >
+			<ul class="vehCheckeItem"></ul>
+		</div>
+	</div>
+	</form>
+</div>
+
+<script type="text/javascript">
+showJyxm("0");
+function showJyxm(obj){	
+	var tb = document.getElementById('jyxmT');
+	if (tb.rows.length > 1){
+		for(var d=tb.rows.length-2;d>=0;d--){
+			tb.deleteRow(d);
+		}
+	}
+	var jctype = "aqjyxm";
+	if(obj == "0"){
+		jctype = "aqjyxm";
+	}else{
+		jctype = "zhjyxm";
+	}
+	$.post("/veh/bps/getBaseParamsByType",{type:jctype},function(data){
+		
+		var jyxmArr = data.data;
+		var rowCou = 0;
+		if (jyxmArr.length > 0){
+			rowCou = Math.ceil(jyxmArr.length/6);
+			var b = 0;
+			for (var r=0;r<rowCou;r++){
+				 var newRow=tb.insertRow(r);
+				 for (var t=0;t<6;t++){
+		             var newcellname=newRow.insertCell(t);
+		             if (b >= jyxmArr.length){
+		            	 newcellname.innerHTML="";
+		             }else{
+		             	 newcellname.innerHTML="<span><label or='i_jyxm"+b+"'>"+jyxmArr[b].paramName+":</label><input id='i_jyxm"+b+"' name='jyxm' type='checkbox' value='"+jyxmArr[b].paramValue+"'></span>";
+		             }
+		             b++;
+				 }
+			}
+		}	
+		
+	},"json").error(function(e){
+		$.messager.alert("获取检验项目错误","错误类型:"+e.status);
+	});
+}
+
+$(function(){
+	$('#_checkType').combobox({
+	onChange: function(newValue,oldValue){
+		showJyxm(newValue)
+	}
+});
+})
+</script>

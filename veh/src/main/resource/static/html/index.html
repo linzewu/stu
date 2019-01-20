@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css"
+	href="/veh/js/easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css"
+	href="/veh/js/easyui/themes/color.css">
+<link rel="stylesheet" type="text/css" href="/veh/css/veh.css">
+<link rel="stylesheet" type="text/css"
+	href="/veh/js/easyui/themes/icon.css">
+<script type="text/javascript" src="/veh/js/easyui/jquery.min.js"></script>
+<script type="text/javascript" src="/veh/js/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript"
+	src="/veh/js/easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript"
+	src="/veh/js/easyui/datagrid-groupview.js"></script>
+<script type="text/javascript" src="/veh/js/veh.js"></script>
+<script type="text/javascript" src="/veh/js/common.js"></script>
+<script type="text/javascript" src="/veh/js/highcharts/highcharts.js"></script>
+<script type="text/javascript" src="/veh/js/drag_map.js"></script>
+<style type="text/css">
+#mask {
+	position: absolute;
+	left: 0;
+	top: 0;
+	background: #000;
+	opacity: 0.3;
+	filter: Alpha(opacity : 30);
+	display: none;
+	z-index: 999888;
+}
+
+#img {
+	position: absolute;
+	display: none;
+	z-index: 999889;
+}
+
+#img img {
+	/* 	width: 500px;
+	height: 400px; */
+	border: none;
+}
+
+#Layer1 {
+	z-index: 999890;
+	position: absolute;
+	top: 150px;
+	left: 30px;
+	display: none;
+}
+</style>
+
+<title>机动车查验系统</title>
+
+</head>
+<body class="easyui-layout">
+	<div data-options="region:'north'" class="header">
+		<div style="float: left; margin: 0 0 0 30px;">
+			<img alt="" src="/veh/images/logo.png" style="border: 0; margin: 0">
+		</div>
+		<div class="header-title" style="float: left;">上海翔尚机动车安全技术检验系统</div>
+		<div style="float: right; height: 50px;">
+			<div style="padding: 24px 10px 0 0;">
+				用户名：<span id="realName"></span><span id="tipMsg"><img alt="" src="/veh/images/userinfo.png"></span>您好! 
+				<a class="easyui-linkbutton c6" data-options="onClick:updataPassword">密码修改</a>
+				<a class="easyui-linkbutton c5" data-options="onClick:logout">注销</a>
+			</div>
+			<div id="win_password" class="easyui-window" data-options="
+																    width:400,
+																    height:210,
+																    modal:true,
+																    title:'密码修改',
+																    closed:false,
+																    closable:false,
+																    minimizable:false,
+																    collapsible:false,
+																    maximizable:false,
+																    draggable:false,
+																    href:'password.html',
+																    closed:true
+																    "></div>
+		</div>
+	</div>
+	<div data-options="region:'center'">
+		<div id="sysTabs" class="easyui-tabs"
+			data-options="fit:true,justified:true,plain:false,tabHeight:34,tabPosition:'top',pill:true">
+			<div title="机动车检测登陆" data-options="href:'vehlogin.html'"></div>
+			<div title="机动车检测报告" data-options="href:'report/index.html'"></div>
+			<div title="业务统计报告"
+				data-options="href:'statisticalReport.html',onLoad:statisticalReport.initEvents"></div>
+			<div title="系统管理"
+				data-options="href:'system.html',onLoad:system.initEvents"></div>
+		</div>
+	</div>
+	
+<div id="mask"></div>
+<div id="Layer1">
+	<table cellspacing="2" cellpadding="0" border="0">
+		<tbody>
+			<tr>
+				<td colspan="3" align="center"><input type="button" value="关闭"
+					onclick="closeMask();"
+					style="width: 50px; height: 20px; cursor: pointer;"></td>
+			</tr>
+			<tr>
+				<td colspan="3">&nbsp;</td>
+			</tr>
+			<tr>
+				<td colspan="3">&nbsp;</td>
+			</tr>
+			<tr>
+				<td colspan="3" align="center"><input type="button" value="下载"
+					onclick="dowImg();"
+					style="width: 50px; height: 20px; cursor: pointer;"></td>
+			</tr>
+			<tr>
+				<td colspan="3">&nbsp;</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td><img title="向上" style="cursor: pointer;"
+					onClick="clickMove1('down');" height="20" src="/veh/images/up.gif"
+					width="20"></td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td><img title="向左" style="cursor: pointer"
+					onClick="clickMove1('right');" height="20" src="/veh/images/left.gif"
+					width="20"></td>
+				<td><img title="还原" style="cursor: pointer"
+					onClick="realsize();" height="20" src="/veh/images/zoom.gif" width="20"></td>
+				<td><img title="向右" style="cursor: pointer"
+					onClick="clickMove1('left');" height="20" src="/veh/images/right.gif"
+					width="20"></td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td><img title="向下" style="cursor: pointer"
+					onClick="clickMove1('up');" height="20" src="/veh/images/down.gif"
+					width="20"></td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td><img title="放大" style="cursor: pointer" onClick="bigit();"
+					height="20" src="/veh/images/zoom_in.gif" width="20"></td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td><img title="缩小" style="cursor: pointer"
+					onClick="smallit();" height="20" src="/veh/images/zoom_out.gif"
+					width="20"></td>
+				<td>&nbsp;</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div id="img">
+	<div id="hiddenPic"
+		style="z-index: 1; left: 50px; visibility: hidden; width: 0px; position: absolute; top: 100px; height: 0px">
+		<img src="" border="0" name="images2" class="bigImg">
+	</div>
+	<div class="dragAble" id="block1" onMouseOver="dragObj=block1; drag=1;"
+		style="z-index: 10; left: 10px; width: 0px; position: absolute; top: 150px; height: 0px"
+		onMouseOut="" drag="0">
+		<img onmousewheel="return onWheelZoom(this)" style="zoom: 1" src="g"
+			border="0" name="images1" class="bigImg">
+	</div>
+	<a href="" id="printImg"></a>
+</div>
+
+</body>
+<script type="text/javascript">
+	function logout(){
+		$.post("/veh/user/logout",function(data){
+			 window.location.href="/veh/html/login.html";
+		});
+	}
+	$("#realName").text(userInfo.realName);	
+
+	(function ($) {
+		$(document).ready(function () {
+			/** Coding Here */
+		}).keydown(function (e) {
+			if (e.which === 27) {
+				closeMask();
+			}
+		});
+	})(jQuery);
+	
+	$(function(){
+		var d = new Date();
+		var userNameValidDate = new Date(userInfo.userNameValidDate);
+		var pwValidDate = new Date(userInfo.pwValidDate);
+		var days = userNameValidDate.getTime() - d.getTime();
+		var time = parseInt(days / (1000 * 60 * 60 * 24));
+		//$("#userVal").text(time);	
+		days = pwValidDate.getTime() - d.getTime();
+		var timePw = parseInt(days / (1000 * 60 * 60 * 24));
+		//$("#pwVal").text(time);	
+		
+		var cont = "本次登录的时间："+userInfo.lastLoginDate+",本次登录IP："+userInfo.ip+
+		",<br/>上次登录的时间："+userInfo.lastTimeLoginDate+",上次登录IP："+userInfo.lastTimeIP+
+		",<br/>距离用户到期还剩"+time+"天,距离密码到期还剩"+timePw+"天"+
+		",<br/>上次登录失败的时间："+userInfo.lastTimeLoginFailDate+",上次登录失败IP："+userInfo.lastTimeLoginFailIP;
+		
+		
+		 $('#tipMsg').tooltip({
+             position: 'left',
+             content: cont,
+             onShow: function(){
+                 $(this).tooltip('tip').css({
+                    // backgroundColor: '#666',
+                     borderColor: '#666'
+                 });
+             }
+         });
+		
+		if (userRoleInfo.roleName == "超级管理员" || userRoleInfo.roleName == "安全管理员" ||
+				userRoleInfo.roleName == "审计管理员" || userRoleInfo.roleName == "系统管理员"){
+			$("#sysTabs").tabs('disableTab', 0);
+			$("#sysTabs").tabs('disableTab', 1);
+			$("#sysTabs").tabs("disableTab", 2);
+			$("#sysTabs").tabs("select", 3);
+		}else{
+			$("#sysTabs").tabs('disableTab', 3);
+		}
+	});
+		
+	
+</script>
+</html>

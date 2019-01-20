@@ -1,0 +1,199 @@
+<div style="margin: 0 auto; width: 96%; padding-top: 10px;">
+	<table class="simpletable" cellpadding="0" cellspacing="0"
+		id="flow-baseInfo">
+		<tr>
+			<td class="simpletable-l" style="width: 15%;"><label>类型\线别：</label></td>
+			<td class="simpletable-r" style="width: 35%;"><input
+				style="width: 80px;" name="jclx"
+				data-options="editable:false,required:true,data:comm.getBaseParames('flowType'),valueField: 'id',textField: 'value'"
+				class="easyui-combobox" id="combox-flowType"><input
+				id="numberbox-jcxdh" class="easyui-numberspinner"
+				style="width: 40px;" required="required"
+				data-options="min:1,max:10,editable:false"></td>
+			<td class="simpletable-l" style="width: 15%"><label>流程名称：</label></td>
+			<td class="simpletable-r" style="width: 35%"><input
+				class="easyui-textbox" name="name" id="textbox-name" required="true"></td>
+		</tr>
+		<tr>
+			<td class="simpletable-l" style="width: 15%;"><label>制动\称重交叉检测：</label></td>
+			<td class="simpletable-r" style="width: 35%;"><input
+				name="czzdjc" value="0" type="radio" checked="checked" />否 <input
+				name="czzdjc" value="1" type="radio" />是</td>
+			<td class="simpletable-l" style="width: 15%"><label>地沟显示屏：</label></td>
+			<td class="simpletable-r" style="width: 35%"><input
+				class="easyui-combobox" name="dg-display" id="dg-display"></td>
+		</tr>
+
+		<tr>
+			<td class="simpletable-l" style="width: 15%;"><label>是否加载制动台：</label></td>
+			<td class="simpletable-r" style="width: 85%;" colspan="3"><input
+				name="jzzdt" value="1" type="radio" />是 <input name="jzzdt"
+				value="0" type="radio" checked="checked" />否</td>
+		</tr>
+	</table>
+</div>
+<div id="div_sb" style="margin: 0 auto; width: 96%; padding-top: 10px;">
+	<div class="div-drog-title">
+		<span>检测设备\环节</span>
+	</div>
+	<ul class="target" id="ul-sb-context"></ul>
+</div>
+<div id="workpoint_contex"></div>
+<div style="padding-top: 10px; text-align: center;">
+	<a href="#" class="easyui-linkbutton button-add"
+		data-options="iconCls:'icon-save'" onclick="addFlow()">新增流程</a> <a
+		href="#" class="easyui-linkbutton button-edit"
+		data-options="iconCls:'icon-save'" onclick="saveFlow()">保存</a>
+</div>
+<script>
+	function addFlow() {
+		if ($("#textbox-name").textbox("isValid")
+				&& $("#numberbox-jcxdh").numberspinner("isValid")
+				&& $("#combox-flowType").combobox("isValid")) {
+
+			var name = $("#textbox-name").textbox("getValue");
+			var jcxdh = $("#numberbox-jcxdh").numberspinner("getValue");
+			var flowType = $("#combox-flowType").combobox("getValue");
+			var czzdjc = $("input[name=czzdjc]:checked").val();
+			var jzzdt = $("input[name=jzzdt]:checked").val();
+
+			$.messager.progress({
+				title : '提示',
+				msg : "数据处理中..."
+			});
+			$.post("/veh/flow/addFlow", {
+				jclcmc : name,
+				jcxdh : jcxdh,
+				jclclx : flowType,
+				jzzdt : jzzdt,
+				czzdjc : czzdjc
+			}, function(data) {
+				$.messager.alert("提示", data.message, "info");
+			}).error(function(e) {
+				$.messager.alert("提示", "请求失败", "error");
+			}).complete(function() {
+				$.messager.progress("close");
+				$("#flowManager").datagrid("reload");
+				$("#panel-flow").panel("refresh");
+
+			});
+		} else {
+			$("#textbox-name").textbox("validate")
+					&& $("#numberbox-jcxdh").numberbox("validate")
+					&& $("#combox-flowType").combobox("validate")
+		}
+	}
+
+	function flowInitData() {
+		var row = $("#flowManager").datagrid("getSelected");
+		if (!row) {
+			//隐藏编辑按钮
+			$("#dg-display").combobox("disable");
+			$(".button-edit").hide();
+			$(".button-add").show();
+			return;
+		}
+
+		//不能修改基本参数
+		$("#combox-flowType").combobox("disable");
+		$("#numberbox-jcxdh").numberbox("disable");
+		$("#textbox-name").textbox("disable");
+
+		//隐藏添加按钮
+		$(".button-add").hide();
+		$(".button-edit").show();
+		buidingWorkpoint();
+	}
+
+	function buidingWorkpoint() {
+		var indicator = $('<div class="indicator">↑↑</div>').appendTo('body');
+		$('.target').droppable({
+			accept : '.drag-item',
+			onDragEnter : function(e, source) {
+				$(this).addClass('over');
+			},
+			onDragLeave : function(e, source) {
+				$(this).removeClass('over');
+			},
+			onDrop : function(e, source) {
+				$(this).append(source)
+				indicator.hide();
+				$(this).removeClass('over');
+			}
+		});
+
+		$('.drag-item').draggable({
+			revert : true,
+			deltaX : 0,
+			deltaY : 0
+		});
+	}
+
+	function deleteWorkpoint(obj) {
+		var parent = $(obj).parent().parent().remove();
+		$("#div_sb .target").append(parent.find(".drag-item"));
+		buidingWorkpoint();
+	}
+
+	function addWorkPoint() {
+		var w = "<div class=\"workpoint\"><div class=\"div-drog-title\"><span>工位</span><a style='float:right' href='#' onclick='deleteWorkpoint(this)'>删除</a></div><ul class=\"target\"></ul></div>";
+		$("#workpoint_contex").append(w);
+		buidingWorkpoint();
+	}
+
+	function saveFlow() {
+		var items = $("#ul-sb-context").find("li").length;
+
+		var msg = "是否保存？";
+
+		if (items > 0) {
+			msg = "尚有设备未添加到工位上，是否保存？";
+		}
+
+		$.messager.confirm("提示", msg, function(r) {
+			if (r) {
+				commitFlow();
+			}
+		});
+
+	}
+
+	function commitFlow() {
+		var ws = [];
+		$.each($("#workpoint_contex .workpoint"), function(i, n) {
+			var w = {};
+			w.sort = i + 1;
+			w.name = $(n).find("span").text();
+			w.id = $(n).find("span").attr("value");
+			var sb = [];
+			$.each($(n).find(".drag-item"), function(j, k) {
+				sb[j] = {
+					id : $(k).attr("value"),
+					name : $(k).text()
+				}
+			});
+			w.sbs = sb;
+			ws[i] = w;
+		});
+
+		var czzdjc = $("input[name=czzdjc]:checked").val();
+
+		var jzzdt = $("input[name=jzzdt]:checked").val();
+
+		currentRow.flow = JSON.stringify(ws);
+		currentRow.czzdjc = czzdjc;
+		currentRow.jzzdt = jzzdt;
+		currentRow.displayId = $("#dg-display").combobox("getValue");
+		$.messager.progress({
+			title : '提示',
+			msg : "流程更新中..."
+		});
+		$.post("/veh/flow/updateFlow", currentRow, function(data) {
+			$.messager.alert("提示", data.message, "info");
+		}).error(function(e) {
+			$.messager.alert("提示", "请求失败", "error");
+		}).complete(function() {
+			$.messager.progress("close");
+		});
+	}
+</script>

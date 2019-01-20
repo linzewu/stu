@@ -1,0 +1,97 @@
+<script type="text/javascript">
+	var device  = gridUtil.createNew("#deviceManager",{idField:"id",url:"/veh/device"});
+	
+	function deviceFormatter(value,row,index){
+		return  comm.getParamNameByValue('deviceType',value);
+	}
+	function lineFormatter(value,row,index){
+		return  comm.getParamNameByValue('lineType',value);
+	}
+	
+	function workPointFormatter(value,row,index){
+		return  comm.getParamNameByValue('workPoint',value);
+	}
+	function switchTypeFormatter(value,row,index){
+		return  comm.getParamNameByValue('switch',value);
+	}
+	
+	switchTypeFormatter
+	
+	var motion=gridUtil.createNew("#motionManager",{idField:"id",url:"/veh/motion"});
+	
+	var sw=gridUtil.createNew("#switchManager",{idField:"id",url:"/veh/switch"});
+	
+</script>
+
+<div class="easyui-tabs" data-options="fit:true">
+	<div data-options="title:'协议管理'">
+		<table id="motionManager" class="easyui-datagrid"
+			data-options="url:'/veh/motion/getMotions',fitColumns:true,singleSelect:true,fit:true,toolbar:motionManagerToolbar">
+			<thead> 
+				<tr>
+					<th data-options="field:'type',width:100,formatter:deviceFormatter,editor:{type:'combobox',options:{required:true,data:comm.getBaseParames('deviceType'),valueField: 'id',textField: 'value'}}">设备类型</th>
+					<th data-options="field:'actionName',width:100,editor:{type:'textbox',options:{required:true}}">动作名称</th>
+					<th data-options="field:'protocol',width:100,editor:{type:'textbox',options:{required:true}}">协议内容</th>
+				</tr>
+			</thead>
+		</table>
+		<div id="motionManagerToolbar">
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="motion.append()">添加协议</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="motion.accept()">保存</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="motion.reject()">取消编辑</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="motion.editData()">修改协议</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="motion.remove()">删除协议</a>
+		</div>
+	</div>
+	<div data-options="title:'设备管理'">
+		<table id="deviceManager" class="easyui-datagrid"
+			data-options="url:'/veh/device/getDevices',fitColumns:true,singleSelect:true,fit:true,toolbar:deviceManagerToolbar">
+			<thead> 
+				<tr>
+					<th data-options="field:'type',width:100,formatter:deviceFormatter,editor:{type:'combobox',options:{required:true,data:comm.getBaseParames('deviceType'),valueField: 'id',textField: 'value'}}">设备类型</th>
+					<th data-options="field:'line',width:100,formatter:lineFormatter,editor:{type:'combobox',options:{required:true,data:comm.getBaseParames('lineType'),valueField: 'id',textField: 'value'}}">线别</th>
+					<th data-options="field:'workPoint',width:100,formatter:workPointFormatter,editor:{type:'combobox',options:{required:true,data:comm.getBaseParames('workPoint'),valueField: 'id',textField: 'value'}}">工位</th>
+					<th data-options="field:'ip',width:100,editor:{type:'textbox',options:{required:true}}">IP地址</th>
+					<th data-options="field:'port',width:100,editor:{type:'textbox',options:{required:true}}">通讯端口</th>
+				</tr>
+			</thead>
+		</table>
+		<div id="deviceManagerToolbar">
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="device.append()">添加设备</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="device.accept()">保存</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="device.reject()">取消编辑</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="device.editData()">修改设备</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="device.remove()">删除设备</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-debug',plain:true" onclick="testMotion()">设备测试</a>
+		</div>
+	</div>
+	
+	<div data-options="title:'光电开关配置'">
+		<table id="switchManager" class="easyui-datagrid"
+			data-options="url:'/veh/device/getSwitchs',fitColumns:true,singleSelect:true,fit:true,toolbar:switchManagerToolbar">
+			<thead> 
+				<tr>
+					<th data-options="field:'ip',width:30,editor:{type:'textbox',options:{required:true}}">IP地址</th>
+					<th data-options="field:'port',width:20,editor:{type:'textbox',options:{required:true}}">通讯端口</th>
+					<th data-options="field:'line',width:20,formatter:lineFormatter,editor:{type:'combobox',options:{required:true,data:comm.getBaseParames('lineType'),valueField: 'id',textField: 'value'}}">线别</th>
+					<th data-options="field:'x1',width:20,formatter:switchTypeFormatter,editor:{type:'combobox',options:{data:comm.getBaseParames('switchType'),valueField: 'id',textField: 'value'}}">信号1</th>
+					<th data-options="field:'x2',width:20,formatter:switchTypeFormatter,editor:{type:'combobox',options:{data:comm.getBaseParames('switchType'),valueField: 'id',textField: 'value'}}">信号2</th>
+					<th data-options="field:'x3',width:20,formatter:switchTypeFormatter,editor:{type:'combobox',options:{data:comm.getBaseParames('switchType'),valueField: 'id',textField: 'value'}}">信号3</th>
+					<th data-options="field:'x4',width:20,formatter:switchTypeFormatter,editor:{type:'combobox',options:{data:comm.getBaseParames('switchType'),valueField: 'id',textField: 'value'}}">信号4</th>
+					<th data-options="field:'x5',width:20,formatter:switchTypeFormatter,editor:{type:'combobox',options:{data:comm.getBaseParames('switchType'),valueField: 'id',textField: 'value'}}">信号5</th>
+					<th data-options="field:'x6',width:20,formatter:switchTypeFormatter,editor:{type:'combobox',options:{data:comm.getBaseParames('switchType'),valueField: 'id',textField: 'value'}}">信号6</th>
+					<th data-options="field:'x7',width:20,formatter:switchTypeFormatter,editor:{type:'combobox',options:{data:comm.getBaseParames('switchType'),valueField: 'id',textField: 'value'}}">信号7</th>
+					<th data-options="field:'x8',width:20,formatter:switchTypeFormatter,editor:{type:'combobox',options:{data:comm.getBaseParames('switchType'),valueField: 'id',textField: 'value'}}">信号8</th>
+				</tr>
+			</thead>
+		</table>
+		<div id="switchManagerToolbar">
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="sw.append()">添加开关</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="sw.accept()">保存</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="sw.reject()">取消编辑</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="sw.editData()">修改开关</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="sw.remove()">删除开关</a>
+		</div>
+		
+	</div>
+</div>

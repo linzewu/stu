@@ -1,0 +1,168 @@
+<style type="text/css">
+.drag-item {
+	list-style-type: none;
+	display: block;
+	padding: 5px;
+	border: 1px solid #ccc;
+	margin: 2px;
+	width: 60px;
+	height: 30px;
+	color: #444;
+	background: #AACCFF;
+	float: left;
+}
+
+.indicator {
+	position: absolute;
+	font-size: 9px;
+	width: 10px;
+	height: 10px;
+	display: none;
+	color: red;
+}
+
+.dp {
+	opacity: 0.5;
+	filter: alpha(opacity = 50);
+}
+
+.over {
+	background: #FBEC88;
+}
+
+.div-drog-title {
+	margin: 0;
+	padding: 0;
+	margin-left: 10px;
+	background: #ccc;
+	width: 98%;
+	border: 1px solid #ccc;
+}
+
+.target {
+	margin: 0;
+	padding: 0;
+	margin-left: 10px;
+	border: 1px solid #ccc;
+	width: 98%;
+	height: 50px;
+}
+
+.workpoint {
+	margin: 0 auto;
+	width: 96%;
+	padding-top: 10px;
+}
+</style>
+
+<script type="text/javascript">
+	var flowManager = gridUtil.createNew("#flowManager", {
+		idField : "id",
+		url : "/veh/flow"
+	});
+	function jclxFormatter(value, row, index) {
+		return comm.getParamNameByValue('flowType', value);
+	}
+	
+	function pdgw(){
+		
+		
+		
+	}
+	
+	var currentRow;
+
+	function editFlow(index, row) {
+		$("#textbox-name").textbox("setValue", row.jclcmc);
+		$("#numberbox-jcxdh").numberspinner("setValue", row.jcxdh);
+		$("#combox-flowType").combobox("setValue", row.jclclx);
+		$("#textbox-name").textbox("disable");
+		$("#numberbox-jcxdh").numberspinner("disable");
+		$("#combox-flowType").combobox("disable");
+		$("input[name=czzdjc]:eq("+row.czzdjc+")").attr("checked","checked");
+		$("input[name=jzzdt][value="+row.jzzdt+"]").attr("checked","checked");
+		$.messager.progress({
+			title : '提示',
+			msg : "加载设备信息。。。"
+		});
+		
+		$("#workpoint_contex").empty();
+		$("#ul-sb-context").empty();
+		var flow = $.parseJSON(row.flow);
+		
+		$.post("/veh/flow/getWorkPointAndDeviceByJcxxh",{jcxdh : row.jcxdh},function(data){
+			
+			$.each(data.gw,function(i,n){
+				var w = $("<div class=\"workpoint\"><div class=\"div-drog-title\"><span value='"+n.id+"'>"+n.name+"</span></div><ul class=\"target\"></ul></div>");
+				$("#workpoint_contex").append(w);
+			});
+			$.each(data.sb,function(i,n){
+				var li ="<li class=\"drag-item\" value=\""+n.id+"\">"+n.name+"</li>";
+				$("#ul-sb-context").append(li);
+			});
+			$("#ul-sb-context").append("<li class=\"drag-item\" value=\"-1\">"+row.jcxdh+"号线地沟</li>");
+			
+			if(flow!=null){
+				$.each(flow,function(i,n){
+					$.each(n.sbs,function(j,k){
+						var li ="<li class=\"drag-item\" value=\""+k.id+"\">"+k.name+"</li>";
+						$("#workpoint_contex .workpoint:eq("+i+") .target").append(li);
+						$("#ul-sb-context .drag-item[value="+k.id+"]").remove();
+					})
+				});
+			}
+			flowInitData();
+		}).error(function(e){
+			$.messager.alert("提示", "请求失败", "error");
+		}).complete(function() {
+			$.messager.progress("close");
+		});;
+		
+		$.post("/veh/device/getDeviceDisplay", {
+			jcxxh : row.jcxdh
+		}, function(data) {
+			data = data.rows;
+			$("#dg-display").combobox({
+				 valueField:'id',
+				 textField:'name',
+				 data:data,
+				 editable:false
+			});
+			$("#dg-display").combobox("setValue",row.displayId);
+		}).error(function(e) {
+			$.messager.alert("提示", "获取显示屏失败", "error");
+		}).complete(function() {
+			
+		});
+		//赋予当前编辑的流程
+		currentRow=row;
+	}
+	
+	function deleteCall(){
+		$("#panel-flow").panel("refresh");
+	}
+</script>
+
+<div id="cc" class="easyui-layout" data-options="fit:true">
+	<div data-options="region:'west'" border=0 style="width: 300px;">
+		<table class="easyui-datagrid" style="width: 400px; height: 250px"
+			id="flowManager"
+			data-options="onDblClickRow:editFlow,url:'/veh/flow/getFlows',fitColumns:true,singleSelect:true,toolbar:'#flowToolbar',fit:true">
+			<thead>
+				<tr>
+					<th data-options="field:'jclclx',width:100,formatter:jclxFormatter">检测类型</th>
+					<th data-options="field:'jclcmc',width:100">流程名称</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+	<div id="panel-flow"
+		data-options="region:'center',title:'检测流程',href:'/veh/html/workPoint.html',onLoad : function() {flowInitData();}">
+	</div>
+</div>
+
+<div id="flowToolbar">
+	<a href="#" class="easyui-linkbutton"
+		data-options="iconCls:'icon-remove',plain:true"
+		onclick="flowManager.remove(deleteCall)">删除流程</a>
+</div>

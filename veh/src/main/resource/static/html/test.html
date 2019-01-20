@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script type="text/javascript">
+
+var m_bDVRControl;
+var m_iLoginUserId
+
+window.onload = function(){
+	var myDate = new Date();
+	var iYear = myDate.getFullYear();        
+	if(iYear < 1971 || iYear > 2037)
+	{
+		alert("为了正常使用本软件，请将系统日期年限设置在1971-2037范围内！");
+	}
+	if(document.getElementById("HIKOBJECT1").object == null)
+	{
+		alert("请先下载控件并注册！");
+		m_bDVRControl = null;
+	}
+	else
+	{
+		m_bDVRControl = document.getElementById("HIKOBJECT1");
+		
+	}
+} 
+
+
+function login(){
+	
+	m_iLoginUserId = m_bDVRControl.Login('192.168.11.220','8000','admin','12345');
+	if(m_iLoginUserId == -1)
+	{
+		alert("注册失败！");
+	}
+	else
+	{
+		alert("注册成功！"+m_iLoginUserId);
+		document.getElementById("HIKOBJECT1").SetUserID(m_iLoginUserId);
+	}
+}
+
+function logout(){
+	if(m_bDVRControl.Logout())
+	{
+		alert("注销成功！");
+	}
+	else
+	{
+		alert("注销失败！");
+	}
+}
+
+function getFiles(){
+	var files = m_bDVRControl.SearchRemoteRecordFile(7,0,'2015-6-23 0:00:00','2015-6-24 23:59:59',false,false,'');
+	alert(files)
+}
+
+function play(){
+	m_bDVRControl.PlayBackByName('ch02_00000003428000000');
+}
+
+
+	
+</script>
+
+</head>
+<body>
+<div style="width:800px;height: 600px;"> 
+<object classid="CLSID:CAFCF48D-8E34-4490-8154-026191D73924" codebase="codebase/NetVideoActiveX23.cab#version=2,3,19,1" standby="Waiting..." id="HIKOBJECT1" width="100%" height="100%" name="HIKOBJECT1" ></object></div>
+<input type="button" value="注册" onclick="login()"/> <input type="button" value="注销" onclick="logout()"/>
+<input  value=""/>
+<input type="button" value="获取录像" onclick="getFiles()"/>
+<input type="button" value="播放" onclick="play()"/>
+</body>
+</html>

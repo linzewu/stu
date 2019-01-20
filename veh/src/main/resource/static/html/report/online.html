@@ -1,0 +1,55 @@
+<table id="grid_checkEvent" style="height: 200px;">
+   
+</table>
+
+<table id="grid_checkLog" style="height: 200px;">
+   
+</table>
+
+<script type="text/javascript">
+
+$(function(){
+	var reportData = $("#checkingVeh").datagrid("getSelected");
+	
+	$("#grid_checkLog").datagrid({
+		title:'上传日志',
+		url:'/veh/report/getCheckLogs?jylsh='+reportData.jylsh,
+	    columns:[[
+	        {field:'jylsh',title:'检验流水号',width:160},
+	        {field:'hphm',title:'号牌号码',width:100},
+	        {field:'hpzl',title:'号牌种类',width:100},
+	        {field:'jycs',title:'检验次数',width:100},
+	        {field:'code',title:'状态代码',width:100},
+	        {field:'message',title:'状态信息',width:100},
+	        {field:'jkbmc',title:'接口名称',width:100}
+	    ]]
+    	
+	});
+
+
+	$("#grid_checkEvent").datagrid({
+		toolbar: [{
+			iconCls: 'icon-reload',
+			text:'重新上传',
+			handler: function(){
+				$.post("/veh/report/updateEventState",{jylsh:reportData.jylsh},function(data){
+					$.messager.alert("提示","刷新成功");
+					$("#grid_checkEvent").datagrid("reload");
+				})
+			}
+		}],
+		url:'/veh/report/getCheckEvents?jylsh='+reportData.jylsh,
+		title:'上传事件',
+	    columns:[[
+	        {field:'jylsh',title:'检验流水号',width:160},
+	        {field:'hphm',title:'号牌号码',width:100},
+	        {field:'hpzl',title:'号牌种类',width:100},
+	        {field:'jycs',title:'检验次数',width:100},
+	        {field:'event',title:'事件',width:100},
+	        {field:'jyxm',title:'检验项目',width:100},
+	        {field:'state',title:'事件状态',width:100}
+	    ]]
+	});
+})
+
+</script>

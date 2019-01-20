@@ -1,0 +1,113 @@
+<div style="text-align: center;margin-top: 10px;"><a  class="easyui-linkbutton"   data-options="iconCls:'icon-print'" onclick="report.createReport($('#print_area2'))">打印</a></div>
+<div id="print_area2">
+<DIV style="width: 720px;margin: 0 auto;MARGIN-BOTTOM: 10px; FONT-SIZE: 20px; FONT-WEIGHT: bold; TEXT-ALIGN: center; MARGIN-TOP: 15px">
+<img src="/veh/images/cma.jpg"  style="width: 61px;height: 44px;float: left;" />
+<span>机动车安全技术检验报告 </span></DIV>
+<div style="width: 720px;margin: 0 auto;">
+	<span style="float: left;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+	<span style="float: right;">检验依据：GB7258-2012 GB21861-2014</span>
+</div>
+<DIV id=report>
+	<TABLE cellSpacing=0 cellPadding=0 border=0>
+		<TBODY>
+			<TR>
+				<TD class=r colSpan=6>一、基本信息</TD>
+			</TR>
+			<TR>
+				<TD class=l width="15%">检验报告编号</TD>
+				<TD class=r width="18%" name="report-baseInfo-jylsh"></TD>
+				<TD class=l width="15%">检验机构名称</TD>
+				<TD class=r colSpan=3 name="report-baseInfo-jyjgmc"></TD>
+			</TR>
+			<TR>
+				<TD class=l>号牌号码</TD>
+				<TD class=r name="report-baseInfo-hphm"></TD>
+				<TD class=l >所&nbsp;&nbsp;有&nbsp;&nbsp;人</TD>
+				<TD class=r colSpan=3 name="report-baseInfo-syr"></TD>
+			</TR>
+			<TR>
+				<TD class=l>车&nbsp;辆&nbsp;类&nbsp;型</TD>
+				<TD class=r name="report-baseInfo-cllx"></TD>
+				<TD class=l>品&nbsp;牌&nbsp;/&nbsp;型&nbsp;号</TD>
+				<TD class=r width="19%"><span name="report-baseInfo-clpp1"></span>/<span name="report-baseInfo-clxh"></TD>
+				<TD class=l width="15%">使&nbsp;用&nbsp;性&nbsp;质</TD>
+				<TD class=r width="18%" name="report-baseInfo-syxz"></TD>
+			</TR>
+			<TR>
+				<TD class=l>注册登记日期</TD>
+				<TD class=r name="report-baseInfo-ccdjrq"></TD>
+				<TD class=l>出&nbsp;厂&nbsp;年&nbsp;月</TD>
+				<TD class=r name="report-baseInfo-ccrq"></TD>
+				<TD class=l>检&nbsp;验&nbsp;日&nbsp;期</TD>
+				<TD class=r name="report-baseInfo-upLineDate"></TD>
+			</TR>
+			<TR>
+				<TD class=l>车辆识别代号<BR>（或出厂编号） </TD>
+				<TD class=r colSpan=2 name="report-baseInfo-clsbdh"></TD>
+				<TD class=l>发动机号码<BR>（或电动机号码） </TD>
+				<TD class=r colSpan=2 name="report-baseInfo-fdjh"></TD>
+			</TR>
+			<TR>
+				<TD class=r colSpan=6>二、检验结论</TD>
+			</TR>
+			<TR>
+				<TD class=l>检验结论</TD>
+				<TD class=l colSpan=2 name="report-baseInfo-jyjl"></TD>
+				<TD class=l>授权签字人</TD>
+				<TD class=l colSpan=2></TD>
+			</TR>
+			<TR>
+				<TD class="right no-bot" colSpan=6 style="text-align: right;">单位名称（盖章）：<span name="report-baseInfo-jyjgmc"></span></TD>
+			</TR>
+		</TBODY>
+	</TABLE>
+	<TABLE cellSpacing=0 cellPadding=0 border=0>
+		<TBODY id="tbody_rgjyjg">
+			<TR>
+				<TD class=r colSpan=6>三、人工检验结果</TD>
+			</TR>
+			<TR>
+				<TD class=l width="6%">序号</TD>
+				<TD class=l width="30%">检验项目</TD>
+				<TD class=l width="16%">结果判定</TD>
+				<TD class=l width="40%" colSpan=2>具体不合格情况说明</TD>
+				<TD class=l width="8%">备注</TD>
+			</TR>
+			
+		</TBODY>
+		<TBODY id="tbody_yqsbjyjg">
+			<TR>
+				<TD class=r colSpan=6>四、仪器设备检验结果</TD>
+			</TR>
+			<TR>
+				<TD class=l>序号</TD>
+				<TD class=l>检验项目</TD>
+				<TD class=l>检验结果</TD>
+				<TD class=l width="20%">标准限值</TD>
+				<TD class=l>结果判定</TD>
+				<TD class=l>备注</TD>
+			</TR>
+		</TBODY>
+		<TBODY>
+			<TR>
+				<TD class=r colSpan=6>五、建议</TD>
+			</TR>
+			<TR>
+				<TD class=l style="HEIGHT: 40px" colSpan=6></TD>
+			</TR>
+			<TR>
+				<TD class=l>备注</TD>
+				<TD class=l colSpan=5 style="text-align: right;width: 100%">
+					<span style="float: left;">机动车安全技术检验报告有效期30天</span><span name="report-baseInfo-jcxdh"></span>号检测线
+				</TD>
+			</TR>
+		</TBODY>
+	</TABLE>
+</DIV>
+<div style="width: 720px;margin: 0 auto;font-size: 10px;">地址：盐城市盐都区西环路1号<br/>
+	备注：常州市和平中路80号电话：86912168<br/>
+	检验依据：国家标准GB21861-2014《机动车安全技术检测项目和方法》,GB7258-2017《机动车运行安全技术条件》。<br/>
+	重要提示：《道路安全交通法》规定，上道路行驶的机动车未放置检验合格标志，公安机关交通管理部门将扣留机动车并处罚款。检验合格后、请及时办理相关手续并领取检验合格标志。<br/>
+	1、本检测报告涂改、复印无效。2、报告无“检验专用章”，无审批人签字无效。
+</div>
+</div>

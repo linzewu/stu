@@ -1,0 +1,377 @@
+<style>
+.upimage ul {
+	list-style: none;
+}
+
+.upimage ul li {
+	width: 160px;
+	height: 160px;
+	text-align: center;
+	font-weight: bold;
+	font-size: 14px;
+	float: left;
+	margin: 10px 10px 15px 10px;
+}
+
+#addIamge {
+	width: 150px;
+	height: 150px;
+}
+
+.upimage ul li img:HOVER {
+	width: 135px;
+	height:135px;
+	cursor: pointer;
+}
+
+.upimage ul li img {
+	width: 130px;
+	height: 130px;
+	margin: 3px 0px 5px 0px;
+}
+
+#webcam {
+	margin: 10px 10px 10px 10px;
+}
+
+.upimage-cam-top {
+	margin: 10px 10px 10px 10px;
+	text-align: right;
+	padding-right: 20px;
+}
+</style>
+<script type="text/javascript">
+
+function openCamWin() {
+	setTimeout(function(){
+		var deviceCount = ScanCtrl.GetDeviceCount();
+		var deviceData=[];
+		for(var i=0;i<deviceCount;i++){
+			deviceData[i]={"value":i,"text":"摄像头"+(i+1)};
+		}
+		$("#upimageCamDev").combobox("loadData",deviceData);
+		
+		var scanSizeCount = ScanCtrl.GetScanSizeCount();
+		var scanSizeData=[];
+		for(var i=0;i<scanSizeCount;i++){
+			var str = ScanCtrl.GetScanSizeName(i);
+			scanSizeData[i]={"value":i,"text":str};
+		}
+		$("#upimageScanSize").combobox("loadData",scanSizeData);
+		
+		var resolutionCount = ScanCtrl.GetResolutionCount();
+		var resolutionData=[];
+		for(var i=0;i<resolutionCount;i++){
+			var str = ScanCtrl.GetResolutionWidth(i)+"x"+ScanCtrl.GetResolutionHeight(i);
+			resolutionData[i]={"value":i,"text":str};
+		}
+		$("#upimageResolution").combobox("loadData",resolutionData);
+		
+		ScanCtrl.SetScanSize(0);
+		ScanCtrl.SetScanSize(0);
+		ScanCtrl.SetResolution(0);  
+		ScanCtrl.StartPreviewEx();
+	},1000);
+}
+
+
+function camsChange(newValue,oldValue){
+	ScanCtrl.SetCurDev(newValue); 
+}
+
+function scanSizeChange(newValue,oldValue){
+	ScanCtrl.SetScanSize(newValue); 
+}
+
+function resolutionChange(newValue,oldValue){
+	ScanCtrl.SetResolution(newValue); 
+}
+
+function captureConfirm() {
+	var robject =$(".upimage input[name=zpzl]:checked");
+	var zpzl = robject.val();
+	var zid=robject.attr("zid");
+	
+	var date=new Date();
+	var yy=date.getFullYear().toString();
+	var mm=(date.getMonth()+1).toString();
+	var dd=date.getDate().toString();
+	var hh=date.getHours().toString();
+	var nn=date.getMinutes().toString();
+	var ss=date.getSeconds().toString();
+	var mi=date.getMilliseconds().toString();
+	var picName=yy+mm+dd+hh+nn+ss+mi;
+	ScanCtrl.EnableDateRecord(1);
+    var imageData = ScanCtrl.ScanBase64("");
+    if(!imageData){
+    	$.messager.alert("提示","拍摄异常","error");
+    }else{
+
+    	var uploadData={};
+    	uploadData.imageData=imageData;
+    	uploadData.jylsh=reportData.jylsh;
+    	uploadData.jyjgbh=reportData.jyjgbh;
+    	uploadData.hphm=reportData.hphm;
+    	uploadData.hpzl=reportData.hpzl;
+    	uploadData.clsbdh=reportData.clsbdh;
+    	uploadData.jycs=reportData.jycs;
+    	uploadData.zpzl=zpzl;
+    	uploadData.jcxdh=reportData.jcxdh;
+
+    	if(zid!=null&&zid!=""){
+    		uploadData.id=zid;
+        }
+        
+    	$.post("/veh/report/uploadPhoto",uploadData,function(data){
+        	if(data.state=="1"||data.state==1){
+            	console.log(data)
+        		$("#image"+zpzl).attr("src","data:image/jpeg;base64,"+data.img);
+        		robject.attr("zid",data.id);
+            }else{
+            	$.messager.alert('错误', data.message, 'error');
+            }
+    		
+    	}).error(function(e){
+    		$.messager.alert('错误', e, 'error');
+    	}); 
+    }
+}
+
+
+function capture(){
+
+	var robject =$(".upimage input[name=zpzl]:checked");
+	var zpzl = robject.val();
+	var zid=robject.attr("zid");
+	if(!zpzl){
+		$.messager.alert("提示","请先选择照片种类。","info");
+		return;
+	}
+	if(zid!=null&&zid!=""){
+		$.messager.confirm("确认", "该类型照片已存在，您是否覆盖？",function(r){
+			if(r){
+				captureConfirm();
+			}
+		});
+	}else{
+		captureConfirm();
+	}
+}
+
+function startPreview(){
+	var message = ScanCtrl.StartPreviewEx();
+}
+
+function stopPreview(){
+	var message = ScanCtrl.StopPreviewEx();
+	
+}
+
+function deleteImage(){
+
+	var robject =$(".upimage input[name=zpzl]:checked");
+	
+	var zpzl = robject.val();
+	if(!zpzl){
+		$.messager.alert("提示","请先选择照片种类。","info");
+		return;
+	}
+
+	var zid=robject.attr("zid");
+
+	if(zid==null||zid==""){
+		$.messager.alert("提示","该照片不存在！","info");
+		return ;
+	}
+
+	$.post("/veh/report/deleteImage",{id:zid},function(data){
+		if(data.state=="1"){
+			$.messager.alert("提示","删除成功！","info");
+			$(".01").empty();
+			$(".02").empty();
+			$(".03").empty();
+			init();
+		}
+	}).error(function(e){
+		$.messager.alert("错误",e.message,"error")
+	});
+}
+
+var reportData;
+
+var checkItem="";
+
+$(function(){
+
+	reportData = $("#checkingVeh").datagrid("getSelected");
+	$.post("/veh/pda/getChekcItem",{jylsh:reportData.jylsh,type:'zlzp'},function(data){
+		checkItem=data;
+		init();
+	});
+	
+});
+
+function init(){
+	var zpzl = comm.getBaseParames('zpzl');
+	var temp="uploadIamge";
+	$.each(zpzl,function(i,n){
+
+		if(n.value==0207){
+			alert(checkItem.indexOf(n.value)>=0?"showItem":"")
+		}
+		
+		var img = $("<li><img src=\"/veh/images/mr.jpg\" id=image"+n.id+" ><br><input type=\"radio\" name=\"zpzl\" value="+n.id+" id="+temp+n.id+" zpid=\"\" /><label for="+temp+n.id+" class='"+(checkItem.indexOf(n.id)>=0?"showItem":"")+"'>"+n.value+"</label></li>");
+		img.find("img").click(function(){
+			onClickPic(img.find("img").attr("src"));
+		});
+		if(n.id.indexOf("01")==0){
+			$(".01").append(img);
+		}
+		if(n.id.indexOf("02")==0){
+			$(".02").append(img);
+		}
+		if(n.id.indexOf("03")==0){
+			$(".03").append(img);
+		}
+		
+	});
+	if(reportData){
+		$.post("/veh/report/getCheckPhotos",{jylsh:reportData.jylsh},function(data){
+			$.each(data,function(i,n){
+				$.post("/veh/report/getCheckPhoto",{id:n.id},function(data){
+					$("#image"+n.zpzl).attr("src","data:image/jpeg;base64,"+data);
+					$("#"+temp+n.zpzl).attr("zid",n.id);
+					
+				});
+			});
+			
+		});
+	}
+
+	$("#img_jylsh").text(reportData.jylsh);
+	$("#img_hphm").text(reportData.hphm);
+	$("#img_hpzl").text(reportData.hpzl);
+}
+
+function imageUpload(){
+
+	$("#imgfileForm input[name=jylsh]").val(reportData.jylsh);
+	$("#imgfileForm input[name=jyjgbh]").val(reportData.jyjgbh);
+	$("#imgfileForm input[name=hphm]").val(reportData.hphm);
+	$("#imgfileForm input[name=hpzl]").val(reportData.hpzl);
+	$("#imgfileForm input[name=clsbdh]").val(reportData.clsbdh);
+	$("#imgfileForm input[name=jycs]").val(reportData.jycs);
+	$("#imgfileForm input[name=jcxdh]").val(reportData.jcxdh);
+	var robject =$(".upimage input[name=zpzl]:checked");
+	var zpzl = robject.val();
+	$("#imgfileForm").form("submit",{
+		onSubmit: function(){
+			var filename = $("#imgFile").filebox("getValue");
+			if(robject.length==0){
+				$.messager.alert("提示","请选择照片类型");
+				return false;
+			}
+			$("#imgfileForm input[name=zpzl]").val(zpzl);
+			if(filename==""){
+				$.messager.alert("提示","请选择照片文件");
+				return false;
+			}else{
+				return true;
+			}
+				
+		},
+		success: function(data){
+			data = $.parseJSON(data);
+			if(data.state=="1"||data.state==1){
+        		$("#image"+zpzl).attr("src","data:image/jpeg;base64,"+data.img);
+        		robject.attr("zid",data.id);
+        		$("#imgfileForm").form("clear");
+            }else{
+            	$.messager.alert('错误', data.message, 'error');
+            }
+		}
+	})
+}
+
+</script>
+<style>
+	.showItem{
+		color: red;
+	}
+</style>
+
+<div class="easyui-layout" data-options="fit:true">
+	 <div data-options="region:'center'" data-options="border:0" >
+	 	<div class="easyui-tabs" data-options="fit:true,border:0">
+	 		<div title="资料照片">
+	 			<div class="upimage">
+					<ul class="02"></ul>
+				</div> 
+	 		</div>
+	 		<div title="外检照片">
+	 			<div class="upimage">
+					<ul class="01"></ul>
+				</div> 
+	 		</div>
+	 		<div title="线上照片">
+	 			<div class="upimage">
+					<ul class="03"></ul>
+				</div> 
+	 		</div>
+	 	</div>
+	</div>
+	<div data-options="region:'east',onOpen:openCamWin" style="width:280px;">
+		<div id="webcam">
+			<object classid="clsid:090457CB-DF21-41EB-84BB-39AAFC9E271A"
+				id="ScanCtrl" codebase="*.cab#version=1,0,0,1" width="260"
+				height="180" style="z-index: 0"></object>
+		</div>
+		<div style="width: 240px;margin: 0 auto;">
+    		<a href="#" class="easyui-linkbutton c1" data-options="onClick:capture">拍照</a>
+    		<a href="#" class="easyui-linkbutton c6" data-options="onClick:startPreview">预览</a>
+    		<a href="#" class="easyui-linkbutton c6" data-options="onClick:stopPreview">停止</a>
+    		<a href="#" class="easyui-linkbutton c6" data-options="onClick:deleteImage">删除</a>
+    	</div>
+		<div class="upimage-cam-top">
+    		<label>摄像头：</label><input class="easyui-combobox" id="upimageCamDev" data-options="onChange:camsChange,editable:false" >
+    	</div>
+    	<div class="upimage-cam-top">
+    		<label>扫描尺寸：</label><input class="easyui-combobox" id="upimageScanSize" data-options="onChange:scanSizeChange,editable:false" >
+    	</div>
+    	<div class="upimage-cam-top">
+    		<label>分辨率：</label><input class="easyui-combobox" id="upimageResolution" data-options="onChange:resolutionChange,editable:false" >
+    	</div>
+    	<div class="upimage-cam-top">
+    		<form action="/veh/report/uploadFileImag" method="post" enctype="multipart/form-data" id="imgfileForm">
+    		<label>本地图片：</label><input class="easyui-filebox" name="imgFile" id="imgFile" style="width: 120px;" data-options="accept:'image/*',buttonText:'请选择...'">
+    		<input name="jylsh" type="hidden">
+    		<input name="jyjgbh" type="hidden">
+    		<input name="hphm" type="hidden">
+    		<input name="hpzl" type="hidden">
+    		<input name="clsbdh" type="hidden">
+    		<input name="jycs" type="hidden">
+    		<input name="zpzl" type="hidden">
+    		<input name="jcxdh" type="hidden">
+    		<a href="#" class="easyui-linkbutton c6" data-options="onClick:imageUpload">上传</a>
+    		</form>
+    	</div>
+    	<div class="upimage-cam-top">
+    		
+    	</div>
+    	<div class="upimage-cam-top">
+    		<table>
+    			<tr>
+    				<td><label>检验流水号：</label></td><td id="img_jylsh" style="text-align: left;"></td>
+    			</tr>
+    			<tr>
+    				<td><label>号牌号码：</label></td><td id="img_hphm" style="text-align: left;"></td>
+    			</tr>
+    			<tr>
+    				<td><label>号牌种类：</label></td><td id="img_hpzl" style="text-align: left;"></td>
+    			</tr>
+    		</table>
+    	</div>
+    	
+	</div>
+</div>
+

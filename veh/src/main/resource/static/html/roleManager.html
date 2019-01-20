@@ -1,0 +1,102 @@
+<table id="roleManager" class="easyui-datagrid"
+	data-options="url:'/veh/role/getRoles',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#roleManagerToolbar'">
+	<thead> 
+		<tr>
+			<th data-options="field:'roleName',width:100">角色名称</th>
+			<th data-options="field:'roleType',width:60,formatter:formatterRole">角色类型</th>
+			<th data-options="field:'status',width:40,formatter:formatterState">状态</th>
+		</tr>
+	</thead>
+</table>
+<div id="roleManagerToolbar">
+	<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="openRoleInfo()">添加角色</a>
+	<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="editRoleInfo()">修改角色</a>
+	<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="delRole()">删除角色</a>
+</div>
+<div id="roleInfo_win" class="easyui-window" title="角色详细信息" style="width:800px;height:450px"
+        data-options="iconCls:'icon-save',modal:true,closed:true,resizable:false,maximizable:false,collapsible:false,minimizable:false">
+</div>
+
+<script type="text/javascript">
+
+	function formatterRole(val){		
+		if(val==0)
+			return '系统角色';
+		else if(val==1) 
+			return '业务角色';
+		else 
+			return '';
+	}
+	
+	function formatterState(val){
+		if(val==0)
+			return '可用';
+		else if(val==1) 
+			return '禁用';
+		else 
+			return '';
+	}
+
+	function openRoleInfo(){
+		var url ="/veh/html/roleInfo.html?"+new Date().getTime();
+		$("#roleInfo_win").window('open');
+		$("#roleInfo_win").window('refresh', url);
+		var options = $("#roleInfo_win").window('options');
+		options.editModel="add";
+	}
+	
+	function editRoleInfo(){
+		var row = $("#roleManager").datagrid("getSelected");
+		var url ="/veh/html/roleInfo.html?"+new Date().getTime();
+		
+		if(row){
+			/**if(row.roleType == "0"){
+				$.messager.alert("提示","系统角色不能修改","info");
+				return;				
+			}**/
+			$("#roleInfo_win").window('open');
+			//$("#deviceInfo_win").window('setTitle',comm.getParamNameByValue('deviceType',row.type));
+			$("#roleInfo_win").window('refresh', url);
+			var options = $("#roleInfo_win").window('options');
+			options.editModel="edit";
+		}else{
+			$.messager.alert("提示","请选择角色","info");
+		}
+	}
+	function delRole(){
+		var row = $("#roleManager").datagrid("getSelected");
+		
+		if(row){
+			if(row.roleType == "0"){
+				$.messager.alert("提示","系统角色不能删除","info");
+				return;				
+			}
+			$.messager.confirm("确认","您是否确认删除该角色?",function(r){
+				if(r){
+					$.messager.progress({
+						"title" : "提示",
+						"msg" : "数据删除中..."
+					});
+					
+					$.post("/veh/role/delete",{id:row.id}, function(data) {
+						if(data.state==1){
+							$.messager.alert("提示","角色删除成功！","info",function(){
+								$("#roleManager").datagrid("reload");
+							});
+						}else{
+							$.messager.alert("提示",data.message,"error",function(){
+								$("#roleManager").datagrid("reload");
+							});
+						}
+					}).complete(function() {
+						$.messager.progress("close");
+					}).error(function(){
+						$.messager.alert("错误","系统错误，请联系管理员！","error");
+					});
+				}
+			})
+		}else{
+			$.messager.alert("提示","请选择角色","info");
+		}
+	}
+</script>

@@ -1,0 +1,69 @@
+<DIV style="MARGIN-BOTTOM: 10px; FONT-SIZE: 20px; FONT-WEIGHT: bold; TEXT-ALIGN: center; MARGIN-TOP: 15px"><span id=""></span>客车和危货车辆检验情况月报表 </DIV>
+	 <table id="yearReportManager" class="easyui-datagrid"
+            data-options="
+                url: '',
+                method: 'get',
+                fitColumns: true,
+                singleSelect: true,
+                rownumbers: true,
+                showFooter: true,
+                toolbar:'#yearRepToolbar'
+            ">
+        <thead>
+            <tr>
+            	<th data-options="field:'cllb',width:250">车辆类别</th>
+                <th data-options="field:'jyclsl',width:250">检验车辆数量(辆)</th>
+                <th data-options="field:'fjychgs',width:250">复检一次合格数</th>
+                <th data-options="field:'fjlzgwjxm',width:250">复检率最高外检项目</th>
+                <th data-options="field:'fjl',width:250">复检率(%)</th>
+            </tr>
+        </thead>
+    </table>
+    
+    <div id="yearRepToolbar">
+	<div>
+		机动车安全技术检验机构名称：
+	    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>统计范围：</label> <input id="quer_beginDate" data-options="required:true" class="easyui-datebox" style="width: 100px;">~<input id="quer_endDate" data-options="required:true" class="easyui-datebox" style="width: 100px;">
+	    <label>车辆类别：</label><select class="easyui-combobox" name="cllb">
+	    		<option value="">请选择车辆类别</option>
+                <option value="客车(座椅)">客车(座椅)</option>
+                <option value="客车(卧铺)">客车(卧铺)</option>
+                <option value="危货(易燃易爆)">危货(易燃易爆)</option>
+                <option value="危货(非易燃易爆)">危货(非易燃易爆)</option>
+                <option value="校车">校车</option>
+                </select>
+		<a class="easyui-linkbutton" href="#" data-options="iconCls:'icon-search'" onclick="query()"></a>
+	</div>
+</div>
+<script type="text/javascript">
+function query(){
+	var operationDate = $("#quer_beginDate").datebox("getValue");
+	var operationDateEnd = $("#quer_endDate").datebox("getValue");
+	
+	
+	var param={};
+	if(operationDate&&$.trim(operationDate)!=""){
+		param["begin"]=operationDate;
+	}else{
+		param["begin"]="";
+	}
+	if(operationDateEnd&&$.trim(operationDateEnd)!=""){
+		param["end"]=operationDateEnd;
+	}else{
+		param["end"]="";
+	}
+	
+	 var opts = $("#yearReportManager").datagrid("options");
+	 opts.url = "/veh/html/statistics/yearReportData.json";
+	$("#yearReportManager").datagrid("reload");
+}
+
+$(function(){
+	
+		var date = new Date();
+		var str1 =  (date.getFullYear())+"-"+(date.getMonth()+1)+"-"+date.getDate();
+		$("#quer_endDate").val(str1);
+		var str2 =  (date.getFullYear()-1)+"-"+(date.getMonth()+1)+"-"+date.getDate();
+		$("#quer_beginDate").val(str2);
+});
+</script>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>机动车查验系统</title>
+<link rel="stylesheet" type="text/css"
+	href="/veh/js/easyui/themes/bootstrap/easyui.css">
+<link rel="stylesheet" type="text/css"
+	href="/veh/js/easyui/themes/mobile.css">
+<link rel="stylesheet" type="text/css"
+	href="/veh/js/easyui/themes/icon.css">
+<script type="text/javascript" src="/veh/js/easyui/jquery.min.js"></script>
+<script type="text/javascript"
+	src="/veh/js/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript"
+	src="/veh/js/easyui/jquery.easyui.mobile.js"></script>
+	
+<script type="text/javascript"
+	src="/veh/js/veh.js"></script>
+</head>
+<script type="text/javascript">
+	function checkPsuh(id){
+		$.messager.progress({
+			title:"请等待",
+			msg:"引车上线..."
+		});
+		$.post('/veh/pda/pushVehOnLine',{"id":id},function(data){
+			$.messager.alert("提示",data.message,"info");
+		}).error(function(e){
+			$.messager.alert("错误","请求失败！","error");
+			console.log(e);
+		}).complete(function(){
+			$.messager.progress("close");
+			getCheckList();
+		});
+	}
+	
+	function getCheckList(){
+		$.post('/veh/pda/getCheckList',{status:0},function(data){
+			data = $.parseJSON(data);
+			$(".m-list").empty();
+			$.each(data,function(i,n){
+				var item ="<li><div class=\"list-header\">"+n.hphm+"</div><div class=\"list-content\">"+comm.getParamNameByValue('hpzl',n.hpzl)+"</div><div class=\"m-right\"><a href=\"javascript:void(0)\" class=\"easyui-linkbutton\" onClick=\"checkPsuh('"+n.id+"')\">引车上线</a></div></li>";
+				$(".m-list").append(item);
+			});
+			$.parser.parse('#checkList');
+		});
+	}
+	
+	$(function(){
+		getCheckList();
+		window.setInterval(getCheckList,10000);
+	});
+	
+</script>
+<body>
+	<div class="easyui-navpanel">
+		<header>
+			<div class="m-toolbar">
+				<div class="m-title">机动车查验引车系统</div>
+			</div>
+		</header>
+		<div class="easyui-tabs"
+			data-options="tabHeight:60,fit:true,tabPosition:'bottom',border:false,pill:true,narrow:true,justified:true">
+			<div style="padding: 10px">
+				<div class="panel-header tt-inner">
+					<img src='../images/modem.png' /><br>引车上线
+				</div>
+				<ul class="m-list" id="checkList">
+				</ul>
+			</div>
+			<div style="padding: 10px">
+				<div class="panel-header tt-inner">
+					<img src='../images/pda.png' /><br>已检车辆
+				</div>
+				<p>A personal digital assistant (PDA), also known as a palmtop
+					computer, or personal data assistant, is a mobile device that
+					functions as a personal information manager. PDAs are largely
+					considered obsolete with the widespread adoption of smartphones.</p>
+			</div>
+		</div>
+	</div>
+	<style scoped>
+		.tt-inner {
+			display: inline-block;
+			line-height: 12px;
+			padding-top: 5px;
+		}
+		
+		p {
+			line-height: 150%;
+		}
+		 .list-image{
+            width: 32px;
+            height: 32px;
+            border: 0;
+            margin-right: 5px;
+            float: left;
+        }
+       .list-header{
+            font-size: 16px;
+            font-weight: bold;
+        }
+       .list-content{
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+		
+	</style>
+</body>
+</html>

@@ -1,0 +1,99 @@
+
+<form method="post" id="commitForm" >
+<table style="margin: 0 auto;padding-top: 50px;width: 600px;" >
+<tr>
+	<td colspan="4" style="text-align: center; font-size: 24px;">机动车交通事故责任强制保险信息<br><br></td>
+</tr>
+
+<tr>
+	<td>检验流水号：</td><td><span id="commit_jylsh"></span></td>
+	<td>号牌号码：</td><td><span id="commit_hphm"></span></td>
+</tr>
+<tr>
+	<td>保险凭证号：</td><td><input class="easyui-textbox" name="bxpzh" id="bxpzh" ></td>
+	<td>保险金额：</td><td><input class="easyui-numberbox" name="bxje" id="bxje" ></td>
+</tr>
+<tr>
+	<td>生效日期：</td><td><input class="easyui-datebox" required="true" name="sxrq" id="sxrq" ></td>
+	<td>终止日期：</td><td><input class="easyui-datebox" required="true" name="zzrq" id="zzrq"></td>
+</tr>
+<tr>
+	<td>保险公司：</td>
+	<td colspan="3">
+		<input class="easyui-textbox" name="bxgs" id="bxgs" >
+	</td>
+</tr>
+<tr>
+	<td colspan="4" style="text-align: center;height: 80px;">
+		<input name="jylsh" type="hidden">
+		<input name="jyjgbh" type="hidden">
+		<input name="jcxdh" type="hidden">
+		<input name="hpzl" type="hidden">
+		<input name="hphm" type="hidden">
+		<input name="clsbdh" type="hidden">
+		<input name="id" type="hidden">
+		<a href="#" class="easyui-linkbutton c6" data-options="onClick:commitForm">提交审核</a>
+	</td>
+</tr>
+</table>
+</form>
+<script type="text/javascript">
+
+function sxrqSelect(date){
+	$("#zzrq").datebox("clear");
+	$("#zzrq").datebox("setValue",(date.getFullYear()+1)+"-"+(date.getMonth()+1)+"-"+(date.getDate()-1));
+}
+
+var reportData = $("#checkingVeh").datagrid("getSelected");
+$("#commit_jylsh").text(reportData.jylsh);
+$("#commit_hphm").text(reportData.hphm);
+
+	$(function(){
+		$.post("/veh/report/getInsurance",{jylsh:reportData.jylsh},function(data){
+			 $("#commitForm").form("load",data);
+		},"json");
+	});
+
+	function commitForm(){
+
+		if(reportData.vehjczt!=2){
+			$.messager.alert("提示","车辆未检测结束，不允许提交审核！","info");
+			return;
+		}
+		
+		 var flag = $("#commitForm").form("validate");
+		 if(!flag){
+			return;
+		}
+		$("#commitForm [name=jylsh]").val(reportData.jylsh);
+        $("#commitForm [name=jyjgbh]").val(reportData.jyjgbh);
+        $("#commitForm [name=jcxdh]").val(reportData.jcxdh);
+        $("#commitForm [name=hpzl]").val(reportData.hpzl);
+        $("#commitForm [name=hphm]").val(reportData.hphm);
+        $("#commitForm [name=clsbdh]").val(reportData.clsbdh);
+        var data={};
+
+        data.jylsh=$("#commitForm [name=jylsh]").val();
+        data.jyjgbh=$("#commitForm [name=jyjgbh]").val();
+        data.jcxdh=$("#commitForm [name=jcxdh]").val();
+        data.hpzl=$("#commitForm [name=hpzl]").val();
+        data.hphm=$("#commitForm [name=hphm]").val();
+        data.clsbdh=$("#commitForm [name=clsbdh]").val();
+        data.id=$("#commitForm [name=id]").val();
+        
+        data.bxpzh=$("#bxpzh").textbox("getValue");
+        data.bxje=$("#bxje").numberbox("getValue");
+        data.bxgs=$("#bxgs").textbox("getValue");
+        data.sxrq=$("#sxrq").datebox("getValue");
+        data.zzrq=$("#zzrq").datebox("getValue");
+		console.log(data)
+        $.post("/veh/report/saveInsurance",data,function(data){
+        	 if(data.state==1){
+	        	 $.messager.alert("提示",data.message);
+	        	 $("#commitForm [name=id]").val(data.id);
+		    }
+         },"json")
+		//$("#commitForm").form("submit");
+	}
+	
+</script>

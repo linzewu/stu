@@ -1,0 +1,425 @@
+﻿<!--
+    Auto-generated test-site
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn">
+<meta http-equiv="X-UA-Compatible" content="IE=7" />
+<head>
+<title>test page for object fbcontrol</title>
+</head>
+    <script type="text/javascript">
+	var idx = 0;
+        function plugin0()
+        {
+            return document.getElementById('plugin0');
+        }
+        plugin = plugin0;
+        function addEvent(obj, name, func)
+        {
+            if (obj.attachEvent) {
+                obj.attachEvent("on"+name, func);
+            } else {
+                obj.addEventListener(name, func, false); 
+            }
+        }
+        
+        function load()
+        {
+            addEvent(plugin(), 'test', function(){
+                alert("Received a test event from the plugin.")
+            });
+			
+			addEvent(plugin(), 'TimerCap', function(){
+                capture()
+            });
+			
+			addEvent(plugin(), 'AutoCap', function(){
+				capture();
+			})
+        }
+        function pluginLoaded() {
+            //alert("Plugin loaded!");
+			init();
+        }
+        
+        function addTestEvent()
+        {
+            addEvent(plugin(), 'echo', function(txt,count){
+                alert(txt+count);
+            });
+        }
+        
+        function testEvent()
+        {
+            plugin().testEvent();
+        }
+        
+        function pluginValid()
+        {
+            if(plugin().valid){
+                alert(plugin().echo("This plugin seems to be working!"));
+            } else {
+                alert("Plugin is not working :(");
+            }
+        }
+		
+		function start_preview()
+		{
+			plugin().StartPreview(idx);
+			enumres();
+		}
+		
+		function stop_preview()     
+  　　  {    
+            plugin().StopPreview(idx);
+  　　  } 
+		
+		function rotleft()
+		{
+			plugin().RotateLeft();
+		}
+		
+		function rotright()
+		{
+			plugin().RotateRight();
+		}
+		
+		var num = 1;
+		function FormatNum(Source){ 
+			var strTemp=""; 
+			var len = 5;
+			if(Source < 10)
+			{
+				len = 4;
+			}
+			else if(Source < 100)
+			{
+				len = 3;
+			}
+			else if(Source < 1000)
+			{
+				len = 2;
+			}
+			for(i=0; i < len;i++)
+			{ 
+				strTemp += "0"; 
+			} 
+			return strTemp+Source; 
+		} 
+		
+		function capture()
+		{
+			var val = num;
+			var filename = FormatNum(val);
+			var ext = "jpg";
+			var obj=document.getElementById("curColor").options; 
+			var x = obj.selectedIndex; 
+			if(x == 2)
+			{
+				ext = "tif";
+			}
+			var path="D:\\Img"+filename +"."+ext;             //get_name()
+			num++;
+			alert(path);
+			plugin().Capture(path);
+			
+			plugin().Capture2HttpServer(idx, "http://127.0.0.1/servlet/camera/upload");
+			
+			plugin1.AddItem(path);
+		}
+		
+		
+		
+		function init()
+		{
+			deloptionDev();
+
+			var count = plugin().GetCameraCount();
+			for(var i = 0; i < count; i++)
+			{
+				var s = plugin().GetDevName(i);
+				addoptionDev(s);
+				
+				plugin().SetWelcomeStr(i, "请在网页代码中修改此处！");
+			}
+			document.getElementById("curDev").value = 0;
+			
+			initdevcolor();
+			initCapMode();
+		}
+		
+		
+		function addoptionDev(s)   
+		{
+			var obj=document.getElementById("curDev"); 
+			var opt = new Option(s, obj.length ); 
+			obj.options.add(opt);   
+		}
+		
+		function deloptionDev()
+		{   
+			var obj=document.getElementById("curDev"); 
+			while (obj.length > 0)
+			{
+				obj.options.remove(obj.length - 1);   
+			}   
+		}
+		
+		function initdevcolor()
+		{
+			deloptionClr();
+
+			var obj=document.getElementById("curColor"); 
+			var opt = new Option("彩色", obj.length );
+			obj.options.add(opt); 
+			
+			opt = new Option("灰度", obj.length );
+			obj.options.add(opt); 
+			opt = new Option("黑白", obj.length );
+			obj.options.add(opt); 
+			document.getElementById("curColor").value=0;  
+		}
+		
+		function deloptionClr()
+		{   
+			var obj=document.getElementById("curColor"); 
+			while (obj.length > 0)
+			{
+				obj.options.remove(obj.length - 1);   
+			}   
+		}
+		
+		function initCapMode()
+		{
+			var obj=document.getElementById("capMode"); 
+			var opt = new Option("单张拍照", obj.length );
+			obj.options.add(opt); 
+			opt = new Option("合成拍照", obj.length );
+			obj.options.add(opt); 
+			document.getElementById("capMode").value=0;  
+		}
+		
+		function changeres()
+		{
+			var obj=document.getElementById("curRes"); 
+			var x = obj.selectedIndex; 
+			plugin().SetDevRes(idx, x);
+		}
+		
+		function enumres()
+		{
+			deloptionRes();
+			var iResIndex = 0;
+			if(iResIndex != -1)
+			{
+				var count = plugin().GetResCount(idx); 
+				for(i = 0; i < count; i++)
+				{
+					var w = plugin().GetResWidth(idx, i);
+					var h = plugin().GetResHeight(idx, i);
+					var str = w.toString()+"x"+h.toString();
+					addoptionRes(str);
+				} 
+				document.getElementById("curRes").value=iResIndex;
+			}   
+		}
+		
+		function deloptionRes()
+		{   
+			var obj=document.getElementById("curRes"); 
+			while (obj.length > 0)
+			{
+				obj.options.remove(obj.length - 1);   
+			}   
+		}
+		function addoptionRes(s)   
+		{
+			var obj=document.getElementById("curRes"); 
+			var opt = new Option(s, obj.length ); 
+			obj.options.add(opt);   
+		}
+		
+		function changeclr()
+		{
+			var obj=document.getElementById("curColor").options; 
+			var x = obj.selectedIndex; 
+			plugin().SetDevColor(idx, x);
+		}
+		
+		function changedev()
+		{
+			var obj=document.getElementById("curDev"); 
+			
+			//plugin().SetVisible(idx, false);
+			plugin().StopPreview(idx);
+			idx = obj.selectedIndex;    
+			plugin().StartPreview(idx);
+			//plugin().SetVisible(idx, true);
+			
+			enumres();
+		}
+		
+		function RotateCrop(obj)
+		{
+			if(obj.checked)
+			{
+				var obj2 =document.getElementById("drawrect");
+				if(obj2.checked)
+				{
+					obj2.checked = false;
+					plugin().SetMouseMode(idx, 0);
+				}
+			}
+
+			plugin().SetupAutoRotate(idx, obj.checked);
+		}
+		
+		function setmousemode(obj)
+		{
+			if(obj.checked)
+			{
+				var obj2=document.getElementById("rotatecrop");
+				if(obj2.checked)
+				{
+					obj2.checked = false;
+					plugin().SetupAutoRotate(idx, false);
+				}
+			}
+			
+			if(obj.checked)
+			{
+				plugin().SetMouseMode(idx, 1);
+			}
+			else
+			{
+				plugin().SetMouseMode(idx, 0);
+			}
+		}
+		
+		
+		function readidcard()
+		{
+			var idcardinfo;
+			if(plugin().ReadIDCard())
+			{
+				idcardinfo = plugin().GetIDName() + "  \r\n" + plugin().GetIDSex() + "    " + plugin().GetIDNation() + "\r\n" +
+				             plugin().GetIDBirthYear() + "-" + plugin().GetIDBirthMonth() + "-" + plugin().GetIDBirthDay() + "\r\n" +
+							 plugin().GetIDAddress() + "\r\n" + plugin().GetIDNum() + "\r\n" + plugin().GetIDDepart() + "\r\n" + plugin().GetIDTermDay();
+				alert(idcardinfo);
+				//LaThumbCtrl.AddItem(plugin().GetIDHeadImagePath());
+				//LaThumbCtrl.AddItem(plugin().MakeIDCardImage());
+			}
+			else 
+			{
+				alert("请确认设备已连接, 身份证已放好, 如果身份证已在读卡器上请拿开重放！");
+			}
+			
+		}
+		
+		function showprop()
+		{
+			plugin().ShowProperty(idx);
+		}
+		
+		function readbarcode()
+		{
+			var res = plugin().ReadBarcode(idx);
+			alert(res);
+		}
+		
+		function startrecord()
+		{
+			var obj=document.getElementById("recvideo");
+			if(obj.value == "开始录像")
+			{
+				var myDate = new Date();
+				var filepath = "d:\\video\\"+myDate.getFullYear()+"-"+(myDate.getMonth()+1)+"-"+myDate.getDate()+"_"+myDate.getHours()+
+				                         myDate.getMinutes() + myDate.getSeconds() + ".wmv";
+				alert("开始录像, 录像文件路径为:\r\n"+filepath+"\r\n请注意第三个参数表示是否录音, 0--不录音, 1--录音");
+				plugin().StartRecord(idx, filepath, 1);
+				obj.value = "停止录像";
+			}
+		    else if(obj.value == "停止录像")
+			{
+				plugin().StopRecord(idx);
+				obj.value = "开始录像";
+			}
+		}
+		
+		function resetvideo()
+		{
+			plugin().ResetVideoShow(idx);
+		}
+		
+		function startautocap()
+		{
+			var obj=document.getElementById("autocap");
+			if(obj.value == "开始智能连拍")
+			{
+				alert("开始智能连拍, 智能连拍会自动检测变化进行拍照, 不变化则不拍照");
+				plugin().StartAutoCap(idx);
+				obj.value = "停止智能连拍";
+			}
+		    else if(obj.value == "停止智能连拍")
+			{
+				plugin().StopAutoCap(idx);
+				obj.value = "开始智能连拍";
+			}
+		}
+		
+		function starttmcap()
+		{
+			var obj=document.getElementById("tmcap");
+			if(obj.value == "开始定时连拍")
+			{
+				alert("开始定时连拍, 定时连拍会根据设定的时间间隔进行拍照, 当前时间间隔为6秒, 如要更改, 请改动网页代码！")
+				plugin().StartTimerCap(idx, 6);
+				obj.value = "停止定时连拍";
+			}
+		    else if(obj.value == "停止定时连拍")
+			{
+				plugin().StopTimerCap(idx);
+				obj.value = "开始定时连拍";
+			}
+		}
+		
+		function capturebase64()
+		{
+			alert(plugin().CaptureAsBase64(idx));
+		}
+    </script>
+<body onload="load()">
+<object id="plugin0" type="application/lagen-plugin" width="640" height="480">
+<param name="onload" value="pluginLoaded" />
+</object>
+<object id="plugin1" type="application/x-lathumbplugin" width="200" height="480">
+    <param name="onload" value="pluginLoaded" />
+</object><br />
+
+	当前设备：<select id="curDev" style="width: 90px" name="selDev"
+										onchange="changedev()"></select>
+	当前分辨率：<select id="curRes" style="width: 90px" name="curRes"
+										onchange="changeres()"></select>
+	颜色：<select id="curColor" style="width: 90px" name="curRes"
+										onchange="changeclr()"></select>
+	拍照模式：<select id="capMode" style="width: 90px" name="curRes"
+										onchange="changemode()"></select>
+	<input id="rotatecrop" type="checkbox" value="" onclick="RotateCrop(this)" />纠偏裁边
+	<input id="drawrect" type="checkbox" value="" onclick="setmousemode(this)" />框选
+	<br><br>    
+<input   TYPE="button"   VALUE="开始预览"   onClick="start_preview()"> 
+<input   TYPE="button"   VALUE="停止预览"   onClick="stop_preview()">
+<input   TYPE="button"   VALUE="左转90度"   onClick="rotleft()">
+<input   TYPE="button"   VALUE="右转90度"   onClick="rotright()">
+<input   TYPE="button"   VALUE="视频属性"   onClick="showprop()">
+<input   TYPE="button"   VALUE="条码识别"   onClick="readbarcode()">
+<input   TYPE="button"   VALUE="画面恢复"   onClick="resetvideo()">
+<input   TYPE="button"   VALUE="生成PDF"   onClick="makepdf()">
+<input   TYPE="button"   id=recvideo VALUE="开始录像"   onClick="startrecord()">
+<input   TYPE="button"   VALUE="拍照"   onClick="capture()">
+<input   TYPE="button"   VALUE="拍照为Base64"   onClick="capturebase64()"> <br><br>
+<input   TYPE="button"   id=autocap VALUE="开始智能连拍"   onClick="startautocap()">
+<input   TYPE="button"   id=tmcap VALUE="开始定时连拍"   onClick="starttmcap()">
+<input   TYPE="button"   VALUE="读取身份证"   onClick="readidcard()">
+
+</body>
+</html>

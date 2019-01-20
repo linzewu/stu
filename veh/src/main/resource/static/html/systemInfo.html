@@ -1,0 +1,50 @@
+
+<script>
+	var sysColumns = [ [ {
+		field : 'name',
+		title : '属性',
+		width : 30
+	}, {
+		field : 'value',
+		title : '值',
+		width : 70
+	} ] ];
+
+	function sysParamReload() {
+		$.messager.progress({
+			title:'提示',
+			msg:"系统参数刷新中..."
+		});
+		$.post("/veh/sys/sysParamReload", function(data) {
+			$.messager.alert("提示", data.message);
+		}).error(function(e){
+			console.log(e);
+			$.messager.alert("请求错误",e.status,"error");
+		}).complete(function(){
+			$.messager.progress("close");
+		});
+	}
+
+	function uploadSwitch(state){
+		$.post("/veh/sys/uploadSwitch",{state:state},function(data){
+			$.messager.alert("提示",data.message,"info");
+			$("#sys-property").propertygrid("reload");
+		});
+	}
+</script>
+
+<table class="easyui-propertygrid" style="width: 300px" id="sys-property"
+	data-options="toolbar:'#sysParamToolbar',showGroup:true,scrollbarSize:0,fit:true,columns:sysColumns,url:'/veh/sys/getInfo'"></table>
+
+<div id="sysParamToolbar">
+	<a href="#" class="easyui-linkbutton"
+		data-options="iconCls:'icon-reload',plain:true"
+		onclick="sysParamReload()">刷新系统参数</a>
+		
+	<a href="#" class="easyui-linkbutton"
+		data-options="plain:true"
+		onclick="uploadSwitch(0)">启动联网上传</a>
+	<a href="#" class="easyui-linkbutton"
+		data-options="plain:true"
+		onclick="uploadSwitch(1)">关闭联网上传</a>
+</div>

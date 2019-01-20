@@ -1,0 +1,378 @@
+<script type="text/javascript">
+	var device  = gridUtil.createNew("#deviceManager",{idField:"id",url:"/veh/device"});
+	
+	var workpointManager  = gridUtil.createNew("#workpointManager",{idField:"id",url:"/veh/workpoint"});
+	
+	function deviceFormatter(value,row,index){
+		return  comm.getParamNameByValue('deviceType',value);
+	}
+	function lineFormatter(value,row,index){
+		return  comm.getParamNameByValue('lineType',value);
+	}
+	
+	function isUseFormatter(value,row,index){
+		return  comm.getParamNameByValue('isUse',value);
+	}
+	
+	function gwztFormatter(value,row,index){
+		return  comm.getParamNameByValue('gwzt',value);
+	}
+	
+	function workPointFormatter(value,row,index){
+		return  comm.getParamNameByValue('workPoint',value);
+	}
+	function switchTypeFormatter(value,row,index){
+		return  comm.getParamNameByValue('switch',value);
+	}
+	
+	var motion=gridUtil.createNew("#motionManager",{idField:"id",url:"/veh/motion"});
+	var sw=gridUtil.createNew("#switchManager",{idField:"id",url:"/veh/switch"});
+	
+	function createLine(){
+		$.messager.confirm("请确认","您是否创建新的一条检测线？",function(r){
+			if(r){
+				$.messager.progress({
+					title:'数据加载中',
+					msg:'请等待...'
+				});
+				$.post("/veh/device/createLinkDevice",{},function(data){
+					$.messager.alert("提示",data.message,"info");
+				},"json").error(function(e){
+					console.log(e);
+					$.messager.alert("错误","系统错误","error");
+				}).complete(function(){
+					$.messager.progress("close");
+				});
+			}
+		});
+	}
+	
+	function openDeviceInfo(){
+		var row = $("#deviceManager").datagrid("getSelected");
+		var url ="/veh/html/device/";
+		
+		if(row){
+			url+="device"+row.type+".html?"+new Date().getTime();
+			$("#deviceInfo_win").window('open');
+			$("#deviceInfo_win").window('setTitle',comm.getParamNameByValue('deviceType',row.type));
+			$("#deviceInfo_win").window('refresh', url);
+		}else{
+			$.messager.alert("提示","请选择设备","info");
+		}
+	}
+	
+	function deviceInfoLoad(){
+		var row = $("#deviceManager").datagrid("getSelected");
+		if(row.qtxx!=""){
+			var data=$.parseJSON(row.qtxx);
+			$(".device-form").form("load",data);
+		}
+	}
+	
+	function saveGdkg(){
+		var flag = $("#form-gdkg").form("validate");
+		if(!flag){
+			return;
+		}
+		$("#device_console").textbox("setValue","");
+		var row = $("#deviceManager").datagrid("getSelected");
+		var json = $("#form-gdkg").serializeJson();
+		var qtxx = JSON.stringify(json);
+		json.qtxx=qtxx;
+		json.id=row.id;
+		json.type=row.type;
+		json.jcxxh=row.jcxxh;
+		$.post("/veh/device/save",json,function(data){
+			$("#deviceInfo_win").window("close");
+			$("#deviceManager").datagrid("reload");
+			$.messager.alert("提示","修改成功，参数修改后请在控制台重启生效");
+		},"json");
+	}
+	
+	function getRtx(){
+		var row = $("#deviceManager").datagrid("getSelected");
+		var call=function(data){
+			if(data&&data!=""){
+				var value = $("#device_console").textbox("getValue");
+				value+=data+"\n";
+				$("#device_console").textbox("setValue",value);
+			}
+		}
+		$.post("/veh/device/getRtx",{'id':row.id},call);
+	}
+	
+	function deviceStop(){
+		var row = $("#deviceManager").datagrid("getSelected");
+		var call=function(data){
+			$.messager.alert("提示",data.message);
+			getState();
+		}
+		$.post("/veh/device/deviceStop",{'id':row.id},call,"json");
+	}
+	
+	function stopAllDevice(){
+		
+		var call=function(data){
+			$.messager.alert("提示",data.message);
+			getState();
+		}
+		
+		$.post("/veh/device/stopAllDevice",call,"json");
+	}
+	
+	function getGdkg(){
+		var row = $("#deviceManager").datagrid("getSelected");
+		var rows = $("#deviceManager").datagrid("getRows");
+		var array=[];
+		$.each(rows,function(i,n){
+			if(n.jcxxh==row.jcxxh&&n.type==90){
+				console.log(n)
+				array.push({"name":n.name,"id":+n.id,"kggs":n.qtxx.kggs})
+			}
+		});
+		return array;
+	}
+	
+	//获取信号
+	function getGdkgXh(){
+		var array=[];
+		
+		for(var i=0;i<8;i++){
+			var name ="信号"+(i+1);
+			array.push({"name":name,"id":i});
+		}
+		return array;
+	}
+	
+	//显示屏
+	function getXsp(){
+		var row = $("#deviceManager").datagrid("getSelected");
+		var rows = $("#deviceManager").datagrid("getRows");
+		var array=[];
+		$.each(rows,function(i,n){
+			if(n.jcxxh==row.jcxxh&&n.type==91){
+				console.log(n)
+				array.push({"name":n.name,"id":+n.id})
+			}
+		});
+		return array;
+	}
+	
+	workpointManager.start=function(){
+		var row = $("#workpointManager").datagrid("getSelected");
+		if(!row){
+			$.messager.alert("提示","请选择工位！");
+			return;
+		}else{
+			if(row.gwzt==1){
+				$.messager.alert("提示","该工位已启用！");
+				return;
+			}
+			if(row.gwzt==0){
+				
+				$.post("/veh/workpoint/start",{
+					id:row.id
+				},function(data){
+					$.messager.alert("提示",data.message,"info");
+					$("#workpointManager").datagrid("reload");
+				}).error(function(e){
+					$.messager.alert("错误","请求错误:"+e.status,"error");
+				});
+				
+				return;
+			}
+		}
+	}
+	
+	
+	workpointManager.stop=function(){
+		var row = $("#workpointManager").datagrid("getSelected");
+		if(!row){
+			$.messager.alert("提示","请选择工位！");
+			return;
+		}else{
+			$.post("/veh/workpoint/stop",{
+				id:row.id
+			},function(data){
+				$.messager.alert("提示",data.message,"info");
+				$("#workpointManager").datagrid("reload");
+			}).error(function(e){
+				$.messager.alert("错误","请求错误:"+e.status,"error");
+			});
+		}
+	}
+	
+	
+	workpointManager.reStart=function(){
+		var row = $("#workpointManager").datagrid("getSelected");
+		if(!row){
+			$.messager.alert("提示","请选择工位！");
+			return;
+		}else{
+			$.post("/veh/workpoint/reStart",{
+				id:row.id
+			},function(data){
+				$.messager.alert("提示",data.message,"info");
+				$("#workpointManager").datagrid("reload");
+			}).error(function(e){
+				$.messager.alert("错误","请求错误:"+e.status,"error");
+			});
+		}
+	}
+	
+	function brakRollerTest(){
+		var row = $("#deviceManager").datagrid("getSelected");
+		var call=function(data){
+			$.messager.alert("提示",data.message);
+		}
+		
+		$.post("/veh/device/brakRollerTest",{'id':row.id},call,"json");
+	}
+	
+
+	function deviceLightStart(){
+		
+		var row = $("#deviceManager").datagrid("getSelected");
+		var call=function(data){
+			$.messager.alert("提示",data.message);
+			getState();
+		}
+		$.post("/veh/device/deviceLightStart",{'id':row.id},call,"json");
+	}
+	
+	function speedStart(){
+		
+		var row = $("#deviceManager").datagrid("getSelected");
+		var call=function(data){
+			$.messager.alert("提示",data.message);
+			getState();
+		}
+		$.post("/veh/device/speedStart",{'id':row.id},call,"json");
+	}
+	
+	function sideslipStart(){
+		
+		var row = $("#deviceManager").datagrid("getSelected");
+		var call=function(data){
+			$.messager.alert("提示",data.message);
+			getState();
+		}
+		$.post("/veh/device/sideslipStart",{'id':row.id},call,"json");
+	}
+	
+	function weighStart(){
+		
+		var row = $("#deviceManager").datagrid("getSelected");
+		var call=function(data){
+			$.messager.alert("提示",data.message);
+			getState();
+		}
+		$.post("/veh/device/weighStart",{'id':row.id},call,"json");
+	}
+	
+	function deviceSignalStart(){
+		var row = $("#deviceManager").datagrid("getSelected");
+		var call=function(data){
+			$.messager.alert("提示",data.message);
+			getState();
+		}
+		$.post("/veh/device/deviceSignalStart",{'id':row.id},call,"json");
+	}
+	function deviceDisplayStart(){
+		
+		var row = $("#deviceManager").datagrid("getSelected");
+		var call=function(data){
+			$.messager.alert("提示",data.message);
+			getState();
+		}
+		$.post("/veh/device/deviceDisplayStart",{'id':row.id},call,"json");
+	}
+	
+	function startAll(){
+		
+		var rows = $("#deviceManager").datagrid("getRows");
+		
+		$.each(rows,function(i,row){
+			$("#deviceManager").datagrid("selectRow",i);
+			var type = row.type;
+			if(type==1){
+				brakRollerTest();
+			}else if(type==2){
+				deviceLightStart();
+			}else if(type==3){
+				speedStart();
+			}else if(type==4){
+				sideslipStart();
+			}else if(type==5){
+				weighStart();
+			}else if(type==90){
+				deviceSignalStart();
+			}else if(type==91){
+				deviceDisplayStart();
+			}
+		});
+		
+		
+	}
+	
+</script>
+
+<div class="easyui-tabs" data-options="fit:true">
+	<div data-options="title:'设备管理'">
+		<table id="deviceManager" class="easyui-datagrid"
+			data-options="url:'/veh/device/getDevices',fitColumns:true,singleSelect:true,fit:true,toolbar:'#deviceManagerToolbar', view:groupview,
+                groupField:'jcxxh',
+                groupFormatter:lineFormatter,
+                rownumbers:true,
+                collapsible:false">
+			<thead> 
+				<tr>
+					<th data-options="field:'name',width:100">设备名称</th>
+					<th data-options="field:'type',width:100,formatter:deviceFormatter,editor:{type:'combobox',options:{required:true,data:comm.getBaseParames('deviceType'),valueField: 'id',textField: 'value'}}">设备类型</th>
+					<th data-options="field:'jcxxh',width:100,formatter:lineFormatter,editor:{type:'combobox',options:{required:true,data:comm.getBaseParames('lineType'),valueField: 'id',textField: 'value'}}">线别</th>
+					<th data-options="field:'sbcs',width:100">设备厂商</th>
+					<th data-options="field:'sbxh',width:100">设备型号</th>
+				</tr>
+			</thead>
+		</table>
+		<div id="deviceManagerToolbar">
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="device.append()">添加设备</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="createLine()">添加检测线</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="device.accept()">保存</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="device.reject()">取消</a>
+			<!-- <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="device.editData()">编辑设备</a> -->
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="openDeviceInfo()">编辑设备</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="device.remove()">删除设备</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-stop',plain:true" onclick="startAll()">启动所有设备</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-stop',plain:true" onclick="stopAllDevice()">停止所有设备</a>
+			
+		</div>
+	</div>
+	<div data-options="title:'检测工位'">
+		<table id="workpointManager" class="easyui-datagrid" data-options="url:'/veh/workpoint/getWorkPoints',fitColumns:true,singleSelect:true,fit:true,toolbar:'#workpointManagerToolbar'">
+			<thead> 
+				<tr>
+					<th data-options="field:'jcxdh',width:100,formatter:lineFormatter,editor:{type:'combobox',options:{required:true,data:comm.getBaseParames('lineType'),valueField: 'id',textField: 'value'}}">检测线</th>
+					<th data-options="field:'name',width:100,editor:{type:'textbox',options:{required:true}}">工位名称</th>
+					<th data-options="field:'sort',width:100,editor:{type:'numberbox',options:{required:true}}">工位顺序</th>
+					<th data-options="field:'gwzt',width:100,formatter:gwztFormatter">状态</th>
+					<th data-options="field:'isUse',width:100,formatter:isUseFormatter">在检\空闲</th>
+					<th data-options="field:'hphm',width:100">在检号牌</th>
+				</tr>
+			</thead>
+		</table>
+		<div id="workpointManagerToolbar">
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="workpointManager.append()">添加工位</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="workpointManager.editData()">修改工位</a> 
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="workpointManager.remove()">删除工位</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="workpointManager.reject()">取消</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="workpointManager.accept()">保存</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="workpointManager.start()">启动</a>
+			<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="workpointManager.stop()">停止</a>
+			<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="workpointManager.reStart()">重启</a>
+		</div>
+	</div>
+</div>
+<div id="deviceInfo_win" class="easyui-window" title="设备详细信息" style="width:800px;height:600px"
+        data-options="iconCls:'icon-save',modal:true,closed:true,resizable:false,maximizable:false,collapsible:false,minimizable:false">
+</div>

@@ -1,0 +1,79 @@
+<script type="text/javascript" src="../js/report_check.js">
+
+</script>
+<script type="text/javascript">
+<!--
+
+//-->
+
+function queryReportList(){
+	var status =$("input[name=statusArry]:checked").val();
+	var hphm=$("input[name=query_report_hphm]").val();
+	var hpzl=$("input[name=query_report_hpzl]").val();
+	$("#checkingVeh").datagrid("reload",{statusArry:status,hphm:hphm,hpzl:hpzl});
+}
+
+
+</script>
+<style>
+
+.upImageInfo{
+width: 640px;
+height: 480px;
+}
+
+.upImageInfo img{
+width: 640px;
+height: 480px;
+}
+
+.upImageInfo img:HOVER{
+cursor: pointer;
+}
+</style>
+
+<div class="easyui-layout" fit="true" >
+	<div data-options="region:'west'" title="检测信息" style="width: 300px;">
+		<table class="easyui-datagrid" id="checkingVeh" 
+			data-options="pagination:true,pageSize:20,onDblClickRow:report.loadVehCheckInfo,toolbar:'#checkingVehTool',border:0,fitColumns:true,singleSelect:true,fit:true,url:'/veh/veh/getVehChecking',queryParams:{statusArry:'0,1'}">
+			<thead>
+				<tr>
+					<th data-options="field:'jylsh',width:100">检验流水号</th>
+					<th data-options="field:'hphm',width:60">号牌号码</th>
+					<th data-options="field:'jcxdh',width:40">检测线</th>
+				</tr>
+			</thead>
+		</table>
+		<script language="javascript" src="/veh/html/Lodop6.198/LodopFuncs.js"></script> 
+		<object  id="LODOP_OB" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0>  
+		       <embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0></embed> 
+		</object> 
+	</div>
+	<div data-options="region:'center',border:0">
+		<div id="tab-report" class="easyui-tabs" fit="true" >
+		    <div id="report1" title="仪器设备检验记录" fit="true" ></div>
+		    <div id="report3" title="外检报告" fit="true"  ></div>
+		    <div id="roadCheck" title="路试信息" fit="true" ></div>
+		    <div id="report2" title="检验报告" fit="true" ></div>
+		    <div id="report4" title="制动力曲线" fit="true"></div>
+		    <div id="upimage" title="（外检/资料）照片" fit="true"></div>
+		    <div id="zbzlTab" title="整备质量" fit="true"></div>
+		    <div id="process" title="检测过程" fit="true"></div>
+		    <div id="online" title="联网上传" fit="true"></div>
+		    <div id="commit" title="提交审核" fit="true"></div>
+		    <div id="performanceCk" title="性能检验记录单" fit="true"></div>
+		    <div id="performanceCkRep" title="性能检验报告单" fit="true"></div>
+		</div>
+	</div>
+</div>
+<div id="checkingVehTool">
+<div>
+<label>号牌号码：</label><input class="easyui-textbox" value="苏J" name="query_report_hphm"><br>
+<label>号牌种类：</label><input class="easyui-combobox" data-options="data:comm.getBaseParames('hpzl'),valueField: 'id',textField: 'value'"  name="query_report_hpzl">
+<a href="javaScript:void(0)" class="easyui-linkbutton" data-options=" iconCls: 'icon-search',onClick:queryReportList" >查询</a>
+</div>
+<div><label>检测状态：</label>&nbsp;&nbsp;<input name="statusArry" onclick="queryReportList()"  type="radio" value="0,1" checked="checked"><label>未完成</label><input type="radio" onclick="queryReportList()" name="statusArry" value="2"><label>已完成</label>
+	<input type="radio" name="statusArry" value="3" onclick="queryReportList()"><label>退办</label>
+</div>
+</div>
+

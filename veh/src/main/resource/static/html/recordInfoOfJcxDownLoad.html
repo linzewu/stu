@@ -1,0 +1,32 @@
+<script type="text/javascript">
+var recordColumns = [ [ {
+	field : 'name',
+	title : '属性',
+	width : 30
+}, {
+	field : 'value',
+	title : '值',
+	width : 70
+} ] ];
+
+function downloadRecord(){
+	$.messager.progress({
+        title:'Please waiting',
+        msg:'Loading data...'
+    });
+	$.post("/veh/recordInfoOfJcx/downloadInfo",function(data){
+		$("#easyui-propertygrid").propertygrid("reload");
+	}).complete(function(){
+		 $.messager.progress('close');
+	});
+}
+
+</script>
+<table class="easyui-propertygrid" style="width: 300px" id="record-property"
+	data-options="scrollbarSize:0,fit:true,columns:recordColumns,url:'/veh/recordInfoOfJcx/getInfo',toolbar:'#recordDownLoadToolbar'"></table>
+	
+<div id="recordDownLoadToolbar">
+	<div>
+		<a id="btn" href="#" class="easyui-linkbutton" onclick="downloadRecord()">下载</a>
+	</div>
+</div>
