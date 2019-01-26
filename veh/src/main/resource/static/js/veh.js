@@ -165,7 +165,7 @@ var veh = {
 				 param['ycysfzh']=$("#_ycy").combobox("getText");
 				 console.log(param)
 				 $.post("/veh/veh/vehLogin",param,function(data){
-					 	data=$.parseJSON(data);
+					 	//data=$.parseJSON(data);
 						var head = null;
 						var body = null;
 						if ($.isArray(data)) {
@@ -233,7 +233,7 @@ var veh = {
 				param['jyxm']=str_jyxm;
 				console.log(param);
 				$.post("/veh/veh/vehLogin",param,function(data){
-					data=$.parseJSON(data);
+					//data=$.parseJSON(data);
 					var head = null;
 					var body = null;
 					console.log(data);

@@ -16,6 +16,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -132,12 +133,12 @@ public class RecordInfoOfCheckController {
 
 		Map<String, String> sm5 = new HashMap<String, String>();
 		sm5.put("name", "资格许可有效期始");
-		sm5.put("value", sdf.format(check.getRdyxqs()));
+		sm5.put("value", StringUtils.isEmpty(check.getRdyxqs()) ? "" : sdf.format(check.getRdyxqs()));
 		rows.add(sm5);
 
 		Map<String, String> sm6 = new HashMap<String, String>();
 		sm6.put("name", "资格许可有效期止");
-		sm6.put("value", sdf.format(check.getRdyxqz()));
+		sm6.put("value", StringUtils.isEmpty(check.getRdyxqz()) ? "" : sdf.format(check.getRdyxqz()));
 		rows.add(sm6);
 
 		Map<String, String> sm7 = new HashMap<String, String>();
@@ -208,7 +209,7 @@ public class RecordInfoOfCheckController {
 
 		Map<String, String> sm20 = new HashMap<String, String>();
 		sm20.put("name", "更新日期");
-		sm20.put("value", sdf.format(check.getGxrq()));
+		sm20.put("value", StringUtils.isEmpty(check.getGxrq()) ? "" : sdf.format(check.getGxrq()));
 		rows.add(sm20);
 
 		Map<String, String> sm21 = new HashMap<String, String>();

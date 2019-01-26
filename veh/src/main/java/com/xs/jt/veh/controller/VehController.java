@@ -122,7 +122,7 @@ public class VehController {
 
 	@UserOperation(code = "vehLogin", name = "机动车登录")
 	@RequestMapping(value = "vehLogin", method = RequestMethod.POST,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8")
-	public String vehLogin(VehCheckLogin vehCheckLogin, VehInfo vehInfo)
+	public @ResponseBody String vehLogin(VehCheckLogin vehCheckLogin, VehInfo vehInfo)
 			throws RemoteException, UnsupportedEncodingException, DocumentException, InterruptedException {
 
 		if (!vehCheckLoginManager.isLoged(vehCheckLogin)) {

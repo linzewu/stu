@@ -62,17 +62,14 @@ function login() {
 	}
 	
 	$.post("../../user/login",{userName:userName,password:password}, function(data){
-		console.log(data);
 		if(data.state==1){
-			var userData  = data.data;
-			console.log(userData)
 			window.location.href="index.html";
 		}else{
-			$.messager.alert("登陆失败",data.errorMsg,"info");
+			$.messager.alert("登陆失败",data.message,"info");
 		}
 	},"json");
 }
-/**
+
 $(document).ajaxStart(function(){
 	$.messager.progress({
 		title:"请等待",
@@ -82,4 +79,4 @@ $(document).ajaxStart(function(){
 
 $(document).ajaxComplete(function(){
 	$.messager.progress('close');
-});**/
+});

@@ -3,6 +3,7 @@ package com.xs.jt.veh.manager.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,14 +57,15 @@ public class VehFlowManagerImpl implements IVehFlowManager {
 
 				Integer deviceId = sb.getInt("id");
 
-				Device device = deviceRepository.findById(deviceId).get();
+				Optional<Device> optDev = deviceRepository.findById(deviceId);
+				//
 
 				// 如果复检，则不需要重新称重
 				/*
 				 * if(device.getType()== Device.CZJCSB && vcl.getJycs()==1) { continue; }
 				 */
 
-				String strJyxm = getDeivceItem(device, process);
+				String strJyxm = getDeivceItem(optDev, process);
 
 				if (deviceId == -1 && allJyxm.indexOf("C1") != -1) {
 					VehFlow v = new VehFlow();
@@ -81,6 +83,7 @@ public class VehFlowManagerImpl implements IVehFlowManager {
 				}
 
 				if (strJyxm != null && !strJyxm.equals("")) {
+					Device device = optDev.get();
 					String[] jyxmArray = strJyxm.split(",");
 					for (String jyxm : jyxmArray) {
 						// 如果是驻车制动 需要根据驻车轴为来生成
@@ -136,11 +139,12 @@ public class VehFlowManagerImpl implements IVehFlowManager {
 		return vehFlows;
 	}
 
-	private String getDeivceItem(Device device, List<VehCheckProcess> vehCheckProcessArray) {
+	private String getDeivceItem(Optional<Device> optDev, List<VehCheckProcess> vehCheckProcessArray) {
 
-		if (device == null || vehCheckProcessArray == null) {
+		if ((!optDev.isPresent()) || vehCheckProcessArray == null) {
 			return null;
 		}
+		Device device = optDev.get();
 		BaseParams param = baseParamsManager.getBaseParamByValue("deviceType", device.getType().toString());
 
 		String strConfig = param.getMemo();

@@ -12,7 +12,8 @@
 		<module>cms</module>
     <module>veh</module>
     <module>eureka</module>
-	</modules>
+    <module>cmsvideo</module>
+  </modules>
 	<properties>
         <project.build.sourceencoding>UTF-8</project.build.sourceencoding>
         <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>

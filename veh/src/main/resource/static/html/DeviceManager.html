@@ -49,7 +49,7 @@
 	
 	function openDeviceInfo(){
 		var row = $("#deviceManager").datagrid("getSelected");
-		var url ="/veh/html/device/";
+		var url ="../html/device/";
 		
 		if(row){
 			url+="device"+row.type+".html?"+new Date().getTime();

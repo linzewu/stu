@@ -116,7 +116,7 @@
 			$.messager.alert("提示", "请求失败", "error");
 		}).complete(function() {
 			$.messager.progress("close");
-		});;
+		});
 		
 		$.post("/veh/device/getDeviceDisplay", {
 			jcxxh : row.jcxdh
@@ -157,7 +157,7 @@
 		</table>
 	</div>
 	<div id="panel-flow"
-		data-options="region:'center',title:'检测流程',href:'/veh/html/workPoint.html',onLoad : function() {flowInitData();}">
+		data-options="region:'center',title:'检测流程',href:'../html/workPoint.html',onLoad : function() {flowInitData();}">
 	</div>
 </div>
 

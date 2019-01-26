@@ -86,6 +86,9 @@
 
 	function flowInitData() {
 		var row = $("#flowManager").datagrid("getSelected");
+		$("#dg-display").combobox({
+			disabled:false
+		});
 		if (!row) {
 			//隐藏编辑按钮
 			$("#dg-display").combobox("disable");
