@@ -13,6 +13,7 @@ import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -120,8 +121,8 @@ public class VehController {
 	}
 
 	@UserOperation(code = "vehLogin", name = "机动车登录")
-	@RequestMapping(value = "vehLogin", method = RequestMethod.POST)
-	public @ResponseBody String vehLogin(VehCheckLogin vehCheckLogin, VehInfo vehInfo)
+	@RequestMapping(value = "vehLogin", method = RequestMethod.POST,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8")
+	public String vehLogin(VehCheckLogin vehCheckLogin, VehInfo vehInfo)
 			throws RemoteException, UnsupportedEncodingException, DocumentException, InterruptedException {
 
 		if (!vehCheckLoginManager.isLoged(vehCheckLogin)) {
@@ -223,7 +224,7 @@ public class VehController {
 	}
 
 	@UserOperation(code = "getVehInfo", name = "联网查询机动车信息")
-	@RequestMapping(value = "getDefaultConfig", method = RequestMethod.POST)
+	@RequestMapping(value = "getDefaultConfig", method = RequestMethod.POST,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8")
 	public @ResponseBody String getDefaultConfig(VehCheckLogin vehCheckLogin, VehInfo vehInfo) {
 		JSONObject json = new JSONObject();
 		json.put("sf", sf);

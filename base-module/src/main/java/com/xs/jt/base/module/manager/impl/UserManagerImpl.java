@@ -145,4 +145,10 @@ public class UserManagerImpl implements IUserManager {
 	public int getUserCount() {
 		return (int)this.userRepository.count();
 	}
+
+
+	@Override
+	public List<User> getUsersExceptAdmin() {
+		return userRepository.getUsersExceptAdmin();
+	}
 }

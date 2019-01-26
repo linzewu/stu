@@ -1,5 +1,7 @@
 package com.xs.jt.base.module.dao;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -15,5 +17,8 @@ public interface UserRepository extends JpaRepository<User,Integer>,JpaSpecifica
 	
 	@Query(value = "from User where sfzh= :sfzh")
 	User findBySfzh(@Param("sfzh")String sfzh);
+	
+	@Query(value = "from User  where yhm!='admin'")
+	public List<User> getUsersExceptAdmin();
 
 }

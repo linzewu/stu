@@ -145,7 +145,7 @@ function showJyxm(obj){
 	}
 	$.post("/veh/bps/getBaseParamsByType",{type:jctype},function(data){
 		
-		var jyxmArr = data.data;
+		var jyxmArr = data;
 		var rowCou = 0;
 		if (jyxmArr.length > 0){
 			rowCou = Math.ceil(jyxmArr.length/6);

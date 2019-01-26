@@ -1,36 +1,41 @@
 
 
-var userInfo = $.ajax({
-	url : "/veh/user/getCurrentUser",
-	async : false,
-	type:'POST'
-}).responseText;
+var userInfo;
 
-userInfo=$.parseJSON(userInfo);
-
-var allRole = $.ajax({
-	url : "/veh/user/getAllRole",
-	async : false,
-	type:'POST'
-}).responseText;
-allRole=$.parseJSON(allRole);
+var allRole;
 
 var sysMId = 0;
 var removeCou = 0;
 
-var userRoleInfo = $.ajax({
-	url : "/veh/user/getRolesByUser",
-	async : false,
-	type:'POST'
-}).responseText;
+var userRoleInfo;
 
-userRoleInfo=$.parseJSON(userRoleInfo);
-
-if(userInfo.state==600){
-	 window.location.href="/veh/html/login.html";
-}
+//if(userInfo.state==600){
+//	 window.location.href="login.html";
+//}
 
 $(function(){
+	userInfo = $.ajax({
+		url : "../../user/getCurrentUser",
+		async : false,
+		type:'POST'
+	}).responseText;
+
+	userInfo=$.parseJSON(userInfo);
+
+	allRole = $.ajax({
+		url : "../../user/getAllRole",
+		async : false,
+		type:'POST'
+	}).responseText;
+	allRole=$.parseJSON(allRole);
+
+	userRoleInfo = $.ajax({
+		url : "../../user/getRolesByUser",
+		async : false,
+		type:'POST'
+	}).responseText;
+
+	userRoleInfo=$.parseJSON(userRoleInfo);
 	console.log(userInfo.pwOverdue)
 	//if(userInfo.userState==0||userInfo.userState==null||userInfo.pwOverdue=="Y"){
 	if(userInfo.pwOverdue=="Y"){
@@ -38,8 +43,8 @@ $(function(){
 	}
 });
 
-document
-		.write("<script language='javascript' src='/veh/bps/all.js' ></script>");
+//document
+//		.write("<script language='javascript' src='/veh/bps/all.js' ></script>");
 
 var veh = {
 	jgpd:function(jg){
@@ -704,7 +709,7 @@ var veh = {
 	},
 	setDefaultConfig:function(){
 		$.post("/veh/veh/getDefaultConfig",function(data){
-			data=$.parseJSON(data);
+			//data=$.parseJSON(data);
 			$("input[sid=sf]").combobox("setValue",data.sf);
 			$("input[sid=hphm]").textbox("setValue",data.cs);
 		},"json").error(function(e){
@@ -716,7 +721,7 @@ var veh = {
 	}
 }
 
-var comm = {
+var commVeh = {
 	getBaseParames : function(type) {
 		var array = [];
 		for ( var i in bps) {
@@ -785,7 +790,7 @@ var comm = {
 		$.each(data,function(i,n){
 			var authRole = n.authorize.split(",");			
 			for(var r in authRole){
-				if(userRoleInfo.roleName == authRole[r]){
+				if(userRoleInfo.jsmc == authRole[r]){
 					var li = $("<li><a id='_menu"+i+"' href=\"javascript:void(0)\"><img></a></li>");
 					
 					li.find("img").attr("src", n.icon);
@@ -949,96 +954,96 @@ var gridUtil = {
 
 var system = {
 	menus1 : [{
-		"icon" : "/veh/images/system.png",
+		"icon" : "../images/system.png",
 		"title" : "系统参数",
-		href : "/veh/html/systemInfo.html",
+		href : "../html/systemInfos.html",
 		target : "#systemContex",
-		authorize : "超级管理员"
+		authorize : "系统超级管理员"
 	},{
-		"icon" : "/veh/images/dictionary.png",
+		"icon" : "../images/dictionary.png",
 		"title" : "数据字典",
-		href : "/veh/html/dataDictionary.html",
+		href : "../html/systemInfo.html",
 		target : "#systemContex",
-		authorize : "超级管理员"
+		authorize : "系统超级管理员"
 	},{		
-		"icon" : "/veh/images/limit.png",
+		"icon" : "../images/limit.png",
 		"title" : "检测项目和标准限值",
-		href : "/veh/html/limitStandard.html",
+		href : "../html/limitStandard.html",
 		target : "#systemContex",
 		authorize : "系统管理员"
 	},{
-		"icon" : "/veh/images/security.png",
+		"icon" : "../images/security.png",
 		"title" : "安全审计策略设置",
-		href : "/veh/html/securityAuditPolicySetting.html",
+		href : "../html/securityAuditPolicySetting.html",
 		target : "#systemContex",
 		authorize : "安全管理员"
 	}],
 	menus2:[
 		{
-			"icon" : "/veh/images/device.png",
+			"icon" : "../images/device.png",
 			"title" : "设备管理",
-			href : "/veh/html/DeviceManager.html",
+			href : "../html/DeviceManager.html",
 			target : "#systemContex",
 			authorize : "系统管理员"
 		},{
-			"icon" : "/veh/images/Workflow.png",
+			"icon" : "../images/Workflow.png",
 			"title" : "检测流程",
-			href : "/veh/html/flowConfig.html",
+			href : "../html/flowConfig.html",
 			target : "#systemContex",
 			authorize : "系统管理员"
 		}
 	],
 	menus3:[
 		{
-			"icon" : "/veh/images/user.png",
+			"icon" : "../images/user.png",
 			"title" : "用户管理",
-			href : "/veh/html/UserManager.html",
+			href : "../html/UserManager.html",
 			target : "#systemContex",
-			authorize : "超级管理员,系统管理员"
+			authorize : "系统超级管理员,系统管理员"
 		},{
-			"icon" : "/veh/images/group.png",
+			"icon" : "../images/group.png",
 			"title" : "角色管理",
-			href : "/veh/html/roleManager.html",
+			href : "../html/roleManager.html",
 			target : "#systemContex",
-			authorize : "超级管理员"
+			authorize : "系统超级管理员"
 		},{
-			"icon" : "/veh/images/blackList.png",
+			"icon" : "../images/blackList.png",
 			"title" : "黑名单管理",
-			href : "/veh/html/BlackListManager.html",
+			href : "../html/BlackListManager.html",
 			target : "#systemContex",
-			authorize : "超级管理员"
+			authorize : "系统超级管理员"
 		},{
-			"icon" : "/veh/images/function.png",
+			"icon" : "../images/function.png",
 			"title" : "核心功能管理",
-			href : "/veh/html/coreFunction.html",
+			href : "../html/coreFunction.html",
 			target : "#systemContex",
-			authorize : "超级管理员"			
+			authorize : "系统超级管理员"			
 		},{
-			"icon" : "/veh/images/warning.png",
+			"icon" : "../images/warning.png",
 			"title" : "非常规功能管理",
-			href : "/veh/html/SpecialCoreFunction.html",
+			href : "../html/SpecialCoreFunction.html",
 			target : "#systemContex",
-			authorize : "超级管理员"			
+			authorize : "系统超级管理员"			
 		},{
-			"icon" : "/veh/images/police.png",
+			"icon" : "../images/police.png",
 			"title" : "警员功能管理",
-			href : "/veh/html/policeCoreFunction.html",
+			href : "../html/policeCoreFunction.html",
 			target : "#systemContex",
-			authorize : "超级管理员"			
+			authorize : "系统超级管理员"			
 		}
 	],
 	menus4:[
 		{
-			"icon" : "/veh/images/backup.png",
+			"icon" : "../images/backup.png",
 			"title" : "检验机构备案信息",
-			href : "/veh/html/recordInfoDownLoad.html",
+			href : "../html/recordInfoDownLoad.html",
 			target : "#systemContex",
 			authorize : "系统管理员"
 		},
 		{
-			"icon" : "/veh/images/backup_user.png",
+			"icon" : "../images/backup_user.png",
 			"title" : "检测线备案信息",
-			href : "/veh/html/recordInfoOfJcxDownLoad.html",
+			href : "../html/recordInfoOfJcxDownLoad.html",
 			target : "#systemContex",
 			authorize : "系统管理员"
 		}
@@ -1052,21 +1057,21 @@ var system = {
 	],
 	menus5:[
 		{
-			"icon" : "/veh/images/LOG.png",
+			"icon" : "../images/LOG.png",
 			"title" : "操作日志",
-			href : "/veh/html/operationLog.html",
+			href : "../html/operationLog.html",
 			target : "#systemContex",
-			authorize : "审计管理员,超级管理员"
+			authorize : "审计管理员,系统超级管理员"
 		},{
-			"icon" : "/veh/images/loginlog.png",
+			"icon" : "../images/loginlog.png",
 			"title" : "登录日志",
-			href : "/veh/html/loginOperationLog.html",
+			href : "../html/loginOperationLog.html",
 			target : "#systemContex",
-			authorize : "审计管理员,超级管理员"
+			authorize : "审计管理员,系统超级管理员"
 		},{		
-			"icon" : "/veh/images/logsec.png",
+			"icon" : "../images/logsec.png",
 			"title" : "安全日志",
-			href : "/veh/html/securityLog.html",
+			href : "../html/securityLog.html",
 			target : "#systemContex",
 			authorize : "安全管理员"
 		}
@@ -1077,54 +1082,54 @@ var system = {
 //		}else{
 		sysMId = 0;
 		removeCou = 0
-			comm.createMumeAuth("sysMune", system.menus1, 0);
-			comm.createMumeAuth("deviceMune", system.menus2, 1);
-			comm.createMumeAuth("userMune", system.menus3, 2);
-			comm.createMumeAuth("backMune", system.menus4, 3);
-			comm.createMumeAuth("logMune", system.menus5, 4);
+			commVeh.createMumeAuth("sysMune", system.menus1, 0);
+			commVeh.createMumeAuth("deviceMune", system.menus2, 1);
+			commVeh.createMumeAuth("userMune", system.menus3, 2);
+			commVeh.createMumeAuth("backMune", system.menus4, 3);
+			commVeh.createMumeAuth("logMune", system.menus5, 4);
 //		}
 	}
 }
 
 var statisticalReport = {
 		menus1 : [{
-			"icon" : "/veh/images/statistics.png",
+			"icon" : "../images/statistics.png",
 			"title" : "车辆类型合格率汇总",
-			href : "/veh/html/statistics/vehicleTypeStatistics.html",
+			href : "../html/statistics/vehicleTypeStatistics.html",
 			target : "#reportContex"
 		},{
-			"icon" : "/veh/images/report2.png",
+			"icon" : "../images/report2.png",
 			"title" : "检验类别合格率汇总",
-			href : "/veh/html/statistics/inspectionCategoryStatistics.html",
+			href : "../html/statistics/inspectionCategoryStatistics.html",
 			target : "#reportContex"
 		},{
-			"icon" : "/veh/images/report3.png",
+			"icon" : "../images/report3.png",
 			"title" : "区县分类合格率汇总",
-			href : "/veh/html/statistics/countryStatistics.html",
+			href : "../html/statistics/countryStatistics.html",
 			target : "#reportContex"
 		},{
-			"icon" : "/veh/images/report4.png",
+			"icon" : "../images/report4.png",
 			"title" : "检验项目合格率汇总",
-			href : "/veh/html/statistics/inspectionProjectStatistics.html",
+			href : "../html/statistics/inspectionProjectStatistics.html",
 			target : "#reportContex"
 		},{
-			"icon" : "/veh/images/statsyear.png",
+			"icon" : "../images/statsyear.png",
 			"title" : "客车和危货车辆检验月报表",
-			href : "/veh/html/statistics/yearReport.html",
+			href : "../html/statistics/yearReport.html",
 			target : "#reportContex"
 		},{
-			"icon" : "/veh/images/stats.png",
+			"icon" : "../images/stats.png",
 			"title" : "检测线车辆数分布统计",
-			href : "/veh/html/statistics/vehicleDistributionStatistics.html",
+			href : "../html/statistics/vehicleDistributionStatistics.html",
 			target : "#reportContex"
 		},{
-			"icon" : "/veh/images/workuser.png",
+			"icon" : "../images/workuser.png",
 			"title" : "人员工作量统计表",
-			href : "/veh/html/statistics/workEstimate.html",
+			href : "../html/statistics/workEstimate.html",
 			target : "#reportContex"
 		}],
 		initEvents : function() {
-				comm.createMume("businessStatistics", statisticalReport.menus1, "Y");
+			commVeh.createMume("businessStatistics", statisticalReport.menus1, "Y");
 		}
 };
 
@@ -1743,7 +1748,7 @@ function checkbit(data,errors){
 	
 }
 
-
+/**
 $(function($){
     //备份jquery的ajax方法  
     var _ajax=$.ajax;  
@@ -1782,10 +1787,10 @@ $(function($){
             		temp=data;
             	}
                 if(temp['state'] == 600) {
-                    window.location.href="/veh/html/login.html";
+                    window.location.href="login.html";
                     return;
                 }
-                var errors =[];
+                /**var errors =[];
                 checkbit(data,errors);
                 if(errors.length > 0){
                 	var msg = JSON.stringify(errors);
@@ -1803,16 +1808,16 @@ $(function($){
                              
                          }
                 	});
-                }
+                }  暂时注释**
                 
                 fn.success(data, textStatus);
             }  
         });  
         return _ajax(_opt);  
     };  
-});
+});**/
 
-/*var progressFlag=false;
+/**var progressFlag=false;
 $(document).ajaxStart(function(){
 	if(!progressFlag){
 		$.messager.progress({
@@ -1823,10 +1828,10 @@ $(document).ajaxStart(function(){
 	}
 });*/
 
-/*$(document).ajaxComplete(function(){
+/**$(document).ajaxComplete(function(){
 	if(progressFlag){
 		$.messager.progress('close');
 		progressFlag=false;
 	}
 });
-*/
+**/

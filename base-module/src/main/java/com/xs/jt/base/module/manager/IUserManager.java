@@ -33,6 +33,8 @@ public interface IUserManager {
 	
 	public int getUserCount();
 	
+	public List<User> getUsersExceptAdmin();
+	
 	
 
 }

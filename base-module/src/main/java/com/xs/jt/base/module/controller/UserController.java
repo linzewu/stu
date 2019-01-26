@@ -128,7 +128,7 @@ public class UserController {
 				signaturePhoto.setPhoto(qmFile.getBytes());
 				signaturePhotoManager.saveSignaturePhoto(signaturePhoto);
 			}
-			return JSONObject.fromObject(ResultHandler.resultHandle(result, user, Constant.ConstantMessage.SAVE_SUCCESS)).toString();
+			return JSONObject.fromObject(ResultHandler.resultHandle(result, null, Constant.ConstantMessage.SAVE_SUCCESS)).toString();
 		} else {
 			return JSONObject.fromObject(ResultHandler.resultHandle(result, null, null)).toString();
 		}

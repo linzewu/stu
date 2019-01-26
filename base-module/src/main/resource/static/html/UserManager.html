@@ -206,10 +206,10 @@ function setChildrenNode(data,node){
 
 
 function loadTree(selectNodeId){
-	$.messager.progress({
+	/**$.messager.progress({
 		"title" : "提示",
 		"msg" : "数据加载中..."
-	});
+	});**/
 	$.post("../../dept/getDepts", function(data) {
 		var nodes = depts2Node(data);
 		
@@ -222,7 +222,7 @@ function loadTree(selectNodeId){
 		});
 		
 	}).complete(function() {
-		$.messager.progress("close");
+		//$.messager.progress("close");
 	 	var node=$('#dept-list').tree("getRoot");
 		$('#dept-list').tree('select', node.target); 
 	});

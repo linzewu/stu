@@ -3,22 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css"
-	href="/veh/js/easyui/themes/default/easyui.css">
+	href="../js/easyui/themes/default/easyui.css">
 <link rel="stylesheet" type="text/css"
-	href="/veh/js/easyui/themes/color.css">
-<link rel="stylesheet" type="text/css" href="/veh/css/veh.css">
+	href="../js/easyui/themes/color.css">
+<link rel="stylesheet" type="text/css" href="../css/veh.css">
 <link rel="stylesheet" type="text/css"
-	href="/veh/js/easyui/themes/icon.css">
-<script type="text/javascript" src="/veh/js/easyui/jquery.min.js"></script>
-<script type="text/javascript" src="/veh/js/easyui/jquery.easyui.min.js"></script>
+	href="../js/easyui/themes/icon.css">
+<script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+<script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../../bps/all.js"></script>
 <script type="text/javascript"
-	src="/veh/js/easyui/locale/easyui-lang-zh_CN.js"></script>
+	src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript"
-	src="/veh/js/easyui/datagrid-groupview.js"></script>
-<script type="text/javascript" src="/veh/js/veh.js"></script>
-<script type="text/javascript" src="/veh/js/common.js"></script>
-<script type="text/javascript" src="/veh/js/highcharts/highcharts.js"></script>
-<script type="text/javascript" src="/veh/js/drag_map.js"></script>
+	src="../js/easyui/datagrid-groupview.js"></script>
+<script type="text/javascript" src="../js/common.js"></script>
+<script type="text/javascript" src="../js/extendCommon.js"></script>
+<script type="text/javascript" src="../js/veh.js"></script>
+
+<script type="text/javascript" src="../js/highcharts/highcharts.js"></script>
+<script type="text/javascript" src="../js/drag_map.js"></script>
 <style type="text/css">
 #mask {
 	position: absolute;
@@ -58,12 +61,12 @@
 <body class="easyui-layout">
 	<div data-options="region:'north'" class="header">
 		<div style="float: left; margin: 0 0 0 30px;">
-			<img alt="" src="/veh/images/logo.png" style="border: 0; margin: 0">
+			<img alt="" src="../images/logo.png" style="border: 0; margin: 0">
 		</div>
 		<div class="header-title" style="float: left;">上海翔尚机动车安全技术检验系统</div>
 		<div style="float: right; height: 50px;">
 			<div style="padding: 24px 10px 0 0;">
-				用户名：<span id="realName"></span><span id="tipMsg"><img alt="" src="/veh/images/userinfo.png"></span>您好! 
+				用户名：<span id="realName"></span><span id="tipMsg"><img alt="" src="../images/userinfo.png"></span>您好! 
 				<a class="easyui-linkbutton c6" data-options="onClick:updataPassword">密码修改</a>
 				<a class="easyui-linkbutton c5" data-options="onClick:logout">注销</a>
 			</div>
@@ -121,37 +124,37 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td><img title="向上" style="cursor: pointer;"
-					onClick="clickMove1('down');" height="20" src="/veh/images/up.gif"
+					onClick="clickMove1('down');" height="20" src="../images/up.gif"
 					width="20"></td>
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
 				<td><img title="向左" style="cursor: pointer"
-					onClick="clickMove1('right');" height="20" src="/veh/images/left.gif"
+					onClick="clickMove1('right');" height="20" src="../images/left.gif"
 					width="20"></td>
 				<td><img title="还原" style="cursor: pointer"
-					onClick="realsize();" height="20" src="/veh/images/zoom.gif" width="20"></td>
+					onClick="realsize();" height="20" src="../images/zoom.gif" width="20"></td>
 				<td><img title="向右" style="cursor: pointer"
-					onClick="clickMove1('left');" height="20" src="/veh/images/right.gif"
+					onClick="clickMove1('left');" height="20" src="../images/right.gif"
 					width="20"></td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
 				<td><img title="向下" style="cursor: pointer"
-					onClick="clickMove1('up');" height="20" src="/veh/images/down.gif"
+					onClick="clickMove1('up');" height="20" src="../images/down.gif"
 					width="20"></td>
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
 				<td><img title="放大" style="cursor: pointer" onClick="bigit();"
-					height="20" src="/veh/images/zoom_in.gif" width="20"></td>
+					height="20" src="../images/zoom_in.gif" width="20"></td>
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
 				<td><img title="缩小" style="cursor: pointer"
-					onClick="smallit();" height="20" src="/veh/images/zoom_out.gif"
+					onClick="smallit();" height="20" src="../images/zoom_out.gif"
 					width="20"></td>
 				<td>&nbsp;</td>
 			</tr>
@@ -175,11 +178,11 @@
 </body>
 <script type="text/javascript">
 	function logout(){
-		$.post("/veh/user/logout",function(data){
-			 window.location.href="/veh/html/login.html";
+		$.post("../../user/logout",function(data){
+			 window.location.href="login.html";
 		});
 	}
-	$("#realName").text(userInfo.realName);	
+	//$("#realName").text(userInfo.realName);	
 
 	(function ($) {
 		$(document).ready(function () {
@@ -192,9 +195,10 @@
 	})(jQuery);
 	
 	$(function(){
+		$("#realName").text(userInfo.yhxm);
 		var d = new Date();
-		var userNameValidDate = new Date(userInfo.userNameValidDate);
-		var pwValidDate = new Date(userInfo.pwValidDate);
+		var userNameValidDate = new Date(userInfo.zhyxq);
+		var pwValidDate = new Date(userInfo.mmyxq);
 		var days = userNameValidDate.getTime() - d.getTime();
 		var time = parseInt(days / (1000 * 60 * 60 * 24));
 		//$("#userVal").text(time);	
@@ -202,7 +206,7 @@
 		var timePw = parseInt(days / (1000 * 60 * 60 * 24));
 		//$("#pwVal").text(time);	
 		
-		var cont = "本次登录的时间："+userInfo.lastLoginDate+",本次登录IP："+userInfo.ip+
+		var cont = "本次登录的时间："+userInfo.zjdlsj+",本次登录IP："+userInfo.ip+
 		",<br/>上次登录的时间："+userInfo.lastTimeLoginDate+",上次登录IP："+userInfo.lastTimeIP+
 		",<br/>距离用户到期还剩"+time+"天,距离密码到期还剩"+timePw+"天"+
 		",<br/>上次登录失败的时间："+userInfo.lastTimeLoginFailDate+",上次登录失败IP："+userInfo.lastTimeLoginFailIP;
@@ -218,9 +222,8 @@
                  });
              }
          });
-		
-		if (userRoleInfo.roleName == "超级管理员" || userRoleInfo.roleName == "安全管理员" ||
-				userRoleInfo.roleName == "审计管理员" || userRoleInfo.roleName == "系统管理员"){
+		if (userRoleInfo.jsmc == "系统超级管理员" || userRoleInfo.jsmc == "安全管理员" ||
+				userRoleInfo.jsmc == "审计管理员" || userRoleInfo.jsmc == "系统管理员"){
 			$("#sysTabs").tabs('disableTab', 0);
 			$("#sysTabs").tabs('disableTab', 1);
 			$("#sysTabs").tabs("disableTab", 2);

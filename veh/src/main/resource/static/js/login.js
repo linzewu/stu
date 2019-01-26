@@ -66,13 +66,13 @@ function login() {
 		if(data.state==1){
 			var userData  = data.data;
 			console.log(userData)
-			window.location.href="/veh/html/index.html";
+			window.location.href="index.html";
 		}else{
 			$.messager.alert("登陆失败",data.errorMsg,"info");
 		}
 	},"json");
 }
-
+/**
 $(document).ajaxStart(function(){
 	$.messager.progress({
 		title:"请等待",
@@ -82,4 +82,4 @@ $(document).ajaxStart(function(){
 
 $(document).ajaxComplete(function(){
 	$.messager.progress('close');
-});
+});**/

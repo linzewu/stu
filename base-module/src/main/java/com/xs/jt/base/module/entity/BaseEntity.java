@@ -11,9 +11,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass
@@ -49,6 +51,13 @@ public abstract class BaseEntity implements Serializable {
 	
 	@Column
 	private Integer seq;
+	
+	@Column(length=255)
+	private String vehjyw;
+	
+	
+	@Transient
+	private boolean checkBitOk=true;
 	
 
 	public Integer getSeq() {
@@ -99,6 +108,34 @@ public abstract class BaseEntity implements Serializable {
 		this.id = id;
 	}
 	
+	public String getVehjyw() {
+		return vehjyw;
+	}
+
+	public void setVehjyw(String vehjyw) {
+		this.vehjyw = vehjyw;
+	}
+
+	public boolean isCheckBitOk() {
+		return checkBitOk;
+	}
+
+
+	public void checkBit() {
+		try {
+			String bit1 = md5(this.toString());
+			System.out.println(this.toString());
+			System.out.println("bit1:"+bit1+"\t vehjyw:" +vehjyw);
+			System.out.println((!StringUtils.isEmpty(vehjyw)) && !vehjyw.equals(bit1));
+
+			if((!StringUtils.isEmpty(vehjyw))&& !vehjyw.equals(bit1)) {
+				checkBitOk=false;
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static String md5(String str) throws UnsupportedEncodingException{  
 	    String pwd = null;  
 	    try {  
