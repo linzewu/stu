@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.xs.jt.base.module.entity.BaseParams;
-import com.xs.jt.base.module.entity.BlackList;
 @Repository
 public interface BaseParamsRepository extends JpaRepository<BaseParams,Integer>,JpaSpecificationExecutor<BaseParams>{
 	

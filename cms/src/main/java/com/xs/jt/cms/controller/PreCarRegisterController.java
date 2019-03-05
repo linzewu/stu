@@ -327,10 +327,13 @@ public class PreCarRegisterController {
 	@RequestMapping(value = "getImplCarParam", method = RequestMethod.POST)
 	public @ResponseBody List<Map<String, Object>> getImplCarParam(String clxh) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		if (clxh != null) {
+		/*if (clxh != null) {
 			list = pDAServiceManager.getImplCarParam(clxh);
 
-		}
+		}*/
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("clpp1", "宝马");
+		list.add(map);
 		return list;
 	}
 	

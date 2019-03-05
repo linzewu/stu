@@ -58,6 +58,7 @@ import com.xs.jt.base.module.manager.ISignaturePhotoManager;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutNewAccessServiceStub;
 import com.xs.jt.base.module.out.service.client.TmriJaxRpcOutService;
 import com.xs.jt.cms.common.CommonUtil;
+import com.xs.jt.cms.common.TokenProccessor;
 import com.xs.jt.cms.common.URLCodeUtil;
 import com.xs.jt.cms.entity.PreCarRegister;
 import com.xs.jt.cms.entity.VehCheckInfo;
@@ -130,6 +131,10 @@ public class PDAServiceController {
 	@RequestMapping(value = "addVehCheckInfo", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> addVehCheckInfo(VehCheckInfo vehCheckInfo, BindingResult result)
 			throws Exception {
+		if(isRepeatSubmit(vehCheckInfo)) {
+			return ResultHandler.toErrorJSON("数据重复提交！");
+		}
+		request.getSession(false).removeAttribute("subToken");
 		User user = (User) session.getAttribute("user");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd  HH:mm:ss");
 		//部门
@@ -422,6 +427,12 @@ public class PDAServiceController {
 			}
 			//carInfo.setSdzt(vehicleLockManager.findMotorVehicleBusinessLockByClsbdh(carInfo.getClsbdh()));
 		}
+		String token = TokenProccessor.getInstance().makeToken();
+		request.getSession(false)
+        .setAttribute(
+                "subToken",
+                token);
+		map.put("subToken", token);
 		return map;
 	}
 
@@ -482,7 +493,12 @@ public class PDAServiceController {
 				}
 				map.put("data", dataMap);
 			}
-
+			String token = TokenProccessor.getInstance().makeToken();
+			request.getSession(false)
+	        .setAttribute(
+	                "subToken",
+	                token);
+			map.put("subToken", token);
 		} catch (Exception e) {
 			throw new ApplicationException("获取基础信息异常", e);
 		}
@@ -565,7 +581,12 @@ public class PDAServiceController {
 				map.put("data", dataMap);
 			}
 			
-
+			String token = TokenProccessor.getInstance().makeToken();
+			request.getSession(false)
+	        .setAttribute(
+	                "subToken",
+	                token);
+			map.put("subToken", token);
 		} catch (Exception e) {
 			throw new ApplicationException("获取全国车辆信息异常", e);
 		}
@@ -874,5 +895,21 @@ public class PDAServiceController {
 		map.put("signaturePhoto", photo);
 		return map;
 	}
+	
+	private boolean isRepeatSubmit(VehCheckInfo vehCheckInfo) {
+        String serverToken = (String) request.getSession(false).getAttribute(
+                "subToken");
+        if (StringUtils.isEmpty(serverToken)) {
+            return true;
+        }
+        String clinetToken = vehCheckInfo.getSubToken();
+        if (StringUtils.isEmpty(clinetToken)) {
+            return true;
+        }
+        if (!serverToken.equals(clinetToken)) {
+            return true;
+        }
+        return false;
+    }
 	
 }

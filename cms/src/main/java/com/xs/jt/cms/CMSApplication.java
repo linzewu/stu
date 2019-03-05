@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfigura
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.aspose.words.License;
 
@@ -22,6 +23,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @ComponentScan({"com.xs.jt.base.module","com.xs.jt.cms"})
 @EnableSwagger2
 @EnableAsync
+@EnableScheduling
 public class CMSApplication 
 {
 	

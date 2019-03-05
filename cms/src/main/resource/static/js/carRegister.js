@@ -89,13 +89,16 @@ function saveAndPring() {
 }
 
 function implSaveAndPring() {	
-	
+	debugger;
 	$('#myformImpl').form({
 		url: "../../preCarRegister/savePreCarRegister"
 	});
 	var isValid = $('#myformImpl').form('validate');
 	if(isValid){
 		var params = $("#myformImpl").serializeJson();
+		if(params.csys instanceof Array){
+			params.csys = params.csys.join(",");
+		}
 		$.post("../../preCarRegister/savePreCarRegister",params,function(data){
 			if(data.state==1){
 				$.messager.alert("提示","保存成功！","info",function(){
@@ -782,7 +785,7 @@ function getLodopObj() {
 function deving(){
 	$.messager.alert("提示","正在开发中....")
 }
-
+var isParse="false";
 function loadParam(){
 	var clxh = $("#clxh").val();
 	if(clxh==""){
@@ -796,14 +799,16 @@ function loadParam(){
 	}
 	
 	var queryParams={"clxh":clxh};
-	
-	var isParse = $("#implCarParamListIsParse").val();
+	isParse = $("#implCarParamListIsParse").val();
 	if(isParse=="false"){
+		$("#implCarParamListIsParse").val("true");
 		$("#implCarParamList").datagrid({queryParams:queryParams});
+		
 	}else{
 		$("#implCarParamList").datagrid("reload",queryParams);
 	}
 	$("#win").window("open");
+	$("#implCarParamList").datagrid("resize");
 }
 
 function loadImplCarParam(index,row){

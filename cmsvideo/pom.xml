@@ -32,6 +32,21 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+			<groupId>com.sun.jna</groupId>
+			<artifactId>jna-hc-sdk</artifactId>
+			<version>1.0</version>
+	</dependency>
+	<dependency>
+			<groupId>com.sun.jna.examples</groupId>
+			<artifactId>jna-examples</artifactId>
+			<version>1.0</version>
+		</dependency>
+	<dependency>
+	    <groupId>commons-net</groupId>
+	    <artifactId>commons-net</artifactId>
+	    <version>1.4.1</version>
+	</dependency>
   </dependencies>
   
   <!--maven的插件 -->

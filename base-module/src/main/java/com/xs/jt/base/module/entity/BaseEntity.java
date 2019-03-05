@@ -58,6 +58,8 @@ public abstract class BaseEntity implements Serializable {
 	
 	@Transient
 	private boolean checkBitOk=true;
+	@Transient
+	private String subToken;
 	
 
 	public Integer getSeq() {
@@ -150,5 +152,13 @@ public abstract class BaseEntity implements Serializable {
 	        e.printStackTrace();
 	    }  
 	    return pwd;  
+	}
+
+	public String getSubToken() {
+		return subToken;
+	}
+
+	public void setSubToken(String subToken) {
+		this.subToken = subToken;
 	}
 }

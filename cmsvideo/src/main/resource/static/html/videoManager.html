@@ -1,0 +1,73 @@
+<table id="videoDG" class="easyui-datagrid"  data-options="rownumbers:true,
+		toolbar:'#videoToolbar',
+		singleSelect:false,
+		pagination:true,
+		pageSize:10,
+		url:'../../videoInfo/getVideoInfoList'"
+		>  
+    <thead>
+        <tr>  
+        	<th data-options="field:'ck',checkbox:true"></th>
+        	<th data-options="field:'lsh',width:150"  >流水号</th>
+            <th data-options="field:'clsbdh',width:180" >车辆识别码</th>  
+            <th data-options="field:'hphm',width:80" >号牌号码</th>
+            <th data-options="field:'hpzl',width:100" >号牌种类</th>
+            <th data-options="field:'videoName',width:100" >视频名称</th>
+            <th data-options="field:'videoBegin',width:150">视频开始时间</th>
+            <th data-options="field:'videoEnd',width:150" >视频结束时间</th>
+            <th data-options="field:'zt',width:150,formatter:ztFormatter" >状态</th>
+        </tr>  
+      </thead>  
+</table>
+<div id="videoToolbar"  style="padding:5px;height:auto">
+    <div style="margin-bottom:5px">
+    	车辆识别代号：<input type="text" class="easyui-textbox" id="clsbdh" >
+    	流水号：<input type="text" class="easyui-textbox" id="lsh" >
+    	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryVideo()">查询</a>
+    	<a href="#" class="easyui-linkbutton" iconCls="icon-reload" onclick="retry()">批量重试</a>
+    </div>
+</div>
+
+<script type="text/javascript">
+function queryVideo(){
+	var clsbdh=$("#clsbdh").textbox("getValue");
+	var lsh = $("#lsh").textbox("getValue");
+	$('#videoDG').datagrid("reload",{clsbdh:clsbdh,lsh:lsh});
+}
+
+function ztFormatter(value,row,index){
+	if(value == 0){
+		return "未下载";
+	}else if (value == 1){
+		return "下载中";
+	}else if(value == 2){
+		return "已下载";
+	}else if(value == 3){
+		return "转码中";
+	}else if(value == 4){
+		return "转码完成";
+	}else if(value == 5){
+		return "上传中";
+	}else if(value == 6){
+		return "结束";
+	}else if(value == 7){
+		return "下载失败";
+	}else if(value == 8){
+		return "转换失败";
+	}
+	return  "";
+}
+
+function retry(){
+	debugger;
+	var rows = $('#videoDG').datagrid("getChecked");
+	
+	$.post("../../videoInfo/retry",{"lsh":row.lsh},function(data){
+		
+		
+		
+	},"json").complete(function(){
+		$.messager.progress('close');
+	});
+}
+</script>
