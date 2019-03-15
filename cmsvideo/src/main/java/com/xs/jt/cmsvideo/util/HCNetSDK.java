@@ -32,8 +32,9 @@ import com.sun.jna.ptr.ShortByReference;
 
 //SDK接口说明,HCNetSDK.dll
 public interface HCNetSDK extends StdCallLibrary {
+	
 
-    HCNetSDK INSTANCE = (HCNetSDK) Native.loadLibrary(ClientDemo.DLL_PATH+"HCNetSDK.dll",
+    HCNetSDK INSTANCE = (HCNetSDK) Native.loadLibrary(ClientDemo.EXTEND_PATH+"\\hk\\HCNetSDK.dll",
             HCNetSDK.class);
     /***宏定义***/
     //常量
@@ -314,6 +315,15 @@ public interface HCNetSDK extends StdCallLibrary {
     public static final int NET_DVR_THROWBFRAME = 20;//丢B帧
     public static final int NET_DVR_SETSPEED = 24;//设置码流速度
     public static final int NET_DVR_KEEPALIVE = 25;//保持与设备的心跳(如果回调阻塞，建议2秒发送一次)
+    
+    public static final int NET_DVR_SET_TRANS_TYPE=32; //设置转封装类型
+    
+    public static final int NET_DVR_SET_TRANS_TYPE_PS=1;
+    public static final int NET_DVR_SET_TRANS_TYPE_TS=2;
+    public static final int NET_DVR_SET_TRANS_TYPE_RTP=3;
+    public static final int NET_DVR_SET_TRANS_TYPE_MP4=5;
+    
+    
 //远程按键定义如下：
 /* key value send to CONFIG program */
     public static final int KEY_CODE_1 = 1;
@@ -2844,6 +2854,9 @@ public static class RECV_ALARM extends Structure{
  NativeLong  NET_DVR_PlayBackByName(NativeLong lUserID,String sPlayBackFileName, HWND hWnd);
  NativeLong  NET_DVR_PlayBackByTime(NativeLong lUserID,NativeLong lChannel, NET_DVR_TIME lpStartTime, NET_DVR_TIME lpStopTime, HWND hWnd);
  boolean  NET_DVR_PlayBackControl(NativeLong lPlayHandle,int dwControlCode,int dwInValue,IntByReference LPOutValue);
+ 
+ boolean  NET_DVR_SET_TRANS_TYPE(NativeLong lPlayHandle,int dwControlCode,int dwInValue,IntByReference LPOutValue);
+ 
  boolean  NET_DVR_StopPlayBack(NativeLong lPlayHandle);
  boolean  NET_DVR_SetPlayDataCallBack(NativeLong lPlayHandle,FPlayDataCallBack fPlayDataCallBack,int dwUser);
  boolean  NET_DVR_PlayBackSaveData(NativeLong lPlayHandle,String sFileName);
@@ -3060,7 +3073,7 @@ public static class RECV_ALARM extends Structure{
 //播放库函数声明,PlayCtrl.dll
 interface PlayCtrl extends StdCallLibrary
 {
-    PlayCtrl INSTANCE = (PlayCtrl) Native.loadLibrary(ClientDemo.DLL_PATH+"PlayCtrl.dll",
+    PlayCtrl INSTANCE = (PlayCtrl) Native.loadLibrary(ClientDemo.EXTEND_PATH+"hk\\PlayCtrl.dll",
             PlayCtrl.class);
 
     public static final int STREAME_REALTIME = 0;

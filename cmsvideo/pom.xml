@@ -42,11 +42,30 @@
 			<artifactId>jna-examples</artifactId>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+   <groupId>net.java.dev.jna</groupId>
+   <artifactId>jna</artifactId>
+   <version>4.1.0</version>
+</dependency>
 	<dependency>
 	    <groupId>commons-net</groupId>
 	    <artifactId>commons-net</artifactId>
 	    <version>1.4.1</version>
 	</dependency>
+	<dependency>
+	    <groupId>wsdl4j</groupId>
+	    <artifactId>wsdl4j</artifactId>
+	    <version>1.6.3</version>
+	</dependency>
+	
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-amqp</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+</dependency>
   </dependencies>
   
   <!--maven的插件 -->

@@ -12,6 +12,6 @@ import com.xs.jt.cmsvideo.entity.VideoConfig;
 @Repository
 public interface VideoConfigRepository extends JpaRepository<VideoConfig, Integer>,JpaSpecificationExecutor<VideoConfig> {
 
-	@Query(value=" from VideoConfig where jyjgbh=:jyjgbh and jcxdh=:jcxdh and jyxm like %:jyxm%")
-	public List<VideoConfig> getVideoConfigByJyjgbhAndJcxdhAndJyxm(@Param("jyjgbh")String jyjgbh, @Param("jcxdh")String jcxdh, @Param("jyxm")String jyxm); 
+	@Query(value=" from VideoConfig where cyqxh=:cyqxh and cyqtd=:cyqtd ")
+	public List<VideoConfig> getVideoConfigByCyqxhAndCyqtd(@Param("cyqxh")String cyqxh, @Param("cyqtd")String cyqtd); 
 }

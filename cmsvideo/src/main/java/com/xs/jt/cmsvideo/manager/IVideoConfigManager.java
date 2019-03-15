@@ -12,5 +12,7 @@ public interface IVideoConfigManager {
 	
 	public void deleteVideoConfig(VideoConfig videoConfig);
 	
-	public List<VideoConfig> getVideoConfigByJyjgbhAndJcxdhAndJyxm(String jyjgbh,String jcxdh,String jyxm);
+	public List<VideoConfig> getVideoConfigByCyqxhAndCyqtd(String cyqxh,String cyqtd);
+	
+	public VideoConfig getVideoConfigById(Integer id);
 }

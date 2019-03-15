@@ -1,0 +1,222 @@
+ <html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>视频剪辑</title>
+<script type="text/javascript" charset="UTF-8">
+<!-- 屏蔽右键
+   // document.oncontextmenu=function(e){return false;}  
+//-->
+var vlc; // VLC对象
+var itemId;  // 播放列表中播放节目的id
+var vlcSound; // vlc音量大小（初始化默认为50）
+var videoLength; // 视频总时长
+var then_time; // 播放开始时间(播放开始的日期，看下面实现代码，它是毫秒哦)
+var isPlaying=0; // 是否播放状态 （0 未播放 1 播放）
+// 初始化 === 很重要哦，控制程序的入口
+function initPlayUrl(){
+ vlc=document.getElementById("vlc");
+ // 添加播放地址
+ //vlc.playlist.add(window.opener.vdUrl);
+ // 播放
+ // vlc.playlist.play();
+ // 添加播放地址方式2 -- 推荐用下面的方法控制播放列表
+ var vedio_url=window.opener.vdUrl;
+ itemId= vlc.playlist.add(vedio_url);
+    vlc.playlist.playItem(itemId);
+   
+    // 获取VLC当前音量
+    vlcSound=vlc.audio.volume;
+    // 设置VLC音量值
+    document.getElementById("vlc_sound").value=vlcSound;
+    // 播放按钮不可用
+    document.getElementById("play_button").disabled=true;
+   
+    // 检查播放节目的状态 -- 注意这个是延时操作哦（setTimeout以毫秒为单位，这里延时0.5秒）
+    setTimeout(checkVedioStatus,500);
+}
+
+// 检查播放节目的状态
+function checkVedioStatus(){
+    if(vlc.input.state>2 && vlc.input.state<5){
+     isPlaying=1;
+     // vlc.input.time 当前播放时长，单位毫秒
+     // vlc.input.length 节目总时长，单位毫秒
+     videoLength=parseInt(vlc.input.length/1000);
+     var temp_total_time=parseTime(videoLength);
+     // 总时长设置
+     document.getElementById("vedio_length").value=temp_total_time;
+     // 当前可以输入时间段跳转
+     document.getElementById("time_change").disabled=false;
+     // 获得当前系统时间
+     then_time=new Date().getTime();
+     // 计算当前播放时间点
+     checkTime();
+    }else{
+     // 如果不是播放状态就在延时执行
+     setTimeout(checkVedioStatus,500);
+    }
+}
+
+// 实时检测系统时间，计算视频的播放时长（典型的秒表功能）
+function checkTime(){
+ if(isPlaying==1){
+  setTimeout("checkTime();",50);
+  var temp_time=parseInt((new Date().getTime() - then_time)/1000);
+  document.getElementById("current_video_time").value=parseTime(temp_time);
+ }
+}
+
+// 改变播放地址
+function changeNewBeginTime(){
+ // vlc.input.time 获取当前播放时间（毫秒）/也可重设当前播放时间点
+ var jumpTime=document.getElementById("change_length").value;
+ if(jumpTime!=""){
+  if(jumpTime>videoLength){
+   alert("对不起，输入值大于视频总时长...");
+   return;
+  }
+  vlc.input.time=jumpTime*1000;
+  then_time=new Date()-jumpTime*1000;
+ }
+}
+
+// 把秒转换为时间格式（HH：mm：ss）
+function parseTime(numLength){
+ var h_time=0;
+ var m_time=0;
+ var s_time=0;
+ if(numLength>=60){
+  m_time=parseInt(numLength/60);
+  s_time=parseInt(numLength%60);
+ }else{
+  s_time=numLength;
+ }
+ if(m_time>=60){
+  h_time=parseInt(m_time/60);
+  m_time=parseInt(m_time%60);
+ }
+ 
+ if(h_time<10){
+  h_time="0"+h_time;
+ }
+ if(m_time<10){
+  m_time="0"+m_time;
+ }
+ if(s_time<10){
+  s_time="0"+s_time;
+ }
+ return h_time+":"+m_time+":"+s_time;
+}
+
+// 停止播放
+function stopPlay(){
+ vlc.playlist.stop();
+ isPlaying=0;
+ 
+ // 修改播放/停止按钮状态
+ document.getElementById("play_button").disabled=false;
+    document.getElementById("stop_button").disabled=true;
+   
+    // 修改跳转按钮的状态
+    document.getElementById("change_length").value="";
+    document.getElementById("time_change").disabled=true;
+   
+    // 当前视频播放时间点清空
+    document.getElementById("current_video_time").value="";
+}
+// 重新播放
+function repeatPlay(){
+ vlc.playlist.play();
+ setTimeout(checkVedioStatus,500);
+ // 修改播放/停止按钮状态
+ document.getElementById("play_button").disabled=true;
+    document.getElementById("stop_button").disabled=false;
+}
+// 静音
+function noSound(){
+ if(vlcSound>0){
+  vlcSound=0;
+ }
+ vlc.audio.toggleMute();
+ vlcSound=vlc.audio.volume;
+ document.getElementById("vlc_sound").value=vlcSound;
+ if(vlcSound==0){
+  // document.getElementById("no_sound").value=" 恢复音量 ";
+  document.getElementById("no_sound").value=" "+"恢复音量"+" ";
+ }else{
+  // document.getElementById("no_sound").value=" 静    音 ";
+  document.getElementById("no_sound").value=" "+"静"+"  "+"音"+" ";
+ }
+}
+// 音量加减
+function soundChange(nums){
+ if(nums<0 && vlcSound==0){
+  alert("音量最小，不能再减少音量....");
+  return;
+ }
+ vlcSound+=nums;
+ if(vlcSound<=0){
+  vlcSound=0;
+  document.getElementById("no_sound").value=" "+"恢复音量"+" ";
+ }else{
+  // 当音量>0的时候，都要把静音的标识打开
+  document.getElementById("no_sound").value=" "+"静"+"  "+"音"+" ";
+ }
+ if(vlcSound>200){
+  alert("音量最大，不能再增大音量....");
+  vlcSound=200;
+ }
+ vlc.audio.volume =vlcSound;
+ document.getElementById("vlc_sound").value=vlcSound;
+}
+//全屏
+function screenFull(){
+  vlc.video.toggleFullscreen()
+}
+</script>
+</head>
+<body onload="initPlayUrl()" >
+<!--[if IE]>
+   <object type='application/x-vlc-plugin' id='vlc' events='True'
+       classid='clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921' width="720" height="540">
+          <param name='mrl' value='' />
+          <param name='volume' value='50' />
+          <param name='autoplay' value='false' />
+          <param name='loop' value='false' />
+          <param name='fullscreen' value='false' />
+    </object>
+<![endif]-->
+<!--[if !IE]><!-->
+    <object type='application/x-vlc-plugin' id='vlc' events='True' width="720" height="540">
+        <param name='mrl' value='ftp://192.168.80.23/11_1_1_123456.mp4' />
+        <param name='volume' value='50' />
+        <param name='autoplay' value='true' />
+        <param name='loop' value='false' />
+        <param name='fullscreen' value='false' />
+    </object>
+<!--<![endif]-->
+<br><br>
+<input type="button" value=" 播    放 "  onclick="repeatPlay();" id="play_button">  
+<input type="button" value=" 停    止 "  onclick="stopPlay();" id="stop_button">  
+<input type="button" value=" 静    音 "  onclick="noSound();" id="no_sound">  
+<input type="button" value=" 减少音量 "  onclick="soundChange(-10);">  
+<input type="button" value=" 增大音量 "  onclick="soundChange(10);">  
+<input type="button" value=" 全    屏 "  onclick="screenFull();">
+
+    
+                  
+
+<font color="red" size="2">音量：</font><input type="text" id="vlc_sound" style="width: 40px;color: blue">
+<br>
+<font color="red" size="2">总时长：</font><input type="text" id="vedio_length" style="width: 65px;color: blue"> 
+<input type="text" id="current_video_time" style="width: 65px;color: blue">
+
+                    
+           
+
+<font color="red" size="2">跳转：</font><input type="text" id="change_length" style="width: 100px;color: blue">
+<span style="color: blue;font-weight: normal;font-size: 14px">秒</span>
+ 
+<input type="button" value="确定" id="time_change" disabled="disabled" onclick="changeNewBeginTime();">
+</body>
+</html> 

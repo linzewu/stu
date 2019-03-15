@@ -15,6 +15,12 @@
 					"title": "视频配置",
 					"href": "../../static/html/videoConfig.html",
 					"permission":"videoConfig.getVideoConfigList"
+				},
+				{
+					"icon": "../../static/images/ftp.png",
+					"title": "Ftp配置",
+					"href": "../../static/html/ftpConfig.html",
+					"permission":"ftpConfig.getFtpConfigList"
 				}
 			]
 		}]

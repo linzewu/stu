@@ -1,3 +1,4 @@
+<link rel="stylesheet" type="text/css" href="../css/formTable.css"/>
 <script type="text/javascript"
 	src="../js/data.js"></script>
 <script type="text/javascript">
@@ -229,10 +230,12 @@ function query(){
        <thead>
            <tr>
                <th field="jyjgbh" width="50" data-options="formatter:jyjgbhFormatter" >监测站</th>
-               <th field="jcxdh" width="50">检测线代号</th>
+               <th field="cyqxh" width="50">查验区序号</th>
+               <th field="cyqtd" width="50">查验区通道</th>
                <th field="ip" width="50">硬盘录像机IP</th>
                <th field="channel" width="50">通道</th>
                <th field="deviceName" width="50">设备名称</th>
+               
            </tr>
        </thead>
    </table>
@@ -257,13 +260,22 @@ function query(){
 			   <div class="ftitle">监控摄像调取配置</div>
 		       <form id="fm" method="post" novalidate>
 		           <div class="fitem">
-		               <label>检测站:</label>
-		               <input name="jyjgbh" class="easyui-combobox" required="true" data-options="data:jcxdh_combox,valueField: 'jcxdh',
+		               <label>服务站:</label>
+		               <input name="jyjgbh" class="easyui-combobox"  data-options="data:jcxdh_combox,valueField: 'jcxdh',
 			textField: 'name'">
 		           </div>
+		           
 		           <div class="fitem">
-		               <label>检测线代号:</label>
-		               <input name="jcxdh" class="easyui-numberbox" required="true">
+		               <label>设备名称:</label>
+		               <input name="deviceName" class="easyui-textbox" required="true">
+		           </div>
+		           <div class="fitem">
+		               <label>查验区序号:</label>
+		               <input name="cyqxh" class="easyui-textbox" required="true">
+		           </div>
+		           <div class="fitem">
+		               <label>查验区通道:</label>
+		               <input name="cyqtd" class="easyui-textbox" required="true">		               
 		           </div>
 		           <div class="fitem">
 		               <label>硬盘录像机IP:</label>
@@ -290,12 +302,9 @@ function query(){
 		           <div class="fitem">
 		               <label>摄像头名称:</label>
 		               <input name="deviceName" class="easyui-textbox" required="true">
-		           </div>
-		           <div class="fitem">
-		               <label>检验项目:</label>
-		               <input name="jyxm" class="easyui-textbox" required="true">多个,隔开(B0,B1...)
 		               <input name="id"  type="hidden">
 		           </div>
+		           
 		       </form>
 			</div>
 			<div data-options="region:'east'" style="width:300px; ">
@@ -370,26 +379,4 @@ function query(){
             }
         }
     </script>
-    <style type="text/css">
-        #fm{
-            margin:0;
-            padding:10px 30px;
-        }
-        .ftitle{
-            font-size:14px;
-            font-weight:bold;
-            padding:5px 0;
-            margin-bottom:10px;
-            border-bottom:1px solid #ccc;
-        }
-        .fitem{
-            margin-bottom:5px;
-        }
-        .fitem label{
-            display:inline-block;
-            width:80px;
-        }
-        .fitem input{
-            width:160px;
-        }
-    </style>
+    

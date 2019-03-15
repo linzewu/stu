@@ -11,7 +11,7 @@ import com.xs.jt.base.module.entity.BaseEntity;
 @Scope("prototype")
 @Component("videoConfig")
 @Entity
-@Table(name = "tm_VideoConfig")
+@Table(name = "tm_Video_Config")
 public class VideoConfig extends BaseEntity {
 	/**
 	 * 
@@ -21,8 +21,8 @@ public class VideoConfig extends BaseEntity {
 	@Column
 	private String jyjgbh;
 	
-	@Column
-	private String jcxdh;
+	//@Column
+	//private String jcxdh;
 	
 	@Column
 	private String ip;
@@ -39,11 +39,17 @@ public class VideoConfig extends BaseEntity {
 	@Column
 	private int channel;
 	
-	@Column
-	private String jyxm;
+//	@Column
+//	private String jyxm;
 	
 	@Column
 	private String deviceName;
+	
+	@Column(length=12)
+	private String cyqxh;//	查验区序号
+	
+	@Column(length=15)
+	private String cyqtd;//	查验区通道
 
 	public String getJyjgbh() {
 		return jyjgbh;
@@ -53,13 +59,13 @@ public class VideoConfig extends BaseEntity {
 		this.jyjgbh = jyjgbh;
 	}
 
-	public String getJcxdh() {
-		return jcxdh;
-	}
+	//public String getJcxdh() {
+	//	return jcxdh;
+	//}
 
-	public void setJcxdh(String jcxdh) {
-		this.jcxdh = jcxdh;
-	}
+	///public void setJcxdh(String jcxdh) {
+	//	this.jcxdh = jcxdh;
+	//}
 
 	public String getIp() {
 		return ip;
@@ -101,20 +107,28 @@ public class VideoConfig extends BaseEntity {
 		this.channel = channel;
 	}
 
-	public String getJyxm() {
-		return jyxm;
-	}
-
-	public void setJyxm(String jyxm) {
-		this.jyxm = jyxm;
-	}
-
 	public String getDeviceName() {
 		return deviceName;
 	}
 
 	public void setDeviceName(String deviceName) {
 		this.deviceName = deviceName;
+	}
+
+	public String getCyqxh() {
+		return cyqxh;
+	}
+
+	public void setCyqxh(String cyqxh) {
+		this.cyqxh = cyqxh;
+	}
+
+	public String getCyqtd() {
+		return cyqtd;
+	}
+
+	public void setCyqtd(String cyqtd) {
+		this.cyqtd = cyqtd;
 	}
 	
 

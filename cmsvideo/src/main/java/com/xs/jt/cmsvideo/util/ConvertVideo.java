@@ -1,24 +1,28 @@
 package com.xs.jt.cmsvideo.util;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class ConvertVideo {
+
+	protected static Log log = LogFactory.getLog(ConvertVideo.class);
 
 	private static String inputPath = "";
 
 	private static String outputPath = "";
 
 	private static String ffmpegPath = "";
-	
+
 	private static String fileName = "";
 
-	public static void main(String args[]) throws IOException {
+//	public static void main(String args[]) throws IOException {
 
-		//getPath("E:\\C1_1.mp4","E:\\vod\\","C1_1");
-		System.out.println("C1_1.mp4".substring(0, "C1_1.mp4".indexOf(".")));
+	// getPath("E:\\C1_1.mp4","E:\\vod\\","C1_1");
+	// System.out.println("C1_1.mp4".substring(0, "C1_1.mp4".indexOf(".")));
 
 //		if (!checkfile(inputPath)) {
 //			System.out.println(inputPath + " is not file");
@@ -27,28 +31,26 @@ public class ConvertVideo {
 //		if (process()) {
 //			System.out.println("ok");
 //		}
-	}
+	// System.out.println(new Date().getTime());
+//		Calendar now = Calendar.getInstance();  
+//        System.out.println("年: " + now.get(Calendar.YEAR));  
+//        System.out.println("月: " + (now.get(Calendar.MONTH) + 1) + "");  
+//        System.out.println("日: " + now.get(Calendar.DAY_OF_MONTH));  
+//        System.out.println("时: " + now.get(Calendar.HOUR_OF_DAY));  
+//        System.out.println("分: " + now.get(Calendar.MINUTE));  
+//        System.out.println("秒: " + now.get(Calendar.SECOND));  
+//	}
 
-	public static void getPath(String inputpath,String outputpath,String filename) {
-		// 先获取当前项目路径，在获得源文件、目标文件、转换器的路径
-		File diretory = new File("");
-		try {
-			System.out.println(ConvertVideo.class.getResource("/ffmpeg").getPath());
-			String currPath = diretory.getAbsolutePath();
-			inputPath = inputpath;//"E:\\C1_1.mp4";
-			outputPath = outputpath;//"E:\\vod\\";
-			fileName = filename;
-			ffmpegPath = ConvertVideo.class.getResource("/ffmpeg").getPath()+"\\";
-			System.out.println(currPath);
-		} catch (Exception e) {
-			System.out.println("getPath出错");
-		}
+	public static void getPath(String inputpath, String outputpath, String filename) {
+		inputPath = inputpath;// "E:\\C1_1.mp4";
+		outputPath = outputpath;// "E:\\vod\\";
+		fileName = filename;
+		ffmpegPath = ClientDemo.EXTEND_PATH + "\\ffmpeg\\";
 	}
 
 	public static boolean process() throws Exception {
 		int type = checkContentType();
 		boolean status = false;
-		System.out.println("直接转成mp4格式");
 		status = processMp4(inputPath);// 直接转成mp4格式
 		return status;
 	}
@@ -170,10 +172,9 @@ public class ConvertVideo {
 		}
 	}
 
-	private static boolean processMp4(String oldfilepath) throws Exception{
+	private static boolean processMp4(String oldfilepath) throws Exception {
 
 		if (!checkfile(inputPath)) {
-			System.out.println(oldfilepath + " is not file");
 			return false;
 		}
 		List<String> command = new ArrayList<String>();
@@ -195,10 +196,15 @@ public class ConvertVideo {
 		command.add(outputPath + fileName + ".mp4");
 		try {
 
+//			log.info(ffmpegPath + "ffmpeg -i " + oldfilepath
+//					+ " -c:v libx264 -mbd 0 -c:a aac -strict -2 -pix_fmt yuv420p -movflags faststart " + outputPath
+//					+ fileName + ".mp4");
+			
 			// 方案1
-//        Process videoProcess = Runtime.getRuntime().exec(ffmpegPath + "ffmpeg -i " + oldfilepath 
-//                + " -ab 56 -ar 22050 -qscale 8 -r 15 -s 600x500 "
-//                + outputPath + "a.flv");
+//			Process videoProcess = Runtime.getRuntime()
+//					.exec(ffmpegPath + "ffmpeg -i " + oldfilepath
+//							+ " -c:v libx264 -mbd 0 -c:a aac -strict -2 -pix_fmt yuv420p -movflags faststart "
+//							+ outputPath + fileName + ".mp4");
 
 			// 方案2
 			Process videoProcess = new ProcessBuilder(command).redirectErrorStream(true).start();
@@ -210,9 +216,9 @@ public class ConvertVideo {
 			videoProcess.waitFor();
 
 			return true;
-		} catch (Exception e) {			
+		} catch (Exception e) {
 			throw e;
-			
+
 		}
 	}
 

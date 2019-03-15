@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -63,8 +64,17 @@ public class VideoConfigManagerImpl implements IVideoConfigManager {
 	}
 
 	@Override
-	public List<VideoConfig> getVideoConfigByJyjgbhAndJcxdhAndJyxm(String jyjgbh, String jcxdh, String jyxm) {
-		return videoConfigRepository.getVideoConfigByJyjgbhAndJcxdhAndJyxm(jyjgbh, jcxdh, jyxm);
+	public List<VideoConfig> getVideoConfigByCyqxhAndCyqtd(String cyqxh, String cyqtd) {
+		return videoConfigRepository.getVideoConfigByCyqxhAndCyqtd(cyqxh, cyqtd);
+	}
+
+	@Override
+	public VideoConfig getVideoConfigById(Integer id) {
+		Optional<VideoConfig> opt = videoConfigRepository.findById(id);
+		if ((!opt.isPresent())) {
+			return null;
+		}
+		return opt.get();
 	}
 
 }

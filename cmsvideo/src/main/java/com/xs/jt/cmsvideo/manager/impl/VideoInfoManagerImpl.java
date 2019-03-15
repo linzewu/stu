@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -67,5 +68,25 @@ public class VideoInfoManagerImpl implements IVideoInfoManager {
 	public VideoInfo save(VideoInfo videoInfo) {
 		return this.videoInfoRepository.save(videoInfo);
 	}
+
+	@Override
+	public VideoInfo getVideoInfoById(Integer id) {
+		Optional<VideoInfo> opt = videoInfoRepository.findById(id);
+		if ((!opt.isPresent())) {
+			return null;
+		}
+		return opt.get();
+	}
+
+	@Override
+	public List<VideoInfo> getVideoInfoByLshAndJycs(String lsh, Integer jycs) {
+		return videoInfoRepository.getVideoInfoByLshAndJycs(lsh, jycs);
+	}
+
+	@Override
+	public List<VideoInfo> getVideoInfosNoDownLoad(Integer zt, Integer taskCount) {
+		return videoInfoRepository.getVideoInfosNoDownLoad(zt, taskCount);
+	}
+
 
 }

@@ -16,22 +16,28 @@ import com.xs.jt.base.module.entity.BaseEntity;
 @Scope("prototype")
 @Component("videoInfo")
 @Entity
-@Table(name = "tm_VideoInfo")
+@Table(name = "tm_Video_Info")
 public class VideoInfo extends BaseEntity{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	//0：为下载
 	public final static Integer ZT_WXZ=0;
+	//下载中
 	public final static Integer ZT_XZZ=1;
+	//已下载
 	public final static Integer ZT_YXZ=2;
-	public final static Integer ZT_ZMZ=3;
-	public final static Integer ZT_ZMWC=4;
-	public final static Integer ZT_SCZ=5;
-	public final static Integer ZT_JS=6;
-	public final static Integer ZT_XZSB=7;
-	public final static Integer ZT_ZHSB=8;
+	//转码上传中
+	public final static Integer ZT_ZMSCZ=3;
+	//结束
+	public final static Integer ZT_JS=4;
+	//下载失败
+	public final static Integer ZT_XZSB=5;
+	//转码上传失败
+	public final static Integer ZT_ZMSCSB=6;
+	
 	@Column(length=20)
 	private String hphm;
 	@Column(length=20)
@@ -42,9 +48,9 @@ public class VideoInfo extends BaseEntity{
 	private String lsh;
 	@Column
 	private Integer jycs;
-	@Column(length=30)
-	private String jyxm;
-	//状态（0：为下载；1：下载中；2：已下载；3：转码中；4：转码完成；5：上传中；6：结束；7：下载失败；8：转换失败）
+//	@Column(length=30)
+//	private String jyxm;
+	//状态（0：为下载；1：下载中；2：已下载；3：转码上传中；4：结束；5：下载失败；6：转码上传失败）
 	@Column
 	private Integer zt;
 	//失败原因
@@ -71,13 +77,6 @@ public class VideoInfo extends BaseEntity{
 	private Date videoEnd;
 	
 	/**
-	 * 视频
-	 */
-	@Lob
-	@Column
-	private byte[] video;
-	
-	/**
 	 * 视频名称
 	 */
 	@Column(length=60)
@@ -87,7 +86,17 @@ public class VideoInfo extends BaseEntity{
 	 * 视频大小
 	 */
 	@Column
-	private Integer videoSize;
+	private Long videoSize;
+	
+	@Column(length=12)
+	private String cyqxh;//	查验区序号
+	
+	@Column(length=15)
+	private String cyqtd;//	查验区通道
+	
+	private Integer configId;  //videoConfig  id
+	@Column
+	private String deviceName;
 
 	public String getHphm() {
 		return hphm;
@@ -137,14 +146,6 @@ public class VideoInfo extends BaseEntity{
 		this.videoEnd = videoEnd;
 	}
 
-	public byte[] getVideo() {
-		return video;
-	}
-
-	public void setVideo(byte[] video) {
-		this.video = video;
-	}
-
 	public String getVideoName() {
 		return videoName;
 	}
@@ -153,11 +154,11 @@ public class VideoInfo extends BaseEntity{
 		this.videoName = videoName;
 	}
 
-	public Integer getVideoSize() {
+	public Long getVideoSize() {
 		return videoSize;
 	}
 
-	public void setVideoSize(Integer videoSize) {
+	public void setVideoSize(Long videoSize) {
 		this.videoSize = videoSize;
 	}
 
@@ -167,14 +168,6 @@ public class VideoInfo extends BaseEntity{
 
 	public void setJycs(Integer jycs) {
 		this.jycs = jycs;
-	}
-
-	public String getJyxm() {
-		return jyxm;
-	}
-
-	public void setJyxm(String jyxm) {
-		this.jyxm = jyxm;
 	}
 
 	public Integer getZt() {
@@ -199,6 +192,38 @@ public class VideoInfo extends BaseEntity{
 
 	public void setTaskCount(Integer taskCount) {
 		this.taskCount = taskCount;
+	}
+
+	public String getCyqxh() {
+		return cyqxh;
+	}
+
+	public void setCyqxh(String cyqxh) {
+		this.cyqxh = cyqxh;
+	}
+
+	public String getCyqtd() {
+		return cyqtd;
+	}
+
+	public void setCyqtd(String cyqtd) {
+		this.cyqtd = cyqtd;
+	}
+
+	public Integer getConfigId() {
+		return configId;
+	}
+
+	public void setConfigId(Integer configId) {
+		this.configId = configId;
+	}
+
+	public String getDeviceName() {
+		return deviceName;
+	}
+
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
 	}
 	
 	
