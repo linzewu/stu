@@ -1,11 +1,36 @@
- <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>视频剪辑</title>
+
+<!--[if IE]>
+   <object type='application/x-vlc-plugin' id='vlc' events='True'
+       classid='clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921' width="720" height="540">
+          <param name='mrl' value='' />
+          <param name='volume' value='50' />
+          <param name='autoplay' value='false' />
+          <param name='loop' value='false' />
+          <param name='fullscreen' value='false' />
+    </object>
+<![endif]-->
+<!--[if !IE]><!-->
+    <object type='application/x-vlc-plugin' id='vlc' events='True' width="720" height="540">
+        <param name='mrl' value='' />
+        <param name='volume' value='50' />
+        <param name='autoplay' value='true' />
+    </object>
+<!--<![endif]-->
+
+
+    
+                  
+
+<br>
+<font color="red" size="2">总时长：</font><input type="text" id="vedio_length" style="width: 65px;color: blue"> 
+<input type="text" id="current_video_time" style="width: 65px;color: blue">
+
+                    
+           
+
+
+
 <script type="text/javascript" charset="UTF-8">
-<!-- 屏蔽右键
-   // document.oncontextmenu=function(e){return false;}  
-//-->
 var vlc; // VLC对象
 var itemId;  // 播放列表中播放节目的id
 var vlcSound; // vlc音量大小（初始化默认为50）
@@ -13,23 +38,17 @@ var videoLength; // 视频总时长
 var then_time; // 播放开始时间(播放开始的日期，看下面实现代码，它是毫秒哦)
 var isPlaying=0; // 是否播放状态 （0 未播放 1 播放）
 // 初始化 === 很重要哦，控制程序的入口
-function initPlayUrl(){
+function initPlayUrl(videoUrl){
  vlc=document.getElementById("vlc");
  // 添加播放地址
  //vlc.playlist.add(window.opener.vdUrl);
  // 播放
  // vlc.playlist.play();
  // 添加播放地址方式2 -- 推荐用下面的方法控制播放列表
- var vedio_url=window.opener.vdUrl;
+ var vedio_url=videoUrl;//'ftp://192.168.0.174/11_1_1_123456.mp4';//window.opener.vdUrl;
  itemId= vlc.playlist.add(vedio_url);
     vlc.playlist.playItem(itemId);
    
-    // 获取VLC当前音量
-    vlcSound=vlc.audio.volume;
-    // 设置VLC音量值
-    document.getElementById("vlc_sound").value=vlcSound;
-    // 播放按钮不可用
-    document.getElementById("play_button").disabled=true;
    
     // 检查播放节目的状态 -- 注意这个是延时操作哦（setTimeout以毫秒为单位，这里延时0.5秒）
     setTimeout(checkVedioStatus,500);
@@ -45,8 +64,6 @@ function checkVedioStatus(){
      var temp_total_time=parseTime(videoLength);
      // 总时长设置
      document.getElementById("vedio_length").value=temp_total_time;
-     // 当前可以输入时间段跳转
-     document.getElementById("time_change").disabled=false;
      // 获得当前系统时间
      then_time=new Date().getTime();
      // 计算当前播放时间点
@@ -171,52 +188,7 @@ function soundChange(nums){
 }
 //全屏
 function screenFull(){
-  vlc.video.toggleFullscreen()
+  vlc.video.toggleFullscreen();
 }
+
 </script>
-</head>
-<body onload="initPlayUrl()" >
-<!--[if IE]>
-   <object type='application/x-vlc-plugin' id='vlc' events='True'
-       classid='clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921' width="720" height="540">
-          <param name='mrl' value='' />
-          <param name='volume' value='50' />
-          <param name='autoplay' value='false' />
-          <param name='loop' value='false' />
-          <param name='fullscreen' value='false' />
-    </object>
-<![endif]-->
-<!--[if !IE]><!-->
-    <object type='application/x-vlc-plugin' id='vlc' events='True' width="720" height="540">
-        <param name='mrl' value='ftp://192.168.80.23/11_1_1_123456.mp4' />
-        <param name='volume' value='50' />
-        <param name='autoplay' value='true' />
-        <param name='loop' value='false' />
-        <param name='fullscreen' value='false' />
-    </object>
-<!--<![endif]-->
-<br><br>
-<input type="button" value=" 播    放 "  onclick="repeatPlay();" id="play_button">  
-<input type="button" value=" 停    止 "  onclick="stopPlay();" id="stop_button">  
-<input type="button" value=" 静    音 "  onclick="noSound();" id="no_sound">  
-<input type="button" value=" 减少音量 "  onclick="soundChange(-10);">  
-<input type="button" value=" 增大音量 "  onclick="soundChange(10);">  
-<input type="button" value=" 全    屏 "  onclick="screenFull();">
-
-    
-                  
-
-<font color="red" size="2">音量：</font><input type="text" id="vlc_sound" style="width: 40px;color: blue">
-<br>
-<font color="red" size="2">总时长：</font><input type="text" id="vedio_length" style="width: 65px;color: blue"> 
-<input type="text" id="current_video_time" style="width: 65px;color: blue">
-
-                    
-           
-
-<font color="red" size="2">跳转：</font><input type="text" id="change_length" style="width: 100px;color: blue">
-<span style="color: blue;font-weight: normal;font-size: 14px">秒</span>
- 
-<input type="button" value="确定" id="time_change" disabled="disabled" onclick="changeNewBeginTime();">
-</body>
-</html> 

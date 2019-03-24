@@ -30,6 +30,10 @@ public class FtpConfig extends BaseEntity {
 	private int ftpPort;
 	@Column(length=12)
 	private String cyqxh;//	查验区序号
+	//容量 单位T
+	@Column
+	private Integer capacity;
+	
 	
 	public String getJyjgbh() {
 		return jyjgbh;
@@ -66,6 +70,12 @@ public class FtpConfig extends BaseEntity {
 	}
 	public void setCyqxh(String cyqxh) {
 		this.cyqxh = cyqxh;
+	}
+	public Integer getCapacity() {
+		return capacity;
+	}
+	public void setCapacity(Integer capacity) {
+		this.capacity = capacity;
 	}
 	
 	

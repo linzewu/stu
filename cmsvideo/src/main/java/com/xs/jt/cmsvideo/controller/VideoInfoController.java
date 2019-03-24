@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -31,9 +32,14 @@ public class VideoInfoController {
 	
 	@UserOperation(code = "retry", name = "批量重试")
 	@RequestMapping(value = "retry", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> retry(List<VideoInfo> infoList){
+	public @ResponseBody Map<String, Object> retry(@RequestBody List<VideoInfo> infoList){
 		for(VideoInfo info:infoList) {
 			info.setTaskCount(0);
+			if(VideoInfo.ZT_XZSB.equals(info.getZt())) {
+				info.setZt(VideoInfo.ZT_WXZ);
+			}else if(VideoInfo.ZT_ZMSCSB.equals(info.getZt())) {
+				info.setZt(VideoInfo.ZT_YXZ);
+			}
 			videoInfoManager.save(info);
 		}
 		return ResultHandler.toSuccessJSON("批量重试成功");

@@ -180,65 +180,41 @@ public class VideoListJob {
 		}
 	}
 
-//	@Scheduled(cron = "0 0/1 * * * ? ")
 	@RabbitListener(queues = RabbitConfig.QUEUE_VIDEO_UPLOAD, containerFactory = "videoContainerFactory")
 	public void convertVideoAndUpload(String message) {
 		log.info("***************convertVideoAndUpload begin*********************");
 		VideoInfo vi = JSONObject.parseObject(message, VideoInfo.class);
-		// 转为H264
-		// 转码中
-//		ConvertVideo.getPath(downLoadPath + vi.getVideoName(), convertOutPath,
-//				vi.getVideoName().substring(0, vi.getVideoName().indexOf(".")));
-//
-//		if (!ConvertVideo.checkfile(downLoadPath + vi.getVideoName())) {
-//			log.info("convertVideoAndUpload: " + downLoadPath + vi.getVideoName() + " is not file");
-//			vi.setTaskCount((vi.getTaskCount() == null ? 0 : vi.getTaskCount()) + 1);
-//			vi.setZt(vi.getTaskCount() == getMaxTaskCou() ? VideoInfo.ZT_ZMSCSB : VideoInfo.ZT_YXZ);
-//			vi.setReason(vi.getVideoName() + " is not file");
-//			updateStatus(vi);
-//			return;
-//			// continue;
-//		}
 		try {
-			// 转码
-//			if (ConvertVideo.process()) {
-				// 转码成功
-				// 删除下载视频目录下文件
-//				FileUtil.deleteFile(downLoadPath + vi.getVideoName());
+			// 上传
 
-				// 上传
+			String localPath = downLoadPath + vi.getVideoName();
+			String fileName = vi.getVideoName();
+			File localFile = new File(localPath);
 
-				String localPath = downLoadPath + vi.getVideoName();
-				String fileName = vi.getVideoName();
-				File localFile = new File(localPath);
+			// 上传一个文件
+			FileInputStream in = new FileInputStream(localFile);
+			boolean uploadFlag = FtpUtil.uploadFile(ftpHost, ftpUserName, ftpPassword, ftpPort, ftpPath, fileName, in);
 
-				// 上传一个文件
-				FileInputStream in = new FileInputStream(localFile);
-				boolean uploadFlag = FtpUtil.uploadFile(ftpHost, ftpUserName, ftpPassword, ftpPort, ftpPath, fileName,
-						in);
+			if (uploadFlag) {
+				// 上传成功
+				vi.setVideoSize(localFile.length());
+				vi.setTaskCount(0);
+				vi.setZt(VideoInfo.ZT_JS);
+				vi.setReason("");
+				updateStatus(vi);
+				// 删除转码后文件
+				FileUtil.deleteFile(downLoadPath + vi.getVideoName());
+			} else {
+				throw new Exception("上传失败！");
+			}
 
-				if (uploadFlag) {
-					// 上传成功
-					vi.setVideoSize(localFile.length());
-					vi.setTaskCount(0);
-					vi.setZt(VideoInfo.ZT_JS);
-					vi.setReason("");
-					updateStatus(vi);
-					// 删除转码后文件
-					FileUtil.deleteFile(downLoadPath + vi.getVideoName());
-				}else {
-					throw new Exception("上传失败！");
-				}
-				
-
-//			}
 		} catch (Exception e) {
 			// 转码失败
 			vi.setTaskCount((vi.getTaskCount() == null ? 0 : vi.getTaskCount()) + 1);
 			vi.setZt(vi.getTaskCount() == getMaxTaskCou() ? VideoInfo.ZT_ZMSCSB : VideoInfo.ZT_YXZ);
 			vi.setReason(e.getMessage());
 			updateStatus(vi);
-			log.error("转码上传失败 ",e);
+			log.error("上传失败 ", e);
 		}
 
 		log.info("***************convertVideoAndUpload end*********************");
@@ -279,13 +255,14 @@ public class VideoListJob {
 	}
 
 	public void downLoad(NativeLong lUserID, NativeLong lChannel, NET_DVR_TIME lpStartTime, NET_DVR_TIME lpStopTime,
-			String saveFile) throws InterruptedException {
+			String saveFile) throws Exception {
 		try {
 			// 指定下载的文件
 			NativeLong tRet = hCNetSDK.NET_DVR_GetFileByTime(lUserID, lChannel, lpStartTime, lpStopTime, saveFile);
 			int tError = hCNetSDK.NET_DVR_GetLastError();
 			if (tRet.longValue() == -1) {
-				log.info("NET_DVR_GetFileByTime fail,channel:" + lChannel + "error code:" + tError);
+				log.error("NET_DVR_GetFileByTime fail,channel:" + lChannel + "error code:" + tError);
+				throw new Exception("NET_DVR_GetFileByTime fail,channel:" + lChannel + "error code:" + tError);
 			}
 
 			hCNetSDK.NET_DVR_PlayBackControl(tRet, hCNetSDK.NET_DVR_SET_TRANS_TYPE, hCNetSDK.NET_DVR_SET_TRANS_TYPE_MP4,
@@ -294,7 +271,8 @@ public class VideoListJob {
 			boolean flagPlay = hCNetSDK.NET_DVR_PlayBackControl(tRet, hCNetSDK.NET_DVR_PLAYSTART, 0, null);
 			tError = hCNetSDK.NET_DVR_GetLastError();
 			if (!flagPlay) {
-				log.info("NET_DVR_PlayBackControl() failed ,ErrorCode:" + tError);
+				log.error("NET_DVR_PlayBackControl() failed ,ErrorCode:" + tError);
+				throw new Exception("NET_DVR_PlayBackControl() failed ,ErrorCode:" + tError);
 			}
 
 			// 获取下载进度
@@ -322,13 +300,13 @@ public class VideoListJob {
 	public int getChannelNumber(long channel, NativeLong lUserID) {
 		int iChannelNum = -1;
 		int iIPChanStart = 0;
-		
-		 if (m_strDeviceInfo.byIPChanNum >= 64) {
-			  iIPChanStart = 0;
-         }     else{
-        	 iIPChanStart = 32;
-         }
-		
+
+		if (m_strDeviceInfo.byIPChanNum >= 64) {
+			iIPChanStart = 0;
+		} else {
+			iIPChanStart = 32;
+		}
+
 		if (channel >= m_strDeviceInfo.byChanNum) {
 			iChannelNum = (int) (channel - m_strDeviceInfo.byChanNum + iIPChanStart);
 		}
