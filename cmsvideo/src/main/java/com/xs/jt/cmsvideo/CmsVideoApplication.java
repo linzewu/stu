@@ -1,15 +1,23 @@
 package com.xs.jt.cmsvideo;
 
+import java.io.IOException;
+
 import javax.xml.ws.Endpoint;
 
+import org.apache.axis2.transport.http.AxisServlet;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import com.xs.jt.cmsvideo.util.FileCopyUtils;
 import com.xs.jt.cmsvideo.webservice.VideoWebServiceImpl;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -26,14 +34,43 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableScheduling
 public class CmsVideoApplication 
 {
+	protected static Log log = LogFactory.getLog(CmsVideoApplication.class);
     public static void main( String[] args )
     {
     	SpringApplication.run(CmsVideoApplication.class, args);
     	
     	//定义webService的发布地址，提供给外界使用接口的地址
-    	String address = "http://127.0.0.1:8083/cmsvideo/vwService";
+    	String address = "http://192.168.80.23:8083/cmsvideo/vwService";
         //使用Endpoint类提供的publish方法发布WebService，发布时要保证使用的端口号没有被其他应用程序占用
-        Endpoint.publish(address , new VideoWebServiceImpl());
-        System.out.println("发布webservice成功!");
+       // Endpoint.publish(address , new VideoWebServiceImpl());
     }
+    
+	@Bean
+	public ServletRegistrationBean helloWorldServlet() {
+	    ServletRegistrationBean helloWorldServlet = new ServletRegistrationBean();
+	    helloWorldServlet.setServlet(new AxisServlet());//这里的AxisServlet就是web.xml中的org.apache.axis2.transport.http.AxisServlet
+	    helloWorldServlet.addUrlMappings("/services/*");
+	    //通过默认路径无法找到services.xml，这里需要指定一下路径，且必须是绝对路径
+	    String path = this.getClass().getResource("/ServicesPath").getPath().toString();
+	    log.info("The original path：" + path);
+	    if(path.toLowerCase().startsWith("file:")){
+	    	log.info("去掉前面的“file:”！");
+	    	path = path.substring(5);
+	    }
+	    //如果获得到的地址里有感叹号，说明文件在压缩包（jar包）中，Axis2无法正常使用，需要拷贝到jar包外
+	    if(path.indexOf("!") != -1){
+	    	try {
+	    		log.info("将ServicesPath/services/MyWebService/META-INF/services.xml文件拷贝到jar包同级目录下！");
+				FileCopyUtils.copy("ServicesPath/services/MyWebService/META-INF/services.xml");
+			} catch (IOException e) {
+				log.error(e);
+			}
+	    	log.info("jar包运行！查找jar包同级目录下的“/ServicesPath”目录");
+	    	path = path.substring(0, path.lastIndexOf("/", path.indexOf("!"))) + "/ServicesPath";
+	    }
+	    log.info("The final path：" + path);
+	    helloWorldServlet.addInitParameter("axis2.repository.path", path);
+	    helloWorldServlet.setLoadOnStartup(1);
+	    return helloWorldServlet;
+	}
 }

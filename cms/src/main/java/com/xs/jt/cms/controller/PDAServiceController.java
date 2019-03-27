@@ -418,6 +418,12 @@ public class PDAServiceController {
 	@RequestMapping(value = "findPreCarRegisterByLsh", method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> findPreCarRegisterByLsh(String lsh) {
 		Map<String,Object> map = new HashMap<String,Object>();
+		String token = TokenProccessor.getInstance().makeToken();
+		request.getSession(false)
+        .setAttribute(
+                "subToken",
+                token);
+		map.put("subToken", token);
 		PreCarRegister carInfo = preCarRegisterManager.findPreCarRegisterByLsh(lsh);
 		map.put("data", carInfo);
 		if (carInfo != null) {
@@ -427,12 +433,6 @@ public class PDAServiceController {
 			}
 			//carInfo.setSdzt(vehicleLockManager.findMotorVehicleBusinessLockByClsbdh(carInfo.getClsbdh()));
 		}
-		String token = TokenProccessor.getInstance().makeToken();
-		request.getSession(false)
-        .setAttribute(
-                "subToken",
-                token);
-		map.put("subToken", token);
 		return map;
 	}
 
@@ -449,6 +449,13 @@ public class PDAServiceController {
 		Map<String, String> dataMap = new HashMap<String, String>();
 		Map<String, List<BaseParams>> bpsMap = (Map<String, List<BaseParams>>) servletContext
 				.getAttribute("bpsMap");
+		String token = TokenProccessor.getInstance().makeToken();
+		request.getSession(false)
+        .setAttribute(
+                "subToken",
+                token);
+		map.put("subToken", token);
+		
 		try {
 			TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
 			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNew qo = tmriJaxRpcOutService.createQueryObjectOut();
@@ -493,13 +500,8 @@ public class PDAServiceController {
 				}
 				map.put("data", dataMap);
 			}
-			String token = TokenProccessor.getInstance().makeToken();
-			request.getSession(false)
-	        .setAttribute(
-	                "subToken",
-	                token);
-			map.put("subToken", token);
 		} catch (Exception e) {
+			log.error("获取基础信息异常",e);
 			throw new ApplicationException("获取基础信息异常", e);
 		}
 		return map;
@@ -519,6 +521,14 @@ public class PDAServiceController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		Map<String, List<BaseParams>> bpsMap = (Map<String, List<BaseParams>>) servletContext
 				.getAttribute("bpsMap");
+		
+		String token = TokenProccessor.getInstance().makeToken();
+		request.getSession(false)
+        .setAttribute(
+                "subToken",
+                token);
+		map.put("subToken", token);
+		
 		try {
 			TmriJaxRpcOutNewAccessServiceStub trias = tmriJaxRpcOutService.createTmriJaxRpcOutNewAccessServiceStub();
 			TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNew qo = tmriJaxRpcOutService.createQueryObjectOut();
@@ -581,12 +591,6 @@ public class PDAServiceController {
 				map.put("data", dataMap);
 			}
 			
-			String token = TokenProccessor.getInstance().makeToken();
-			request.getSession(false)
-	        .setAttribute(
-	                "subToken",
-	                token);
-			map.put("subToken", token);
 		} catch (Exception e) {
 			throw new ApplicationException("获取全国车辆信息异常", e);
 		}
@@ -899,10 +903,14 @@ public class PDAServiceController {
 	private boolean isRepeatSubmit(VehCheckInfo vehCheckInfo) {
         String serverToken = (String) request.getSession(false).getAttribute(
                 "subToken");
+        
+        log.info("serverToken:"+serverToken);
+       
         if (StringUtils.isEmpty(serverToken)) {
             return true;
         }
         String clinetToken = vehCheckInfo.getSubToken();
+        log.info("clinetToken:"+clinetToken);
         if (StringUtils.isEmpty(clinetToken)) {
             return true;
         }

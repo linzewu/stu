@@ -58,6 +58,7 @@ public class BaseConfig extends WebMvcConfigurationSupport  {
 		excludeList.add("/user/getZzjUser");
 		excludeList.add("/user/login");
 		excludeList.add("/static/**");
+		excludeList.add("/services/**");
 		excludeList.add("/");
 		registry.addInterceptor(userInterceptor).addPathPatterns("/**").excludePathPatterns(excludeList);
 		registry.addInterceptor(SecurityInterceptor).addPathPatterns("/**").excludePathPatterns(excludeList);

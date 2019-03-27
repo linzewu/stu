@@ -97,6 +97,9 @@ public class VideoInfo extends BaseEntity{
 	private Integer configId;  //videoConfig  id
 	@Column
 	private String deviceName;
+	
+	@Column
+	private String sfzmhm;
 
 	public String getHphm() {
 		return hphm;
@@ -224,6 +227,14 @@ public class VideoInfo extends BaseEntity{
 
 	public void setDeviceName(String deviceName) {
 		this.deviceName = deviceName;
+	}
+
+	public String getSfzmhm() {
+		return sfzmhm;
+	}
+
+	public void setSfzmhm(String sfzmhm) {
+		this.sfzmhm = sfzmhm;
 	}
 	
 	

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file was auto-generated from WSDL --><!-- by the Apache Axis2 version: 1.6.2 Built on : Apr 17, 2012 (05:33:49 
+	IST) -->
+<serviceGroup>
+	<service name="VideoService" scope="application"
+		targetNamespace="http://webServices.tmri.com">
+		<description>测试axis2webservices</description>
+		<schema schemaNamespace="http://webServices.tmri.com" />
+		<!-- <parameter name="ServiceClass"> com.xs.jt.cmsvideo.webservice.VideoService 
+			</parameter> -->
+		<parameter name="ServiceObjectSupplier">
+			org.apache.axis2.extensions.spring.receivers.SpringServletContextObjectSupplier
+		</parameter>
+		<parameter name="SpringBeanName">videoService</parameter>
+		<operation name="setVideoPara">
+			<messageReceivers>
+				<messageReceiver
+					mep="http://www.w3.org/2004/08/wsdl/in-out"
+					class="org.apache.axis2.rpc.receivers.RPCMessageReceiver" />
+			</messageReceivers>
+
+		</operation>
+	</service>
+</serviceGroup>

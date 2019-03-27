@@ -12,6 +12,7 @@ import com.xs.jt.cmsvideo.util.XmlMapAdapter;
 @WebService
 public interface IVideoWebService {
 	 @WebMethod
-	 public  @XmlJavaTypeAdapter((XmlMapAdapter.class)) Map<String,String> setVideoPara(VideoPara videopara);
+	 public 
+	 Map<String,String> setVideoPara(VideoPara videopara);
 
 }
