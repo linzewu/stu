@@ -38,6 +38,8 @@ public class VideoInfo extends BaseEntity{
 	//转码上传失败
 	public final static Integer ZT_ZMSCSB=6;
 	
+	@Column
+	private String jyjgbh;
 	@Column(length=20)
 	private String hphm;
 	@Column(length=20)
@@ -235,6 +237,14 @@ public class VideoInfo extends BaseEntity{
 
 	public void setSfzmhm(String sfzmhm) {
 		this.sfzmhm = sfzmhm;
+	}
+	
+	public String getJyjgbh() {
+		return jyjgbh;
+	}
+
+	public void setJyjgbh(String jyjgbh) {
+		this.jyjgbh = jyjgbh;
 	}
 	
 	

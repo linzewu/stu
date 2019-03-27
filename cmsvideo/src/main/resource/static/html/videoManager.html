@@ -1,6 +1,8 @@
 <table id="videoDG" class="easyui-datagrid"  data-options="rownumbers:true,
 		toolbar:'#videoToolbar',
 		singleSelect:false,
+		checkOnSelect:false,
+		selectOnCheck:false,
 		pagination:true,
 		pageSize:10,
 		url:'../../videoInfo/getVideoInfoList'"
@@ -14,8 +16,9 @@
             <th data-options="field:'hpzl',width:100" >号牌种类</th>
             <th data-options="field:'cyqxh',width:100" >查验区序号</th>
             <th data-options="field:'cyqtd',width:100" >查验区通道</th>
+            <th data-options="field:'deviceName',width:100" >视频名称</th>
+            <th data-options="field:'videoName',width:40,formatter:showImg" >播放</th>
             <th data-options="field:'jycs',width:100" >检验次数</th>
-            <th data-options="field:'videoName',width:100" >视频名称</th>
             <th data-options="field:'videoSize',width:100" >视频大小</th>
             <th data-options="field:'videoBegin',width:150">视频开始时间</th>
             <th data-options="field:'videoEnd',width:150" >视频结束时间</th>
@@ -26,54 +29,71 @@
       </thead>  
 </table>
 <div id="videoToolbar"  style="padding:5px;height:auto">
-    <div style="margin-bottom:5px">
-    	车辆识别代号：<input type="text" class="easyui-textbox" id="clsbdh" >
+    <div style="margin-bottom:5px">    	
+    	号牌号码：<input type="text" class="easyui-textbox" id="hphm" >
     	流水号：<input type="text" class="easyui-textbox" id="lsh" >
+    	车辆识别代号：<input type="text" class="easyui-textbox" id="clsbdh" ><br/>
+    	号牌种类：<input type="text" class="easyui-textbox" id="hpzl" >
+    	状      态：&nbsp;&nbsp;&nbsp;<input id="zt"   prompt='请选择状态' data-options="data:comm.getBaseParames('spzt'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 170px;">
     	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryVideo()">查询</a>
     	<a href="#" class="easyui-linkbutton" iconCls="icon-reload" onclick="retry()">批量重试</a>
     </div>
 </div>
-
+<div id="win_video" class="easyui-window" data-options="
+																    width:740,
+																    height:620,
+																    modal:true,
+																    title:'视频播放',
+																    collapsible:false,
+																    draggable:false,
+																    closed:true,
+																    onLoad:loadVideo
+																    "></div>
 <script type="text/javascript">
+function loadVideo(data){
+	initPlayUrl('ftp://192.168.0.174/11_1_1_123456.mp4');
+}
 function queryVideo(){
 	var clsbdh=$("#clsbdh").textbox("getValue");
 	var lsh = $("#lsh").textbox("getValue");
-	$('#videoDG').datagrid("reload",{clsbdh:clsbdh,lsh:lsh});
+	var hphm = $("#hphm").textbox("getValue");
+	var hpzl = $("#hpzl").textbox("getValue");
+	var zt = $("#zt").combobox("getValue");
+	$('#videoDG').datagrid("reload",{clsbdh:clsbdh,lsh:lsh,hphm:hphm,hpzl:hpzl,zt:zt});
 }
 
 function ztFormatter(value,row,index){
-	if(value == 0){
-		return "未下载";
-	}else if (value == 1){
-		return "下载中";
-	}else if(value == 2){
-		return "已下载";
-	}else if(value == 3){
-		return "转码中";
-	}else if(value == 4){
-		return "转码完成";
-	}else if(value == 5){
-		return "上传中";
-	}else if(value == 6){
-		return "结束";
-	}else if(value == 7){
-		return "下载失败";
-	}else if(value == 8){
-		return "转换失败";
-	}
-	return  "";
+	return comm.getParamNameByValue("spzt", value)
+}
+
+//图片展示
+function showImg(value, row, index){
+		return "<img style='' border='0' src='../images/play.png' onclick='openPlayWin(\""+row.jylsh+"\",\""+row.hphm+"\",\""+row.jycs+"\",\""+row.jyxm+"\",\""+row.videoBegin+"\",\""+row.videoEnd+"\")'/>";
+}
+
+function openPlayWin(jylsh,hphm,jycs,jyxm,kssj,jssj){
+	$('#win_video').window('open');
+	$('#win_video').window('refresh', 'empty_play.html');
+	
 }
 
 function retry(){
-	debugger;
-	var rows = $('#videoDG').datagrid("getChecked");
 	
-	$.post("../../videoInfo/retry",{"lsh":row.lsh},function(data){
-		
-		
-		
-	},"json").complete(function(){
-		$.messager.progress('close');
+	var rows = $('#videoDG').datagrid("getChecked");
+	$.ajax({  
+	    url : "../../videoInfo/retry",
+	    type : 'POST',
+	    dataType: 'json',
+	    contentType: "application/json",
+	    data : JSON.stringify(rows),
+	    success : function(col) {
+			$.messager.alert("提示",col.message,"info");    
+	    },
+	    error : function(col){
+	    }
 	});
+
+	
 }
 </script>

@@ -43,7 +43,16 @@ public class VideoInfoManagerImpl implements IVideoInfoManager {
 				}
 				if(Common.isNotEmpty(videoInfo.getLsh())) {
 					list.add(criteriaBuilder.like(root.get("lsh").as(String.class), "%"+ videoInfo.getLsh()+"%"));
-				}				
+				}
+				if(Common.isNotEmpty(videoInfo.getHphm())) {
+					list.add(criteriaBuilder.equal(root.get("hphm").as(String.class), videoInfo.getHphm()));
+				}
+				if(Common.isNotEmpty(videoInfo.getHpzl())) {
+					list.add(criteriaBuilder.equal(root.get("hpzl").as(String.class), videoInfo.getHpzl()));
+				}
+				if(videoInfo.getZt() != null) {
+					list.add(criteriaBuilder.equal(root.get("zt").as(String.class), videoInfo.getZt()));
+				}
 				
 				List<Order> orders = new ArrayList<Order>();
 				orders.add(criteriaBuilder.desc(root.get("createTime")));

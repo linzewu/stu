@@ -68,6 +68,7 @@ public class VideoWebServiceImpl implements IVideoWebService {
 						info.setLsh(videopara.getCylsh());
 						info.setConfigId(config.getId());
 						info.setDeviceName(config.getDeviceName());
+						info.setJyjgbh(config.getJyjgbh());
 						this.videoInfoManager.save(info);
 					}
 				}else {

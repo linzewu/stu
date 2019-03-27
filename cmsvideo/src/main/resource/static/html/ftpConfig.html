@@ -1,3 +1,4 @@
+<script type="text/javascript" src="../js/depttree.js"></script>
 <link rel="stylesheet" type="text/css" href="../css/formTable.css"/>
 <table id="datagrid-ftpConfig" title="Ftp配置" class="easyui-datagrid" style="width:100%;height:400px"
 	            toolbar="#datagrid-ftp-toolbar" pagination="true" url="../../ftpConfig/getFtpConfigList" pageSize="100"
@@ -5,12 +6,14 @@
 	            rownumbers="true"  singleSelect="true" >
 	        <thead>
 	            <tr>
-	                <th  width="150px" data-options="field:'jyjgbh'" >机构名称</th>
+	                <th  width="280px" data-options="field:'jyjgbh',formatter:jyjgbhFormatter"  >机构名称</th>
 	                <th  width="100px" data-options="field:'cyqxh'">查验区序号</th> 
 	                <th  width="100px" data-options="field:'ftpHost'">Ftp Ip</th>
 	                <th  width="150px" data-options="field:'ftpUserName'">用户名</th>
 	                <th  width="80px" data-options="field:'ftpPassword'">密码</th>
-	                <th  width="80px" data-options="field:'ftpPort'">端口</th>	                
+	                <th  width="80px" data-options="field:'ftpPort'">端口</th>
+	                <th  width="120px" data-options="field:'capacity'">容量(单位：T)</th>
+	                	                
 	            </tr>
 	        </thead>
 	    </table>
@@ -23,16 +26,16 @@
 	    	
 	    </div>
 	    
-<div id="dlgFtp" class="easyui-dialog" style="width:800px;height:400px;padding:10px 20px"
+<div id="dlgFtp" class="easyui-dialog" style="width:530px;height:400px;padding:10px 20px"
            closed="true" buttons="#dlgFtp-buttons">
          
         <div class="easyui-layout" fit='true'>
-			<div data-options="region:'center'">
+			<div data-options="region:'center'" style="padding-left: 10px; padding-right: 10px;">
 			   <div class="ftitle">Ftp配置</div>
 		       <form id="ftpfm" method="post" novalidate>
 		           <div class="fitem">
 		               <label>机构名称:</label>
-		               <input name="jyjgbh" class="easyui-textbox"  >
+		               <input name="jyjgbh"  id="jyjgbh_ftp" class="easyui-combotree" style="width: 350px">
 		           </div>
 		           <div class="fitem">
 		               <label>查验区序号:</label>
@@ -53,8 +56,13 @@
 		           <div class="fitem">
 		               <label>端口:</label>
 		               <input name="ftpPort" class="easyui-textbox" required="true">
+		           </div>
+		           	
+		           <div class="fitem">
+		               <label>容量(单位:T)	</label>
+		               <input name="capacity" class="easyui-textbox" required="true">
 		               <input name="id"  type="hidden">
-		           </div>		           
+		           </div>           
 		       </form>
 			</div>
 		</div>  
@@ -69,7 +77,7 @@ var  url = '../../ftpConfig/save';
 function newFtpConfig(){
     $('#dlgFtp').dialog('open').dialog('center').dialog('setTitle','新增配置');
     $('#ftpfm').form('clear');
-    
+    loadComboboxTree("jyjgbh_ftp");
     $("#ftpfm").form("load",{ftpPort:'21',});
    
 }
@@ -77,6 +85,7 @@ function editFtpConfig(){
     var row = $('#datagrid-ftpConfig').datagrid('getSelected');
     if (row){
         $('#dlgFtp').dialog('open').dialog('center').dialog('setTitle','修改配置');
+        loadComboboxTree("jyjgbh");
         $('#ftpfm').form('load',row);
     }
 }
