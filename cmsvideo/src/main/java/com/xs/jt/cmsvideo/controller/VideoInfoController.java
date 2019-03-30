@@ -45,6 +45,8 @@ public class VideoInfoController {
 				info.setZt(VideoInfo.ZT_WXZ);
 			}else if(VideoInfo.ZT_ZMSCSB.equals(info.getZt())) {
 				info.setZt(VideoInfo.ZT_YXZ);
+			}else {
+				info.setZt(VideoInfo.ZT_WXZ);
 			}
 			videoInfoManager.save(info);
 		}
@@ -54,7 +56,7 @@ public class VideoInfoController {
 	
 	
 	@RequestMapping(value = "getVideoInfoByLsh")
-	public String getVideoInfoByLsh(@RequestParam String jylsh,Model model){
+	public String getVideoInfoByLsh(@RequestParam("lsh") String jylsh,Model model){
 		List<VideoInfo> list = videoInfoManager.getVideoInfoByJylsh(jylsh);
 		model.addAttribute("videoInfoList", list);
 		
