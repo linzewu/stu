@@ -11,6 +11,7 @@ import java.net.SocketException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
 public class FtpUtil {
@@ -119,8 +120,46 @@ public class FtpUtil {
             ftpClient.setControlEncoding("UTF-8"); // 中文支持
             ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
             ftpClient.enterLocalPassiveMode();
-            ftpClient.changeWorkingDirectory(ftpPath);
+    		String directory = ftpPath + "/";
+            //进入文件夹ftpPath失败，创建目录
+            if(!ftpClient.changeWorkingDirectory(directory)) {
+            	int start = 0;
+    			int end = 0;
+    			if (directory.startsWith("/")) {
+    				start = 1;
+    			} else {
+    				start = 0;
+    			}
+    			end = directory.indexOf("/", start);
+    			String path = "";
+    			String paths = "";
+    			while (true) {
+     
+    				String subDirectory = new String(ftpPath.substring(start, end).getBytes("GBK"), "iso-8859-1");
+    				path = path + "/" + subDirectory;
+    				if (!existFile(path, ftpClient)) {
+    					if (ftpClient.makeDirectory(subDirectory)) {
+    						ftpClient.changeWorkingDirectory(subDirectory);
+    					} else {
+    						log.error("创建目录[" + subDirectory + "]失败");
+    						ftpClient.changeWorkingDirectory(subDirectory);
+    					}
+    				} else {
+    					ftpClient.changeWorkingDirectory(subDirectory);
+    				}
+     
+    				paths = paths + "/" + subDirectory;
+    				start = end + 1;
+    				end = directory.indexOf("/", start);
+    				// 检查所有目录是否创建完毕
+    				if (end <= start) {
+    					break;
+    				}
+    			}
 
+            }
+//            ftpClient.changeWorkingDirectory(ftpPath);
+//            ftpClient.makeDirectory(pathname)
             ftpClient.storeFile(fileName, input);
 
             input.close();
@@ -138,5 +177,24 @@ public class FtpUtil {
         }
         return success;
     }
+    
+    /**
+	 * 判断ftp服务器文件是否存在
+	 * @param path
+	 * @param ftp
+	 * @return
+	 * @throws IOException 
+	 * @date 
+	 */
+	public static boolean existFile(String path, FTPClient ftp) throws IOException {
+		boolean flag = false;
+		FTPFile[] ftpFileArr = ftp.listFiles(path);
+		if (ftpFileArr.length > 0) {
+			flag = true;
+		}
+		return flag;
+	}
+
+    
 
 }

@@ -2,6 +2,7 @@ package com.xs.jt.cmsvideo.job;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -61,8 +62,8 @@ public class VideoListJob {
 	private String convertOutPath;
 
 	// 上传ftp地址
-	@Value("${video.ftppath}")
-	private String ftpPath;
+//	@Value("${video.ftppath}")
+//	private String ftpPath;
 //	@Value("${video.ftpHost}")
 //	private String ftpHost;
 //	@Value("${video.ftpUserName}")
@@ -185,7 +186,11 @@ public class VideoListJob {
 	public void convertVideoAndUpload(String message) {
 		log.info("***************convertVideoAndUpload begin*********************");
 		VideoInfo vi = JSONObject.parseObject(message, VideoInfo.class);
+		
 		try {
+			String createDate = vi.getCreateTime().substring(0, 10);
+			String[] dateArr = createDate.split("-");
+			String ftpPath = (dateArr[0]+dateArr[1])+"/"+(dateArr[2]);
 			FtpConfig ftpConfig = ftpConfigManager.getFtpConfigByJyjgbh(vi.getJyjgbh());
 			if(ftpConfig == null) {
 				throw new Exception("检验机构编号： "+vi.getJyjgbh()+" 获取不到视频Ftp地址！");
