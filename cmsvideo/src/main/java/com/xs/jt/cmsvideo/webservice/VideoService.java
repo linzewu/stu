@@ -97,6 +97,7 @@ public class VideoService {
 						info.setSfzmhm(videopara.getSfzmhm());
 						info.setConfigId(config.getId());
 						info.setDeviceName(config.getDeviceName());
+						info.setJyjgbh(config.getJyjgbh());
 						this.videoInfoManager.save(info);
 					}
 				}else {
