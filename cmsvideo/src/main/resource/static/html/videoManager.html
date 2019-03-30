@@ -150,6 +150,7 @@ function retry(){
 	    contentType: "application/json",
 	    data : JSON.stringify(rows),
 	    success : function(col) {
+	    	queryVideo();
 			$.messager.alert("提示",col.message,"info");    
 	    },
 	    error : function(col){

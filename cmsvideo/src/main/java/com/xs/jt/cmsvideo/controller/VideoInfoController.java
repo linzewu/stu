@@ -45,6 +45,8 @@ public class VideoInfoController {
 				info.setZt(VideoInfo.ZT_WXZ);
 			}else if(VideoInfo.ZT_ZMSCSB.equals(info.getZt())) {
 				info.setZt(VideoInfo.ZT_YXZ);
+			}else {
+				info.setZt(VideoInfo.ZT_WXZ);
 			}
 			videoInfoManager.save(info);
 		}
