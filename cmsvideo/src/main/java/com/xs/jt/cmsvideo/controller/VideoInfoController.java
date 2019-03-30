@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.jt.base.module.annotation.Modular;
@@ -20,6 +23,9 @@ import com.xs.jt.cmsvideo.manager.IVideoInfoManager;
 @RequestMapping(value = "/videoInfo")
 @Modular(modelCode = "videoInfo", modelName = "视频管理")
 public class VideoInfoController {
+	
+	@Value("${video.ftppath}")
+	private String ftpPath;
 	
 	@Autowired
 	private IVideoInfoManager videoInfoManager;
@@ -43,6 +49,16 @@ public class VideoInfoController {
 			videoInfoManager.save(info);
 		}
 		return ResultHandler.toSuccessJSON("批量重试成功");
+	}
+	
+	
+	
+	@RequestMapping(value = "getVideoInfoByLsh")
+	public String getVideoInfoByLsh(@RequestParam String jylsh,Model model){
+		List<VideoInfo> list = videoInfoManager.getVideoInfoByJylsh(jylsh);
+		model.addAttribute("videoInfoList", list);
+		
+		return "playVideo";
 	}
 
 }

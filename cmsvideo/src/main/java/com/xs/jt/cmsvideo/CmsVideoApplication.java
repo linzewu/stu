@@ -2,23 +2,24 @@ package com.xs.jt.cmsvideo;
 
 import java.io.IOException;
 
-import javax.xml.ws.Endpoint;
-
 import org.apache.axis2.transport.http.AxisServlet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import com.xs.jt.cmsvideo.util.FileCopyUtils;
-import com.xs.jt.cmsvideo.webservice.VideoWebServiceImpl;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -32,20 +33,21 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @EnableAsync
 @EnableScheduling
-public class CmsVideoApplication 
+@SpringBootApplication
+public class CmsVideoApplication extends SpringBootServletInitializer
 {
 	protected static Log log = LogFactory.getLog(CmsVideoApplication.class);
     public static void main( String[] args )
     {
     	SpringApplication.run(CmsVideoApplication.class, args);
-    	
-    	//定义webService的发布地址，提供给外界使用接口的地址
-    	String address = "http://192.168.80.23:8083/cmsvideo/vwService";
-        //使用Endpoint类提供的publish方法发布WebService，发布时要保证使用的端口号没有被其他应用程序占用
-       // Endpoint.publish(address , new VideoWebServiceImpl());
     }
     
-	@Bean
+    @Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(CmsVideoApplication.class);
+	}
+    
+    @Bean
 	public ServletRegistrationBean helloWorldServlet() {
 	    ServletRegistrationBean helloWorldServlet = new ServletRegistrationBean();
 	    helloWorldServlet.setServlet(new AxisServlet());//这里的AxisServlet就是web.xml中的org.apache.axis2.transport.http.AxisServlet
@@ -73,4 +75,5 @@ public class CmsVideoApplication
 	    helloWorldServlet.setLoadOnStartup(1);
 	    return helloWorldServlet;
 	}
+  
 }

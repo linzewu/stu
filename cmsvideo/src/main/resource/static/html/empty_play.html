@@ -1,4 +1,3 @@
-
 <!--[if IE]>
    <object type='application/x-vlc-plugin' id='vlc' events='True'
        classid='clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921' width="720" height="540">
@@ -10,26 +9,12 @@
     </object>
 <![endif]-->
 <!--[if !IE]><!-->
-    <object type='application/x-vlc-plugin' id='vlc' events='True' width="720" height="540">
+    <object type='application/x-vlc-plugin' id='vlc' events='True' style="width: 720px;height: 540px;">
         <param name='mrl' value='' />
         <param name='volume' value='50' />
         <param name='autoplay' value='true' />
     </object>
 <!--<![endif]-->
-
-
-    
-                  
-
-<br>
-<font color="red" size="2">总时长：</font><input type="text" id="vedio_length" style="width: 65px;color: blue"> 
-<input type="text" id="current_video_time" style="width: 65px;color: blue">
-
-                    
-           
-
-
-
 <script type="text/javascript" charset="UTF-8">
 var vlc; // VLC对象
 var itemId;  // 播放列表中播放节目的id
@@ -38,20 +23,15 @@ var videoLength; // 视频总时长
 var then_time; // 播放开始时间(播放开始的日期，看下面实现代码，它是毫秒哦)
 var isPlaying=0; // 是否播放状态 （0 未播放 1 播放）
 // 初始化 === 很重要哦，控制程序的入口
-function initPlayUrl(videoUrl){
+function initPlayUrl(){
  vlc=document.getElementById("vlc");
- // 添加播放地址
- //vlc.playlist.add(window.opener.vdUrl);
- // 播放
- // vlc.playlist.play();
  // 添加播放地址方式2 -- 推荐用下面的方法控制播放列表
- var vedio_url=videoUrl;//'ftp://192.168.0.174/11_1_1_123456.mp4';//window.opener.vdUrl;
+ var vedio_url=currentVideoPath;
+ //'ftp://192.168.0.174/11_1_1_123456.mp4';//window.opener.vdUrl;
  itemId= vlc.playlist.add(vedio_url);
     vlc.playlist.playItem(itemId);
-   
-   
     // 检查播放节目的状态 -- 注意这个是延时操作哦（setTimeout以毫秒为单位，这里延时0.5秒）
-    setTimeout(checkVedioStatus,500);
+ //   setTimeout(checkVedioStatus,500);
 }
 
 // 检查播放节目的状态
@@ -63,11 +43,11 @@ function checkVedioStatus(){
      videoLength=parseInt(vlc.input.length/1000);
      var temp_total_time=parseTime(videoLength);
      // 总时长设置
-     document.getElementById("vedio_length").value=temp_total_time;
+//     document.getElementById("vedio_length").value=temp_total_time;
      // 获得当前系统时间
      then_time=new Date().getTime();
      // 计算当前播放时间点
-     checkTime();
+   //  checkTime();
     }else{
      // 如果不是播放状态就在延时执行
      setTimeout(checkVedioStatus,500);
@@ -190,5 +170,12 @@ function soundChange(nums){
 function screenFull(){
   vlc.video.toggleFullscreen();
 }
+
+$(function(){
+ var vlc = document.getElementById("vlc");
+ vlc.style.width="720px";
+ vlc.style.height="540px";
+ initPlayUrl();
+})
 
 </script>

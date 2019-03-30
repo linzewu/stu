@@ -64,4 +64,14 @@ public class FtpConfigManagerImpl implements IFtpConfigManager {
 
 	}
 
+	@Override
+	public List<FtpConfig> getAllFtpConfig() {
+		return ftpConfigRepository.findAll();
+	}
+
+	@Override
+	public FtpConfig getFtpConfigByJyjgbh(String jyjgbh) {
+		return ftpConfigRepository.getFtpConfigByJyjgbh(jyjgbh);
+	}
+
 }

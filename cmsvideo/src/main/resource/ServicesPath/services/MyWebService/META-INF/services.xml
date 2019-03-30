@@ -4,7 +4,7 @@
 <serviceGroup>
 	<service name="VideoService" scope="application"
 		targetNamespace="http://webServices.tmri.com">
-		<description>测试axis2webservices</description>
+		<description>查验监管平台 视频接口</description>
 		<schema schemaNamespace="http://webServices.tmri.com" />
 		<!-- <parameter name="ServiceClass"> com.xs.jt.cmsvideo.webservice.VideoService 
 			</parameter> -->

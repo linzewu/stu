@@ -22,5 +22,7 @@ public interface IVideoInfoManager {
 	
 	public List<VideoInfo> getVideoInfosNoDownLoad(Integer zt,Integer taskCount);
 	
+	public List<VideoInfo> getVideoInfoByJylsh(String jylsh);
+	
 
 }

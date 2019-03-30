@@ -6,19 +6,19 @@
 			"menus": [
 				{
 					"icon": "../../static/images/smart_video.png",
-					"title": "视频管理",
+					"title": "查验视频管理",
 					"href": "../../static/html/videoManager.html",
 					"permission":"videoInfo.getVideoInfoList"
 				},
 				{
 					"icon": "../../static/images/video_editing.png",
-					"title": "视频配置",
+					"title": "查验视频配置",
 					"href": "../../static/html/videoConfig.html",
 					"permission":"videoConfig.getVideoConfigList"
 				},
 				{
 					"icon": "../../static/images/ftp.png",
-					"title": "Ftp配置",
+					"title": "Ftp存储配置",
 					"href": "../../static/html/ftpConfig.html",
 					"permission":"ftpConfig.getFtpConfigList"
 				}

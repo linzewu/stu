@@ -10,6 +10,7 @@
     <thead>
         <tr>  
         	<th data-options="field:'ck',checkbox:true"></th>
+        	<th data-options="field:'jyjgbh',width:150,formatter:jyjgbhFormatter" >机构名称</th>
         	<th data-options="field:'lsh',width:150"  >流水号</th>
             <th data-options="field:'clsbdh',width:180" >车辆识别码</th>  
             <th data-options="field:'hphm',width:80" >号牌号码</th>
@@ -18,6 +19,7 @@
             <th data-options="field:'cyqtd',width:100" >查验区通道</th>
             <th data-options="field:'deviceName',width:100" >视频名称</th>
             <th data-options="field:'videoName',width:40,formatter:showImg" >播放</th>
+            <th data-options="field:'id',width:40,formatter:showDownImg" >下载</th>
             <th data-options="field:'jycs',width:100" >检验次数</th>
             <th data-options="field:'videoSize',width:100" >视频大小</th>
             <th data-options="field:'videoBegin',width:150">视频开始时间</th>
@@ -30,53 +32,113 @@
 </table>
 <div id="videoToolbar"  style="padding:5px;height:auto">
     <div style="margin-bottom:5px">    	
+    	<div style="height: 34px;">
     	号牌号码：<input type="text" class="easyui-textbox" id="hphm" >
     	流水号：<input type="text" class="easyui-textbox" id="lsh" >
-    	车辆识别代号：<input type="text" class="easyui-textbox" id="clsbdh" ><br/>
+    	车辆识别代号：<input type="text" class="easyui-textbox" id="clsbdh" >
+    	</div>
+    	<div style="height: 34px;">
     	号牌种类：<input type="text" class="easyui-textbox" id="hpzl" >
     	状      态：&nbsp;&nbsp;&nbsp;<input id="zt"   prompt='请选择状态' data-options="data:comm.getBaseParames('spzt'),	valueField: 'id',
 		textField: 'value'"  class="easyui-combobox" style="width: 170px;">
+		检验机构名称：<input prompt='请选择机构名称'  class="easyui-combobox" data-options="data:deptArr,valueField: 'bmdm',
+	textField: 'bmmc'" id="jyjgbh" >
     	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryVideo()">查询</a>
     	<a href="#" class="easyui-linkbutton" iconCls="icon-reload" onclick="retry()">批量重试</a>
+    	</div>
     </div>
 </div>
 <div id="win_video" class="easyui-window" data-options="
-																    width:740,
-																    height:620,
+																    width:780,
+																    height:600,
 																    modal:true,
 																    title:'视频播放',
 																    collapsible:false,
 																    draggable:false,
 																    closed:true,
-																    onLoad:loadVideo
+																    resizable:false,
+																    maximizable:false
 																    "></div>
 <script type="text/javascript">
-function loadVideo(data){
-	initPlayUrl('ftp://192.168.0.174/11_1_1_123456.mp4');
-}
+var ftpConfig;
+var currentVideoPath = null;
+$(function(){
+	$.post("../../ftpConfig/getAllFtp",null,function(data){
+		if(data.state==1){
+			ftpConfig = data.data;
+		}else{
+			$.messager.alert("提示",data.message,"error");
+		}
+	},"json").complete(function(){
+		$.messager.progress('close');
+	});
+});
+
+
 function queryVideo(){
 	var clsbdh=$("#clsbdh").textbox("getValue");
 	var lsh = $("#lsh").textbox("getValue");
 	var hphm = $("#hphm").textbox("getValue");
 	var hpzl = $("#hpzl").textbox("getValue");
 	var zt = $("#zt").combobox("getValue");
-	$('#videoDG').datagrid("reload",{clsbdh:clsbdh,lsh:lsh,hphm:hphm,hpzl:hpzl,zt:zt});
+	var jyjgbh = $("#jyjgbh").combobox("getValue");
+	$('#videoDG').datagrid("reload",{clsbdh:clsbdh,lsh:lsh,hphm:hphm,hpzl:hpzl,zt:zt,jyjgbh:jyjgbh});
 }
 
 function ztFormatter(value,row,index){
 	return comm.getParamNameByValue("spzt", value)
 }
 
-//图片展示
+//播放图片展示
 function showImg(value, row, index){
-		return "<img style='' border='0' src='../images/play.png' onclick='openPlayWin(\""+row.jylsh+"\",\""+row.hphm+"\",\""+row.jycs+"\",\""+row.jyxm+"\",\""+row.videoBegin+"\",\""+row.videoEnd+"\")'/>";
+		return "<img style='' border='0' src='../images/play.png' onclick='openPlayWin(\""+row.videoName+"\",\""+row.jyjgbh+"\")'/>";
+}
+//下载图片展示
+function showDownImg(value, row, index){
+	return "<img style='' border='0' src='../images/downloads.png' onclick='downloadVideo(\""+row.videoName+"\",\""+row.jyjgbh+"\")'/>";
 }
 
-function openPlayWin(jylsh,hphm,jycs,jyxm,kssj,jssj){
+function openPlayWin(videoName,jyjgbh){
+	if(videoName == "" || videoName == null){
+		$.messager.alert("警告","没有视频文件可进行播放！","warning");
+		return;
+	}
+	var ftpHost = findFtpByJyjgbh(jyjgbh);
+	if(ftpHost == ""){
+		$.messager.alert("错误","获取不到视频Ftp地址！","error");
+		return;
+	}
+	currentVideoPath="ftp://"+ftpHost+"/"+videoName;
 	$('#win_video').window('open');
-	$('#win_video').window('refresh', 'empty_play.html');
+	$('#win_video').window('refresh', 'empty_play.html?'+new Date().getTime());
+}
+
+function downloadVideo(videoName,jyjgbh){
+	if(videoName == "" || videoName == null){
+		$.messager.alert("警告","没有视频文件可进行下载！","warning");
+		return;
+	}
+	var ftpHost = findFtpByJyjgbh(jyjgbh);
+	if(ftpHost == ""){
+		$.messager.alert("错误","获取不到视频Ftp地址！","error");
+		return;
+	}
+	var videoPath="ftp://"+ftpHost+"/"+videoName;
+	window.open(videoPath);
 	
 }
+
+function findFtpByJyjgbh(jyjgbh){
+	var ftpIp = "";
+	$.each(ftpConfig,function(i,n){
+		if(n.jyjgbh == jyjgbh){
+			ftpIp = n.ftpHost;
+			return;
+		}
+	});
+	return ftpIp;
+}
+
 
 function retry(){
 	

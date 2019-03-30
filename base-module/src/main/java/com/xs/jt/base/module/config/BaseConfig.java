@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -31,6 +32,13 @@ public class BaseConfig extends WebMvcConfigurationSupport  {
 	@Value("${stu.cache.dir}")
 	private String cacheDir;
 	
+	@Autowired
+	private BaseConfigExtend baseConfigExtend;
+	@Autowired
+	protected UserInterceptor userInterceptor;
+	@Autowired
+	protected SecurityInterceptor securityInterceptor;
+	
 	@Bean
 	public Docket createRestApi() {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
@@ -48,20 +56,21 @@ public class BaseConfig extends WebMvcConfigurationSupport  {
 		super.addResourceHandlers(registry);
 	}
 	
-	@Autowired
-	private UserInterceptor userInterceptor;
-	@Autowired
-	private SecurityInterceptor SecurityInterceptor;
 
 	public void addInterceptors(InterceptorRegistry registry) {
 		List<String> excludeList = new ArrayList<String>();
 		excludeList.add("/user/getZzjUser");
 		excludeList.add("/user/login");
 		excludeList.add("/static/**");
-		excludeList.add("/services/**");
 		excludeList.add("/");
+		if(!StringUtils.isEmpty(baseConfigExtend.getExcludeList())) {
+			String[] excludeLists = baseConfigExtend.getExcludeList().split(",");
+			for(String s:excludeLists) {
+				excludeList.add(s);
+			}
+		}
 		registry.addInterceptor(userInterceptor).addPathPatterns("/**").excludePathPatterns(excludeList);
-		registry.addInterceptor(SecurityInterceptor).addPathPatterns("/**").excludePathPatterns(excludeList);
+		registry.addInterceptor(securityInterceptor).addPathPatterns("/**").excludePathPatterns(excludeList);
 	}
 	
 	@Bean

@@ -131,7 +131,6 @@ public class ConvertVideo {
 	private static boolean processFlv(String oldfilepath) {
 
 		if (!checkfile(inputPath)) {
-			System.out.println(oldfilepath + " is not file");
 			return false;
 		}
 		List<String> command = new ArrayList<String>();

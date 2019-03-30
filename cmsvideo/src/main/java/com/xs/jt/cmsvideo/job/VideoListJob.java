@@ -2,11 +2,9 @@ package com.xs.jt.cmsvideo.job;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -25,11 +23,12 @@ import com.sun.jna.NativeLong;
 import com.xs.jt.base.module.entity.BaseParams;
 import com.xs.jt.base.module.manager.IBaseParamsManager;
 import com.xs.jt.cmsvideo.config.RabbitConfig;
+import com.xs.jt.cmsvideo.entity.FtpConfig;
 import com.xs.jt.cmsvideo.entity.VideoConfig;
 import com.xs.jt.cmsvideo.entity.VideoInfo;
+import com.xs.jt.cmsvideo.manager.IFtpConfigManager;
 import com.xs.jt.cmsvideo.manager.IVideoConfigManager;
 import com.xs.jt.cmsvideo.manager.IVideoInfoManager;
-import com.xs.jt.cmsvideo.util.ConvertVideo;
 import com.xs.jt.cmsvideo.util.FileUtil;
 import com.xs.jt.cmsvideo.util.FtpUtil;
 import com.xs.jt.cmsvideo.util.HCNetSDK;
@@ -43,6 +42,8 @@ public class VideoListJob {
 	private IVideoConfigManager videoConfigManager;
 	@Autowired
 	private IVideoInfoManager videoInfoManager;
+	@Autowired
+	private IFtpConfigManager ftpConfigManager;
 
 	@Resource(name = "baseParamsManager")
 	private IBaseParamsManager baseParamsManager;
@@ -62,14 +63,14 @@ public class VideoListJob {
 	// 上传ftp地址
 	@Value("${video.ftppath}")
 	private String ftpPath;
-	@Value("${video.ftpHost}")
-	private String ftpHost;
-	@Value("${video.ftpUserName}")
-	private String ftpUserName;
-	@Value("${video.ftpPassword}")
-	private String ftpPassword;
-	@Value("${video.ftpPort}")
-	private int ftpPort;
+//	@Value("${video.ftpHost}")
+//	private String ftpHost;
+//	@Value("${video.ftpUserName}")
+//	private String ftpUserName;
+//	@Value("${video.ftpPassword}")
+//	private String ftpPassword;
+//	@Value("${video.ftpPort}")
+//	private int ftpPort;
 
 	@Autowired
 	private AmqpTemplate rabbitTemplate;
@@ -79,7 +80,7 @@ public class VideoListJob {
 	 * 
 	 * @throws InterruptedException
 	 */
-	@Scheduled(cron = "0 0/5 * * * ? ")
+	@Scheduled(cron = "0/5 * * * * ? ")
 	public void sendDownLoadVideoMessage() throws InterruptedException {
 		log.info("***************downLoadVideo begin*********************");
 		// 目录不存在则创建目录
@@ -165,7 +166,7 @@ public class VideoListJob {
 		lpStartTime.dwSecond = now.get(Calendar.SECOND);
 	}
 
-	@Scheduled(cron = "0 0/5 * * * ? ")
+	@Scheduled(cron = "0/5 * * * * ? ")
 	public void sendUploadVideoMessage() {
 		// 查询所有已下载数据
 		List<VideoInfo> uploadList = videoInfoManager.getVideoInfoByZt(VideoInfo.ZT_YXZ, getMaxTaskCou());
@@ -185,15 +186,18 @@ public class VideoListJob {
 		log.info("***************convertVideoAndUpload begin*********************");
 		VideoInfo vi = JSONObject.parseObject(message, VideoInfo.class);
 		try {
+			FtpConfig ftpConfig = ftpConfigManager.getFtpConfigByJyjgbh(vi.getJyjgbh());
+			if(ftpConfig == null) {
+				throw new Exception("检验机构编号： "+vi.getJyjgbh()+" 获取不到视频Ftp地址！");
+			}
 			// 上传
-
 			String localPath = downLoadPath + vi.getVideoName();
 			String fileName = vi.getVideoName();
 			File localFile = new File(localPath);
 
 			// 上传一个文件
 			FileInputStream in = new FileInputStream(localFile);
-			boolean uploadFlag = FtpUtil.uploadFile(ftpHost, ftpUserName, ftpPassword, ftpPort, ftpPath, fileName, in);
+			boolean uploadFlag = FtpUtil.uploadFile(ftpConfig.getFtpHost(), ftpConfig.getFtpUserName(), ftpConfig.getFtpPassword(), ftpConfig.getFtpPort(), ftpPath, fileName, in);
 
 			if (uploadFlag) {
 				// 上传成功

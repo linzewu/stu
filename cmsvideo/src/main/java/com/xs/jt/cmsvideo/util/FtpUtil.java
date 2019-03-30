@@ -8,10 +8,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
 public class FtpUtil {
+	
+	protected static Log log = LogFactory.getLog(FtpUtil.class);
 
 	/**
      * 获取FTPClient对象
@@ -23,24 +27,24 @@ public class FtpUtil {
      * @return
      */
     public static FTPClient getFTPClient(String ftpHost, String ftpUserName,
-                                         String ftpPassword, int ftpPort) {
+                                         String ftpPassword, int ftpPort) throws Exception{
         FTPClient ftpClient = new FTPClient();
         try {
             ftpClient = new FTPClient();
             ftpClient.connect(ftpHost, ftpPort);// 连接FTP服务器
             ftpClient.login(ftpUserName, ftpPassword);// 登陆FTP服务器
             if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
-                System.out.println("未连接到FTP，用户名或密码错误。");
+            	log.error("未连接到FTP，用户名或密码错误。");
                 ftpClient.disconnect();
             } else {
-                System.out.println("FTP连接成功。");
+                log.info("FTP连接成功。");
             }
-        } catch (SocketException e) {
-            e.printStackTrace();
-            System.out.println("FTP的IP地址可能错误，请正确配置。");
+        } catch (SocketException e) {            
+            log.error("FTP的IP地址可能错误，请正确配置。");
+            throw e;
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("FTP的端口错误,请正确配置。");
+            log.error("FTP的端口错误,请正确配置。");
+            throw e;
         }
         return ftpClient;
     }
@@ -58,7 +62,7 @@ public class FtpUtil {
      */
     public static void downloadFtpFile(String ftpHost, String ftpUserName,
                                        String ftpPassword, int ftpPort, String ftpPath, String localPath,
-                                       String fileName) {
+                                       String fileName) throws Exception{
 
         FTPClient ftpClient = null;
 
@@ -76,15 +80,14 @@ public class FtpUtil {
             ftpClient.logout();
 
         } catch (FileNotFoundException e) {
-            System.out.println("没有找到" + ftpPath + "文件");
-            e.printStackTrace();
+        	log.error("没有找到" + ftpPath + "文件");
+            throw e;
         } catch (SocketException e) {
-            System.out.println("连接FTP失败.");
-            e.printStackTrace();
+        	log.error("连接FTP失败.");
+        	throw e;
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("文件读取错误。");
-            e.printStackTrace();
+            log.error("文件读取错误。");
+            throw e;
         }
 
     }
@@ -102,7 +105,7 @@ public class FtpUtil {
      */
     public static boolean uploadFile(String ftpHost, String ftpUserName,
                                      String ftpPassword, int ftpPort, String ftpPath,
-                                     String fileName,InputStream input) throws IOException{
+                                     String fileName,InputStream input) throws Exception{
         boolean success = false;
         FTPClient ftpClient = null;
         try {

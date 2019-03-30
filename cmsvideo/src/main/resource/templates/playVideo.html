@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+<title>查验监管视频监控系统</title>
+<link rel="stylesheet" type="text/css"
+	href="../static/js/easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css"
+	href="../static/js/easyui/themes/color.css">
+
+<script type="text/javascript" src="../static/js/easyui/jquery.min.js"></script>
+<script type="text/javascript"
+	src="../static/js/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript"
+	src="../static/js/easyui/locale/easyui-lang-zh_CN.js"></script>
+<style type="text/css">
+.smallocxdiv {
+	width: 99%;
+	height: 98%;
+	margin: 0 auto;
+	padding-top: 2px;
+}
+
+.check-item {
+	width: 120px;
+}
+
+.check-menu {
+	list-style: none;
+}
+
+.check-menu li {
+	margin: 10px 5px 5px 5px;
+}
+
+.playTool ul li{
+	float: left;
+	margin: 2px 5px 2px 5px;
+	
+}
+
+.playTool{
+	margin: 0 auto;
+	width: 400px;
+	height: 30px;
+}
+
+.playTool ul{
+	list-style: none;
+}
+.btn-play{
+	width: 60px;
+}
+
+.vehinfo{
+	padding-top: 20px;
+}
+</style>
+</head>
+<body>
+	<div id="cc" class="easyui-layout" fit='true'>
+		<div data-options="region:'north'" style="height: 60px;">
+			<div class="vehinfo">
+				<label>号牌号码：</label>
+				<input value="" disabled="disabled" id="info_hphm" />
+				<label>流水号：</label>
+				<input value="" disabled="disabled" id="info_lsh"  />
+				<label>机构：</label>
+				<input value="" disabled="disabled" id="info_jyjgbh" />
+			</div>
+		</div>
+		<div data-options="region:'west'" style="width: 200px;">
+			<ul class="check-menu">
+				
+			</ul>
+		</div>
+
+		<div data-options="region:'center'" border=0>
+			<div class="easyui-layout" fit='true'>
+				<div data-options="region:'center',href:'../static/html/plugin.html'">
+				</div>
+				<div data-options="region:'south'" style="height: 60px;">
+					<div class="playTool">
+						<ul>
+							<li><a id="btn" href="#" class="easyui-linkbutton btn-play" onclick="playConsoel(3)">暂停</a></li>
+							<li><a id="btn" href="#" class="easyui-linkbutton btn-play" onclick="playConsoel(4)">播放</a></li>
+							<li><a id="btn" href="#" class="easyui-linkbutton btn-play" onclick="playConsoel(5)">快放</a></li>
+							<li><a id="btn" href="#" class="easyui-linkbutton btn-play" onclick="playConsoel(6)">慢放</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script th:inline="javascript">
+    var videoInfoList = [[${videoInfoList}]];
+    var ftpConfig;
+    if(videoInfoList.length>0){
+    	$("#info_hphm").val(videoInfoList[0].hphm);
+    	$("#info_lsh").val(videoInfoList[0].lsh);
+    	$("#info_jyjgbh").val(videoInfoList[0].jyjgbh);
+    }
+    
+    $.each(videoInfoList,function(i,n){
+		var li=$("<li><a  href='javascript:void(0)' class=\"easyui-linkbutton c6 check-item\">"+n.deviceName+"  "+n.jycs+"</a></li>");
+		$(".check-menu").append(li);
+		$.parser.parse('.check-menu');
+		li.find("a").click(function(){
+			var ftpHost = findFtpByJyjgbh(n.jyjgbh);
+			if(ftpHost == ""){
+				alert("错误","获取不到视频Ftp地址！","error");
+				return;
+			}
+			var vlc=document.getElementById("vlc");
+			 // 添加播放地址方式2 -- 推荐用下面的方法控制播放列表
+			 var vedio_url="ftp://"+ftpHost+"/"+n.videoName;
+			 vlc.playlist.stop();
+			 vlc.playlist.clear();
+			 var itemId= vlc.playlist.add(vedio_url);
+			 vlc.playlist.playItem(itemId);
+		}); 
+	});
+    
+    $.post("../ftpConfig/getAllFtp",null,function(data){
+		if(data.state==1){
+			ftpConfig = data.data;
+		}else{
+			$.messager.alert("提示",data.message,"error");
+		}
+	},"json").complete(function(){
+		$.messager.progress('close');
+	});
+    
+    function findFtpByJyjgbh(jyjgbh){
+    	var ftpIp = "";
+    	$.each(ftpConfig,function(i,n){
+    		if(n.jyjgbh == jyjgbh){
+    			ftpIp = n.ftpHost;
+    			return;
+    		}
+    	});
+    	return ftpIp;
+    }
+    
+    var inputRate=1;
+    
+    function playConsoel(type){
+    	var vlc=document.getElementById("vlc");
+    	
+    	if(type==3){
+    		vlc.playlist.pause();
+    	}
+    	if(type==4){
+    		vlc.playlist.play();
+    	}
+    	alert(vlc.input.rate)
+    	if(type==5){
+    		inputRate>=5?5:inputRate+0.5
+    		vlc.input.rate=inputRate;
+    	}
+    	
+    	if(type==6){
+    		inputRate<=0.5?0.5:inputRate-0.5
+    		vlc.input.rate=inputRate;
+    	}
+    }
+    
+</script>
+
+</html>
+

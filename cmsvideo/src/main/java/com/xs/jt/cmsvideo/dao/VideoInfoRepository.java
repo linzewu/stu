@@ -22,4 +22,7 @@ public interface VideoInfoRepository extends JpaRepository<VideoInfo, Integer>, 
 	@Query(value=" from VideoInfo where zt=:zt and videoEnd is not null and (taskCount < :taskCount or taskCount is null)")
 	public List<VideoInfo> getVideoInfosNoDownLoad(@Param("zt")Integer zt,@Param("taskCount")Integer taskCount);
 	
+	@Query(value=" from VideoInfo where lsh=:jylsh and zt=:zt")
+	public List<VideoInfo> getVideoInfoByJylsh(@Param("jylsh")String jylsh,@Param("zt")Integer zt);
+	
 }

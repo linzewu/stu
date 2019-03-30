@@ -1,74 +1,77 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.xs.jt</groupId>
-    <artifactId>stu</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
-  <!--<groupId>com.xs.jt</groupId>-->
-  <artifactId>cmsvideo</artifactId>
-  <!--<version>0.0.1-SNAPSHOT</version>-->
-  <name>cmsvideo</name>
-  <url>http://maven.apache.org</url>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  <dependencies>
-  	<dependency>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
 		<groupId>com.xs.jt</groupId>
-		<artifactId>base-module</artifactId>
+		<artifactId>stu</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-	</dependency>
-	<dependency>
+	</parent>
+	<!--<groupId>com.xs.jt</groupId> -->
+	<artifactId>cmsvideo</artifactId>
+	<!--<version>0.0.1-SNAPSHOT</version> -->
+	<name>cmsvideo</name>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.xs.jt</groupId>
+			<artifactId>base-module</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>com.microsoft.sqlserver</groupId>
 			<artifactId>sqljdbc4</artifactId>
 			<version>4.0</version>
 		</dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.sun.jna</groupId>
 			<artifactId>jna-hc-sdk</artifactId>
 			<version>1.0</version>
-	</dependency>
-	<dependency>
+		</dependency>
+		<dependency>
 			<groupId>com.sun.jna.examples</groupId>
 			<artifactId>jna-examples</artifactId>
 			<version>1.0</version>
 		</dependency>
 		<dependency>
-   <groupId>net.java.dev.jna</groupId>
-   <artifactId>jna</artifactId>
-   <version>4.1.0</version>
-</dependency>
-	<dependency>
-	    <groupId>commons-net</groupId>
-	    <artifactId>commons-net</artifactId>
-	    <version>1.4.1</version>
-	</dependency>
-	<dependency>
-	    <groupId>wsdl4j</groupId>
-	    <artifactId>wsdl4j</artifactId>
-	    <version>1.6.3</version>
-	</dependency>
-	
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-amqp</artifactId>
-</dependency>
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-test</artifactId>
-</dependency>
-  </dependencies>
-  
-  <!--maven的插件 -->
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
+	</dependencies>
+
+	<!--maven的插件 -->
 	<build>
 		<plugins>
 			<plugin>

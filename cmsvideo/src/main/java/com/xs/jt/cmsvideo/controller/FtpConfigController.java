@@ -1,5 +1,6 @@
 package com.xs.jt.cmsvideo.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -17,7 +18,6 @@ import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.cmsvideo.entity.FtpConfig;
-import com.xs.jt.cmsvideo.entity.VideoConfig;
 import com.xs.jt.cmsvideo.manager.IFtpConfigManager;
 
 import net.sf.json.JSONObject;
@@ -52,6 +52,13 @@ public class FtpConfigController {
 	public @ResponseBody String delete(FtpConfig ftpConfig){
 		this.ftpConfigManager.deleteFtpConfig(ftpConfig);
 		return  JSONObject.fromObject(ResultHandler.toSuccessJSON(Constant.ConstantMessage.SUCCESS)).toString();
+	}
+	
+	@UserOperation(code = "getAllFtp", name = "获取所有Ftp地址")
+	@RequestMapping(value = "getAllFtp", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getFtpPath(){
+		List<FtpConfig> list = ftpConfigManager.getAllFtpConfig();
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "获取Ftp地址成功", list);
 	}
 
 }

@@ -28,6 +28,8 @@ public class VideoInfoManagerImpl implements IVideoInfoManager {
 	
 	@Autowired
 	private VideoInfoRepository videoInfoRepository;
+	
+	
 
 	@Override
 	public Map<String, Object> getVideoInfoList(Integer page, Integer rows, VideoInfo videoInfo) {
@@ -38,6 +40,9 @@ public class VideoInfoManagerImpl implements IVideoInfoManager {
 			public Predicate toPredicate(Root<VideoInfo> root, CriteriaQuery<?> query,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> list = new ArrayList<Predicate>();
+				if(Common.isNotEmpty(videoInfo.getJyjgbh())) {
+					list.add(criteriaBuilder.equal(root.get("jyjgbh").as(String.class), videoInfo.getJyjgbh()));
+				}
 				if(Common.isNotEmpty(videoInfo.getClsbdh())) {
 					list.add(criteriaBuilder.like(root.get("clsbdh").as(String.class), "%"+ videoInfo.getClsbdh()+"%"));
 				}
@@ -95,6 +100,12 @@ public class VideoInfoManagerImpl implements IVideoInfoManager {
 	@Override
 	public List<VideoInfo> getVideoInfosNoDownLoad(Integer zt, Integer taskCount) {
 		return videoInfoRepository.getVideoInfosNoDownLoad(zt, taskCount);
+	}
+
+	@Override
+	public List<VideoInfo> getVideoInfoByJylsh(String jylsh) {
+		List<VideoInfo> data = videoInfoRepository.getVideoInfoByJylsh(jylsh,VideoInfo.ZT_JS);
+		return data;
 	}
 
 

@@ -1,5 +1,4 @@
 <link rel="stylesheet" type="text/css" href="../css/formTable.css"/>
-<script type="text/javascript" src="../js/depttree.js"></script>
 <script type="text/javascript"
 	src="../js/data.js"></script>
 <script type="text/javascript">
@@ -225,7 +224,7 @@ function query(){
                <th field="cyqxh" width="50">查验区序号</th>
                <th field="cyqtd" width="50">查验区通道</th>
                <th field="ip" width="50">硬盘录像机IP</th>
-               <th field="channel" width="50">通道</th>
+               
                <th field="deviceName" width="50">摄像头名称</th>
                
            </tr>
@@ -233,8 +232,8 @@ function query(){
    </table>
    <div id="toolbar">
    	 <div>
-   	 	<label>机构名称:</label>&nbsp;&nbsp;&nbsp;&nbsp;<input  class="easyui-combobox" data-options="data:jcxdh_combox,valueField: 'jcxdh',
-	textField: 'name'" id="jyjgbh" > 
+   	 	<label>机构名称:</label>&nbsp;&nbsp;&nbsp;&nbsp;<input  class="easyui-combobox" data-options="data:deptArr,valueField: 'bmdm',
+	textField: 'bmmc'" id="jyjgbh" > 
 	 <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="query()" >查询</a>
      </div>
    	 <div>
@@ -244,8 +243,8 @@ function query(){
      </div>
    </div>
    
-   <div id="dlg" class="easyui-dialog" style="width:850px;height:400px;padding:10px 20px"
-           closed="true" buttons="#dlg-buttons">
+   <div id="dlg" class="easyui-dialog" style="width:850px;height:400px;padding:10px 20px;"
+           closed="true" buttons="#dlg-buttons"  modal=true>
          
         <div class="easyui-layout" fit='true'>
 			<div data-options="region:'center'">
