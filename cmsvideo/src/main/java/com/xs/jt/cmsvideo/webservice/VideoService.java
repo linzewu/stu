@@ -77,14 +77,14 @@ public class VideoService {
 				
 				//查验结束
 				List<VideoInfo> infoList = this.videoInfoManager.getVideoInfoByLshAndJycs(videopara.getCylsh(), Integer.parseInt(videopara.getCycs()));
-				if(CollectionUtils.isEmpty(infoList)) {
-					info = new VideoInfo();
-				}else {
-					info = infoList.get(0);
-				}
+				
 				//查验开始
 				if("0".equals(videopara.getCllx())) {
 					for(VideoConfig config:configList) {
+						info = getVideoInfoByConfigId(infoList,config.getId());
+						if(info==null) {
+							info = new VideoInfo();
+						}
 						info.setClsbdh(videopara.getClsbdh());
 						info.setCyqtd(videopara.getCyqtd());
 						info.setCyqxh(videopara.getCyqxh());
@@ -114,5 +114,19 @@ public class VideoService {
 			retElement.addElement("message").setText(e.toString());
 		}
 		return retDoc.asXML();
+	}
+	
+	private VideoInfo getVideoInfoByConfigId(List<VideoInfo> infoList,Integer configId) {
+		
+		if(CollectionUtils.isEmpty(infoList)) {
+			return null;
+		}else {
+			for(VideoInfo videoInfo:infoList) {
+				if(configId==videoInfo.getConfigId()) {
+					return videoInfo;
+				}
+			}
+		}
+		return null;
 	}
 }

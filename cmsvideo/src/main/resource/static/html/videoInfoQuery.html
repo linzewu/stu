@@ -1,15 +1,12 @@
-<table id="videoDG" class="easyui-datagrid"  data-options="rownumbers:true,
-		toolbar:'#videoToolbar',
-		singleSelect:false,
-		checkOnSelect:false,
-		selectOnCheck:false,
+<table id="videoInDG" class="easyui-datagrid"  data-options="rownumbers:true,
+		toolbar:'#videoInToolbar',
+		singleSelect:true,
 		pagination:true,
 		pageSize:10,
 		url:'../../videoInfo/getVideoInfoList'"
 		>  
     <thead>
         <tr>  
-        	<th data-options="field:'ck',checkbox:true"></th>
         	<th data-options="field:'jyjgbh',width:150,formatter:jyjgbhFormatter" >机构名称</th>
         	<th data-options="field:'lsh',width:150"  >流水号</th>
             <th data-options="field:'clsbdh',width:180" >车辆识别码</th>  
@@ -19,7 +16,6 @@
             <th data-options="field:'cyqtd',width:100" >查验区通道</th>
             <th data-options="field:'deviceName',width:100" >视频名称</th>
             <th data-options="field:'videoName',width:40,formatter:showImg" >播放</th>
-            <th data-options="field:'id',width:40,formatter:showDownImg" >下载</th>
             <th data-options="field:'jycs',width:100" >检验次数</th>
             <th data-options="field:'videoSize',width:100" >视频大小</th>
             <th data-options="field:'videoBegin',width:150">视频开始时间</th>
@@ -30,7 +26,7 @@
         </tr>  
       </thead>  
 </table>
-<div id="videoToolbar"  style="padding:5px;height:auto">
+<div id="videoInToolbar"  style="padding:5px;height:auto">
     <div style="margin-bottom:5px">    	
     	<div style="height: 34px;">
     	号牌号码：<input type="text" class="easyui-textbox" id="hphm" >
@@ -44,7 +40,6 @@
 		检验机构名称：<input prompt='请选择机构名称'  class="easyui-combobox" data-options="data:deptArr,valueField: 'bmdm',
 	textField: 'bmmc'" id="jyjgbh" >
     	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryVideo()">查询</a>
-    	<a href="#" class="easyui-linkbutton" iconCls="icon-reload" onclick="retry()">批量重试</a>
     	</div>
     </div>
 </div>
@@ -72,7 +67,7 @@ function queryVideo(){
 	var hpzl = $("#hpzl").textbox("getValue");
 	var zt = $("#zt").combobox("getValue");
 	var jyjgbh = $("#jyjgbh").combobox("getValue");
-	$('#videoDG').datagrid("reload",{clsbdh:clsbdh,lsh:lsh,hphm:hphm,hpzl:hpzl,zt:zt,jyjgbh:jyjgbh});
+	$('#videoInDG').datagrid("reload",{clsbdh:clsbdh,lsh:lsh,hphm:hphm,hpzl:hpzl,zt:zt,jyjgbh:jyjgbh});
 }
 
 function ztFormatter(value,row,index){
@@ -83,10 +78,7 @@ function ztFormatter(value,row,index){
 function showImg(value, row, index){
 		return "<img style='' border='0' src='../images/play.png' onclick='openPlayWin(\""+row.videoName+"\",\""+row.jyjgbh+"\",\""+row.createTime+"\")'/>";
 }
-//下载图片展示
-function showDownImg(value, row, index){
-	return "<img style='' border='0' src='../images/downloads.png' onclick='downloadVideo(\""+row.videoName+"\",\""+row.jyjgbh+"\",\""+row.createTime+"\")'/>";
-}
+
 
 function openPlayWin(videoName,jyjgbh,createTime){
 	if(videoName == "" || videoName == null){
@@ -107,24 +99,6 @@ function openPlayWin(videoName,jyjgbh,createTime){
 	$('#win_video').window('refresh', 'empty_play.html?'+new Date().getTime());
 }
 
-function downloadVideo(videoName,jyjgbh,createTime){
-	if(videoName == "" || videoName == null){
-		$.messager.alert("警告","没有视频文件可进行下载！","warning");
-		return;
-	}
-	var ftpHost = findFtpByJyjgbh(jyjgbh);
-	if(ftpHost == ""){
-		$.messager.alert("错误","获取不到视频Ftp地址！","error");
-		return;
-	}
-	
-	var ym = createTime.substring(0,4)+createTime.substring(5,7);
-	var d =createTime.substring(8,10);
-	
-	var videoPath="ftp://"+ftpHost+"/"+ym+"/"+d+"/"+videoName;
-	window.open(videoPath);
-	
-}
 
 function findFtpByJyjgbh(jyjgbh){
 	var ftpIp = "";
@@ -137,24 +111,4 @@ function findFtpByJyjgbh(jyjgbh){
 	return ftpIp;
 }
 
-
-function retry(){
-	
-	var rows = $('#videoDG').datagrid("getChecked");
-	$.ajax({  
-	    url : "../../videoInfo/retry",
-	    type : 'POST',
-	    dataType: 'json',
-	    contentType: "application/json",
-	    data : JSON.stringify(rows),
-	    success : function(col) {
-	    	queryVideo();
-			$.messager.alert("提示",col.message,"info");    
-	    },
-	    error : function(col){
-	    }
-	});
-
-	
-}
 </script>

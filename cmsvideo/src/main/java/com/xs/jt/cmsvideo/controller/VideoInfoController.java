@@ -1,5 +1,7 @@
 package com.xs.jt.cmsvideo.controller;
 
+import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,6 +63,25 @@ public class VideoInfoController {
 		model.addAttribute("videoInfoList", list);
 		
 		return "playVideo";
+	}
+	
+	
+	@UserOperation(code = "getVideoInfoStatistics", name = "查验视频预警")
+	@RequestMapping(value = "getVideoInfoStatistics", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getVideoInfoStatistics(){
+		DecimalFormat   df   =new   DecimalFormat("#.00");  
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		List<Map> list = videoInfoManager.getVideoInfoStatistics();
+		for(Map map:list) {
+			Double videoSum = Double.valueOf(map.get("videoSize").toString());
+			videoSum = videoSum/1024/1024/1024;
+			Double capacity = Double.valueOf(map.get("capacity").toString()) * 1024;
+			map.put("videoSizeT", df.format(videoSum));
+			map.put("capacity", capacity);
+		}
+		data.put("rows", list);
+		return data;
 	}
 
 }

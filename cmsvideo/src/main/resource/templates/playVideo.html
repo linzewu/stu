@@ -113,7 +113,11 @@
 			}
 			var vlc=document.getElementById("vlc");
 			 // 添加播放地址方式2 -- 推荐用下面的方法控制播放列表
-			 var vedio_url="ftp://"+ftpHost+"/"+n.videoName;
+			 
+			 var ym = n.createTime.substring(0,4)+n.createTime.substring(5,7);
+			 var d =n.createTime.substring(8,10);
+			 
+			 var vedio_url="ftp://"+ftpHost+"/"+ym+"/"+d+"/"+n.videoName;
 			 vlc.playlist.stop();
 			 vlc.playlist.clear();
 			 var itemId= vlc.playlist.add(vedio_url);

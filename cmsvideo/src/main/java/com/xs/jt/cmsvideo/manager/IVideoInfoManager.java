@@ -24,5 +24,7 @@ public interface IVideoInfoManager {
 	
 	public List<VideoInfo> getVideoInfoByJylsh(String jylsh);
 	
+	public List<Map> getVideoInfoStatistics();
+	
 
 }

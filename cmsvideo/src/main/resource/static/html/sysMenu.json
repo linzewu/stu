@@ -25,6 +25,61 @@
 			]
 		}]
 },{
+	"module": "查验PDA",
+	"group": [
+		{
+			"groupName": "查验PDA",
+			"menus": [
+				{
+					"icon": "../../static/images/smart_video.png",
+					"title": "查验PDA管理",
+					"href": "../../static/html/videoManager.html",
+					"permission":"videoInfo.getVideoInfoList"
+				}
+			]
+		}]
+},{
+	"module": "查验视频预警",
+	"group": [
+		{
+			"groupName": "查验视频预警",
+			"menus": [
+				{
+					"icon": "../../static/images/smart_video.png",
+					"title": "查验视频预警",
+					"href": "../../static/html/videoStatistics.html",
+					"permission":"videoInfo.getVideoInfoStatistics"
+				},
+				{
+					"icon": "../../static/images/database.png",
+					"title": "FTP存储预警",
+					"href": "../../static/html/videoStatistics.html",
+					"permission":"videoInfo.getVideoInfoList"
+				}
+				
+			]
+		}]
+},{
+	"module": "查询统计",
+	"group": [
+		{
+			"groupName": "查询统计",
+			"menus": [
+				{
+					"icon": "../../static/images/videos.png",
+					"title": "查验视频查询",
+					"href": "../../static/html/videoInfoQuery.html",
+					"permission":"videoInfo.getVideoInfoList"
+				},				
+				{
+					"icon": "../../static/images/smart_video.png",
+					"title": "查验视频统计",
+					"href": "../../static/html/videoManager.html",
+					"permission":"videoInfo.getVideoInfoList"
+				}
+			]
+		}]
+},{
 	"module": "系统管理",
 	"group": [{
 			"groupName": "权限管理",

@@ -25,4 +25,7 @@ public interface VideoInfoRepository extends JpaRepository<VideoInfo, Integer>, 
 	@Query(value=" from VideoInfo where lsh=:jylsh and zt=:zt")
 	public List<VideoInfo> getVideoInfoByJylsh(@Param("jylsh")String jylsh,@Param("zt")Integer zt);
 	
+	@Query(value = "select new map(vi.jyjgbh as jyjgbh,SUM(vi.videoSize) as videoSize,max(fc.capacity) as capacity)  from VideoInfo vi left join FtpConfig fc on vi.jyjgbh = fc.jyjgbh group by vi.jyjgbh")
+	public List<Map> getVideoInfoStatistics();
+	
 }

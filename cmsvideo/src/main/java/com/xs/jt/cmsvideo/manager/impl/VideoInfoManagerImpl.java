@@ -108,5 +108,10 @@ public class VideoInfoManagerImpl implements IVideoInfoManager {
 		return data;
 	}
 
+	@Override
+	public List<Map> getVideoInfoStatistics() {
+		return videoInfoRepository.getVideoInfoStatistics();
+	}
+
 
 }
