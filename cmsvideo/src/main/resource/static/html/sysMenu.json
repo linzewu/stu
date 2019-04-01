@@ -33,7 +33,7 @@
 				{
 					"icon": "../../static/images/smart_video.png",
 					"title": "查验PDA管理",
-					"href": "../../static/html/videoManager.html",
+					"href": "../../static/html/pdaManager.html",
 					"permission":"videoInfo.getVideoInfoList"
 				}
 			]
@@ -82,7 +82,7 @@
 				{
 					"icon": "../../static/images/videos.png",
 					"title": "视频实时监控",
-					"href": "../../static/html/videoInfoQuery.html",
+					"href": "../../static/html/pdaManager.html",
 					"permission":"videoInfo.getVideoInfoList"
 				}				
 			]
