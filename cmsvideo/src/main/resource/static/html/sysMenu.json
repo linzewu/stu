@@ -18,7 +18,7 @@
 				},
 				{
 					"icon": "../../static/images/ftp.png",
-					"title": "Ftp存储配置",
+					"title": "FTP存储配置",
 					"href": "../../static/html/ftpConfig.html",
 					"permission":"ftpConfig.getFtpConfigList"
 				}
@@ -45,16 +45,16 @@
 			"groupName": "查验视频预警",
 			"menus": [
 				{
-					"icon": "../../static/images/smart_video.png",
+					"icon": "../../static/images/warningwatch.png",
 					"title": "查验视频预警",
-					"href": "../../static/html/videoStatistics.html",
-					"permission":"videoInfo.getVideoInfoStatistics"
+					"href": "../../static/html/videoWarn.html",
+					"permission":"videoWarn.getVideoWarnList"
 				},
 				{
 					"icon": "../../static/images/database.png",
 					"title": "FTP存储预警",
-					"href": "../../static/html/videoStatistics.html",
-					"permission":"videoInfo.getVideoInfoList"
+					"href": "../../static/html/ftpWarn.html",
+					"permission":"videoInfo.getVideoInfoStatistics"
 				}
 				
 			]
@@ -70,13 +70,21 @@
 					"title": "查验视频查询",
 					"href": "../../static/html/videoInfoQuery.html",
 					"permission":"videoInfo.getVideoInfoList"
-				},				
+				}				
+			]
+		}]
+},{
+	"module": "实时监控",
+	"group": [
+		{
+			"groupName": "实时监控",
+			"menus": [
 				{
-					"icon": "../../static/images/smart_video.png",
-					"title": "查验视频统计",
-					"href": "../../static/html/videoManager.html",
+					"icon": "../../static/images/videos.png",
+					"title": "视频实时监控",
+					"href": "../../static/html/videoInfoQuery.html",
 					"permission":"videoInfo.getVideoInfoList"
-				}
+				}				
 			]
 		}]
 },{

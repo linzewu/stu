@@ -60,7 +60,7 @@ public class VideoInfoManagerImpl implements IVideoInfoManager {
 				}
 				
 				List<Order> orders = new ArrayList<Order>();
-				orders.add(criteriaBuilder.desc(root.get("createTime")));
+				orders.add(criteriaBuilder.desc(root.get("lsh")));
 				query.orderBy(orders);
 				Predicate[] p = new Predicate[list.size()];
 				return criteriaBuilder.and(list.toArray(p));

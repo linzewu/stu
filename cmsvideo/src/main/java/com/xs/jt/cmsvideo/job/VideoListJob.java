@@ -2,7 +2,6 @@ package com.xs.jt.cmsvideo.job;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -27,9 +26,11 @@ import com.xs.jt.cmsvideo.config.RabbitConfig;
 import com.xs.jt.cmsvideo.entity.FtpConfig;
 import com.xs.jt.cmsvideo.entity.VideoConfig;
 import com.xs.jt.cmsvideo.entity.VideoInfo;
+import com.xs.jt.cmsvideo.entity.VideoWarn;
 import com.xs.jt.cmsvideo.manager.IFtpConfigManager;
 import com.xs.jt.cmsvideo.manager.IVideoConfigManager;
 import com.xs.jt.cmsvideo.manager.IVideoInfoManager;
+import com.xs.jt.cmsvideo.manager.IVideoWarnManager;
 import com.xs.jt.cmsvideo.util.FileUtil;
 import com.xs.jt.cmsvideo.util.FtpUtil;
 import com.xs.jt.cmsvideo.util.HCNetSDK;
@@ -45,6 +46,8 @@ public class VideoListJob {
 	private IVideoInfoManager videoInfoManager;
 	@Autowired
 	private IFtpConfigManager ftpConfigManager;
+	@Autowired
+	private IVideoWarnManager videoWarnManager;
 
 	@Resource(name = "baseParamsManager")
 	private IBaseParamsManager baseParamsManager;
@@ -213,6 +216,9 @@ public class VideoListJob {
 				updateStatus(vi);
 				// 删除转码后文件
 				FileUtil.deleteFile(downLoadPath + vi.getVideoName());
+				
+				//视频预警
+				VideoEarlyWarning(vi);
 			} else {
 				throw new Exception("上传失败！");
 			}
@@ -227,6 +233,55 @@ public class VideoListJob {
 		}
 
 		log.info("***************convertVideoAndUpload end*********************");
+	}
+	
+	public void VideoEarlyWarning(VideoInfo vi) {
+		
+		List<BaseParams> bps = baseParamsManager.getBaseParamsByType("spyj");
+		for(BaseParams bp:bps) {
+			VideoWarn warn = null;
+			//视频时间低于秒数
+			if(VideoWarn.SPYJ_SJDY.equals(bp.getParamValue())) {
+				//视频时间长度
+				long time = (vi.getVideoEnd().getTime()-vi.getVideoBegin().getTime())/1000;
+				if(time < Long.parseLong(bp.getMemo())) {
+					warn = new VideoWarn();
+					warn.setRemark("视频时间低于"+bp.getMemo()+"秒预警");
+				}
+				
+			}else if(VideoWarn.SPYJ_SJDY.equals(bp.getParamValue())) {
+				//视频时间高于秒数
+				//视频时间长度
+				long time = (vi.getVideoEnd().getTime()-vi.getVideoBegin().getTime())/1000;
+				if(time > Long.parseLong(bp.getMemo())) {
+					warn = new VideoWarn();
+					warn.setRemark("视频时间高于"+bp.getMemo()+"秒预警");
+				}
+			}else if(VideoWarn.SPYJ_DXDY.equals(bp.getParamValue())) {
+				//视频大小低于兆数
+				Double videoSize = (double) (vi.getVideoSize()/1024/1024);
+				if(videoSize < Double.parseDouble(bp.getMemo())) {
+					warn = new VideoWarn();
+					warn.setRemark("视频大小低于"+bp.getMemo()+"兆预警");
+				}
+			}else if(VideoWarn.SPYJ_DXGY.equals(bp.getParamValue())) {
+				//视频大小高于兆数
+				Double videoSize = (double) (vi.getVideoSize()/1024/1024);
+				if(videoSize > Double.parseDouble(bp.getMemo())) {
+					warn = new VideoWarn();
+					warn.setRemark("视频大小高于"+bp.getMemo()+"兆预警");
+				}
+			}
+			if(warn != null) {
+				warn.setJyjgbh(vi.getJyjgbh());
+				warn.setDeviceName(vi.getDeviceName());
+				warn.setLsh(vi.getLsh());
+				warn.setJycs(vi.getJycs());
+				warn.setVid(vi.getId());
+				warn.setType(Integer.parseInt(bp.getParamValue()));
+				this.videoWarnManager.save(warn);
+			}
+		}
 	}
 
 	public void CameraInit() {

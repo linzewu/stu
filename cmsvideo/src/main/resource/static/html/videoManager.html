@@ -1,27 +1,32 @@
-<table id="videoDG" class="easyui-datagrid"  data-options="rownumbers:true,
+<table id="videoDG" class="easyui-datagrid" style="height:480px" data-options="rownumbers:true,
 		toolbar:'#videoToolbar',
 		singleSelect:false,
 		checkOnSelect:false,
 		selectOnCheck:false,
 		pagination:true,
 		pageSize:10,
-		url:'../../videoInfo/getVideoInfoList'"
-		>  
+		url:'../../videoInfo/getVideoInfoList',
+		onLoadSuccess:onLoadSuccess"
+		>
+	<thead data-options="frozen:true">
+           <tr>
+           	   <th data-options="field:'ck',checkbox:true"></th>
+               <th data-options="field:'lsh',width:120"  >流水号</th>
+        	   <th data-options="field:'jyjgbh',width:180,formatter:jyjgbhFormatter" >机构名称</th> 
+           </tr>
+     </thead>  
     <thead>
-        <tr>  
-        	<th data-options="field:'ck',checkbox:true"></th>
-        	<th data-options="field:'jyjgbh',width:150,formatter:jyjgbhFormatter" >机构名称</th>
-        	<th data-options="field:'lsh',width:150"  >流水号</th>
+        <tr>        	        	       	
             <th data-options="field:'clsbdh',width:180" >车辆识别码</th>  
             <th data-options="field:'hphm',width:80" >号牌号码</th>
-            <th data-options="field:'hpzl',width:100" >号牌种类</th>
+            <th data-options="field:'hpzl',width:100,formatter:formatterHpzl" >号牌种类</th>
             <th data-options="field:'cyqxh',width:100" >查验区序号</th>
             <th data-options="field:'cyqtd',width:100" >查验区通道</th>
             <th data-options="field:'deviceName',width:100" >视频名称</th>
             <th data-options="field:'videoName',width:40,formatter:showImg" >播放</th>
             <th data-options="field:'id',width:40,formatter:showDownImg" >下载</th>
             <th data-options="field:'jycs',width:100" >检验次数</th>
-            <th data-options="field:'videoSize',width:100" >视频大小</th>
+            <th data-options="field:'videoSize',width:100,formatter:formatterSize" >视频大小(MB)</th>
             <th data-options="field:'videoBegin',width:150">视频开始时间</th>
             <th data-options="field:'videoEnd',width:150" >视频结束时间</th>
             <th data-options="field:'reason',width:150" >失败原因</th>
@@ -156,5 +161,69 @@ function retry(){
 	});
 
 	
+}
+
+function onLoadSuccess(data){
+	var start = 0;
+    var end = 0;
+    if (data.total > 0) {
+        var temp = data.rows[0].lsh;
+        for (var i = 1; i < data.rows.length; i++) {
+            if (temp == data.rows[i].lsh) {
+                end++;
+            } else {
+                if (end > start) {
+                    $(this).datagrid('mergeCells', {
+                        index: start,
+                        rowspan: end - start + 1,
+                        field: 'lsh'
+                    })
+                }
+                temp = data.rows[i].lsh;
+                start = i;
+                end = i;
+            }
+        }
+        /*这里是为了判断重复内容出现在最后的情况，如ABCC*/
+        if (end > start) {
+            $(this).datagrid('mergeCells', {
+                index: start,
+                rowspan: end - start + 1,
+                field: 'lsh'
+            })
+        }
+    }
+}
+
+function onLoadSuccess(data){
+	var start = 0;
+    var end = 0;
+    if (data.total > 0) {
+        var temp = data.rows[0].lsh;
+        for (var i = 1; i < data.rows.length; i++) {
+            if (temp == data.rows[i].lsh) {
+                end++;
+            } else {
+                if (end > start) {
+                    $(this).datagrid('mergeCells', {
+                        index: start,
+                        rowspan: end - start + 1,
+                        field: 'lsh'
+                    })
+                }
+                temp = data.rows[i].lsh;
+                start = i;
+                end = i;
+            }
+        }
+        /*这里是为了判断重复内容出现在最后的情况，如ABCC*/
+        if (end > start) {
+            $(this).datagrid('mergeCells', {
+                index: start,
+                rowspan: end - start + 1,
+                field: 'lsh'
+            })
+        }
+    }
 }
 </script>
