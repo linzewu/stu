@@ -120,31 +120,7 @@ function onLoadSuccess(data){
 	var start = 0;
     var end = 0;
     if (data.total > 0) {
-        var temp = data.rows[0].lsh;
-        for (var i = 1; i < data.rows.length; i++) {
-            if (temp == data.rows[i].lsh) {
-                end++;
-            } else {
-                if (end > start) {
-                    $(this).datagrid('mergeCells', {
-                        index: start,
-                        rowspan: end - start + 1,
-                        field: 'lsh'
-                    })
-                }
-                temp = data.rows[i].lsh;
-                start = i;
-                end = i;
-            }
-        }
-        /*这里是为了判断重复内容出现在最后的情况，如ABCC*/
-        if (end > start) {
-            $(this).datagrid('mergeCells', {
-                index: start,
-                rowspan: end - start + 1,
-                field: 'lsh'
-            })
-        }
+    	mergeCellsByField("videoInDG","lsh,jyjgbh,clsbdh,hphm,hpzl")
     }
 }
 
