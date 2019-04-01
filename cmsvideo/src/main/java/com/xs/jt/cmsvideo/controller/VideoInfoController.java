@@ -83,5 +83,14 @@ public class VideoInfoController {
 		data.put("rows", list);
 		return data;
 	}
+	
+	@UserOperation(code="saveVideoTime",name="修改视频开始结束时间")
+	@RequestMapping(value = "saveVideoTime", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> saveVideoTime(@RequestBody VideoInfo videoInfo) {
+		this.videoInfoManager.save(videoInfo);
+		
+		return  ResultHandler.toSuccessJSON("修改成功！");
+		
+	}
 
 }

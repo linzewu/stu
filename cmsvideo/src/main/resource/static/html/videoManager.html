@@ -60,8 +60,7 @@
 																    height:320,
 																    modal:true,
 																    title:'视频时间修改',
-																    closed:false,
-																    closable:false,
+																    closable:true,
 																    minimizable:false,
 																    collapsible:false,
 																    maximizable:false,
@@ -70,10 +69,10 @@
 																    ">
 	<div class="easyui-panel" style="width:100%;max-width:400px;padding:30px 60px;">
         <div style="margin-bottom:20px">
-            <input class="easyui-datetimebox" label="视频开始时间:" labelPosition="top" style="width:100%;">
+            <input id="beginTime" class="easyui-datetimebox" label="视频开始时间:" labelPosition="top" style="width:100%;" required="required">
         </div>
         <div style="margin-bottom:20px">
-            <input class="easyui-datetimebox" label="视频结束时间:" labelPosition="top" style="width:100%;">
+            <input id="endTime" class="easyui-datetimebox" label="视频结束时间:" labelPosition="top" style="width:100%;" required="required">
         </div>
         <div align="center">
         <a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="saveTime()">修改</a>
@@ -227,8 +226,10 @@ function onLoadSuccess(data){
 
 var selectRow = null;
 function updateVideoTime(){
+	selectRow = null;
 	var row = $('#videoDG').datagrid("getSelected");
 	if(row != null){
+		selectRow = row;
 		$('#win_videoTime').window('open');
 	}else{
 		$.messager.alert("提示","请选择需要修改视频开始时间，结束时间的记录！","info");    
@@ -236,7 +237,31 @@ function updateVideoTime(){
 }
 
 function saveTime(){
-	$('#win_videoTime').window('close');
+	selectRow.videoBegin = $("#beginTime").datetimebox("getValue");
+	selectRow.videoEnd = $("#endTime").datetimebox("getValue");
+	if (selectRow.videoBegin == ""){
+		$.messager.alert("提示","请输入视频开始时间","info");    
+		return;
+	}
+	if (selectRow.videoEnd == ""){
+		$.messager.alert("提示","请输入视频结束时间","info");    
+		return;
+	}
+	$.ajax({  
+	    url : "../../videoInfo/saveVideoTime",
+	    type : 'POST',
+	    dataType: 'json',
+	    contentType: "application/json",
+	    data : JSON.stringify(selectRow),
+	    success : function(col) {
+	    	queryVideo();
+			$.messager.alert("提示",col.message,"info");    
+			$('#win_videoTime').window('close');
+	    },
+	    error : function(col){
+	    }
+	});	
+	
 }
 
 
