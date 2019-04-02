@@ -138,7 +138,7 @@ public class VideoListJob {
 			String fileName = info.getCyqxh() + info.getCyqtd() + "_" + info.getConfigId() + "_" + info.getJycs() + "_"
 					+ info.getLsh() + ".mp4";
 			String saveFile = downLoadPath + fileName;
-			long channel = vc.getChannel();//getChannelNumber(vc.getChannel(), lUserID);
+			long channel = getChannelNumber(vc.getChannel(), lUserID);
 
 			downLoad(lUserID, new NativeLong(channel), lpStartTime, lpStopTime, saveFile);
 
