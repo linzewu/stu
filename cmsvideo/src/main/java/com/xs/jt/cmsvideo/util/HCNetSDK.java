@@ -23,7 +23,9 @@ import com.sun.jna.Structure;
 import com.sun.jna.Union;
 import com.sun.jna.examples.win32.GDI32.RECT;
 import com.sun.jna.examples.win32.W32API;
+import com.sun.jna.examples.win32.W32API.DWORD;
 import com.sun.jna.examples.win32.W32API.HWND;
+import com.sun.jna.examples.win32.W32API.WORD;
 import com.sun.jna.ptr.ByteByReference;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.ptr.IntByReference;
@@ -2483,6 +2485,42 @@ public static class NET_DVR_DEVICEINFO_V30 extends Structure
    public  byte[] byRes1 = new byte[24];					//保留
 }
 
+//NET_DVR_DEVICEINFO_V40()
+public static class NET_DVR_DEVICEINFO_V40 extends Structure
+{
+	public NET_DVR_DEVICEINFO_V30    struDeviceV30;
+	public byte  bySupportLock;
+	public byte  byRetryLoginTime;
+	public byte  byPasswordLevel;
+	public byte  byProxyType;
+	public DWORD   dwSurplusLockTime;
+	public byte  byCharEncodeType;
+	public byte  bySupportDev5;
+	public byte  byLoginMode;
+	public byte[] byRes2 = new byte[253];
+
+}
+
+//NET_DVR_USER_LOGIN_INFO
+public static class NET_DVR_USER_LOGIN_INFO extends Structure
+{
+	public String sDeviceAddress;
+	public byte  byUseTransport;
+	public short  wPort;
+	public String  sUserName;
+	public String sPassword;
+	//public fLoginResultCallBack    cbLoginResult;
+	//public void                    *pUser;
+	public boolean  bUseAsynLogin;
+	public byte byProxyType;
+	public byte byUseUTCTime;
+	public byte byLoginMode;
+	public byte byHttps;
+	public long iProxyID;
+	public byte[] byRes3 = new byte[120];
+
+}
+
 //sdk网络环境枚举变量，用于远程升级
  enum _SDK_NET_ENV
 {
@@ -2784,6 +2822,7 @@ public static class RECV_ALARM extends Structure{
  boolean  NET_DVR_StopListen_V30(NativeLong lListenHandle);
  NativeLong  NET_DVR_Login(String sDVRIP,short wDVRPort,String sUserName,String sPassword,NET_DVR_DEVICEINFO lpDeviceInfo);
  NativeLong  NET_DVR_Login_V30(String sDVRIP, short wDVRPort, String sUserName, String sPassword, NET_DVR_DEVICEINFO_V30 lpDeviceInfo);
+ NativeLong  NET_DVR_Login_V40(NET_DVR_USER_LOGIN_INFO    pLoginInfo, NET_DVR_DEVICEINFO_V40     lpDeviceInfo);
  boolean  NET_DVR_Logout(NativeLong lUserID);
  boolean  NET_DVR_Logout_V30(NativeLong lUserID);
  int  NET_DVR_GetLastError();

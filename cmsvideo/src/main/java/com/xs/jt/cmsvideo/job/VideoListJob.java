@@ -53,7 +53,9 @@ public class VideoListJob {
 	private IBaseParamsManager baseParamsManager;
 
 	static HCNetSDK hCNetSDK = HCNetSDK.INSTANCE;
-	HCNetSDK.NET_DVR_DEVICEINFO_V30 m_strDeviceInfo;// 设备信息
+	HCNetSDK.NET_DVR_DEVICEINFO_V40 m_strDeviceInfo;// 设备信息
+	HCNetSDK.NET_DVR_USER_LOGIN_INFO m_strLoginInfo;
+
 	// public NativeLong lUserID = new NativeLong(-1);// 用户句柄
 
 	// 视频下载地址
@@ -304,10 +306,16 @@ public class VideoListJob {
 //		}
 
 		// 注册
-		m_strDeviceInfo = new HCNetSDK.NET_DVR_DEVICEINFO_V30();
+		m_strDeviceInfo = new HCNetSDK.NET_DVR_DEVICEINFO_V40();
+		m_strLoginInfo = new HCNetSDK.NET_DVR_USER_LOGIN_INFO();
+		m_strLoginInfo.sUserName = username;
+		m_strLoginInfo.sPassword = password;
+		m_strLoginInfo.wPort = (short) iPort;
+		m_strLoginInfo.sDeviceAddress = m_sDeviceIP;
 		// int iPort = 8000;
 		log.info("注册，设备IP：" + m_sDeviceIP);
-		lUserID = hCNetSDK.NET_DVR_Login_V30(m_sDeviceIP, (short) iPort, username, password, m_strDeviceInfo);
+		//lUserID = hCNetSDK.NET_DVR_Login_V30(m_sDeviceIP, (short) iPort, username, password, m_strDeviceInfo);
+		lUserID = hCNetSDK.NET_DVR_Login_V40(m_strLoginInfo, m_strDeviceInfo);
 
 		long userID = lUserID.longValue();
 		if (userID == -1) {
@@ -362,21 +370,21 @@ public class VideoListJob {
 	/**
 	 * 获取设备通道
 	 */
-	public int getChannelNumber(long channel, NativeLong lUserID) {
-		int iChannelNum = -1;
-		int iIPChanStart = 0;
-
-		if (m_strDeviceInfo.byIPChanNum >= 64) {
-			iIPChanStart = 0;
-		} else {
-			iIPChanStart = 32;
-		}
-
-		if (channel >= m_strDeviceInfo.byChanNum) {
-			iChannelNum = (int) (channel - m_strDeviceInfo.byChanNum + iIPChanStart);
-		}
-		return iChannelNum;
-	}
+//	public int getChannelNumber(long channel, NativeLong lUserID) {
+//		int iChannelNum = -1;
+//		int iIPChanStart = 0;
+//
+//		if (m_strDeviceInfo.byIPChanNum >= 64) {
+//			iIPChanStart = 0;
+//		} else {
+//			iIPChanStart = 32;
+//		}
+//
+//		if (channel >= m_strDeviceInfo.byChanNum) {
+//			iChannelNum = (int) (channel - m_strDeviceInfo.byChanNum + iIPChanStart);
+//		}
+//		return iChannelNum;
+//	}
 
 	private int getMaxTaskCou() {
 		int maxCou = 3;
