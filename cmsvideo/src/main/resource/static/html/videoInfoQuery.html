@@ -42,8 +42,7 @@
     	号牌种类：<input type="text" class="easyui-textbox" id="hpzl" >
     	状      态：&nbsp;&nbsp;&nbsp;<input id="zt"   prompt='请选择状态' data-options="data:comm.getBaseParames('spzt'),	valueField: 'id',
 		textField: 'value'"  class="easyui-combobox" style="width: 170px;">
-		检验机构名称：<input prompt='请选择机构名称'  class="easyui-combobox" data-options="data:deptArr,valueField: 'bmdm',
-	textField: 'bmmc'" id="jyjgbh" >
+		检验机构名称：<input  class="easyui-combotree" id="jyjgbh_q" style="width: 300px">
     	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryVideo()">查询</a>
     	</div>
     </div>
@@ -71,7 +70,7 @@ function queryVideo(){
 	var hphm = $("#hphm").textbox("getValue");
 	var hpzl = $("#hpzl").textbox("getValue");
 	var zt = $("#zt").combobox("getValue");
-	var jyjgbh = $("#jyjgbh").combobox("getValue");
+	var jyjgbh = $("#jyjgbh_q").combotree("getValue");
 	$('#videoInDG').datagrid("reload",{clsbdh:clsbdh,lsh:lsh,hphm:hphm,hpzl:hpzl,zt:zt,jyjgbh:jyjgbh});
 }
 
@@ -117,6 +116,10 @@ function findFtpByJyjgbh(jyjgbh){
 }
 
 function onLoadSuccess(data){
+	var tree = $('#jyjgbh_q').combotree('tree'); 
+	  if(tree.tree('getRoot') == null){
+	  	  loadComboboxTree("jyjgbh_q");
+	  }
 	var start = 0;
     var end = 0;
     if (data.total > 0) {

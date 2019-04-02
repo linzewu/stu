@@ -46,8 +46,7 @@
     	号牌种类：<input type="text" class="easyui-textbox" id="hpzl" >
     	状      态：&nbsp;&nbsp;&nbsp;<input id="zt"   prompt='请选择状态' data-options="data:comm.getBaseParames('spzt'),	valueField: 'id',
 		textField: 'value'"  class="easyui-combobox" style="width: 170px;">
-		检验机构名称：<input prompt='请选择机构名称'  class="easyui-combobox" data-options="data:deptArr,valueField: 'bmdm',
-	textField: 'bmmc'" id="jyjgbh" >
+		检验机构名称：<input  class="easyui-combotree" id="jyjgbh_m" style="width: 300px;">
     	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryVideo()">查询</a>
     	<a href="#" class="easyui-linkbutton" iconCls="icon-reload" onclick="retry()">批量重试</a>
     	<!--<a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="updateVideoTime()">修改视频时间</a>-->
@@ -102,7 +101,7 @@ function queryVideo(){
 	var hphm = $("#hphm").textbox("getValue");
 	var hpzl = $("#hpzl").textbox("getValue");
 	var zt = $("#zt").combobox("getValue");
-	var jyjgbh = $("#jyjgbh").combobox("getValue");
+	var jyjgbh = $("#jyjgbh_m").combotree("getValue");
 	$('#videoDG').datagrid("reload",{clsbdh:clsbdh,lsh:lsh,hphm:hphm,hpzl:hpzl,zt:zt,jyjgbh:jyjgbh});
 }
 
@@ -191,8 +190,10 @@ function retry(){
 }
 
 function onLoadSuccess(data){
-	var start = 0;
-    var end = 0;
+	var tree = $('#jyjgbh_m').combotree('tree'); 
+	  if(tree.tree('getRoot') == null){
+	  	  loadComboboxTree("jyjgbh_m");
+	  }
     if (data.total > 0) {
        /*  var temp = data.rows[0].lsh;
         for (var i = 1; i < data.rows.length; i++) {

@@ -137,7 +137,7 @@ public class VideoListJob {
 			String fileName = info.getCyqxh() + info.getCyqtd() + "_" + info.getConfigId() + "_" + info.getJycs() + "_"
 					+ info.getLsh() + ".mp4";
 			String saveFile = downLoadPath + fileName;
-			long channel = getChannelNumber(vc.getChannel(), lUserID);
+			long channel = vc.getChannel();//getChannelNumber(vc.getChannel(), lUserID);
 
 			downLoad(lUserID, new NativeLong(channel), lpStartTime, lpStopTime, saveFile);
 
@@ -246,7 +246,7 @@ public class VideoListJob {
 				long time = (vi.getVideoEnd().getTime()-vi.getVideoBegin().getTime())/1000;
 				if(time < Long.parseLong(bp.getMemo())) {
 					warn = new VideoWarn();
-					warn.setRemark("视频时间低于"+bp.getMemo()+"秒预警");
+					warn.setRemark("视频时间:"+time+"秒,小于阈值"+bp.getMemo()+"秒预警");
 				}
 				
 			}else if(VideoWarn.SPYJ_SJDY.equals(bp.getParamValue())) {
@@ -255,21 +255,21 @@ public class VideoListJob {
 				long time = (vi.getVideoEnd().getTime()-vi.getVideoBegin().getTime())/1000;
 				if(time > Long.parseLong(bp.getMemo())) {
 					warn = new VideoWarn();
-					warn.setRemark("视频时间高于"+bp.getMemo()+"秒预警");
+					warn.setRemark("视频时间:"+time+"秒,大于阈值"+bp.getMemo()+"秒预警");
 				}
 			}else if(VideoWarn.SPYJ_DXDY.equals(bp.getParamValue())) {
 				//视频大小低于兆数
 				Double videoSize = (double) (vi.getVideoSize()/1024/1024);
 				if(videoSize < Double.parseDouble(bp.getMemo())) {
 					warn = new VideoWarn();
-					warn.setRemark("视频大小低于"+bp.getMemo()+"兆预警");
+					warn.setRemark("视频大小:"+videoSize+"兆,小于阈值"+bp.getMemo()+"兆预警");
 				}
 			}else if(VideoWarn.SPYJ_DXGY.equals(bp.getParamValue())) {
 				//视频大小高于兆数
 				Double videoSize = (double) (vi.getVideoSize()/1024/1024);
 				if(videoSize > Double.parseDouble(bp.getMemo())) {
 					warn = new VideoWarn();
-					warn.setRemark("视频大小高于"+bp.getMemo()+"兆预警");
+					warn.setRemark("视频大小:"+videoSize+"兆,大于阈值"+bp.getMemo()+"兆预警");
 				}
 			}
 			if(warn != null) {
@@ -321,6 +321,7 @@ public class VideoListJob {
 	public void downLoad(NativeLong lUserID, NativeLong lChannel, NET_DVR_TIME lpStartTime, NET_DVR_TIME lpStopTime,
 			String saveFile) throws Exception {
 		try {
+			log.info("lUserID:"+lUserID+" lChannel:"+lChannel+" lpStartTime:"+lpStartTime+" lpStopTime:"+lpStopTime+" saveFile:"+saveFile);
 			// 指定下载的文件
 			NativeLong tRet = hCNetSDK.NET_DVR_GetFileByTime(lUserID, lChannel, lpStartTime, lpStopTime, saveFile);
 			int tError = hCNetSDK.NET_DVR_GetLastError();

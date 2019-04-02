@@ -20,6 +20,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 
+import com.xs.jt.base.module.common.Common;
 import com.xs.jt.cmsvideo.dao.VideoWarnRepository;
 import com.xs.jt.cmsvideo.entity.VideoInfo;
 import com.xs.jt.cmsvideo.entity.VideoWarn;
@@ -45,6 +46,9 @@ public class VideoWarnManagerImpl implements IVideoWarnManager {
 				List<Predicate> list = new ArrayList<Predicate>();
 				if(videoWarn.getType() != null) {
 					list.add(criteriaBuilder.equal(root.get("type").as(Integer.class), videoWarn.getType()));
+				}
+				if(Common.isNotEmpty(videoWarn.getJyjgbh())) {
+					list.add(criteriaBuilder.equal(root.get("jyjgbh").as(String.class), videoWarn.getJyjgbh()));
 				}
 				
 //				Join<VideoWarn, VideoInfo> join = root.join("vid", JoinType.LEFT);

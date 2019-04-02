@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
+import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.cmsvideo.entity.VideoInfo;
 import com.xs.jt.cmsvideo.manager.IVideoInfoManager;
@@ -91,6 +92,13 @@ public class VideoInfoController {
 		
 		return  ResultHandler.toSuccessJSON("修改成功！");
 		
+	}
+	
+	@UserOperation(code = "getVideoInfoById", name = "根据id查询视频信息")
+	@RequestMapping(value = "getVideoInfoById", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getVideoInfoById(Integer id) {
+		VideoInfo info =  videoInfoManager.getVideoInfoById(id);
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "根据id查询视频信息成功！", info);
 	}
 
 }

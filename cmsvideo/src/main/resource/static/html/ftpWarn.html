@@ -23,7 +23,7 @@ z-index: 2;
 
 <script type="text/javascript">
 function showProgess(value, row, index){
-	var bl = (row.videoSizeT/row.capacity)*100;
+	var bl = ((row.videoSizeT/row.capacity)*100).toFixed(4);
 	var htmlstr = '<div class="progressbar-text" style="width:398px;height: 20px; line-height: 20px;border:1px;border-color: #cccccc;border-style: solid;">'+bl+'%</div><div class="progressbar-value" style="width:'+bl+'%;height: 20px; line-height: 20px;">&nbsp; </div>';  
 	//var htmlstr = '<div class="progressbar-text" style="width:398px;">' + bl + '</div><div class="progressbar-value" style="width:' + bl + ';">&nbsp; </div>';
 	return htmlstr;
