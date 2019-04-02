@@ -560,6 +560,10 @@ function query(){
 		               <input name="port" class="easyui-textbox" required="true">
 		           </div>
 		           <div class="fitem">
+		               <label>后端端口:</label>
+		               <input name="hdPort" class="easyui-textbox" required="true">
+		           </div>		           
+		           <div class="fitem">
 		               <label>用户名:</label>
 		               <input name="userName" class="easyui-textbox" required="true">
 		           </div>
@@ -610,7 +614,7 @@ function query(){
            $('#dlg').dialog('open').dialog('center').dialog('setTitle','新增配置');
            $('#fm').form('clear');
            loadComboboxTree("jyjgbh_video");           
-           $("#fm").form("load",{userName:'admin',password:'12345',port:'8000',});
+           $("#fm").form("load",{userName:'admin',password:'12345',port:'80',hdPort:'8000'});
           
        }
        function editUser(){

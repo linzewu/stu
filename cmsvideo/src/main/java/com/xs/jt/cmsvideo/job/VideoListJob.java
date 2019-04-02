@@ -128,7 +128,7 @@ public class VideoListJob {
 			// 初始化
 			CameraInit();
 			// 注册
-			lUserID = register(lUserID, vc.getUserName(), vc.getPassword(), vc.getIp(), Integer.parseInt(vc.getPort()));
+			lUserID = register(lUserID, vc.getUserName(), vc.getPassword(), vc.getIp(), Integer.parseInt(vc.getHdPort()));
 			// 按时间下载
 			NET_DVR_TIME lpStartTime = new HCNetSDK.NET_DVR_TIME();
 			convert(info.getVideoBegin(), lpStartTime);

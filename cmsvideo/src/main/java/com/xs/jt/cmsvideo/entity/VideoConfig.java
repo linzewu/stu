@@ -30,6 +30,10 @@ public class VideoConfig extends BaseEntity {
 	@Column
 	private String port;
 	
+	//后端端口
+	@Column
+	private String hdPort;
+	
 	@Column
 	private String userName;
 	
@@ -129,6 +133,14 @@ public class VideoConfig extends BaseEntity {
 
 	public void setCyqtd(String cyqtd) {
 		this.cyqtd = cyqtd;
+	}
+
+	public String getHdPort() {
+		return hdPort;
+	}
+
+	public void setHdPort(String hdPort) {
+		this.hdPort = hdPort;
 	}
 	
 
