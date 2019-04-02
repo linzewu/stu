@@ -1,0 +1,75 @@
+<div  data-options="fit:true" id="videoPage" class="easyui-layout">
+	<div data-options="title:'部门列表',region:'west',split:true"
+		style="width: 180px;">
+		<ul id="video-dept-list"></ul>
+	</div>
+	<div data-options="region:'center'" id="userList">
+		<div class="easyui-tabs" data-options="fit:true" id="user-tabs">
+			<div data-options="title:'视频监控列表'">
+				<div id="videoPlugin" style="width: 340px;height: 200px;"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+	loadTree();
+});
+
+function depts2Node(data){
+	var roots=[];
+	for(var i in data){
+		if(data[i].sjbmdm==null||data[i].sjbmdm==""){
+			var node={};
+			node.id=data[i].bmdm;
+			node.text=data[i].bmmc;
+			node.data=data[i];
+			setChildrenNode(data,node);
+			roots.push(node);
+		}
+	}
+	return roots;
+}
+
+
+function setChildrenNode(data,node){
+	var children=[];
+	for(var i in data){
+		if(node.id==data[i].sjbmdm){
+			var child={};
+			child.id=data[i].bmdm;
+			child.text=data[i].bmmc;
+			child.data=data[i];
+			setChildrenNode(data,child);
+			children.push(child);
+			node.children=children;
+		}
+	}
+}
+
+
+function loadTree(selectNodeId){
+	/**$.messager.progress({
+		"title" : "提示",
+		"msg" : "数据加载中..."
+	});**/
+	$.post("../../dept/getDepts", function(data) {
+		var nodes = depts2Node(data);
+		
+		$("#video-dept-list").tree({data:nodes,onClick:function(){
+			queryUser();
+		}});
+		
+		$("#userManager").datagrid({
+			queryParams:{bmdm:nodes[0].id}
+		});
+		
+	}).complete(function() {
+		//$.messager.progress("close");
+	 	var node=$('#video-dept-list').tree("getRoot");
+		$('#video-dept-list').tree('select', node.target); 
+	});
+}
+
+</script>

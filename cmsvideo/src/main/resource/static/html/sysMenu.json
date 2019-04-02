@@ -82,7 +82,7 @@
 				{
 					"icon": "../../static/images/videos.png",
 					"title": "视频实时监控",
-					"href": "../../static/html/pdaManager.html",
+					"href": "../../static/html/videoMonitor.html",
 					"permission":"videoInfo.getVideoInfoList"
 				}				
 			]

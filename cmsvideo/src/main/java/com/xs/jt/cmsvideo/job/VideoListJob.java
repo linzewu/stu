@@ -53,8 +53,7 @@ public class VideoListJob {
 	private IBaseParamsManager baseParamsManager;
 
 	static HCNetSDK hCNetSDK = HCNetSDK.INSTANCE;
-	HCNetSDK.NET_DVR_DEVICEINFO_V40 m_strDeviceInfo;// 设备信息
-	HCNetSDK.NET_DVR_USER_LOGIN_INFO m_strLoginInfo;
+	HCNetSDK.NET_DVR_DEVICEINFO_V30 m_strDeviceInfo;// 设备信息
 
 	// public NativeLong lUserID = new NativeLong(-1);// 用户句柄
 
@@ -297,29 +296,24 @@ public class VideoListJob {
 	}
 
 	// 注册
-	public NativeLong register(NativeLong lUserID, String username, String password, String m_sDeviceIP, int iPort) {
+	public NativeLong register(NativeLong lUserID, String username, String password, String m_sDeviceIP, int iPort) throws Exception {
 		// ****** 注册之前先注销已注册的用户,预览情况下不可注销
 //		if (lUserID.longValue() > -1) {
 //			// 先注销
 //			hCNetSDK.NET_DVR_Logout(lUserID);
 //			lUserID = new NativeLong(-1);
 //		}
-
+		iPort = 8000;
 		// 注册
-		m_strDeviceInfo = new HCNetSDK.NET_DVR_DEVICEINFO_V40();
-		m_strLoginInfo = new HCNetSDK.NET_DVR_USER_LOGIN_INFO();
-		m_strLoginInfo.sUserName = username;
-		m_strLoginInfo.sPassword = password;
-		m_strLoginInfo.wPort = (short) iPort;
-		m_strLoginInfo.sDeviceAddress = m_sDeviceIP;
+		m_strDeviceInfo = new HCNetSDK.NET_DVR_DEVICEINFO_V30();
 		// int iPort = 8000;
 		log.info("注册，设备IP：" + m_sDeviceIP);
-		//lUserID = hCNetSDK.NET_DVR_Login_V30(m_sDeviceIP, (short) iPort, username, password, m_strDeviceInfo);
-		lUserID = hCNetSDK.NET_DVR_Login_V40(m_strLoginInfo, m_strDeviceInfo);
+		lUserID = hCNetSDK.NET_DVR_Login_V30(m_sDeviceIP, (short) iPort, username, password, m_strDeviceInfo);
 
 		long userID = lUserID.longValue();
 		if (userID == -1) {
 			log.info("注册失败");
+			throw new Exception("注册失败");
 		} else {
 			log.info("注册成功,lUserID:" + userID);
 		}
@@ -370,21 +364,21 @@ public class VideoListJob {
 	/**
 	 * 获取设备通道
 	 */
-//	public int getChannelNumber(long channel, NativeLong lUserID) {
-//		int iChannelNum = -1;
-//		int iIPChanStart = 0;
-//
-//		if (m_strDeviceInfo.byIPChanNum >= 64) {
-//			iIPChanStart = 0;
-//		} else {
-//			iIPChanStart = 32;
-//		}
-//
-//		if (channel >= m_strDeviceInfo.byChanNum) {
-//			iChannelNum = (int) (channel - m_strDeviceInfo.byChanNum + iIPChanStart);
-//		}
-//		return iChannelNum;
-//	}
+	public int getChannelNumber(long channel, NativeLong lUserID) {
+		int iChannelNum = -1;
+		int iIPChanStart = 0;
+
+		if (m_strDeviceInfo.byIPChanNum >= 64) {
+			iIPChanStart = 0;
+		} else {
+			iIPChanStart = 32;
+		}
+
+		if (channel >= m_strDeviceInfo.byChanNum) {
+			iChannelNum = (int) (channel - m_strDeviceInfo.byChanNum + iIPChanStart);
+		}
+		return iChannelNum;
+	}
 
 	private int getMaxTaskCou() {
 		int maxCou = 3;
