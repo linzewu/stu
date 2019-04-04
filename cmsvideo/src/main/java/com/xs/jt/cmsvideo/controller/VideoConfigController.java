@@ -1,9 +1,8 @@
 package com.xs.jt.cmsvideo.controller;
 
-import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
-import com.xs.jt.base.module.common.Common;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
-import com.xs.jt.base.module.entity.BlackList;
-import com.xs.jt.base.module.entity.SecurityAuditPolicySetting;
-import com.xs.jt.base.module.entity.SecurityLog;
-import com.xs.jt.base.module.entity.User;
 import com.xs.jt.cmsvideo.entity.VideoConfig;
 import com.xs.jt.cmsvideo.manager.IVideoConfigManager;
 
@@ -60,6 +54,13 @@ public class VideoConfigController {
 	public @ResponseBody String delete(VideoConfig videoConfig){
 		this.videoConfigManager.deleteVideoConfig(videoConfig);
 		return  JSONObject.fromObject(ResultHandler.toSuccessJSON(Constant.ConstantMessage.SUCCESS)).toString();
+	}
+	
+	@UserOperation(code = "getVideoConfigByJyjgbh", name = "查询检验机构编号查询视频配置信息")
+	@RequestMapping(value = "getVideoConfigByJyjgbh", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getVideoConfigByJyjgbh(String jyjgbh) {
+		List<VideoConfig> list = videoConfigManager.getVideoConfigByJyjgbh(jyjgbh);
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "查询检验机构编号查询视频配置信息成功！", list);
 	}
 
 }

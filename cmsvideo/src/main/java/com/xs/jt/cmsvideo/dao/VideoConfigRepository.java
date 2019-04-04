@@ -14,4 +14,7 @@ public interface VideoConfigRepository extends JpaRepository<VideoConfig, Intege
 
 	@Query(value=" from VideoConfig where cyqxh=:cyqxh and cyqtd=:cyqtd ")
 	public List<VideoConfig> getVideoConfigByCyqxhAndCyqtd(@Param("cyqxh")String cyqxh, @Param("cyqtd")String cyqtd); 
+	
+	@Query(value=" from VideoConfig where jyjgbh=:jyjgbh ")
+	public List<VideoConfig> getVideoConfigByJyjgbh(@Param("jyjgbh")String jyjgbh);
 }

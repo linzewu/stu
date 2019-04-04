@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.sun.jna.NativeLong;
@@ -127,8 +128,12 @@ public class VideoListJob {
 			NativeLong lUserID = new NativeLong(-1);
 			// 初始化
 			CameraInit();
+			int hdport = 8000;
+			if (!StringUtils.isEmpty(vc.getHdPort())) {
+				hdport = Integer.parseInt(vc.getHdPort());
+			}
 			// 注册
-			lUserID = register(lUserID, vc.getUserName(), vc.getPassword(), vc.getIp(), Integer.parseInt(vc.getHdPort()));
+			lUserID = register(lUserID, vc.getUserName(), vc.getPassword(), vc.getIp(), hdport);
 			// 按时间下载
 			NET_DVR_TIME lpStartTime = new HCNetSDK.NET_DVR_TIME();
 			convert(info.getVideoBegin(), lpStartTime);

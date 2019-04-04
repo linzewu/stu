@@ -77,4 +77,9 @@ public class VideoConfigManagerImpl implements IVideoConfigManager {
 		return opt.get();
 	}
 
+	@Override
+	public List<VideoConfig> getVideoConfigByJyjgbh(String jyjgbh) {
+		return videoConfigRepository.getVideoConfigByJyjgbh(jyjgbh);
+	}
+
 }

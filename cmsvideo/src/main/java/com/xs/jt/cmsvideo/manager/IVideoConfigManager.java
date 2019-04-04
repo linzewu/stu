@@ -15,4 +15,6 @@ public interface IVideoConfigManager {
 	public List<VideoConfig> getVideoConfigByCyqxhAndCyqtd(String cyqxh,String cyqtd);
 	
 	public VideoConfig getVideoConfigById(Integer id);
+	
+	public List<VideoConfig> getVideoConfigByJyjgbh(String jyjgbh);
 }

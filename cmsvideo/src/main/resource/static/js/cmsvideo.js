@@ -1,3 +1,28 @@
+$.extend(
+	$.fn.validatebox.defaults.rules,
+	{
+		serialCodeVad : {
+			validator : function(value, param) {				
+				var bflag=false;				
+				
+				var data={};
+				data.serialCode=value;
+				var id =$(param[0]).val();
+				if(id!=null&&$.trim(id)!=""){
+					return true;
+				}
+				var r = $.ajax({url:'../../pdaInfo/validateSerialCode',dataType:"json",data:data,async:false,cache:false,type:"post"}).responseText;
+				bflag=r=="true";
+				if(!bflag){
+					param[1]='串码已存在';
+				}				
+				
+				return bflag;
+			},
+			message : '{1}'
+		}
+	});
+
 function formatterSize(value,row,index){
 	return (value/1024/1024).toFixed(2);
 }
