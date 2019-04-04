@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -27,7 +28,7 @@ import com.xs.jt.base.module.manager.IRoleManager;
 @Component
 public class SecurityInterceptor implements HandlerInterceptor {
 
-	@Resource(name = "roleManager")
+	@Autowired
 	private IRoleManager roleManager;
 
 	@Override

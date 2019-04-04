@@ -1,0 +1,25 @@
+<!--[if IE]>
+   <object type='application/x-vlc-plugin' id='vlc' events='True'
+       classid='clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921' width="90%" height="92%">
+          <param name='mrl' value='' />
+          <param name='volume' value='50' />
+          <param name='autoplay' value='true' />
+    </object>
+<![endif]-->
+<!--[if !IE]><!-->
+    <object type='application/x-vlc-plugin' id='vlc' events='True' width="96%" height="96%">
+        <param name='mrl' value='' />
+        <param name='volume' value='50' />
+        <param name='autoplay' value='true' />
+    </object>
+<!--<![endif]-->
+<script type="text/javascript">
+
+$(function(){
+ var vlc = document.getElementById("vlc");
+ vlc.style.width="96%";
+ vlc.style.height="96%";
+ initPlayUrl();
+})
+
+</script>
