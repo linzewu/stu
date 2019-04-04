@@ -1,0 +1,9 @@
+更新说明
+2013-12-13
+更新NetVideoActiveX23.ocx为2.3.23.7
+更新SystemTransform.dll为build210130901版本
+
+2013-10-11
+HCNetSDK.dll  v4.2.5.6
+PlayCtrl.dll v6.4.1.8
+AudioIntercom.dll 1.1.0.4

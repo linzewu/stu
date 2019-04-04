@@ -13,6 +13,9 @@
     <module>veh</module>
     <module>eureka</module>
     <module>cmsvideo</module>
+    <module>hwvideo</module>
+    <module>srms</module>
+    <module>vehvideo</module>
   </modules>
 	<properties>
         <project.build.sourceencoding>UTF-8</project.build.sourceencoding>

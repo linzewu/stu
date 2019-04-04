@@ -1,0 +1,368 @@
+<link rel="stylesheet" type="text/css" href="../css/formTable.css"/>
+<script type="text/javascript"
+	src="../js/data.js"></script>
+<script type="text/javascript">
+
+var m_bDVRControl =null;
+var m_iLoginUserId;
+var m_iPlay = 0;                             //是否播放
+var m_iProtocolType = 0;                         //协议类型，0 – TCP， 1 - UDP
+var m_iStreamType = 0;                           //码流类型，0 表示主码流， 1 表示子码流
+var m_iChannelNum;
+var m_iIPChannelNum;
+var m_iIPChannelNum;
+var m_szDeviceType;
+
+
+
+$(function(){
+	init();
+});
+
+function init()
+{ 
+	var myDate = new Date();
+	var iYear = myDate.getFullYear();        
+	if(iYear < 1971 || iYear > 2037)
+	{
+		$.messager.alert("提示","为了正常使用本软件，请将系统日期年限设置在1971-2037范围内！");
+	}
+	if(document.getElementById("HIKOBJECT1").object == null)
+	{
+		$.messager.alert("提示","请先下载控件并注册！");
+		m_bDVRControl = null;
+	}
+	else
+	{
+		m_bDVRControl = document.getElementById("HIKOBJECT1");
+	}
+}
+
+function login(){
+	
+	var ip = $("#fm input[name=ip]").val();
+	var port = $("#fm input[name=port]").val();
+	var userName = $("#fm input[name=userName]").val();
+	var password = $("#fm input[name=password]").val();
+	
+	m_iLoginUserId = m_bDVRControl.Login(ip,port,userName,password);
+	if(m_iLoginUserId == -1)
+	{
+        var dRet = m_bDVRControl.GetLastError();
+        
+        $.messager.show({
+            title:'错误',
+            msg:"登陆影像录像机失败,错误码：" + dRet,
+            showType:'show',
+            width:200,
+            timeout:5000,
+            style:{
+                left:0,
+                right:'',
+                top:'',
+                bottom:-document.body.scrollTop-document.documentElement.scrollTop
+            }
+        });
+	}
+	return m_iLoginUserId;
+}
+
+function LogMessage(msg){
+	
+	 $.messager.show({
+         title:'消息',
+         msg:msg,
+         showType:'show',
+         width:200,
+         timeout:3000,
+         style:{
+             left:0,
+             right:'',
+             top:'',
+             bottom:-document.body.scrollTop-document.documentElement.scrollTop
+         }
+     });
+}
+
+function getChannel(){
+	m_iLoginUserId =  login();
+	
+	if(m_iLoginUserId>-1){
+		var szServerInfo = m_bDVRControl.GetServerInfo();
+		var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+		xmlDoc.async="false"
+		xmlDoc.loadXML(szServerInfo)
+		m_iChannelNum = parseInt(xmlDoc.documentElement.childNodes[0].childNodes[0].nodeValue);
+        m_iIPChannelNum = parseInt(xmlDoc.documentElement.childNodes[8].childNodes[0].nodeValue);
+        m_szDeviceType = xmlDoc.documentElement.childNodes[1].childNodes[0].nodeValue;
+        var channelList=[];
+		if(m_iChannelNum < 1)
+		{
+			LogMessage("获取模拟通道失败！");
+		}
+		else
+		{
+			LogMessage("获取模拟通道成功！");	
+			
+			for(var i = 0; i < m_iChannelNum; i ++)
+			{
+				var channel={};
+				var szChannelName = m_bDVRControl.GetChannelName(i);
+				if(szChannelName == "")
+				{
+					szChannelName = "通道" + (i + 1);
+				}
+				channel.id=i;
+				channel.name=szChannelName;
+				channelList.push(channel);
+			}
+		}
+        if (m_iIPChannelNum < 1) {
+            LogMessage("获取IP通道失败！");
+        }
+        else {
+            LogMessage("获取IP通道成功！");
+
+            if (m_iIPChannelNum >= 64) {
+                     LogMessage("IP通道个数大于等于64，" + "通道号取值从0开始！");
+                     m_iIPChanStart = 0;
+                }
+
+            else{
+                     LogMessage("如果设备有IP通道，IP通道号取值从32开始！");
+                     m_iIPChanStart = 32;
+            }
+
+            m_bDVRControl.GetIPParaCfg();
+            szIPChanInfo = m_bDVRControl.GetIPCConfig();
+            var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+            xmlDoc.async = "false"
+            xmlDoc.loadXML(szIPChanInfo)
+            for (var i = m_iChannelNum; i < m_iChannelNum+m_iIPChannelNum; i++) {                   
+                m_iIPConnet = parseInt(xmlDoc.documentElement.childNodes[i].childNodes[3].childNodes[0].nodeValue);
+                if (m_iIPConnet == 1) {
+                	var channel={};
+                    LogMessage("获取IP通道" + (i-m_iChannelNum+1) + "成功！");                            
+                    var szChannelName = m_bDVRControl.GetChannelName(i+m_iIPChanStart );
+                    if (szChannelName == "") {
+                        szChannelName = "IP通道" + (i-m_iChannelNum + 1);
+                    }
+                    channel.name=szChannelName;
+                    channel.id=i;
+                    channelList.push(channel);
+                }
+            }
+        }
+        console.log(channelList)
+        $("#input_channel").combobox("loadData",channelList);
+	}
+}
+
+
+function play(){
+	
+     var  m_iNowChanNo = $("#fm input[name=channel]").val();
+     console.log(m_iNowChanNo);
+     if (m_iNowChanNo !="") {
+    	 m_iNowChanNo=parseInt(m_iNowChanNo);
+    	 if(m_iNowChanNo>=m_iChannelNum)
+         {           
+              m_iNowChanNo=m_iNowChanNo-m_iChannelNum+ m_iIPChanStart;
+         } 
+    	 
+          if (m_iPlay == 1) {
+
+              m_bDVRControl.StopRealPlay();
+              m_iPlay = 0;
+          }
+          
+          var bRet = m_bDVRControl.StartRealPlay(m_iNowChanNo, m_iProtocolType, m_iStreamType);
+
+          if (bRet) {
+
+              LogMessage("预览通道" + (m_iNowChanNo + 1) + "成功！");
+
+              m_iPlay = 1;
+
+          }
+
+          else {
+
+              LogMessage("预览通道" + (m_iNowChanNo + 1) + "失败！");
+
+              var dRet = m_bDVRControl.GetLastError();
+              LogMessage("预览失败，错误号：" + dRet);
+
+          }
+
+      }
+
+      else {
+
+          LogMessage("请选择通道号！");
+
+      }
+	
+}
+
+function query(){
+	
+	var jyjgbh = $("#jyjgbh").combobox("getValue");
+	
+	$("#dg").datagrid("reload",{"jyjgbh":jyjgbh});
+}
+
+</script>
+<table id="dg" title="视频摄像头配置" class="easyui-datagrid" style="width:100%;height:400px"
+           url="../../videoConfig/getVideoConfigList"
+           toolbar="#toolbar" 
+           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true",
+		   pageSize="10">
+       <thead>
+           <tr>
+               <th field="jyjgbh" width="100" data-options="formatter:jyjgbhFormatter" >机构名称</th>
+               <th field="cyqxh" width="50">查验区序号</th>
+               <th field="cyqtd" width="50">查验区通道</th>
+               <th field="ip" width="50">硬盘录像机IP</th>
+               
+               <th field="deviceName" width="50">摄像头名称</th>
+               
+           </tr>
+       </thead>
+   </table>
+   <div id="toolbar">
+   	 <div>
+   	 	<label>机构名称:</label>&nbsp;&nbsp;&nbsp;&nbsp;<input  class="easyui-combobox" data-options="data:deptArr,valueField: 'bmdm',
+	textField: 'bmmc'" id="jyjgbh" > 
+	 <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="query()" >查询</a>
+     </div>
+   	 <div>
+       <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newUser()">新增</a>
+       <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editUser()">编辑</a>
+       <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyUser()">删除</a>
+     </div>
+   </div>
+   
+   <div id="dlg" class="easyui-dialog" style="width:850px;height:400px;padding:10px 20px;"
+           closed="true" buttons="#dlg-buttons"  modal=true>
+         
+        <div class="easyui-layout" fit='true'>
+			<div data-options="region:'center'">
+			   <div class="ftitle">监控摄像调取配置</div>
+		       <form id="fm" method="post" novalidate>
+		           <div class="fitem">
+		               <label>机构名称:</label>
+		               <input name="jyjgbh" id="jyjgbh_video" class="easyui-combotree" style="width: 300px">
+		           </div>
+		           <div class="fitem">
+		               <label>查验区序号:</label>
+		               <input name="cyqxh" class="easyui-textbox" required="true">
+		           </div>
+		           <div class="fitem">
+		               <label>查验区通道:</label>
+		               <input name="cyqtd" class="easyui-textbox" required="true">		               
+		           </div>
+		           <div class="fitem">
+		               <label>硬盘录像机IP:</label>
+		               <input name="ip" class="easyui-textbox" required="true" data-options="validType:'ipVad'">
+		           </div>
+		           <div class="fitem">
+		               <label>端口:</label>
+		               <input name="port" class="easyui-textbox" required="true">
+		           </div>
+		           <div class="fitem">
+		               <label>用户名:</label>
+		               <input name="userName" class="easyui-textbox" required="true">
+		           </div>
+		           <div class="fitem">
+		               <label>密码:</label>
+		               <input name="password" class="easyui-textbox">
+		           </div>
+		           <div class="fitem">
+		               <label>摄像头通道:</label>
+		               <input  class="easyui-combobox" data-options="valueField:'id',textField:'name'" name="channel" required="true" id="input_channel"> 
+		               <a href="javascript:void(0)" class="easyui-linkbutton c6"  onclick="getChannel()" style="width:50px">获取</a>
+		               <a href="javascript:void(0)" class="easyui-linkbutton c1"  onclick="play()" style="width:50px">预览</a>
+		           </div>
+		           <div class="fitem">
+		               <label>摄像头名称:</label>
+		               <input name="deviceName" class="easyui-textbox" required="true">
+		               <input name="id"  type="hidden">
+		           </div>
+		           
+		       </form>
+			</div>
+			<div data-options="region:'east'" style="width:300px; ">
+				<div  id="NetPlayOCX1" style="width: 290px;height: 95%; margin: 5px 0px 0px 5px;">
+					<object classid="CLSID:CAFCF48D-8E34-4490-8154-026191D73924"
+						codebase="../codebase/NetVideoActiveX23.cab#version=2,3,11,2"
+						standby="Waiting..." id="HIKOBJECT1" width="100%" height="100%"
+						name="HIKOBJECT1"></object>
+				</div>
+			</div>
+		</div>  
+   </div>
+   <div id="dlg-buttons">
+       <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveUser()" style="width:90px">保存</a>
+       <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">取消</a>
+   </div>
+   <script type="text/javascript">
+       var  url = '../../videoConfig/save';
+       function newUser(){
+           $('#dlg').dialog('open').dialog('center').dialog('setTitle','新增配置');
+           $('#fm').form('clear');
+           loadComboboxTree("jyjgbh_video");           
+           $("#fm").form("load",{userName:'admin',password:'12345',port:'8000',});
+          
+       }
+       function editUser(){
+           var row = $('#dg').datagrid('getSelected');
+           if (row){
+               $('#dlg').dialog('open').dialog('center').dialog('setTitle','修改配置');
+               loadComboboxTree("jyjgbh_video");
+               $('#fm').form('load',row);
+           }
+       }
+       function saveUser(){
+           $('#fm').form('submit',{
+               url: url,
+               onSubmit: function(){
+                   return $(this).form('validate');
+               },
+               success: function(result){
+            	  
+            	   result=$.parseJSON(result);
+            	   
+                   if (result.state==1){
+                	   $('#dlg').dialog('close');        // close the dialog
+                       $('#dg').datagrid('reload');    // reload the user data
+                       $.messager.alert("提示","保存成功","info");
+                   } else {
+                	   $.messager.alert("提示","保存失败","error");
+                   }
+               }
+           });
+       }
+       function destroyUser(){
+           var row = $('#dg').datagrid('getSelected');
+           if (row){
+                $.messager.confirm('确认','您是否删除该记录?',function(r){
+                    if(r){
+                        $.post('../../videoConfig/delete',{id:row.id},function(result){
+                        	//debugger;
+                        	//result=$.parseJSON(result);
+                            if (result.state==1){
+                            	$.messager.alert("提示","删除成功","info");
+                                $('#dg').datagrid('reload');    // reload the user data
+                            }else{
+                            	$.messager.alert("错误","删除失败","error");
+                            }
+                        },'json').error(function(){
+                        	$.messager.alert("错误","删除失败","error");
+                        });
+                    }
+                });
+            }
+        }
+    </script>
+    
