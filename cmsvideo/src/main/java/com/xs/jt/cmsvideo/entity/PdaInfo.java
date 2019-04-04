@@ -56,7 +56,7 @@ public class PdaInfo extends BaseEntity {
 	private String zt;
 	
 	//到期时间
-	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
 	@DateTimeFormat( pattern = "yyyy-MM-dd" )
 	@Column
 	private Date dueTime;

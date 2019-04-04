@@ -33,7 +33,7 @@ public class SignaturePhoto extends BaseEntity {
 	private byte[] photo;
 	
 	//有效期
-	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
 	@DateTimeFormat( pattern = "yyyy-MM-dd" )
 	@Column
 	private Date yxq;

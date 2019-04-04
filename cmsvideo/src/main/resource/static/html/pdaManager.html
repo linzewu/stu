@@ -1,4 +1,4 @@
-<table id="pdaInfoDg" title="PDA管理配置" class="easyui-datagrid" style="width:100%;height:400px"
+<table id="pdaInfoDg" title="PDA管理配置" class="easyui-datagrid" style="width:100%;height:500px"
            url="../../pdaInfo/getPdaInfoList"
            toolbar="#pdaToolbar" 
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true",
@@ -27,11 +27,6 @@
      </div>
    </div>
    
-
-   <div id="dlgpda-buttons">
-       <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="savePdaInfo()" style="width:90px">保存</a>
-       <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlgPda').dialog('close')" style="width:90px">取消</a>
-   </div>
    
 <script type="text/javascript">
 function pdaZtFormatter(value) {
@@ -71,23 +66,51 @@ function loadSuccess(data){
 	            }
 			}],                                    
 		    onClose: function () {
-		    	console.log("destroy")
 		        $(this).dialog('destroy',true);
+		    },
+		    onLoad:function(){
+		    	loadComboboxTree("useDept_pda");
 		    }
 		});
-     $('#dlgPda').dialog('open');
-     
-                
-    
+     $('#dlgPda').dialog('open'); 
  }
  function editPdaInfo(){
-	 $('#pdafm').form('clear');
+	 
      var row = $('#pdaInfoDg').datagrid('getSelected');
      if (row){
-         $('#dlgPda').dialog('open').dialog('center').dialog('setTitle','修改PDA配置');
-         loadComboboxTree("useDept_pda");
-         $('#pdafm').form('load',row);
-         $("#serialCode").textbox({disabled:true});
+    	 $('<div></div>').dialog({
+ 		 	id:'dlgPda',
+ 		    title: '修改PDA配置',
+ 		    href : 'addPda.html',
+ 		    width: 530,
+ 		    height: 400,
+ 		    closed: true,
+ 		    cache: false,
+ 		    modal: true,
+ 		    buttons : [{
+ 		    	iconCls:'icon-ok',
+ 		    	text : '保存',
+ 	            handler : function() {
+ 	                 savePdaInfo();
+ 	            }
+ 	       },{
+ 				text : '取消',
+ 				iconCls:'icon-cancel',
+ 	            handler : function() {
+ 	                 $('#dlgPda').dialog('close');
+ 	            }
+ 			}],                                    
+ 		    onClose: function () {
+ 		        $(this).dialog('destroy',true);
+ 		    },
+ 		    onLoad:function(){
+ 		    	$('#pdafm').form('clear');
+ 		    	loadComboboxTree("useDept_pda");
+ 		    	$('#pdafm').form('load',row);
+ 		         $("#serialCode").textbox({disabled:true});
+ 		    }
+ 		});
+      $('#dlgPda').dialog('open'); 
      }
  }
  function savePdaInfo(){

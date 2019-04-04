@@ -44,7 +44,7 @@ public class PdaInfoManagerImpl implements IPdaInfoManager {
 				return criteriaBuilder.and(list.toArray(p));
 			}
 		}, pageable);
-
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("rows", bookPage.getContent());
 		data.put("total", bookPage.getTotalElements());
@@ -53,6 +53,7 @@ public class PdaInfoManagerImpl implements IPdaInfoManager {
 
 	@Override
 	public void savePdaInfo(PdaInfo pdaInfo) {
+		
 		if(pdaInfo.getId() != null) {
 			PdaInfo info = this.pdaInfoRepository.findById(pdaInfo.getId()).get();
 			pdaInfo.setSerialCode(info.getSerialCode());
