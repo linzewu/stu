@@ -1,10 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-
-</body>
-</html>
+<div class="easyui-layout" fit='true'>
+			<div data-options="region:'center'" style="padding-left: 10px; padding-right: 10px;">
+			   <div class="ftitle">Ftp配置</div>
+		       <form id="ftpfm" method="post" novalidate>
+		           <div class="fitem">
+		               <label>机构名称:</label>
+		               <input name="jyjgbh"  id="jyjgbh_ftp" class="easyui-combotree" style="width: 350px">
+		           </div>
+		           <div class="fitem">
+		               <label>查验区序号:</label>
+		               <input name="cyqxh" class="easyui-textbox" required="true">
+		           </div>
+		           <div class="fitem">
+		               <label>Ftp IP:</label>
+		               <input name="ftpHost" class="easyui-textbox" required="true" data-options="validType:'ipVad'">
+		           </div>		           
+		           <div class="fitem">
+		               <label>用户名:</label>
+		               <input name="ftpUserName" class="easyui-textbox" required="true">		               
+		           </div>
+		           <div class="fitem">
+		               <label>密码:</label>
+		               <input name="ftpPassword" class="easyui-textbox" required="true" >
+		           </div>
+		           <div class="fitem">
+		               <label>端口:</label>
+		               <input name="ftpPort" class="easyui-textbox" required="true">
+		           </div>
+		           	
+		           <div class="fitem">
+		               <label>容量(单位:T)	</label>
+		               <input name="capacity" class="easyui-textbox" required="true">
+		               <input name="id"  type="hidden">
+		           </div>           
+		       </form>
+			</div>
+		</div>  

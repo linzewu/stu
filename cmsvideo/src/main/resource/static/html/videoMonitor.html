@@ -219,6 +219,7 @@ function getChannelInfo(szDeviceIdentifys) {
                 channel.id=id;
 				channel.name=name;
 				channelList.push(channel);
+				console.log("Camera "+name)
                 //oSel.append("<option value='" + id + "' bZero='false'>" + name + "</option>");
             });
             LogMessage(szDeviceIdentify + " 获取模拟通道成功！");
@@ -245,6 +246,7 @@ function getChannelInfo(szDeviceIdentifys) {
                 if ("" == name) {
                     name = "IPCamera " + (i < 9 ? "0" + (i + 1) : (i + 1));
                 }
+                console.log("IPCamera "+name)
                 channel.id=id;
 				channel.name=name;
 				channelList.push(channel);
@@ -270,6 +272,7 @@ function getChannelInfo(szDeviceIdentifys) {
                 if ("" == name) {
                     name = "Zero Channel " + (i < 9 ? "0" + (i + 1) : (i + 1));
                 }
+                console.log("Zero "+name)
                 if ("true" == $(this).find("enabled").eq(0).text()) {// 过滤禁用的零通道
                     //oSel.append("<option value='" + id + "' bZero='true'>" + name + "</option>");
                     channel.id=id;
@@ -288,7 +291,7 @@ function getChannelInfo(szDeviceIdentifys) {
     changeWndNum(channelList.length);
     //$("#input_channel").combobox("loadData",channelList);
     $.each(channelList,function(i,o){
-    	console.log("预览："+o)
+    	console.log("预览："+i+" "+o.id+"  "+o.name);
     	clickStartRealPlay(o.id,i);
     });
 }

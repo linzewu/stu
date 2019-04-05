@@ -18,7 +18,7 @@ var m_szDeviceType;
 
 $(function(){
 	//init();
-	initPlugin();
+	
 });
 
 function initPlugin(){
@@ -532,74 +532,15 @@ function query(){
      </div>
    </div>
    
-   <div id="dlg" class="easyui-dialog" style="width:870px;height:530px;padding:10px 20px;"
+   <!--<div id="dlg" class="easyui-dialog" style="width:870px;height:530px;padding:10px 20px;"
            closed="true" buttons="#dlg-buttons"  modal=true>
          
-        <div class="easyui-layout" fit='true'>
-			<div data-options="region:'center'">
-			   <div class="ftitle">监控摄像调取配置</div>
-		       <form id="fm" method="post" novalidate>
-		           <div class="fitem">
-		               <label>机构名称:</label>
-		               <input name="jyjgbh" id="jyjgbh_video" class="easyui-combotree" style="width: 300px">
-		           </div>
-		           <div class="fitem">
-		               <label>查验区序号:</label>
-		               <input name="cyqxh" class="easyui-textbox" required="true">
-		           </div>
-		           <div class="fitem">
-		               <label>查验区通道:</label>
-		               <input name="cyqtd" class="easyui-textbox">		               
-		           </div>
-		           <div class="fitem">
-		               <label>硬盘录像机IP:</label>
-		               <input name="ip" class="easyui-textbox" required="true" data-options="validType:'ipVad'">
-		           </div>
-		           <div class="fitem">
-		               <label>端口:</label>
-		               <input name="port" class="easyui-textbox" required="true">
-		           </div>
-		           <div class="fitem">
-		               <label>后端端口:</label>
-		               <input name="hdPort" class="easyui-textbox" required="true">
-		           </div>		           
-		           <div class="fitem">
-		               <label>用户名:</label>
-		               <input name="userName" class="easyui-textbox" required="true">
-		           </div>
-		           <div class="fitem">
-		               <label>密码:</label>
-		               <input name="password" class="easyui-textbox">
-		           </div>
-		           <div class="fitem">
-		               <label>摄像头通道:</label>
-		               <input  class="easyui-combobox" data-options="valueField:'id',textField:'name'" name="channel" required="true" id="input_channel"> 
-		               <a href="javascript:void(0)" class="easyui-linkbutton c6"  onclick="clickLogin()" style="width:50px">获取</a>
-		               <a href="javascript:void(0)" class="easyui-linkbutton c1"  onclick="clickStartRealPlay()" style="width:50px">预览</a>
-		           </div>
-		           <div class="fitem">
-		               <label>摄像头名称:</label>
-		               <input name="deviceName" class="easyui-textbox" required="true">
-		               <input name="id"  type="hidden">
-		           </div>
-		           
-		       </form>
-			</div>
-			<div data-options="region:'east'" style="width:350px; " align="center">
-				<!--<div  id="NetPlayOCX1" style="width: 290px;height: 95%; margin: 5px 0px 0px 5px;">
-					<object classid="CLSID:CAFCF48D-8E34-4490-8154-026191D73924"
-						codebase="../codebase/NetVideoActiveX23.cab#version=2,3,11,2"
-						standby="Waiting..." id="HIKOBJECT1" width="100%" height="100%"
-						name="HIKOBJECT1"></object>
-				</div>-->
-				<div id="divPlugin" class="plugin" style="width: 340px;height: 200px;"></div>
-			</div>
-		</div>  
+        
    </div>
    <div id="dlg-buttons">
        <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveUser()" style="width:90px">保存</a>
        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">取消</a>
-   </div>
+   </div>-->
    <script type="text/javascript">
        var  url = '../../videoConfig/save';
       
@@ -611,18 +552,86 @@ function query(){
       }
       
        function newUser(){
-           $('#dlg').dialog('open').dialog('center').dialog('setTitle','新增配置');
+    	   $('<div></div>').dialog({
+    		 	id:'dlg',
+    		    title: '新增视频摄像头配置',
+    		    href : 'addVideoConfig.html',
+    		    width: 870,
+    		    height: 530,
+    		    closed: true,
+    		    cache: false,
+    		    modal: true,
+    		    buttons : [{
+    		    	iconCls:'icon-ok',
+    		    	text : '保存',
+    	            handler : function() {
+    	                 saveUser();
+    	            }
+    	       },{
+    				text : '取消',
+    				iconCls:'icon-cancel',
+    	            handler : function() {
+    	                 $('#dlg').dialog('close');
+    	            }
+    			}],                                    
+    		    onClose: function () {
+    		        $(this).dialog('destroy',true);
+    		    },
+    		    onLoad:function(){
+    		    	$('#fm').form('clear');
+    		    	loadComboboxTree("jyjgbh_video");
+    		    	$("#fm").form("load",{userName:'admin',password:'12345',port:'80',hdPort:'8000'});
+    		    	initPlugin();
+    		    }
+    		});
+    	    $('#dlg').dialog('open');
+    	   ///
+           /* $('#dlg').dialog('open').dialog('center').dialog('setTitle','新增配置');
            $('#fm').form('clear');
            loadComboboxTree("jyjgbh_video");           
-           $("#fm").form("load",{userName:'admin',password:'12345',port:'80',hdPort:'8000'});
+           $("#fm").form("load",{userName:'admin',password:'12345',port:'80',hdPort:'8000'}); */
           
        }
        function editUser(){
            var row = $('#videoConfigDg').datagrid('getSelected');
            if (row){
-               $('#dlg').dialog('open').dialog('center').dialog('setTitle','修改配置');
+        	   $('<div></div>').dialog({
+        		 	id:'dlg',
+        		    title: '修改视频摄像头配置',
+        		    href : 'addVideoConfig.html',
+        		    width: 870,
+        		    height: 530,
+        		    closed: true,
+        		    cache: false,
+        		    modal: true,
+        		    buttons : [{
+        		    	iconCls:'icon-ok',
+        		    	text : '保存',
+        	            handler : function() {
+        	                 saveUser();
+        	            }
+        	       },{
+        				text : '取消',
+        				iconCls:'icon-cancel',
+        	            handler : function() {
+        	                 $('#dlg').dialog('close');
+        	            }
+        			}],                                    
+        		    onClose: function () {
+        		        $(this).dialog('destroy',true);
+        		    },
+        		    onLoad:function(){
+        		    	$('#fm').form('clear');
+        		    	loadComboboxTree("jyjgbh_video");
+        		    	$('#fm').form('load',row);
+        		    	initPlugin();
+        		    }
+        		});
+             $('#dlg').dialog('open'); 
+        	   /////
+               /* $('#dlg').dialog('open').dialog('center').dialog('setTitle','修改配置');
                loadComboboxTree("jyjgbh_video");
-               $('#fm').form('load',row);
+               $('#fm').form('load',row); */
            }
        }
        function saveUser(){
