@@ -292,7 +292,7 @@ function getChannelInfo(szDeviceIdentifys) {
     //$("#input_channel").combobox("loadData",channelList);
     $.each(channelList,function(i,o){
     	console.log("预览："+i+" "+o.id+"  "+o.name);
-    	clickStartRealPlay(o.id,i);
+    	window.setTimeout(clickStartRealPlay(o.id,i),1000);
     });
 }
 
@@ -372,12 +372,13 @@ function changeWndNum(count) {
 function clickLogout() {
     var szDeviceIdentify = loginDevice,
         szInfo = "";
-
+    console.log("clickLogout:"+szDeviceIdentify)
     if ("" == szDeviceIdentify) {
         return;
     }
-
+	
     var iRet = WebVideoCtrl.I_Logout(szDeviceIdentify);
+    console.log("clickLogout:"+iRet)
     if (0 == iRet) {
         szInfo = "退出成功！";
 
