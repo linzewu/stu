@@ -15,6 +15,9 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -67,9 +70,16 @@ public class ScanVehVideoInfoJob {
 	 */
 	@Scheduled(cron = "0/5 * * * * ? ")
 	public void sendDownLoadVideoMessage() throws InterruptedException {
-		List<VideoInfo> videInfos = this.videoInfoManager.getVideoInfosByZt(VideoInfo.ZT_WXZ,
-				getMaxTaskCou());
 		
+		VideoInfo videoInfo=new VideoInfo();
+		
+		videoInfo.setZt(VideoInfo.ZT_WXZ);
+		videoInfo.setTaskCount(getMaxTaskCou());
+		
+		Pageable pageable =new QPageRequest(0, 100);
+		Page<VideoInfo> page = this.videoInfoManager.getVideoInfos(pageable,videoInfo);
+		
+		 List<VideoInfo> videInfos=page.getContent();
 		if (CollectionUtils.isEmpty(videInfos)) {
 			return;
 		}
@@ -110,7 +120,6 @@ public class ScanVehVideoInfoJob {
 			 container.start();
 			 simpleMessageListenerContainerMap.put(queryName,container);
 		}
-		 
 	}
 	
 	private int getMaxTaskCou() {

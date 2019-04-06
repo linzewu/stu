@@ -5,13 +5,21 @@ import java.io.FileInputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageListener;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -66,20 +74,18 @@ public class VideoListJob {
 	@Value("${video.convertoutpath}")
 	private String convertOutPath;
 
-	// 上传ftp地址
-//	@Value("${video.ftppath}")
-//	private String ftpPath;
-//	@Value("${video.ftpHost}")
-//	private String ftpHost;
-//	@Value("${video.ftpUserName}")
-//	private String ftpUserName;
-//	@Value("${video.ftpPassword}")
-//	private String ftpPassword;
-//	@Value("${video.ftpPort}")
-//	private int ftpPort;
-
 	@Autowired
 	private AmqpTemplate rabbitTemplate;
+	
+	@Resource(name="simpleMessageListenerContainerMap")
+	private Map<String,SimpleMessageListenerContainer>  simpleMessageListenerContainerMap;
+	
+	@Autowired
+	private RabbitAdmin rabbitAdmin;
+	
+	@Resource(name = "connectionFactory")
+	private ConnectionFactory connectionFactory;
+	
 
 	/**
 	 * 定时下载视频
@@ -101,68 +107,100 @@ public class VideoListJob {
 		}
 
 		for (VideoInfo info : noDownLoadList) {
-			rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_VIDEO_DOWNLOAD, JSONObject.toJSONString(info));
+			String queryName = getQueryName(info);
+			if(StringUtils.isEmpty(queryName)) {
+				return;
+			}
+			initQuery(queryName);
+			rabbitTemplate.convertAndSend(queryName, JSONObject.toJSONString(info));
 			info.setZt(VideoInfo.ZT_XZZ);
 			this.updateStatus(info);
 		}
 		log.info("***************downLoadVideo end*********************");
 	}
-
-	@RabbitListener(queues = RabbitConfig.QUEUE_VIDEO_DOWNLOAD, containerFactory = "videoContainerFactory")
-	public void downloadVideoJob(String message) {
-		VideoInfo info = null;
-		try {
-			info = JSONObject.parseObject(message, VideoInfo.class);
-
-//			List<VideoConfig> configList = videoConfigManager.getVideoConfigByCyqxhAndCyqtd(info.getCyqxh(),
-//					info.getCyqtd());
-			VideoConfig vc = videoConfigManager.getVideoConfigById(info.getConfigId());
-			if (vc == null) {
-				// 下載失敗
-				info.setTaskCount((info.getTaskCount() == null ? 0 : info.getTaskCount()) + 1);
-				info.setZt(info.getTaskCount() == getMaxTaskCou() ? VideoInfo.ZT_XZSB : VideoInfo.ZT_WXZ);
-				info.setReason("无法找到该查验通道视频配置信息！");
-				return;
-			}
-
-			NativeLong lUserID = new NativeLong(-1);
-			// 初始化
-			CameraInit();
-			int hdport = 8000;
-			if (!StringUtils.isEmpty(vc.getHdPort())) {
-				hdport = Integer.parseInt(vc.getHdPort());
-			}
-			// 注册
-			lUserID = register(lUserID, vc.getUserName(), vc.getPassword(), vc.getIp(), hdport);
-			// 按时间下载
-			NET_DVR_TIME lpStartTime = new HCNetSDK.NET_DVR_TIME();
-			convert(info.getVideoBegin(), lpStartTime);
-			NET_DVR_TIME lpStopTime = new HCNetSDK.NET_DVR_TIME();
-			convert(info.getVideoEnd(), lpStopTime);
-			// 下载后保存到PC机的文件路径，需为绝对路径（包括文件名）
-			String fileName = info.getCyqxh() + info.getCyqtd() + "_" + info.getConfigId() + "_" + info.getJycs() + "_"
-					+ info.getLsh() + ".mp4";
-			String saveFile = downLoadPath + fileName;
-			long channel = getChannelNumber(vc.getChannel(), lUserID);
-
-			downLoad(lUserID, new NativeLong(channel), lpStartTime, lpStopTime, saveFile);
-
-			// 修改状态为已下载
-			info.setVideoName(fileName);
-			info.setZt(VideoInfo.ZT_YXZ);
-			info.setTaskCount(0);
-			this.updateStatus(info);
-		} catch (Exception e) {
-			// 下載失敗
-
-			info.setTaskCount((info.getTaskCount() == null ? 0 : info.getTaskCount()) + 1);
-			info.setZt(info.getTaskCount() == getMaxTaskCou() ? VideoInfo.ZT_XZSB : VideoInfo.ZT_WXZ);
-			info.setReason(e.toString());
-			log.error("下载视频失败！", e);
-			this.updateStatus(info);
+	
+	private String getQueryName(VideoInfo info) {
+		VideoConfig vc = videoConfigManager.getVideoConfigById(info.getConfigId());
+		if(StringUtils.isEmpty(vc.getIp())) {
+			return null;
 		}
-
+		String queryName ="jy_"+vc.getIp()+"_Query";
+		return queryName;
 	}
+	
+	private void initQuery(String queryName) {
+		Properties properties = rabbitAdmin.getQueueProperties(queryName);
+		if(properties==null) {
+			rabbitAdmin.declareQueue(new Queue(queryName));
+		}
+		if(simpleMessageListenerContainerMap.get(queryName)==null) {
+			SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
+			 container.setQueueNames(queryName);
+			 container.setExposeListenerChannel(true);
+			 container.setPrefetchCount(1);//设置每个消费者获取的最大的消息数量
+			 container.setConcurrentConsumers(4);//消费者个数
+			 //container.setAcknowledgeMode(AcknowledgeMode.MANUAL);//设置确认模式为手工确认
+			 container.setMessageListener(new MessageListener() {
+				@Override
+				public void onMessage(Message message) {
+					byte[] body = message.getBody();
+					VideoInfo info = null;
+					try {
+						info = JSONObject.parseObject(new String(body,"UTF-8"), VideoInfo.class);
+//						List<VideoConfig> configList = videoConfigManager.getVideoConfigByCyqxhAndCyqtd(info.getCyqxh(),
+//								info.getCyqtd());
+						VideoConfig vc = videoConfigManager.getVideoConfigById(info.getConfigId());
+						if (vc == null) {
+							// 下載失敗
+							info.setTaskCount((info.getTaskCount() == null ? 0 : info.getTaskCount()) + 1);
+							info.setZt(info.getTaskCount() == getMaxTaskCou() ? VideoInfo.ZT_XZSB : VideoInfo.ZT_WXZ);
+							info.setReason("无法找到该查验通道视频配置信息！");
+							return;
+						}
+						NativeLong lUserID = new NativeLong(-1);
+						// 初始化
+						CameraInit();
+						int hdport = 8000;
+						if (!StringUtils.isEmpty(vc.getHdPort())) {
+							hdport = Integer.parseInt(vc.getHdPort());
+						}
+						// 注册
+						lUserID = register(lUserID, vc.getUserName(), vc.getPassword(), vc.getIp(), hdport);
+						// 按时间下载
+						NET_DVR_TIME lpStartTime = new HCNetSDK.NET_DVR_TIME();
+						convert(info.getVideoBegin(), lpStartTime);
+						NET_DVR_TIME lpStopTime = new HCNetSDK.NET_DVR_TIME();
+						convert(info.getVideoEnd(), lpStopTime);
+						// 下载后保存到PC机的文件路径，需为绝对路径（包括文件名）
+						String fileName = info.getCyqxh() + info.getCyqtd() + "_" + info.getConfigId() + "_" + info.getJycs() + "_"
+								+ info.getLsh() + ".mp4";
+						String saveFile = downLoadPath + fileName;
+						long channel = getChannelNumber(vc.getChannel(), lUserID);
+
+						downLoad(lUserID, new NativeLong(channel), lpStartTime, lpStopTime, saveFile);
+
+						// 修改状态为已下载
+						info.setVideoName(fileName);
+						info.setZt(VideoInfo.ZT_YXZ);
+						info.setTaskCount(0);
+						updateStatus(info);
+					} catch (Exception e) {
+						// 下載失敗
+						info.setTaskCount((info.getTaskCount() == null ? 0 : info.getTaskCount()) + 1);
+						info.setZt(info.getTaskCount() == getMaxTaskCou() ? VideoInfo.ZT_XZSB : VideoInfo.ZT_WXZ);
+						info.setReason(e.toString());
+						log.error("下载视频失败！", e);
+						updateStatus(info);
+					}
+
+				}
+			});//监听处理类
+			 container.start();
+			 simpleMessageListenerContainerMap.put(queryName,container);
+		}
+	}
+	
+	
 
 	private void convert(Date date, NET_DVR_TIME lpStartTime) {
 		Calendar now = Calendar.getInstance();
