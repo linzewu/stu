@@ -3,8 +3,6 @@ package com.xs.jt.cms.manager;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.repository.query.Param;
-
 import com.xs.jt.cms.entity.VehCheckInfo;
 
 public interface IVehCheckInfoManager {
@@ -24,6 +22,8 @@ public interface IVehCheckInfoManager {
 	public Integer findMaxCsByLsh(String lsh);
 	
 	public VehCheckInfo findVehCheckInfoByLshAndCycs(String lsh,int cycs);
+	
+	public void deleteVehCheckInfo(VehCheckInfo vehCheckInfo);
 	
 	
 	

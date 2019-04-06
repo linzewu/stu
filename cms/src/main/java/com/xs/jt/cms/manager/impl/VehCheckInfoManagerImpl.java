@@ -163,4 +163,10 @@ public class VehCheckInfoManagerImpl implements IVehCheckInfoManager {
 		return vehCheckInfoRepository.findVehCheckInfoByLshAndCycs(lsh, cycs);
 	}
 
+	@Override
+	public void deleteVehCheckInfo(VehCheckInfo vehCheckInfo) {
+		this.vehCheckInfoRepository.deleteById(vehCheckInfo.getId());
+		
+	}
+
 }

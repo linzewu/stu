@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.druid.util.StringUtils;
 import com.xs.jt.base.module.annotation.Modular;
-import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.ApplicationException;
 import com.xs.jt.base.module.common.Common;
@@ -29,7 +29,6 @@ import com.xs.jt.base.module.common.MapUtil;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.common.Sql2WordUtil;
 import com.xs.jt.base.module.entity.BaseParams;
-import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.manager.IUserManager;
 import com.xs.jt.cms.common.BarcodeUtil;
 import com.xs.jt.cms.common.CommonUtil;
@@ -39,6 +38,8 @@ import com.xs.jt.cms.entity.VehiclePhotos;
 import com.xs.jt.cms.manager.IPreCarRegisterManager;
 import com.xs.jt.cms.manager.IVehCheckInfoManager;
 import com.xs.jt.cms.manager.IVehiclePhotosManager;
+
+import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping(value = "/vheCheckInfo")
@@ -182,20 +183,45 @@ public class VehCheckInfoController {
 			data.put("cydate", c.get(Calendar.DATE));
 			
 			//转换车身颜色
-			if(data.get("csys") != null) {
-				String ys = data.get("csys").toString();
-				if(ys.length() > 1) {
-					String[] ysArr = ys.split(",");
-					List<BaseParams> bpList = bpsMap.get("csys");
-					StringBuffer ysStr = new StringBuffer("");
-					for(int k=0;k<ysArr.length;k++) {
-						for(BaseParams b:bpList) {
-							if(b.getParamValue().equals(ysArr[k])) {
-								ysStr.append(b.getParamName()).append(",");
+			if(!("A".equals(data.get("ywlx")))) {
+				if("D".equals(data.get("ywlx"))) {
+					if(data.get("csys") != null) {
+						String ys = data.get("csys").toString();
+						if(ys.length() > 1) {
+							String[] ysArr = ys.split(",");
+							List<BaseParams> bpList = bpsMap.get("csys");
+							StringBuffer ysStr = new StringBuffer("");
+							for(int k=0;k<ysArr.length;k++) {
+								for(BaseParams b:bpList) {
+									if(b.getParamValue().equals(ysArr[k])) {
+										ysStr.append(b.getParamName()).append(",");
+									}
+								}
 							}
+							data.put("csys", ysStr.substring(0,ysStr.length()-1));
 						}
 					}
-					data.put("csys", ysStr.substring(0,ysStr.length()-1));
+				}else {
+					data.put("csys","");
+				}
+				data.put("cllx", "");
+				data.put("zcrs", "");
+			}else {
+				if(data.get("csys") != null) {
+					String ys = data.get("csys").toString();
+					if(ys.length() > 1) {
+						String[] ysArr = ys.split(",");
+						List<BaseParams> bpList = bpsMap.get("csys");
+						StringBuffer ysStr = new StringBuffer("");
+						for(int k=0;k<ysArr.length;k++) {
+							for(BaseParams b:bpList) {
+								if(b.getParamValue().equals(ysArr[k])) {
+									ysStr.append(b.getParamName()).append(",");
+								}
+							}
+						}
+						data.put("csys", ysStr.substring(0,ysStr.length()-1));
+					}
 				}
 			}
 			com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil(template+".doc", data, bpsMap);
@@ -267,6 +293,13 @@ public class VehCheckInfoController {
 			return ResultHandler.toSuccessJSON("查验结果是合格并且业务类型为注册登记的才能上传到综合平台！");
 		}
 		return ResultHandler.toSuccessJSON("上传预录入信息到综合平台成功！");
+	}
+	
+	@UserOperation(code="delete",name="删除查验信息")
+	@RequestMapping(value = "delete", method = RequestMethod.POST,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8")
+	public @ResponseBody String delete(VehCheckInfo checkInfo){
+		this.vehCheckInfoManager.deleteVehCheckInfo(checkInfo);
+		return  JSONObject.fromObject(ResultHandler.toSuccessJSON(Constant.ConstantMessage.SUCCESS)).toString();
 	}
 
 }

@@ -38,6 +38,23 @@ var comm = {
 		}
 		return array;
 	},
+	getBaseParamesIncludeEmpty : function(type) {
+		var array = [];
+		var mapEmpty = {};
+		mapEmpty['value'] = "";
+		mapEmpty['id'] = "";
+		array.push(mapEmpty);
+		for ( var i in bps) {
+			var bp = bps[i];
+			if (bp.type == type) {
+				var map = {};
+				map['value'] = bp.paramName;
+				map['id'] = bp.paramValue;
+				array.push(map);
+			}
+		}
+		return array;
+	},
 	getBaseParamObjs : function(type) {
 		var array = [];
 		for ( var i in bps) {

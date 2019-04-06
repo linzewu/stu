@@ -14,6 +14,7 @@
 </div>
 
 <script type="text/javascript">
+var monitor_channelCount = 0;
 $(function(){
 	loadTree();
 	initPlugin();
@@ -134,6 +135,9 @@ function loadTree(selectNodeId){
 var loginDevice = "";
 function clickLogin(bmdm) {
 	if(loginDevice != ""){
+		for(var b=0;b<monitor_channelCount;b++){
+			WebVideoCtrl.I_Stop(b);
+		}
 		clickLogout();
 	}
 	$.post("../../videoConfig/getVideoConfigByJyjgbh", {jyjgbh:bmdm}, function(data) {
@@ -289,11 +293,15 @@ function getChannelInfo(szDeviceIdentifys) {
     });
     console.log(channelList)
     changeWndNum(channelList.length);
+    monitor_channelCount = channelList.length;
     //$("#input_channel").combobox("loadData",channelList);
     $.each(channelList,function(i,o){
-    	console.log("预览："+i+" "+o.id+"  "+o.name);
-    	window.setTimeout(clickStartRealPlay(o.id,i),1000);
-    });
+    	console.log("预览："+i+" "+o.id+"  "+o.name+" "+(1000*(i+1)));
+    	window.setTimeout(function(){
+    		clickStartRealPlay(o.id,i);
+    		},(500*(i+1)));
+    	}
+    );
 }
 
 //开始预览
@@ -303,7 +311,7 @@ function clickStartRealPlay(channelId,index) {
     if (m_iNowChanNo !="") {
 
     	var szDeviceIdentify = loginDevice;
-    	var oWndInfo = WebVideoCtrl.I_GetWindowStatus(0),
+    	var oWndInfo = WebVideoCtrl.I_GetWindowStatus(index),
         //iRtspPort = parseInt($("#rtspport").val(), 10),
         iChannelID = parseInt(channelId, 10),
         //bZeroChannel = $("#channels option").eq($("#channels").get(0).selectedIndex).attr("bZero") == "true" ? true : false,
@@ -340,12 +348,15 @@ function clickStartRealPlay(channelId,index) {
 	    };
 	
 	    if (oWndInfo != null) {// 已经在播放了，先停止
+	    	console.log("oWndInfo:"+oWndInfo)
 	        WebVideoCtrl.I_Stop({
 	            success: function () {
+	            	console.log("stop success:")
 	                startRealPlay();
 	            }
 	        });
 	    } else {
+	    	console.log("startRealPlay:")
 	        startRealPlay();
 	    }
     	

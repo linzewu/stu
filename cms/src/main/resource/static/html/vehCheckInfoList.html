@@ -64,6 +64,7 @@ width: 120px; display: inline-block; text-align: right;
 	   <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="viewImage()">查看图片</a>
 	   
 	    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="uploadPlat()">上传综合平台</a>
+	    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="deleteCheckInfo()">删除</a>
     </div>
     <div>
     <ul class="querParamList">
@@ -71,17 +72,17 @@ width: 120px; display: inline-block; text-align: right;
     	<li><label>查验机构：</label><input id="quer_jg"   prompt='请选择查验机构' data-options="editable:false,valueField: 'id',
 		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
     	<li><label>查验人：</label><input type="text" class="easyui-textbox" id="cyr" style="width: 160px;"></li>
-    	<li><label>业务类型：</label><input id="quer_ywlx"   prompt='请选择业务类型' data-options="data:comm.getBaseParames('ywlx'),	valueField: 'id',
+    	<li><label>业务类型：</label><input id="quer_ywlx"   prompt='请选择业务类型' data-options="data:comm.getBaseParamesIncludeEmpty('ywlx'),	valueField: 'id',
 		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
     	<li><label>号牌种类：</label><input id="quer_hpzl"   prompt='请选择号牌种类' data-options="data:comm.getBaseParames('hpzl'),	valueField: 'id',
 		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
-		<li><label>车辆类型：</label><input id="quer_cllx"   prompt='请选择车辆类型' data-options="data:comm.getBaseParames('cllx'),	valueField: 'id',
+		<li><label>车辆类型：</label><input id="quer_cllx"   prompt='请选择车辆类型' data-options="data:comm.getBaseParamesIncludeEmpty('cllx'),	valueField: 'id',
 		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
-		<li><label>使用性质：</label><input id="quer_syxz"   prompt='请选择使用性质' data-options="data:comm.getBaseParames('syxz'),	valueField: 'id',
+		<li><label>使用性质：</label><input id="quer_syxz"   prompt='请选择使用性质' data-options="data:comm.getBaseParamesIncludeEmpty('syxz'),	valueField: 'id',
 		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
 		<li><label>号牌号码：</label><input type="text" class="easyui-textbox" id="quer_hphm" style="width: 160px;"></li>
 		<li><label>流水号：</label><input type="text" class="easyui-textbox" id="quer_lsh" style="width: 160px;"></li>
-		<li><label>查验结果：</label><input id="quer_cyjg"   prompt='请选择查验结果' data-options="data:comm.getBaseParames('jyjg'),	valueField: 'id',
+		<li><label>查验结果：</label><input id="quer_cyjg"   prompt='请选择查验结果' data-options="data:comm.getBaseParamesIncludeEmpty('jyjg'),	valueField: 'id',
 		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
 		<li style="width: 560px;"><label>查验时间：</label><input id="quer_cysj" class="easyui-datebox" style="width: 150px;">~<input id="quer_cysjEnd" class="easyui-datebox" style="width: 150px;">
     	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryClsbdh()">查询</a></li>
@@ -390,6 +391,27 @@ function closePrintWin(){
 	queryClsbdh();
 }
 
+function deleteCheckInfo(){
+	     var row = $('#vehCheckInfoDG').datagrid('getSelected');
+	     if (row){
+	          $.messager.confirm('确认','您是否删除该记录?',function(r){
+	              if(r){
+	                  $.post('../../vheCheckInfo/delete',{id:row.id},function(result){
+	                  	//debugger;
+	                  	//result=$.parseJSON(result);
+	                      if (result.state==1){
+	                      	$.messager.alert("提示","删除成功","info");
+	                          $('#vehCheckInfoDG').datagrid('reload');    // reload the user data
+	                      }else{
+	                      	$.messager.alert("错误","删除失败","error");
+	                      }
+	                  },'json').error(function(){
+	                  	$.messager.alert("错误","删除失败","error");
+	                  });
+	              }
+	          });
+	      }
+}
 
 
 </script>
