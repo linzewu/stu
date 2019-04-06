@@ -16,7 +16,6 @@ import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
-import com.xs.jt.base.module.entity.User;
 import com.xs.jt.cmsvideo.entity.PdaInfo;
 import com.xs.jt.cmsvideo.manager.IPdaInfoManager;
 

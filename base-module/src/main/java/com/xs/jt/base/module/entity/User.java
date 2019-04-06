@@ -56,12 +56,12 @@ public class User extends BaseEntity {
 	@Column(length=32)
 	private String gh;
 	
-	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
 	@DateTimeFormat( pattern = "yyyy-MM-dd" )
 	@Column
 	private Date mmyxq;
 	
-	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
 	@DateTimeFormat( pattern = "yyyy-MM-dd" )
 	@Column
 	private Date zhyxq;

@@ -25,67 +25,95 @@
 	    	
 	    </div>
 	    
-<div id="dlgFtp" class="easyui-dialog" style="width:530px;height:400px;padding:10px 20px"
-           closed="true" buttons="#dlgFtp-buttons"  modal=true>
-         
-        <div class="easyui-layout" fit='true'>
-			<div data-options="region:'center'" style="padding-left: 10px; padding-right: 10px;">
-			   <div class="ftitle">Ftp配置</div>
-		       <form id="ftpfm" method="post" novalidate>
-		           <div class="fitem">
-		               <label>机构名称:</label>
-		               <input name="jyjgbh"  id="jyjgbh_ftp" class="easyui-combotree" style="width: 350px">
-		           </div>
-		           <div class="fitem">
-		               <label>查验区序号:</label>
-		               <input name="cyqxh" class="easyui-textbox" required="true">
-		           </div>
-		           <div class="fitem">
-		               <label>Ftp IP:</label>
-		               <input name="ftpHost" class="easyui-textbox" required="true" data-options="validType:'ipVad'">
-		           </div>		           
-		           <div class="fitem">
-		               <label>用户名:</label>
-		               <input name="ftpUserName" class="easyui-textbox" required="true">		               
-		           </div>
-		           <div class="fitem">
-		               <label>密码:</label>
-		               <input name="ftpPassword" class="easyui-textbox" required="true" >
-		           </div>
-		           <div class="fitem">
-		               <label>端口:</label>
-		               <input name="ftpPort" class="easyui-textbox" required="true">
-		           </div>
-		           	
-		           <div class="fitem">
-		               <label>容量(单位:T)	</label>
-		               <input name="capacity" class="easyui-textbox" required="true">
-		               <input name="id"  type="hidden">
-		           </div>           
-		       </form>
-			</div>
-		</div>  
+<!--<div id="dlgFtp" class="easyui-dialog" style="width:530px;height:400px;padding:10px 20px"
+           closed="true" buttons="#dlgFtp-buttons"  modal=true>        
    </div>
    <div id="dlgFtp-buttons">
        <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveFtpConfig()" style="width:90px">保存</a>
        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlgFtp').dialog('close')" style="width:90px">取消</a>
-   </div>
+   </div>-->
    
 <script type="text/javascript">
 var  url = '../../ftpConfig/save';
 function newFtpConfig(){
-    $('#dlgFtp').dialog('open').dialog('center').dialog('setTitle','新增配置');
+	$('<div></div>').dialog({
+	 	id:'dlgFtp',
+	    title: '新增Ftp配置',
+	    href : 'addFtpConfig.html',
+	    width: 530,
+	    height: 400,
+	    closed: true,
+	    cache: false,
+	    modal: true,
+	    buttons : [{
+	    	iconCls:'icon-ok',
+	    	text : '保存',
+            handler : function() {
+                 saveFtpConfig();
+            }
+       },{
+			text : '取消',
+			iconCls:'icon-cancel',
+            handler : function() {
+                 $('#dlgFtp').dialog('close');
+            }
+		}],                                    
+	    onClose: function () {
+	        $(this).dialog('destroy',true);
+	    },
+	    onLoad:function(){
+	    	$('#ftpfm').form('clear');
+	    	loadComboboxTree("jyjgbh_ftp");
+	    	$("#ftpfm").form("load",{ftpPort:'21',});
+	    }
+	});
+    $('#dlgFtp').dialog('open');
+	//////
+    /* $('#dlgFtp').dialog('open').dialog('center').dialog('setTitle','新增配置');
     $('#ftpfm').form('clear');
     loadComboboxTree("jyjgbh_ftp");
-    $("#ftpfm").form("load",{ftpPort:'21',});
+    $("#ftpfm").form("load",{ftpPort:'21',}); */
    
 }
 function editFtpConfig(){
     var row = $('#datagrid-ftpConfig').datagrid('getSelected');
     if (row){
-        $('#dlgFtp').dialog('open').dialog('center').dialog('setTitle','修改配置');
+    	$('<div></div>').dialog({
+ 		 	id:'dlgFtp',
+ 		    title: '修改Ftp配置',
+ 		    href : 'addFtpConfig.html',
+ 		    width: 530,
+ 		    height: 400,
+ 		    closed: true,
+ 		    cache: false,
+ 		    modal: true,
+ 		    buttons : [{
+ 		    	iconCls:'icon-ok',
+ 		    	text : '保存',
+ 	            handler : function() {
+ 	                 saveFtpConfig();
+ 	            }
+ 	       },{
+ 				text : '取消',
+ 				iconCls:'icon-cancel',
+ 	            handler : function() {
+ 	                 $('#dlgFtp').dialog('close');
+ 	            }
+ 			}],                                    
+ 		    onClose: function () {
+ 		        $(this).dialog('destroy',true);
+ 		    },
+ 		    onLoad:function(){
+ 		    	$('#ftpfm').form('clear');
+ 		    	loadComboboxTree("jyjgbh_ftp");
+ 		    	$('#ftpfm').form('load',row);
+ 		    }
+ 		});
+      $('#dlgFtp').dialog('open'); 
+    	////
+        /* $('#dlgFtp').dialog('open').dialog('center').dialog('setTitle','修改配置');
         loadComboboxTree("jyjgbh_ftp");
-        $('#ftpfm').form('load',row);
+        $('#ftpfm').form('load',row); */
     }
 }
 function saveFtpConfig(){
