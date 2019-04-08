@@ -1,4 +1,5 @@
 <link rel="stylesheet" type="text/css" href="../css/formTable.css"/>
+<script id="videonode" src="../codebase/webVideoCtrl.js"></script>
 <script type="text/javascript"
 	src="../js/data.js"></script>
 <script type="text/javascript">
@@ -16,8 +17,297 @@ var m_szDeviceType;
 
 
 $(function(){
-	init();
+	//init();
+	
 });
+
+function initPlugin(){
+	// 检查插件是否已经安装过
+    var iRet = WebVideoCtrl.I_CheckPluginInstall();
+    if (-1 == iRet) {
+    	$.messager.alert("提示","您还未安装过插件，双击开发包目录里的WebComponentsKit.exe安装！");
+        return;
+    }
+
+    // 初始化插件参数及插入插件
+    WebVideoCtrl.I_InitPlugin(340, 200, {
+        bWndFull: true,     //是否支持单窗口双击全屏，默认支持 true:支持 false:不支持
+        iPackageType: 2,    //2:PS 11:MP4
+        iWndowType: 1,
+        bNoPlugin: true,
+        /* cbSelWnd: function (xmlDoc) {
+            g_iWndIndex = parseInt($(xmlDoc).find("SelectWnd").eq(0).text(), 10);
+            var szInfo = "当前选择的窗口编号：" + g_iWndIndex;
+            showCBInfo(szInfo);
+        }, 
+        cbDoubleClickWnd: function (iWndIndex, bFullScreen) {
+            var szInfo = "当前放大的窗口编号：" + iWndIndex;
+            if (!bFullScreen) {            
+                szInfo = "当前还原的窗口编号：" + iWndIndex;
+            }
+            showCBInfo(szInfo);*/
+                        
+            // 此处可以处理单窗口的码流切换
+            /*if (bFullScreen) {
+                clickStartRealPlay(1);
+            } else {
+                clickStartRealPlay(2);
+            }*/
+       // },
+        cbEvent: function (iEventType, iParam1, iParam2) {
+             if (2 == iEventType) {// 回放正常结束
+                //showCBInfo("窗口" + iParam1 + "回放结束！");
+                LogMessage("窗口" + iParam1 + "回放结束！");
+            } else if (-1 == iEventType) {
+                //showCBInfo("设备" + iParam1 + "网络错误！");
+                LogMessage("设备" + iParam1 + "网络错误！");
+            } else if (3001 == iEventType) {
+                //clickStopRecord(g_szRecordType, iParam1);
+            } 
+        },
+        cbRemoteConfig: function () {
+            //showCBInfo("关闭远程配置库！");
+            LogMessage("关闭远程配置库！");
+        }, 
+        cbInitPluginComplete: function () {
+            WebVideoCtrl.I_InsertOBJECTPlugin("divPlugin");
+
+            // 检查插件是否最新
+            if (-1 == WebVideoCtrl.I_CheckPluginVersion()) {
+            	$.messager.alert("提示","检测到新的插件版本，双击开发包目录里的WebComponentsKit.exe升级！");
+                return;
+            }
+        }
+    });
+}
+
+//登录
+function clickLogin() {
+    var szIP = $("#fm input[name=ip]").val(),
+        szPort = $("#fm input[name=port]").val(),
+        szUsername = $("#fm input[name=userName]").val(),
+        szPassword = $("#fm input[name=password]").val();
+
+    if ("" == szIP || "" == szPort) {
+        return;
+    }
+
+    var szDeviceIdentify = szIP + "_" + szPort;
+	
+    var iRet = WebVideoCtrl.I_Login(szIP, 1, szPort, szUsername, szPassword, {
+        success: function (xmlDoc) {            
+        	LogMessage(szDeviceIdentify + " 登录成功！");
+
+            //$("#ip").prepend("<option value='" + szDeviceIdentify + "'>" + szDeviceIdentify + "</option>");
+            setTimeout(function () {
+                //$("#ip").val(szDeviceIdentify);
+                getChannelInfo(szDeviceIdentify);
+                //getDevicePort(szDeviceIdentify);
+            }, 10);
+        },
+        error: function (status, xmlDoc) {
+        	console.log("status:"+status)
+        	console.log("xmlDoc:"+xmlDoc)
+            //showOPInfo(szDeviceIdentify + " 登录失败！", status, xmlDoc);
+            LogMessage(getErrorMsg(szDeviceIdentify + " 登录失败！",status, xmlDoc));
+        }
+    });
+
+    if (-1 == iRet) {
+    	LogMessage(szDeviceIdentify + " 已登录过！");
+    }
+}
+
+function getErrorMsg(msg,status, xmlDoc){
+	var szTip = msg;
+	if (typeof status != "undefined" && status != 200) {
+        var szStatusString = $(xmlDoc).find("statusString").eq(0).text();
+        var szSubStatusCode = $(xmlDoc).find("subStatusCode").eq(0).text();
+        if ("" === szSubStatusCode) {
+            szTip += "(" + status + ", " + szStatusString + ")";
+        } else {
+            szTip += "(" + status + ", " + szSubStatusCode + ")";
+        }
+    }
+	return szTip;
+}
+
+//获取通道
+function getChannelInfo(szDeviceIdentifys) {
+    var szDeviceIdentify = szDeviceIdentifys;
+        //oSel = $("#channels").empty();
+
+    if (szDeviceIdentify == null) {
+        return;
+    }
+    var channelList=[];
+    // 模拟通道
+    WebVideoCtrl.I_GetAnalogChannelInfo(szDeviceIdentify, {
+        async: false,
+        success: function (xmlDoc) {
+            var oChannels = $(xmlDoc).find("VideoInputChannel");
+
+            $.each(oChannels, function (i) {
+            	var channel={};
+                var id = $(this).find("id").eq(0).text(),
+                    name = $(this).find("name").eq(0).text();
+                if ("" == name) {
+                    name = "Camera " + (i < 9 ? "0" + (i + 1) : (i + 1));
+                }
+                channel.id=id;
+				channel.name=name;
+				channelList.push(channel);
+                //oSel.append("<option value='" + id + "' bZero='false'>" + name + "</option>");
+            });
+            LogMessage(szDeviceIdentify + " 获取模拟通道成功！");
+        },
+        error: function (status, xmlDoc) {
+            //showOPInfo(szDeviceIdentify + " 获取模拟通道失败！", status, xmlDoc);
+            LogMessage(getErrorMsg(szDeviceIdentify + " 获取模拟通道失败！",status, xmlDoc));
+        }
+    });
+    // 数字通道
+    WebVideoCtrl.I_GetDigitalChannelInfo(szDeviceIdentify, {
+        async: false,
+        success: function (xmlDoc) {
+            var oChannels = $(xmlDoc).find("InputProxyChannelStatus");
+
+            $.each(oChannels, function (i) {
+            	var channel={};
+                var id = $(this).find("id").eq(0).text(),
+                    name = $(this).find("name").eq(0).text(),
+                    online = $(this).find("online").eq(0).text();
+                if ("false" == online) {// 过滤禁用的数字通道
+                    return true;
+                }
+                if ("" == name) {
+                    name = "IPCamera " + (i < 9 ? "0" + (i + 1) : (i + 1));
+                }
+                channel.id=id;
+				channel.name=name;
+				channelList.push(channel);
+                //oSel.append("<option value='" + id + "' bZero='false'>" + name + "</option>");
+            });
+            LogMessage(szDeviceIdentify + " 获取数字通道成功！");
+        },
+        error: function (status, xmlDoc) {
+            //showOPInfo(szDeviceIdentify + " 获取数字通道失败！", status, xmlDoc);
+            LogMessage(getErrorMsg(szDeviceIdentify + " 获取数字通道失败！",status, xmlDoc));
+        }
+    });
+    // 零通道
+    WebVideoCtrl.I_GetZeroChannelInfo(szDeviceIdentify, {
+        async: false,
+        success: function (xmlDoc) {
+            var oChannels = $(xmlDoc).find("ZeroVideoChannel");
+            
+            $.each(oChannels, function (i) {
+            	var channel={};
+                var id = $(this).find("id").eq(0).text(),
+                    name = $(this).find("name").eq(0).text();
+                if ("" == name) {
+                    name = "Zero Channel " + (i < 9 ? "0" + (i + 1) : (i + 1));
+                }
+                if ("true" == $(this).find("enabled").eq(0).text()) {// 过滤禁用的零通道
+                    //oSel.append("<option value='" + id + "' bZero='true'>" + name + "</option>");
+                    channel.id=id;
+    				channel.name=name;
+    				channelList.push(channel);
+                }
+            });
+            LogMessage(szDeviceIdentify + " 获取零通道成功！");
+        },
+        error: function (status, xmlDoc) {
+            //showOPInfo(szDeviceIdentify + " 获取零通道失败！", status, xmlDoc);
+            LogMessage(getErrorMsg(szDeviceIdentify + " 获取零通道失败！",status, xmlDoc));
+        }
+    });
+    console.log(channelList)
+    $("#input_channel").combobox("loadData",channelList);
+}
+
+//获取端口
+function getDevicePort(szDeviceIdentifys) {
+    var szDeviceIdentify = szDeviceIdentifys;
+
+    if (null == szDeviceIdentify) {
+        return;
+    }
+
+    var oPort = WebVideoCtrl.I_GetDevicePort(szDeviceIdentify);
+    if (oPort != null) {
+        $("#deviceport").val(oPort.iDevicePort);
+        $("#rtspport").val(oPort.iRtspPort);
+
+        LogMessage(szDeviceIdentify + " 获取端口成功！");
+    } else {
+    	LogMessage(szDeviceIdentify + " 获取端口失败！");
+    }
+}
+
+//开始预览
+function clickStartRealPlay(iStreamType) {
+	var  m_iNowChanNo = $("#fm input[name=channel]").val();
+    console.log(m_iNowChanNo);
+    if (m_iNowChanNo !="") {
+    	var szIP = $("#fm input[name=ip]").val(),
+        szPort = $("#fm input[name=port]").val();
+
+	    if ("" == szIP || "" == szPort) {
+	        return;
+	    }
+
+    	var szDeviceIdentify = szIP + "_" + szPort;
+    	var oWndInfo = WebVideoCtrl.I_GetWindowStatus(0),
+        //iRtspPort = parseInt($("#rtspport").val(), 10),
+        iChannelID = parseInt($("#fm input[name=channel]").val(), 10),
+        //bZeroChannel = $("#channels option").eq($("#channels").get(0).selectedIndex).attr("bZero") == "true" ? true : false,
+        szInfo = "";
+
+	    /* if ("undefined" === typeof iStreamType) {
+	        iStreamType = parseInt($("#streamtype").val(), 10);
+	    } */
+	
+	    if (null == szDeviceIdentify) {
+	        return;
+	    }
+	
+	    var startRealPlay = function () {
+	        WebVideoCtrl.I_StartRealPlay(szDeviceIdentify, {
+	            //iRtspPort: iRtspPort,
+	            //iStreamType: iStreamType,
+	            iChannelID: iChannelID,
+	            //bZeroChannel: bZeroChannel,
+	            success: function () {
+	                szInfo = "开始预览成功！";
+	                LogMessage(szDeviceIdentify + " " + szInfo);
+	            },
+	            error: function (status, xmlDoc) {
+	                if (403 === status) {
+	                    szInfo = "设备不支持Websocket取流！";
+	                } else {
+	                    szInfo = "开始预览失败！";
+	                }
+	                LogMessage(szDeviceIdentify + " " + szInfo);
+	            }
+	        });
+	    };
+	
+	    if (oWndInfo != null) {// 已经在播放了，先停止
+	        WebVideoCtrl.I_Stop({
+	            success: function () {
+	                startRealPlay();
+	            }
+	        });
+	    } else {
+	        startRealPlay();
+	    }
+    	
+    }else{
+    	LogMessage("请选择通道号！");
+    }
+    
+}
 
 function init()
 { 
@@ -207,17 +497,17 @@ function play(){
 
 function query(){
 	
-	var jyjgbh = $("#jyjgbh").combobox("getValue");
+	var jyjgbh = $("#jyjgbh").combotree("getValue");
 	
-	$("#dg").datagrid("reload",{"jyjgbh":jyjgbh});
+	$("#videoConfigDg").datagrid("reload",{"jyjgbh":jyjgbh});
 }
 
 </script>
-<table id="dg" title="视频摄像头配置" class="easyui-datagrid" style="width:100%;height:400px"
+<table id="videoConfigDg" title="视频摄像头配置" class="easyui-datagrid" style="width:100%;height:400px"
            url="../../videoConfig/getVideoConfigList"
            toolbar="#toolbar" 
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true",
-		   pageSize="10">
+		   pageSize="10" data-options="onLoadSuccess:loadSuccess">
        <thead>
            <tr>
                <th field="jyjgbh" width="100" data-options="formatter:jyjgbhFormatter" >机构名称</th>
@@ -232,8 +522,7 @@ function query(){
    </table>
    <div id="toolbar">
    	 <div>
-   	 	<label>机构名称:</label>&nbsp;&nbsp;&nbsp;&nbsp;<input  class="easyui-combobox" data-options="data:deptArr,valueField: 'bmdm',
-	textField: 'bmmc'" id="jyjgbh" > 
+   	 	<label>机构名称:</label>&nbsp;&nbsp;&nbsp;&nbsp;<input  class="easyui-combotree" id="jyjgbh" style="width: 300px"> 
 	 <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="query()" >查询</a>
      </div>
    	 <div>
@@ -243,84 +532,106 @@ function query(){
      </div>
    </div>
    
-   <div id="dlg" class="easyui-dialog" style="width:850px;height:400px;padding:10px 20px;"
+   <!--<div id="dlg" class="easyui-dialog" style="width:870px;height:530px;padding:10px 20px;"
            closed="true" buttons="#dlg-buttons"  modal=true>
          
-        <div class="easyui-layout" fit='true'>
-			<div data-options="region:'center'">
-			   <div class="ftitle">监控摄像调取配置</div>
-		       <form id="fm" method="post" novalidate>
-		           <div class="fitem">
-		               <label>机构名称:</label>
-		               <input name="jyjgbh" id="jyjgbh_video" class="easyui-combotree" style="width: 300px">
-		           </div>
-		           <div class="fitem">
-		               <label>查验区序号:</label>
-		               <input name="cyqxh" class="easyui-textbox" required="true">
-		           </div>
-		           <div class="fitem">
-		               <label>查验区通道:</label>
-		               <input name="cyqtd" class="easyui-textbox" required="true">		               
-		           </div>
-		           <div class="fitem">
-		               <label>硬盘录像机IP:</label>
-		               <input name="ip" class="easyui-textbox" required="true" data-options="validType:'ipVad'">
-		           </div>
-		           <div class="fitem">
-		               <label>端口:</label>
-		               <input name="port" class="easyui-textbox" required="true">
-		           </div>
-		           <div class="fitem">
-		               <label>用户名:</label>
-		               <input name="userName" class="easyui-textbox" required="true">
-		           </div>
-		           <div class="fitem">
-		               <label>密码:</label>
-		               <input name="password" class="easyui-textbox">
-		           </div>
-		           <div class="fitem">
-		               <label>摄像头通道:</label>
-		               <input  class="easyui-combobox" data-options="valueField:'id',textField:'name'" name="channel" required="true" id="input_channel"> 
-		               <a href="javascript:void(0)" class="easyui-linkbutton c6"  onclick="getChannel()" style="width:50px">获取</a>
-		               <a href="javascript:void(0)" class="easyui-linkbutton c1"  onclick="play()" style="width:50px">预览</a>
-		           </div>
-		           <div class="fitem">
-		               <label>摄像头名称:</label>
-		               <input name="deviceName" class="easyui-textbox" required="true">
-		               <input name="id"  type="hidden">
-		           </div>
-		           
-		       </form>
-			</div>
-			<div data-options="region:'east'" style="width:300px; ">
-				<div  id="NetPlayOCX1" style="width: 290px;height: 95%; margin: 5px 0px 0px 5px;">
-					<object classid="CLSID:CAFCF48D-8E34-4490-8154-026191D73924"
-						codebase="../codebase/NetVideoActiveX23.cab#version=2,3,11,2"
-						standby="Waiting..." id="HIKOBJECT1" width="100%" height="100%"
-						name="HIKOBJECT1"></object>
-				</div>
-			</div>
-		</div>  
+        
    </div>
    <div id="dlg-buttons">
        <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveUser()" style="width:90px">保存</a>
        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">取消</a>
-   </div>
+   </div>-->
    <script type="text/javascript">
        var  url = '../../videoConfig/save';
+      
+      function loadSuccess(data){    	  
+    	  var tree = $('#jyjgbh').combotree('tree'); 
+    	  if(tree.tree('getRoot') == null){
+    	  	  loadComboboxTree("jyjgbh");
+    	  }
+      }
+      
        function newUser(){
-           $('#dlg').dialog('open').dialog('center').dialog('setTitle','新增配置');
+    	   $('<div></div>').dialog({
+    		 	id:'dlg',
+    		    title: '新增视频摄像头配置',
+    		    href : 'addVideoConfig.html',
+    		    width: 870,
+    		    height: 530,
+    		    closed: true,
+    		    cache: false,
+    		    modal: true,
+    		    buttons : [{
+    		    	iconCls:'icon-ok',
+    		    	text : '保存',
+    	            handler : function() {
+    	                 saveUser();
+    	            }
+    	       },{
+    				text : '取消',
+    				iconCls:'icon-cancel',
+    	            handler : function() {
+    	                 $('#dlg').dialog('close');
+    	            }
+    			}],                                    
+    		    onClose: function () {
+    		        $(this).dialog('destroy',true);
+    		    },
+    		    onLoad:function(){
+    		    	$('#fm').form('clear');
+    		    	loadComboboxTree("jyjgbh_video");
+    		    	$("#fm").form("load",{userName:'admin',password:'12345',port:'80',hdPort:'8000'});
+    		    	initPlugin();
+    		    }
+    		});
+    	    $('#dlg').dialog('open');
+    	   ///
+           /* $('#dlg').dialog('open').dialog('center').dialog('setTitle','新增配置');
            $('#fm').form('clear');
            loadComboboxTree("jyjgbh_video");           
-           $("#fm").form("load",{userName:'admin',password:'12345',port:'8000',});
+           $("#fm").form("load",{userName:'admin',password:'12345',port:'80',hdPort:'8000'}); */
           
        }
        function editUser(){
-           var row = $('#dg').datagrid('getSelected');
+           var row = $('#videoConfigDg').datagrid('getSelected');
            if (row){
-               $('#dlg').dialog('open').dialog('center').dialog('setTitle','修改配置');
+        	   $('<div></div>').dialog({
+        		 	id:'dlg',
+        		    title: '修改视频摄像头配置',
+        		    href : 'addVideoConfig.html',
+        		    width: 870,
+        		    height: 530,
+        		    closed: true,
+        		    cache: false,
+        		    modal: true,
+        		    buttons : [{
+        		    	iconCls:'icon-ok',
+        		    	text : '保存',
+        	            handler : function() {
+        	                 saveUser();
+        	            }
+        	       },{
+        				text : '取消',
+        				iconCls:'icon-cancel',
+        	            handler : function() {
+        	                 $('#dlg').dialog('close');
+        	            }
+        			}],                                    
+        		    onClose: function () {
+        		        $(this).dialog('destroy',true);
+        		    },
+        		    onLoad:function(){
+        		    	$('#fm').form('clear');
+        		    	loadComboboxTree("jyjgbh_video");
+        		    	$('#fm').form('load',row);
+        		    	initPlugin();
+        		    }
+        		});
+             $('#dlg').dialog('open'); 
+        	   /////
+               /* $('#dlg').dialog('open').dialog('center').dialog('setTitle','修改配置');
                loadComboboxTree("jyjgbh_video");
-               $('#fm').form('load',row);
+               $('#fm').form('load',row); */
            }
        }
        function saveUser(){
@@ -335,7 +646,7 @@ function query(){
             	   
                    if (result.state==1){
                 	   $('#dlg').dialog('close');        // close the dialog
-                       $('#dg').datagrid('reload');    // reload the user data
+                       $('#videoConfigDg').datagrid('reload');    // reload the user data
                        $.messager.alert("提示","保存成功","info");
                    } else {
                 	   $.messager.alert("提示","保存失败","error");
@@ -344,7 +655,7 @@ function query(){
            });
        }
        function destroyUser(){
-           var row = $('#dg').datagrid('getSelected');
+           var row = $('#videoConfigDg').datagrid('getSelected');
            if (row){
                 $.messager.confirm('确认','您是否删除该记录?',function(r){
                     if(r){
@@ -353,7 +664,7 @@ function query(){
                         	//result=$.parseJSON(result);
                             if (result.state==1){
                             	$.messager.alert("提示","删除成功","info");
-                                $('#dg').datagrid('reload');    // reload the user data
+                                $('#videoConfigDg').datagrid('reload');    // reload the user data
                             }else{
                             	$.messager.alert("错误","删除失败","error");
                             }
@@ -365,4 +676,5 @@ function query(){
             }
         }
     </script>
+
     

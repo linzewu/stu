@@ -75,19 +75,31 @@ public class VideoInfoManagerImp implements IVideoInfoManager {
 			param.put("taskCount", videoInfo.getTaskCount());
 		}
 		
-		TypedQuery<VideoInfo> query = entityManager.createQuery(sql.toString(), VideoInfo.class);
-		setParameters(query,param);
 		
 		Page<VideoInfo> pageInfo=null;
 		
+		TypedQuery<VideoInfo> query=null;
+		
 		if(pageable!=null) {
+			
+			TypedQuery<Long> countQuery = entityManager.createQuery(countSql.append(sql).toString(), Long.class);
+			
+			sql.append(" order by jylsh desc");
+			
+			query = entityManager.createQuery(sql.toString(), VideoInfo.class);
+			setParameters(query,param);
+			
 			query.setFirstResult((int) pageable.getOffset());
 			query.setMaxResults(pageable.getPageSize());
-			TypedQuery<Long> countQuery = entityManager.createQuery(countSql.append(sql).toString(), Long.class);
+			
 			setParameters(countQuery,param);
 			Long count = countQuery.getSingleResult();
 			pageInfo =new PageImpl<VideoInfo>(query.getResultList(), pageable, count);
 		}else {
+			sql.append(" order by jylsh desc");
+			query = entityManager.createQuery(sql.toString(), VideoInfo.class);
+			setParameters(query,param);
+			
 			pageInfo = new PageImpl<VideoInfo>(query.getResultList());
 		}
 		

@@ -1,5 +1,6 @@
 package com.xs.jt.vehvideo.job;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -29,7 +30,6 @@ import com.xs.jt.base.module.manager.IBaseParamsManager;
 import com.xs.jt.vehvideo.entity.VideoInfo;
 import com.xs.jt.vehvideo.manager.DownloadVideoService;
 import com.xs.jt.vehvideo.manager.IVideoInfoManager;
-import com.xs.jt.vehvideo.util.FileUtil;
 
 @Service
 public class ScanVehVideoInfoJob {

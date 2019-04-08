@@ -110,6 +110,11 @@ public class VideoInfo {
 	@Column
 	private String videoName;
 	
+	/**
+	 * 视频大小
+	 */
+	@Column
+	private Long videoSize;
 	
 	
 
@@ -289,5 +294,14 @@ public class VideoInfo {
 		this.jssj = jssj;
 	}
 
+	public Long getVideoSize() {
+		return videoSize;
+	}
+
+	public void setVideoSize(Long videoSize) {
+		this.videoSize = videoSize;
+	}
+
+	
 	
 }

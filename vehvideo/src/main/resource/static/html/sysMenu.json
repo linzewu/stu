@@ -1,8 +1,8 @@
 [{
-	"module": "检验监控",
+	"module": "查验监控",
 	"group": [
 		{
-			"groupName": "检验监控",
+			"groupName": "查验监控",
 			"menus": [
 				{
 					"icon": "../../static/images/smart_video.png",

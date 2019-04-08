@@ -62,8 +62,8 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 			Date kssj=info.getKssj();
 			Date jssj =info.getJssj();
 			
-			if(jssj.getTime()-kssj.getTime()>=1000*60*20) {
-				kssj=new Date(jssj.getTime()-1000*60*20);
+			if(jssj.getTime()-kssj.getTime()>=(1000*60*10)) {
+				kssj=new Date(jssj.getTime()-(1000*60*10));
 			}
 			
 			// 按时间下载
@@ -86,6 +86,7 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 			info.setVideoName(fileName);
 			info.setZt(VideoInfo.ZT_YXZ);
 			info.setTaskCount(0);
+			info.setVideoSize(FileUtil.getFileSize(saveFile));
 			this.updateStatus(info);
 		} catch (Exception e) {
 			// 下載失敗
@@ -95,7 +96,6 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 			log.error("下载视频失败！", e);
 			this.updateStatus(info);
 		}
-
 	}
 
 	public void CameraInit() {
