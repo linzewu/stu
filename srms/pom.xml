@@ -20,11 +20,12 @@
 		<artifactId>base-module</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</dependency>
+	
 	<dependency>
-		<groupId>com.microsoft.sqlserver</groupId>
-		<artifactId>sqljdbc4</artifactId>
-		<version>4.0</version>
-	</dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0</version>
+		</dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

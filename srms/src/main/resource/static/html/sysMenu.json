@@ -1,0 +1,130 @@
+[{
+	"module": "档案整理",
+	"group": [
+		{
+			"groupName": "档案整理",
+			"menus": [
+				{
+					"icon": "../../static/images/store.png",
+					"title": "库房管理",
+					"href": "../../static/html/storeRoomManager.html",
+					"permission":"storeRoom.getStoreRoomList"
+				}
+			]
+		}]
+},{
+	"module": "档案登记",
+	"group": [
+		{
+			"groupName": "档案登记",
+			"menus": [
+				{
+					"icon": "../../static/images/smart_video.png",
+					"title": "查验PDA管理",
+					"href": "../../static/html/pdaManager.html",
+					"permission":"videoInfo.getVideoInfoList"
+				}
+			]
+		}]
+},{
+	"module": "档案管理",
+	"group": [
+		{
+			"groupName": "档案管理",
+			"menus": [
+				{
+					"icon": "../../static/images/warningwatch.png",
+					"title": "查验视频预警",
+					"href": "../../static/html/videoWarn.html",
+					"permission":"videoWarn.getVideoWarnList"
+				}				
+			]
+		}]
+},{
+	"module": "系统管理",
+	"group": [{
+			"groupName": "权限管理",
+			"menus": [
+				{
+					"icon": "../../static/images/user.png",
+					"title": "用户管理",
+					"href": "../../static/html/UserManager.html",
+					"permission":"user.getUsers"
+				},
+				{
+					"icon": "../../static/images/group_48.png",
+					"title": "角色权限管理",
+					"href": "../../static/html/RoleManager.html",
+					"permission":"role.getRoles"
+				},
+				{
+					"icon": "../../static/images/Organization_48.png",
+					"title": "组织架构管理",
+					"href": "../../static/html/department.html",
+					"permission":"dept.getDepts"
+				}
+			]
+		},{
+			"groupName": "系统管理",
+			"menus": [				
+				{
+					"icon": "../../static/images/system.png",
+					"title": "系统参数管理",
+					"href": "../../static/html/systemInfo.html",
+					"permission":"BaseParams.getBaseParamsOfPage"
+				},				
+				{
+					"icon" : "../../static/images/function.png",
+					"title" : "核心功能管理",
+					"href" : "../../static/html/coreFunction.html",
+					"permission":"coreFunction.getAllCoreFunction"		
+				},
+				{
+					"icon" : "../../static/images/warning.png",
+					"title" : "非常规功能管理",
+					"href" : "../../static/html/SpecialCoreFunction.html",
+					"permission":"coreFunction.getAllSpecialCoreFunction"				
+				},{
+					"icon" : "../../static/images/police.png",
+					"title" : "警员功能管理",
+					"href" : "../../static/html/policeCoreFunction.html",
+					"permission":"coreFunction.getAllPoliceCoreFunction"			
+				},
+				{
+					"icon" : "../../static/images/security.png",
+					"title" : "安全审计策略设置",
+					"href" : "../../static/html/securityAuditPolicySetting.html",
+					"permission":"securityAuditPolicySetting.getPolicySettingList"
+				},
+				{
+					"icon" : "../../static/images/blackList.png",
+					"title" : "黑名单管理",
+					"href" : "../../static/html/BlackListManager.html",
+					"permission":"blackList.getBlackList"
+				}
+			]
+		},{
+			"groupName": "日志管理",
+			"menus": [
+				{
+					"icon" : "../../static/images/LOG.png",
+					"title" : "操作日志",
+					"href" : "../../static/html/operationLog.html",
+					"permission":"OperationLog.getOperationLog"
+				},
+				{
+					"icon" : "../../static/images/loginlog.png",
+					"title" : "登录日志",
+					"href" : "../../static/html/loginOperationLog.html",
+					"permission":"OperationLog.getLoginOperationLog"
+				},
+				{		
+					"icon" : "../../static/images/logsec.png",
+					"title" : "安全日志",
+					"href" : "../../static/html/securityLog.html",
+					"permission":"SecurityLog.getSecurityLog"
+				}
+			]
+		}
+	]
+}]

@@ -57,7 +57,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         org.apache.axis2.context.ConfigurationContext configurationContext)
         throws org.apache.axis2.AxisFault {
         this(configurationContext,
-            "http://"+IP+":9080/trffweb/services/TmriOutNewAccess");
+            "http://"+IP+"/trffweb/services/TmriOutNewAccess");
     }
 
     /**
@@ -65,7 +65,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
      */
     public TmriJaxRpcOutNewAccessServiceStub()
         throws org.apache.axis2.AxisFault {
-        this("http://"+IP+":9080/trffweb/services/TmriOutNewAccess");
+        this("http://"+IP+"/trffweb/services/TmriOutNewAccess");
     }
 
     /**
@@ -102,7 +102,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         __operation = new org.apache.axis2.description.OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
-                "http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+                "http://"+IP+"/trffweb/services/TmriOutNewAccess",
                 "writeObjectOutNew"));
         _service.addOperation(__operation);
 
@@ -111,7 +111,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         __operation = new org.apache.axis2.description.OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
-                "http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+                "http://"+IP+"/trffweb/services/TmriOutNewAccess",
                 "writeObjectOut"));
         _service.addOperation(__operation);
 
@@ -120,7 +120,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         __operation = new org.apache.axis2.description.OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
-                "http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+                "http://"+IP+"/trffweb/services/TmriOutNewAccess",
                 "queryObjectOut"));
         _service.addOperation(__operation);
 
@@ -129,7 +129,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         __operation = new org.apache.axis2.description.OutInAxisOperation();
 
         __operation.setName(new javax.xml.namespace.QName(
-                "http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+                "http://"+IP+"/trffweb/services/TmriOutNewAccess",
                 "queryObjectOutNew"));
         _service.addOperation(__operation);
 
@@ -154,7 +154,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         try {
             org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
             _operationClient.getOptions()
-                            .setAction("http://"+IP+":9080/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/writeObjectOutNewRequest");
+                            .setAction("http://"+IP+"/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/writeObjectOutNewRequest");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
@@ -169,7 +169,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
                     writeObjectOutNew0,
                     optimizeContent(
                         new javax.xml.namespace.QName(
-                            "http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+                            "http://"+IP+"/trffweb/services/TmriOutNewAccess",
                             "writeObjectOutNew")),
                     new javax.xml.namespace.QName(
                         "http://endpoint.axis.framework.tmri.com",
@@ -265,7 +265,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
         _operationClient.getOptions()
-                        .setAction("http://"+IP+":9080/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/writeObjectOutNewRequest");
+                        .setAction("http://"+IP+"/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/writeObjectOutNewRequest");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
@@ -282,7 +282,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
                 writeObjectOutNew0,
                 optimizeContent(
                     new javax.xml.namespace.QName(
-                        "http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+                        "http://"+IP+"/trffweb/services/TmriOutNewAccess",
                         "writeObjectOutNew")),
                 new javax.xml.namespace.QName(
                     "http://endpoint.axis.framework.tmri.com",
@@ -419,7 +419,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         try {
             org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[1].getName());
             _operationClient.getOptions()
-                            .setAction("http://"+IP+":9080/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/writeObjectOutRequest");
+                            .setAction("http://"+IP+"/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/writeObjectOutRequest");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
@@ -434,7 +434,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
                     writeObjectOut2,
                     optimizeContent(
                         new javax.xml.namespace.QName(
-                            "http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+                            "http://"+IP+"/trffweb/services/TmriOutNewAccess",
                             "writeObjectOut")),
                     new javax.xml.namespace.QName(
                         "http://endpoint.axis.framework.tmri.com",
@@ -530,7 +530,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[1].getName());
         _operationClient.getOptions()
-                        .setAction("http://"+IP+":9080/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/writeObjectOutRequest");
+                        .setAction("http://"+IP+"/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/writeObjectOutRequest");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
@@ -547,7 +547,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
                 writeObjectOut2,
                 optimizeContent(
                     new javax.xml.namespace.QName(
-                        "http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+                        "http://"+IP+"/trffweb/services/TmriOutNewAccess",
                         "writeObjectOut")),
                 new javax.xml.namespace.QName(
                     "http://endpoint.axis.framework.tmri.com", "writeObjectOut"));
@@ -683,7 +683,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         try {
             org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[2].getName());
             _operationClient.getOptions()
-                            .setAction("http://"+IP+":9080/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/queryObjectOutRequest");
+                            .setAction("http://"+IP+"/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/queryObjectOutRequest");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
@@ -698,7 +698,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
                     queryObjectOut4,
                     optimizeContent(
                         new javax.xml.namespace.QName(
-                            "http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+                            "http://"+IP+"/trffweb/services/TmriOutNewAccess",
                             "queryObjectOut")),
                     new javax.xml.namespace.QName(
                         "http://endpoint.axis.framework.tmri.com",
@@ -794,7 +794,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[2].getName());
         _operationClient.getOptions()
-                        .setAction("http://"+IP+":9080/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/queryObjectOutRequest");
+                        .setAction("http://"+IP+"/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/queryObjectOutRequest");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
@@ -811,7 +811,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
                 queryObjectOut4,
                 optimizeContent(
                     new javax.xml.namespace.QName(
-                        "http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+                        "http://"+IP+"/trffweb/services/TmriOutNewAccess",
                         "queryObjectOut")),
                 new javax.xml.namespace.QName(
                     "http://endpoint.axis.framework.tmri.com", "queryObjectOut"));
@@ -947,7 +947,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         try {
             org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[3].getName());
             _operationClient.getOptions()
-                            .setAction("http://"+IP+":9080/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/queryObjectOutNewRequest");
+                            .setAction("http://"+IP+"/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/queryObjectOutNewRequest");
             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
             addPropertyToOperationClient(_operationClient,
@@ -962,7 +962,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
                     queryObjectOutNew6,
                     optimizeContent(
                         new javax.xml.namespace.QName(
-                            "http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+                            "http://"+IP+"/trffweb/services/TmriOutNewAccess",
                             "queryObjectOutNew")),
                     new javax.xml.namespace.QName(
                         "http://endpoint.axis.framework.tmri.com",
@@ -1058,7 +1058,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[3].getName());
         _operationClient.getOptions()
-                        .setAction("http://"+IP+":9080/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/queryObjectOutNewRequest");
+                        .setAction("http://"+IP+"/trffweb/services/TmriOutNewAccess/TmriJaxRpcOutNewAccess/queryObjectOutNewRequest");
         _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
         addPropertyToOperationClient(_operationClient,
@@ -1075,7 +1075,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
                 queryObjectOutNew6,
                 optimizeContent(
                     new javax.xml.namespace.QName(
-                        "http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+                        "http://"+IP+"/trffweb/services/TmriOutNewAccess",
                         "queryObjectOutNew")),
                 new javax.xml.namespace.QName(
                     "http://endpoint.axis.framework.tmri.com",
@@ -2411,7 +2411,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
     }
 
     public static class QueryObjectOutNewResponse implements org.apache.axis2.databinding.ADBBean {
-        public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+        public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://"+IP+"/trffweb/services/TmriOutNewAccess",
                 "queryObjectOutNewResponse", "ns1");
 
         /**
@@ -2470,7 +2470,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
 
             if (serializeType) {
                 java.lang.String namespacePrefix = registerPrefix(xmlWriter,
-                        "http://"+IP+":9080/trffweb/services/TmriOutNewAccess");
+                        "http://"+IP+"/trffweb/services/TmriOutNewAccess");
 
                 if ((namespacePrefix != null) &&
                         (namespacePrefix.trim().length() > 0)) {
@@ -2506,7 +2506,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         private static java.lang.String generatePrefix(
             java.lang.String namespace) {
             if (namespace.equals(
-                        "http://"+IP+":9080/trffweb/services/TmriOutNewAccess")) {
+                        "http://"+IP+"/trffweb/services/TmriOutNewAccess")) {
                 return "ns1";
             }
 
@@ -3735,7 +3735,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
     }
 
     public static class WriteObjectOutNewResponse implements org.apache.axis2.databinding.ADBBean {
-        public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+        public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://"+IP+"/trffweb/services/TmriOutNewAccess",
                 "writeObjectOutNewResponse", "ns1");
 
         /**
@@ -3794,7 +3794,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
 
             if (serializeType) {
                 java.lang.String namespacePrefix = registerPrefix(xmlWriter,
-                        "http://"+IP+":9080/trffweb/services/TmriOutNewAccess");
+                        "http://"+IP+"/trffweb/services/TmriOutNewAccess");
 
                 if ((namespacePrefix != null) &&
                         (namespacePrefix.trim().length() > 0)) {
@@ -3830,7 +3830,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         private static java.lang.String generatePrefix(
             java.lang.String namespace) {
             if (namespace.equals(
-                        "http://"+IP+":9080/trffweb/services/TmriOutNewAccess")) {
+                        "http://"+IP+"/trffweb/services/TmriOutNewAccess")) {
                 return "ns1";
             }
 
@@ -4156,7 +4156,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
     }
 
     public static class QueryObjectOutResponse implements org.apache.axis2.databinding.ADBBean {
-        public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+        public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://"+IP+"/trffweb/services/TmriOutNewAccess",
                 "queryObjectOutResponse", "ns1");
 
         /**
@@ -4215,7 +4215,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
 
             if (serializeType) {
                 java.lang.String namespacePrefix = registerPrefix(xmlWriter,
-                        "http://"+IP+":9080/trffweb/services/TmriOutNewAccess");
+                        "http://"+IP+"/trffweb/services/TmriOutNewAccess");
 
                 if ((namespacePrefix != null) &&
                         (namespacePrefix.trim().length() > 0)) {
@@ -4249,7 +4249,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         private static java.lang.String generatePrefix(
             java.lang.String namespace) {
             if (namespace.equals(
-                        "http://"+IP+":9080/trffweb/services/TmriOutNewAccess")) {
+                        "http://"+IP+"/trffweb/services/TmriOutNewAccess")) {
                 return "ns1";
             }
 
@@ -6452,7 +6452,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
     }
 
     public static class WriteObjectOutResponse implements org.apache.axis2.databinding.ADBBean {
-        public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://"+IP+":9080/trffweb/services/TmriOutNewAccess",
+        public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("http://"+IP+"/trffweb/services/TmriOutNewAccess",
                 "writeObjectOutResponse", "ns1");
 
         /**
@@ -6511,7 +6511,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
 
             if (serializeType) {
                 java.lang.String namespacePrefix = registerPrefix(xmlWriter,
-                        "http://"+IP+":9080/trffweb/services/TmriOutNewAccess");
+                        "http://"+IP+"/trffweb/services/TmriOutNewAccess");
 
                 if ((namespacePrefix != null) &&
                         (namespacePrefix.trim().length() > 0)) {
@@ -6545,7 +6545,7 @@ public class TmriJaxRpcOutNewAccessServiceStub extends org.apache.axis2.client.S
         private static java.lang.String generatePrefix(
             java.lang.String namespace) {
             if (namespace.equals(
-                        "http://"+IP+":9080/trffweb/services/TmriOutNewAccess")) {
+                        "http://"+IP+"/trffweb/services/TmriOutNewAccess")) {
                 return "ns1";
             }
 
