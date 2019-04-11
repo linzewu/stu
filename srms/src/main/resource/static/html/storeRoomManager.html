@@ -144,11 +144,11 @@ function destroyStoreRoom(){
  }
  //删除档案室
  function deleteArchives(){
-	 var row = $('#datagrid-storeroom').datagrid('getSelected');
-	    if (row){
-	         $.messager.confirm('确认','您是否删除该档案室信息?',function(r){
+	 $.messager.prompt('删除档案室信息', '请输入档案室编号', function(aNo){
+         if (aNo){
+        	 $.messager.confirm('确认','您确定删除档案室编号 '+aNo+' 信息?',function(r){
 	             if(r){
-	                 $.post('../../storeRoom/delete',{archivesNo:row.archivesNo},function(result){
+	                 $.post('../../storeRoom/deleteStoreRoomByArchivesNo',{archivesNo:aNo},function(result){
 	                     if (result.state==1){
 	                     	$.messager.alert("提示","删除档案室成功","info");
 	                         $('#datagrid-storeroom').datagrid('reload');    // reload the user data
@@ -156,10 +156,15 @@ function destroyStoreRoom(){
 	                     	$.messager.alert("错误","删除档案室失败","error");
 	                     }
 	                 },'json').error(function(){
-	                 	$.messager.alert("错误","删除失败","error");
+	                 	$.messager.alert("错误","删除档案室失败","error");
 	                 });
 	             }
 	         });
+         }
+     });
+	 var row = $('#datagrid-storeroom').datagrid('getSelected');
+	    if (row){
+	         
 	     }
  }
 </script>

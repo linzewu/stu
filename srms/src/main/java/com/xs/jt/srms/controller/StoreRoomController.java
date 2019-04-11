@@ -2,6 +2,7 @@ package com.xs.jt.srms.controller;
 
 import java.util.Map;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,15 @@ public class StoreRoomController {
 	@RequestMapping(value = "delete", method = RequestMethod.POST,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8")
 	public @ResponseBody String delete(StoreRoom storeRoom){
 		this.storeRoomManager.deleteStoreRoom(storeRoom);
+		return  JSONObject.fromObject(ResultHandler.toSuccessJSON(Constant.ConstantMessage.SUCCESS)).toString();
+	}
+	
+	
+	@UserOperation(code="deleteStoreRoomByArchivesNo",name="删除档案室信息")
+	@RequestMapping(value = "deleteStoreRoomByArchivesNo", method = RequestMethod.POST,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8")
+	@Transactional
+	public @ResponseBody String deleteStoreRoomByArchivesNo(StoreRoom storeRoom){
+		this.storeRoomManager.deleteStoreRoomByArchivesNo(storeRoom.getArchivesNo());
 		return  JSONObject.fromObject(ResultHandler.toSuccessJSON(Constant.ConstantMessage.SUCCESS)).toString();
 	}
 

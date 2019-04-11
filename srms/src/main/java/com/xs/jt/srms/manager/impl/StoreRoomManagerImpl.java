@@ -63,4 +63,10 @@ public class StoreRoomManagerImpl implements IStoreRoomManager {
 		
 	}
 
+	@Override
+	public void deleteStoreRoomByArchivesNo(String archivesNo) {
+		storeRoomRepository.deleteStoreRoomByArchivesNo(archivesNo);
+		
+	}
+
 }
