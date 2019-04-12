@@ -1,0 +1,36 @@
+<div class="easyui-layout" fit='true'>
+	  <div data-options="region:'center'" style="padding-left: 20px; padding-right: 20px;" >
+			<div data-options="title:'基本信息'" >
+			<form id="archivesRackForm" method="post" novalidate> 
+				<table class="base_table" cellspacing="0" cellpadding="0"> 
+					<tr><td class="info_title">档案室编号：</td>
+						<td class="info"><input name="archivesNo" class="easyui-textbox" required="true">
+						</td>
+					</tr>
+					<tr>
+						<td class="info_title">档案架编号：</td>
+						<td class="info"><input name="rackNo" class="easyui-textbox" required="true"></td>
+					</tr>
+					<tr><td class="info_title">档案架列数：</td>
+						<td class="info"><input name="rackCols" class="easyui-textbox" required="true"></td>
+					</tr>
+					<tr>
+						<td class="info_title">档案架行数：</td>
+						<td class="info"><input name="rackRows" class="easyui-textbox" required="true"></td>
+					</tr>
+					<tr><td class="info_title">存放类别：</td>
+						<td class="info"><input name="storageType" data-options="required:true,editable:false,data:comm.getBaseParames('cflb'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox"></td>
+					</tr>
+					<tr>
+						<td class="info_title">容量：</td>
+						<td class="info"><input name="cellCapacity" class="easyui-textbox" required="true"></td>
+					</tr>
+					
+				</table>
+				<input type="hidden" name="id" >
+				</form>
+			</div>
+		
+	  </div>
+</div>

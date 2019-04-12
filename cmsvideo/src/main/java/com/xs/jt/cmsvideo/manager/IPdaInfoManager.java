@@ -2,8 +2,6 @@ package com.xs.jt.cmsvideo.manager;
 
 import java.util.Map;
 
-import org.springframework.data.repository.query.Param;
-
 import com.xs.jt.cmsvideo.entity.PdaInfo;
 
 public interface IPdaInfoManager {

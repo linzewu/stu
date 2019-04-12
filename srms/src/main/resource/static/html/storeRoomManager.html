@@ -1,0 +1,170 @@
+<table id="datagrid-storeroom" title="库房管理" class="easyui-datagrid" style="width:100%;height:500px"
+	            toolbar="#datagrid-storeroom-toolbar" pagination="true" url="../../storeRoom/getStoreRoomList" pageSize="100"
+	            pageList="[20,50,100,200,300]"
+	            rownumbers="true"  singleSelect="true" >
+	        <thead>
+	            <tr>
+	                <th  width="120px" data-options="field:'archivesNo'"  >档案室编号</th>
+	                <th  width="120px" data-options="field:'rackNo'">档案架编号</th> 
+	                <th  width="120px" data-options="field:'rackCols'">档案架列数</th>
+	                <th  width="120px" data-options="field:'rackRows'">档案架行数</th>
+	                <th  width="150px" data-options="field:'storageType',formatter:formatStorageType">存放类别</th>
+	                <th  width="120px" data-options="field:'cellCapacity'">档案格容量</th>
+	                	                
+	            </tr>
+	        </thead>
+	    </table>
+	    <div id="datagrid-storeroom-toolbar">
+	    	<div>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newFtpConfig()">新增档案室</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newArchivesRack()">新增档案架</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editArchivesRack()">编辑档案架</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="deleteArchives()">删除档案室</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyStoreRoom()">删除档案架</a>
+	    	</div>
+	    	
+	    </div>
+<script type="text/javascript">
+function formatStorageType(value) {
+	return comm.getParamNameByValue("cflb", value);
+}
+var url = "../../storeRoom/save";
+function newArchivesRack(){
+	$('<div></div>').dialog({
+	 	id:'dlgStoreroom',
+	    title: '新增档案架',
+	    href : 'addArchivesRack.html',
+	    width: 550,
+	    height: 400,
+	    closed: true,
+	    cache: false,
+	    modal: true,
+	    buttons : [{
+	    	iconCls:'icon-ok',
+	    	text : '保存',
+            handler : function() {
+                 saveStoreRoom();
+            }
+       },{
+			text : '取消',
+			iconCls:'icon-cancel',
+            handler : function() {
+                 $('#dlgStoreroom').dialog('close');
+            }
+		}],                                    
+	    onClose: function () {
+	        $(this).dialog('destroy',true);
+	    },
+	    onLoad:function(){
+	    	$('#archivesRackForm').form('clear');
+	    }
+	});
+    $('#dlgStoreroom').dialog('open');
+}
+
+function editArchivesRack(){
+	var row = $('#datagrid-storeroom').datagrid('getSelected');
+    if (row){
+   	 $('<div></div>').dialog({
+		 	id:'dlgStoreroom',
+		    title: '修改档案架',
+		    href : 'addArchivesRack.html',
+		    width: 550,
+		    height: 400,
+		    closed: true,
+		    cache: false,
+		    modal: true,
+		    buttons : [{
+		    	iconCls:'icon-ok',
+		    	text : '保存',
+	            handler : function() {
+	                 saveStoreRoom();
+	            }
+	       },{
+				text : '取消',
+				iconCls:'icon-cancel',
+	            handler : function() {
+	                 $('#dlgStoreroom').dialog('close');
+	            }
+			}],                                    
+		    onClose: function () {
+		        $(this).dialog('destroy',true);
+		    },
+		    onLoad:function(){
+		    	$('#archivesRackForm').form('clear');
+		    	$('#archivesRackForm').form('load',row);
+		    }
+		});
+     $('#dlgStoreroom').dialog('open'); 
+    }
+}
+
+function saveStoreRoom(){
+	var flag = $("#archivesRackForm").form("validate");
+	 console.log(flag)
+    $('#archivesRackForm').form('submit',{
+        url: url,
+        onSubmit: function(){
+            return flag;
+        },
+        success: function(result){      	  
+     	     result=$.parseJSON(result);
+     	   
+            if (result.state==1){
+         	     $('#dlgStoreroom').dialog('close');        // close the dialog
+                $('#datagrid-storeroom').datagrid('reload');    // reload the user data
+                $.messager.alert("提示","保存成功","info");
+            } else {
+         	   $.messager.alert("提示","保存失败","error");
+            }
+        }
+    });
+}
+
+function destroyStoreRoom(){
+    var row = $('#datagrid-storeroom').datagrid('getSelected');
+    if (row){
+         $.messager.confirm('确认','您是否删除该档案架记录?',function(r){
+             if(r){
+                 $.post('../../storeRoom/delete',{id:row.id},function(result){
+                 	//debugger;
+                 	//result=$.parseJSON(result);
+                     if (result.state==1){
+                     	$.messager.alert("提示","删除档案架成功","info");
+                         $('#datagrid-storeroom').datagrid('reload');    // reload the user data
+                     }else{
+                     	$.messager.alert("错误","删除档案架失败","error");
+                     }
+                 },'json').error(function(){
+                 	$.messager.alert("错误","删除档案架失败","error");
+                 });
+             }
+         });
+     }
+ }
+ //删除档案室
+ function deleteArchives(){
+	 $.messager.prompt('删除档案室信息', '请输入档案室编号', function(aNo){
+         if (aNo){
+        	 $.messager.confirm('确认','您确定删除档案室编号 '+aNo+' 信息?',function(r){
+	             if(r){
+	                 $.post('../../storeRoom/deleteStoreRoomByArchivesNo',{archivesNo:aNo},function(result){
+	                     if (result.state==1){
+	                     	$.messager.alert("提示","删除档案室成功","info");
+	                         $('#datagrid-storeroom').datagrid('reload');    // reload the user data
+	                     }else{
+	                     	$.messager.alert("错误","删除档案室失败","error");
+	                     }
+	                 },'json').error(function(){
+	                 	$.messager.alert("错误","删除档案室失败","error");
+	                 });
+	             }
+	         });
+         }
+     });
+	 var row = $('#datagrid-storeroom').datagrid('getSelected');
+	    if (row){
+	         
+	     }
+ }
+</script>
