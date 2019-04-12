@@ -1,6 +1,5 @@
 package com.xs.jt.vehvideo.job;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -68,21 +67,25 @@ public class ScanVehVideoInfoJob {
 	 * 
 	 * @throws InterruptedException
 	 */
-	@Scheduled(cron = "0/5 * * * * ? ")
+	//@Scheduled(cron = "0/5 * * * * ? ")
+	@Scheduled(fixedDelay = 5000)
 	public void sendDownLoadVideoMessage() throws InterruptedException {
 		
 		VideoInfo videoInfo=new VideoInfo();
-		
 		videoInfo.setZt(VideoInfo.ZT_WXZ);
 		videoInfo.setTaskCount(getMaxTaskCou());
 		
-		Pageable pageable =new QPageRequest(0, 100);
+		Pageable pageable =new QPageRequest(0, 1000);
 		Page<VideoInfo> page = this.videoInfoManager.getVideoInfos(pageable,videoInfo);
 		
-		 List<VideoInfo> videInfos=page.getContent();
+		List<VideoInfo> videInfos=page.getContent();
 		if (CollectionUtils.isEmpty(videInfos)) {
 			return;
 		}
+		
+		long c1=System.currentTimeMillis();
+		log.info("message data size videInfos ="+videInfos.size());
+		
 		for (VideoInfo info : videInfos) {
 			String queryName = getQueryName(info);
 			if(StringUtils.isEmpty(queryName)) {
@@ -91,9 +94,51 @@ public class ScanVehVideoInfoJob {
 			initQuery(queryName);
 			rabbitTemplate.convertAndSend(queryName, JSONObject.toJSONString(info));
 			info.setZt(VideoInfo.ZT_XZZ);
-			this.updateStatus(info);
 		}
+		videoInfoManager.saveAll(videInfos);
+		log.info("end sen message ="+videInfos.size());
+		long c2=System.currentTimeMillis();
+		log.info("send message time="+ (c2-c1));
 	}
+	
+	
+	
+	@Scheduled(fixedDelay = 5000)
+	public void sendDownLoadErrorVideoMessage() throws InterruptedException {
+		
+		VideoInfo videoInfo=new VideoInfo();
+		videoInfo.setZt(VideoInfo.ZT_XZSB);
+		videoInfo.setTaskCount(getMaxTaskCou());
+		 
+		Pageable pageable =new QPageRequest(0, 1000);
+		Page<VideoInfo> page = this.videoInfoManager.getVideoInfos(pageable,videoInfo);
+		
+		List<VideoInfo> videInfos=page.getContent();
+		if (CollectionUtils.isEmpty(videInfos)) {
+			return;
+		}
+		
+		long c1=System.currentTimeMillis();
+		log.info("message data size videInfos ="+videInfos.size());
+		
+		for (VideoInfo info : videInfos) {
+			String queryName = getQueryName(info)+"_error";
+			if(StringUtils.isEmpty(queryName)) {
+				return;
+			}
+			initQuery(queryName);
+			rabbitTemplate.convertAndSend(queryName, JSONObject.toJSONString(info));
+			info.setZt(VideoInfo.ZT_XZZ);
+		}
+		videoInfoManager.saveAll(videInfos);
+		
+		log.info("end sen message ="+videInfos.size());
+		long c2=System.currentTimeMillis();
+		
+		log.info("send message time="+ (c2-c1));
+	}
+	
+	
 	
 	private String getQueryName(VideoInfo info) {
 		String ip = info.getIp();

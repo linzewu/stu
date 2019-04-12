@@ -12,5 +12,7 @@ public interface IVideoInfoManager {
 	public Page<VideoInfo> getVideoInfos(Pageable pageable, VideoInfo videoInfo);
 	
 	public VideoInfo save(VideoInfo videoInfo);
+	
+	public void saveAll(List<VideoInfo> videoInfo);
 
 }

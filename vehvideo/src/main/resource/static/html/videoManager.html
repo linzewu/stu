@@ -20,13 +20,13 @@
             <th data-options="field:'clsbdh',width:180" >车辆识别码</th>  
             <th data-options="field:'hphm',width:80" >号牌号码</th>
             <th data-options="field:'hpzl',width:100,formatter:formatterHpzl" >号牌种类</th>
+            <th data-options="field:'jyxm',width:100" >检验项目</th>
             <th data-options="field:'jycs',width:100" >检验次数</th>
             <th data-options="field:'videoName',width:40,formatter:showImg" >播放</th>
             <th data-options="field:'id',width:40,formatter:showDownImg" >下载</th>
-            
             <th data-options="field:'videoSize',width:100,formatter:formatterSize" >视频大小(MB)</th>
-            <th data-options="field:'videoBegin',width:150">视频开始时间</th>
-            <th data-options="field:'videoEnd',width:150" >视频结束时间</th>
+            <th data-options="field:'kssj',width:150,formatter:formaterDate">视频开始时间</th>
+            <th data-options="field:'jssj',width:150,formatter:formaterDate" >视频结束时间</th>
             <th data-options="field:'reason',width:150" >失败原因</th>
             <th data-options="field:'taskCount',width:150" >失败次数</th>
             <th data-options="field:'zt',width:150,formatter:ztFormatter" >状态</th>
@@ -88,11 +88,16 @@ function queryVideo(){
 	var hpzl = $("#hpzl").textbox("getValue");
 	var zt = $("#zt").combobox("getValue");
 	var jyjgbh = $("#jyjgbh_m").combotree("getValue");
-	$('#videoDG').datagrid("reload",{clsbdh:clsbdh,lsh:lsh,hphm:hphm,hpzl:hpzl,zt:zt,jyjgbh:jyjgbh});
+	$('#videoDG').datagrid("reload",{clsbdh:clsbdh,jylsh:lsh,hphm:hphm,hpzl:hpzl,zt:zt,jyjgbh:jyjgbh});
 }
 
 function ztFormatter(value,row,index){
-	return comm.getParamNameByValue("spzt", value)
+	return comm.getParamNameByValue("spzt", value);
+}
+
+function formaterDate(value, row, index){
+	var date =new Date(value);
+	return date.pattern("yyyy-MM-dd HH:mm:ss");
 }
 
 //播放图片展示
@@ -159,7 +164,7 @@ function downloadVideo(videoName,jyjgbh,jssj){
 	date.setTime(jssj)
 	var ym = date.pattern("yyyy-MM-dd");
 	
-	var videoPath="../"+ym+"/"+jyjgbh+"/"+videoName;
+	var videoPath="../vehvod/"+ym+"/"+jyjgbh+"/"+videoName;
 	window.open(videoPath);
 }
 

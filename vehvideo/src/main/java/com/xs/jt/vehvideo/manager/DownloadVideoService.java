@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rabbitmq.client.Channel;
@@ -47,6 +48,7 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 	SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd");
 
 	@Override
+	@Transactional(noRollbackFor=Exception.class)
 	public void onMessage(Message message, Channel channel) throws Exception {
 		byte[] body = message.getBody();
 		VideoInfo info = null;
@@ -77,24 +79,20 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 			String path =downLoadPath+sdf.format(info.getJssj())+"\\"+info.getJyjgbh();
 			FileUtil.createDirectory(path);
 			String saveFile = path +"/"+ fileName;
-
 			long channelno = getChannelNumber(Long.valueOf(info.getChannelno()), lUserID) + 1;
-
 			downLoad(lUserID, new NativeLong(channelno), lpStartTime, lpStopTime, saveFile);
-
 			// 修改状态为已下载
 			info.setVideoName(fileName);
 			info.setZt(VideoInfo.ZT_YXZ);
-			info.setTaskCount(0);
 			info.setVideoSize(FileUtil.getFileSize(saveFile));
-			this.updateStatus(info);
+			this.videoInfoManager.save(info);
 		} catch (Exception e) {
 			// 下載失敗
 			info.setTaskCount((info.getTaskCount() == null ? 0 : info.getTaskCount()) + 1);
-			info.setZt(info.getTaskCount() == getMaxTaskCou() ? VideoInfo.ZT_XZSB : VideoInfo.ZT_WXZ);
+			info.setZt(VideoInfo.ZT_XZSB);
 			info.setReason(e.toString());
 			log.error("下载视频失败！", e);
-			this.updateStatus(info);
+			this.videoInfoManager.save(info);
 		}
 	}
 
@@ -102,9 +100,9 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 		// 初始化
 		boolean initSuc = hCNetSDK.NET_DVR_Init();
 		if (initSuc != true) {
-			log.info("初始化失败");
+			log.debug("初始化失败");
 		} else {
-			log.info("初始化成功");
+			log.debug("初始化成功");
 		}
 	}
 
@@ -125,7 +123,7 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 
 		long userID = lUserID.longValue();
 		if (userID == -1) {
-			log.info("注册失败:"+m_sDeviceIP);
+			log.error("注册失败:"+m_sDeviceIP);
 			throw new Exception("注册失败");
 		} else {
 			log.info("注册成功,lUserID:" + userID);
@@ -201,9 +199,7 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 		}
 	}
 
-	private void updateStatus(VideoInfo info) {
-		this.videoInfoManager.save(info);
-	}
+	
 
 	private int getMaxTaskCou() {
 		int maxCou = 3;
