@@ -1,8 +1,10 @@
 package com.xs.jt.vehvideo.manager;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
@@ -18,10 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rabbitmq.client.Channel;
+import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.xs.jt.base.module.entity.BaseParams;
 import com.xs.jt.base.module.manager.IBaseParamsManager;
 import com.xs.jt.vehvideo.entity.VideoInfo;
+import com.xs.jt.vehvideo.util.ClientDemo;
+import com.xs.jt.vehvideo.util.FileCopyUtils;
 import com.xs.jt.vehvideo.util.FileUtil;
 import com.xs.jt.vehvideo.util.HCNetSDK;
 import com.xs.jt.vehvideo.util.HCNetSDK.NET_DVR_TIME;
@@ -30,7 +35,11 @@ import com.xs.jt.vehvideo.util.HCNetSDK.NET_DVR_TIME;
 @Scope("prototype")
 public class DownloadVideoService implements ChannelAwareMessageListener {
 
-	static HCNetSDK hCNetSDK = HCNetSDK.INSTANCE;
+	static ConcurrentHashMap<String,HCNetSDK> hCNetSDKMap = new ConcurrentHashMap<String,HCNetSDK>();
+	public static ConcurrentHashMap<String,Integer> countMap = new ConcurrentHashMap<String,Integer>();
+	static ConcurrentHashMap<String,NativeLong> userIdMap = new ConcurrentHashMap<String,NativeLong>();
+	//static HCNetSDK hCNetSDK = HCNetSDK.INSTANCE;
+	//private HCNetSDK hCNetSDK;
 	HCNetSDK.NET_DVR_DEVICEINFO_V30 m_strDeviceInfo;// 设备信息
 
 	// 视频下载地址
@@ -46,6 +55,18 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 	protected static Log log = LogFactory.getLog(DownloadVideoService.class);
 	
 	SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd");
+	
+	public HCNetSDK getHcNetSdk(String ip) throws IOException {
+		if(!hCNetSDKMap.containsKey(ip)) {
+			FileCopyUtils.copyDir(ClientDemo.EXTEND_PATH+"\\hk", ClientDemo.EXTEND_PATH+"\\"+ip);
+			HCNetSDK INSTANCE = (HCNetSDK) Native.loadLibrary(ClientDemo.EXTEND_PATH+"\\"+ip+"\\HCNetSDK.dll",
+		            HCNetSDK.class);
+			CameraInit(INSTANCE);
+			hCNetSDKMap.put(ip, INSTANCE);
+		}
+		log.info("###############################################"+hCNetSDKMap);
+		return hCNetSDKMap.get(ip);
+	}
 
 	@Override
 	@Transactional(noRollbackFor=Exception.class)
@@ -56,10 +77,16 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 			info = JSONObject.parseObject(new String(body), VideoInfo.class);
 			NativeLong lUserID = new NativeLong(-1);
 			// 初始化
-			CameraInit();
+			HCNetSDK hCNetSDK = this.getHcNetSdk(info.getIp());
+			if(!userIdMap.contains(info.getIp())) {
 			// 注册
 			lUserID = register(lUserID, info.getUserName(), info.getPassword(), info.getIp(),
-					Integer.parseInt(info.getPort()));
+					Integer.parseInt(info.getPort()),hCNetSDK);
+			userIdMap.put(info.getIp(), lUserID);
+			}else {
+				lUserID = userIdMap.get(info.getIp());
+			}
+			
 			
 			Date kssj=info.getKssj();
 			Date jssj =info.getJssj();
@@ -80,11 +107,13 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 			FileUtil.createDirectory(path);
 			String saveFile = path +"/"+ fileName;
 			long channelno = getChannelNumber(Long.valueOf(info.getChannelno()), lUserID) + 1;
-			downLoad(lUserID, new NativeLong(channelno), lpStartTime, lpStopTime, saveFile);
+			log.info("-----------------------------------ip:"+info.getIp()+"  sdk:"+hCNetSDK+"  hashcode:"+hCNetSDK.hashCode());
+			downLoad(lUserID, new NativeLong(channelno), lpStartTime, lpStopTime, saveFile,hCNetSDK,info.getIp());
 			// 修改状态为已下载
 			info.setVideoName(fileName);
 			info.setZt(VideoInfo.ZT_YXZ);
 			info.setVideoSize(FileUtil.getFileSize(saveFile));
+			log.info("*************************************************************************save info");
 			this.videoInfoManager.save(info);
 		} catch (Exception e) {
 			// 下載失敗
@@ -96,7 +125,7 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 		}
 	}
 
-	public void CameraInit() {
+	public void CameraInit(HCNetSDK hCNetSDK) {
 		// 初始化
 		boolean initSuc = hCNetSDK.NET_DVR_Init();
 		if (initSuc != true) {
@@ -106,7 +135,7 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 		}
 	}
 
-	public NativeLong register(NativeLong lUserID, String username, String password, String m_sDeviceIP, int iPort)
+	public NativeLong register(NativeLong lUserID, String username, String password, String m_sDeviceIP, int iPort,HCNetSDK hCNetSDK)
 			throws Exception {
 		// ****** 注册之前先注销已注册的用户,预览情况下不可注销
 //		if (lUserID.longValue() > -1) {
@@ -123,10 +152,20 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 
 		long userID = lUserID.longValue();
 		if (userID == -1) {
-			log.error("注册失败:"+m_sDeviceIP);
+			log.error("注册失败:"+m_sDeviceIP+" countMap:"+countMap);
 			throw new Exception("注册失败");
 		} else {
-			log.info("注册成功,lUserID:" + userID);
+			/////
+			log.info("before "+countMap);
+			if(!countMap.containsKey(m_sDeviceIP)) {
+				countMap.put(m_sDeviceIP, 1);
+			}else {
+				int b = countMap.get(m_sDeviceIP)+1;
+				countMap.replace(m_sDeviceIP, b);
+			}
+			log.info("after "+countMap);
+			/////
+			log.info("注册成功,IP:"+m_sDeviceIP+" lUserID:" + userID);
 		}
 		return lUserID;
 	}
@@ -162,7 +201,7 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 	}
 
 	public void downLoad(NativeLong lUserID, NativeLong lChannel, NET_DVR_TIME lpStartTime, NET_DVR_TIME lpStopTime,
-			String saveFile) throws Exception {
+			String saveFile,HCNetSDK hCNetSDK,String m_sDeviceIP) throws Exception {
 		try {
 			log.info("lUserID:" + lUserID + " lChannel:" + lChannel + " lpStartTime:" + lpStartTime + " lpStopTime:"
 					+ lpStopTime + " saveFile:" + saveFile);
@@ -170,7 +209,7 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 			NativeLong tRet = hCNetSDK.NET_DVR_GetFileByTime(lUserID, lChannel, lpStartTime, lpStopTime, saveFile);
 			int tError = hCNetSDK.NET_DVR_GetLastError();
 			if (tRet.longValue() == -1) {
-				log.error("NET_DVR_GetFileByTime fail,channel:" + lChannel + "error code:" + tError);
+				log.error("NET_DVR_GetFileByTime fail,channel:" + lChannel + "error code:" + tError+" userId:"+lUserID+" m_sDeviceIP:"+m_sDeviceIP+" countMap:"+countMap);
 				throw new Exception("NET_DVR_GetFileByTime fail,channel:" + lChannel + "error code:" + tError);
 			}
 
@@ -192,10 +231,14 @@ public class DownloadVideoService implements ChannelAwareMessageListener {
 				log.info("channel:" + lChannel + ",  is downloading... " + nPos); // 下载进度
 			}
 		} finally {
+			log.info("logout before "+countMap);
+			int b = countMap.get(m_sDeviceIP)-1;
+			countMap.replace(m_sDeviceIP, b);
+			log.info("logout after "+countMap);
 			// 注销用户
-			hCNetSDK.NET_DVR_Logout(lUserID);
+			//hCNetSDK.NET_DVR_Logout(lUserID);
 			// 释放SDK资源
-			hCNetSDK.NET_DVR_Cleanup();
+			//hCNetSDK.NET_DVR_Cleanup();
 		}
 	}
 

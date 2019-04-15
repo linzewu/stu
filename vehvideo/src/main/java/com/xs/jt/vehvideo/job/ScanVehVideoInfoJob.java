@@ -159,7 +159,7 @@ public class ScanVehVideoInfoJob {
 			 container.setQueueNames(queryName);
 			 container.setExposeListenerChannel(true);
 			 container.setPrefetchCount(1);//设置每个消费者获取的最大的消息数量
-			 container.setConcurrentConsumers(3);//消费者个数
+			 container.setConcurrentConsumers(1);//消费者个数
 			 //container.setAcknowledgeMode(AcknowledgeMode.MANUAL);//设置确认模式为手工确认
 			 container.setMessageListener(downloadVideoService);//监听处理类
 			 container.start();
