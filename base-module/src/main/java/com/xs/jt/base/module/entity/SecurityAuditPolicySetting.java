@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 @Component("securityAuditPolicySetting")
 @Entity
-@Table(name = "TM_SecurityAuditPolicySetting")
+@Table(name = "TM_SAPS")
 public class SecurityAuditPolicySetting extends BaseEntity{
 	
 	//策略编码

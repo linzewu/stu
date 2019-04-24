@@ -1,0 +1,16 @@
+<div class="easyui-layout" fit='true'>
+	  <div data-options="region:'center'" style="padding-left: 20px; padding-right: 20px;" >
+				<table class="base_table" cellspacing="0" cellpadding="0"> 
+					<tr><td class="info_title">出库原因：</td>
+						<td class="info"><input name="reason" id="out_reason" class="easyui-textbox" required="true">
+						</td>
+					</tr>
+					<tr>
+						<td class="info_title">业务类型：</td>
+						<td class="info"><input name="ywlx" id="out_ywlx" prompt='请选择业务类型' data-options="data:comm.getBaseParames('ywlx'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" required="true"></td>
+					</tr>					
+				</table>
+		
+	  </div>
+</div>

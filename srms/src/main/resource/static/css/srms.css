@@ -1,0 +1,15 @@
+.querParamList li{
+list-style:none;
+float: left;
+width: 280px;
+margin: 2px 0 2px 0;
+}
+.querParamList li label{
+width: 100px; display: inline-block; text-align: right;
+}
+.querParamList{
+	display: inline-block;
+	margin: 0;
+    border: 0;
+    padding: 0;
+}

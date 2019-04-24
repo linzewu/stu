@@ -1,5 +1,5 @@
 <table id="datagrid-storeroom" title="库房管理" class="easyui-datagrid" style="width:100%;height:500px"
-	            toolbar="#datagrid-storeroom-toolbar" pagination="true" url="../../storeRoom/getStoreRoomList" pageSize="100"
+	            toolbar="#datagrid-storeroom-toolbar" pagination="true" url="../../storeRoom/getStoreRoomList" pageSize="20"
 	            pageList="[20,50,100,200,300]"
 	            rownumbers="true"  singleSelect="true" >
 	        <thead>
@@ -10,16 +10,16 @@
 	                <th  width="120px" data-options="field:'rackRows'">档案架行数</th>
 	                <th  width="150px" data-options="field:'storageType',formatter:formatStorageType">存放类别</th>
 	                <th  width="120px" data-options="field:'cellCapacity'">档案格容量</th>
-	                	                
+	                <th  width="120px" data-options="field:'seq'">排序</th>	                
 	            </tr>
 	        </thead>
 	    </table>
 	    <div id="datagrid-storeroom-toolbar">
 	    	<div>
-		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newFtpConfig()">新增档案室</a>
+		        <!--<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newFtpConfig()">新增档案室</a>-->
 		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newArchivesRack()">新增档案架</a>
 		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editArchivesRack()">编辑档案架</a>
-		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="deleteArchives()">删除档案室</a>
+		        <!--<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="deleteArchives()">删除档案室</a>-->
 		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyStoreRoom()">删除档案架</a>
 	    	</div>
 	    	
@@ -35,7 +35,7 @@ function newArchivesRack(){
 	    title: '新增档案架',
 	    href : 'addArchivesRack.html',
 	    width: 550,
-	    height: 400,
+	    height: 420,
 	    closed: true,
 	    cache: false,
 	    modal: true,
@@ -70,7 +70,7 @@ function editArchivesRack(){
 		    title: '修改档案架',
 		    href : 'addArchivesRack.html',
 		    width: 550,
-		    height: 400,
+		    height: 420,
 		    closed: true,
 		    cache: false,
 		    modal: true,
@@ -93,6 +93,23 @@ function editArchivesRack(){
 		    onLoad:function(){
 		    	$('#archivesRackForm').form('clear');
 		    	$('#archivesRackForm').form('load',row);
+		    	
+		    	 $.post('../../archivalCase/findUseArchivalCase',{rackNo:row.rackNo},function(result){
+                     if (result.state==1){
+                     	if(result.data == "true"){
+                     		$("#edit_rackCols").textbox({readonly:true});
+                     		$("#edit_rackRows").textbox({readonly:true});
+                     		$("#edit_cellCapacity").textbox({readonly:true});
+                     		$("#edit_rackCols").textbox('textbox').css({"background-color":"#f0f1ef"});
+                     		$("#edit_rackRows").textbox('textbox').css({"background-color":"#f0f1ef"});
+                     		$("#edit_cellCapacity").textbox('textbox').css({"background-color":"#f0f1ef"});
+                     	}
+                     }else{
+                     	$.messager.alert("错误","查询档案架中是否有档案格在使用失败！","error");
+                     }
+                 },'json').error(function(){
+                 	$.messager.alert("错误","查询档案架中是否有档案格在使用失败！","error");
+                 });
 		    }
 		});
      $('#dlgStoreroom').dialog('open'); 
@@ -126,14 +143,12 @@ function destroyStoreRoom(){
     if (row){
          $.messager.confirm('确认','您是否删除该档案架记录?',function(r){
              if(r){
-                 $.post('../../storeRoom/delete',{id:row.id},function(result){
-                 	//debugger;
-                 	//result=$.parseJSON(result);
+                 $.post('../../storeRoom/delete',{id:row.id,rackNo:row.rackNo},function(result){
                      if (result.state==1){
                      	$.messager.alert("提示","删除档案架成功","info");
                          $('#datagrid-storeroom').datagrid('reload');    // reload the user data
                      }else{
-                     	$.messager.alert("错误","删除档案架失败","error");
+                     	$.messager.alert("错误",result.message,"error");
                      }
                  },'json').error(function(){
                  	$.messager.alert("错误","删除档案架失败","error");
@@ -162,9 +177,6 @@ function destroyStoreRoom(){
 	         });
          }
      });
-	 var row = $('#datagrid-storeroom').datagrid('getSelected');
-	    if (row){
-	         
-	     }
+
  }
 </script>

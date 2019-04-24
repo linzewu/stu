@@ -1,0 +1,117 @@
+<table id="datagrid-archiveOut" title="档案出库" class="easyui-datagrid" style="width:100%;height:500px"
+	            toolbar="#datagrid-archiveOut-toolbar" pagination="true" url="../../archivalCase/getArchivalCaseCheckInList" pageSize="20"
+	            pageList="[20,50,100,200,300]"
+	            rownumbers="true"  singleSelect="true" >
+	        <thead>
+	            <tr>
+	                <th  width="120px" data-options="field:'archivesNo'"  >档案室编号</th>
+	                <th  width="120px" data-options="field:'rackNo'">档案架编号</th> 
+	                <th  width="120px" data-options="field:'rackRow'">档案架内行号</th>
+	                <th  width="120px" data-options="field:'rackCol'">档案架内列号</th>
+	                <th  width="150px" data-options="field:'fileNo'">档案序号</th>
+	                <th  width="120px" data-options="field:'hphm'">号牌号码</th>	                
+	                <th  width="120px" data-options="field:'hpzl',formatter:hpzlFormat">号牌种类</th>
+	                <th  width="120px" data-options="field:'clsbdh'">车辆识别代号</th>
+	                <th  width="120px" data-options="field:'ywlx',formatter:ywlxFormat">业务类型</th>
+	                <th  width="120px" data-options="field:'barCode'">条码</th>
+	                <th  width="120px" data-options="field:'zt',formatter:ztFormat">状态</th>	                	                
+	            </tr>
+	        </thead>
+	    </table>
+	    <div id="datagrid-archiveOut-toolbar">
+	    	<div>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-redo" plain="true" onclick="checkOut()">出库</a>
+	    	</div>
+	    	<ul class="querParamList">
+		    	<li><label>车辆识别代号：</label><input type="text" class="easyui-textbox" id="quer_clsbdh" style="width: 160px;"></li>
+		    	<li><label>号牌种类：</label><input id="quer_hpzl"   prompt='请选择号牌种类' data-options="data:comm.getBaseParames('hpzl'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
+				<li><label>号牌号码：</label><input type="text" class="easyui-textbox" id="quer_hphm" style="width: 160px;"></li>
+		    	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="query()">查询</a></li>
+		    </ul>
+	    </div>
+	    
+<script type="text/javascript">
+function checkOut(){
+	var row = $('#datagrid-archiveOut').datagrid('getSelected');
+    if (row){
+    	$('<div></div>').dialog({
+		 	id:'dlgArchiveOut',
+		    title: '档案出库',
+		    href : 'addArchivesOut.html',
+		    width: 550,
+		    height: 420,
+		    closed: true,
+		    cache: false,
+		    modal: true,
+		    buttons : [{
+		    	iconCls:'icon-ok',
+		    	text : '保存',
+	            handler : function() {
+					 var out_reason = $("#out_reason").textbox("getValue");
+					 var out_ywlx = $("#out_ywlx").combobox("getValue");
+					 if(out_reason == ""){
+						 $.messager.alert("提示","请输入出库原因","info");
+						 return;
+					 }
+					 if(out_ywlx == ""){
+						 $.messager.alert("提示","请选择业务类型","info");
+						 return;
+					 }
+	                 row.reason = out_reason;
+					 row.ywlx = out_ywlx;
+				    $.post('../../archivalRegister/archivalCheckOut',row,function(result){
+				        if (result.state==1){
+				        	$.messager.alert("提示","档案出库成功","info");
+				            $('#datagrid-archiveOut').datagrid('reload');    // reload the user data
+				            $('#dlgArchiveOut').dialog('close');
+				        }else{
+				        	$.messager.alert("错误","档案出库失败","error");
+				        }
+				    },'json').error(function(){
+				    	$.messager.alert("错误","档案出库失败","error");
+				    });
+	            }
+	       },{
+				text : '取消',
+				iconCls:'icon-cancel',
+	            handler : function() {
+	                 $('#dlgArchiveOut').dialog('close');
+	            }
+			}],                                    
+		    onClose: function () {
+		        $(this).dialog('destroy',true);
+		    }
+		});
+     $('#dlgArchiveOut').dialog('open'); 
+    	
+    	
+    	/////////////////////////////////////////
+		/**$.messager.prompt('档案出库', '请输入出库原因', function(reason){
+	        if (reason){
+	        	row.reason = reason;	        	
+                 $.post('../../archivalRegister/archivalCheckOut',row,function(result){
+                     if (result.state==1){
+                     	$.messager.alert("提示","档案出库成功","info");
+                         $('#datagrid-archiveOut').datagrid('reload');    // reload the user data
+                     }else{
+                     	$.messager.alert("错误","档案出库失败","error");
+                     }
+                 },'json').error(function(){
+                 	$.messager.alert("错误","档案出库失败","error");
+                 });
+		            
+	        }
+	    });**/
+    }else{
+		$.messager.alert("提示","请选择一行数据!","warning");
+	}
+}
+
+function query(){
+	var quer_clsbdh=$("#quer_clsbdh").textbox("getValue");	
+	var quer_hpzl = $("#quer_hpzl").combobox("getValue");	
+	var quer_hphm = $("#quer_hphm").textbox("getValue");
+	$('#datagrid-archiveOut').datagrid("reload",{clsbdh:quer_clsbdh,hpzl:quer_hpzl,hphm:quer_hphm});
+}
+</script>

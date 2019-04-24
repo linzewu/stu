@@ -1,8 +1,7 @@
 package com.xs.jt.srms.manager;
 
+import java.util.List;
 import java.util.Map;
-
-import org.springframework.data.repository.query.Param;
 
 import com.xs.jt.srms.entity.StoreRoom;
 
@@ -15,5 +14,7 @@ public interface IStoreRoomManager {
 	public void deleteStoreRoom(StoreRoom storeRoom);
 	
 	public void deleteStoreRoomByArchivesNo(String archivesNo);
+	
+	public List<Map> getArchiveRackStatistics(String zt);
 
 }

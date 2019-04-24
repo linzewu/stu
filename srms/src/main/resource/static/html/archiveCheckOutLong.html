@@ -1,0 +1,28 @@
+<table id="archiveCheckOutLongDG" title="业务状态预警" class="easyui-datagrid"  data-options="rownumbers:true,		
+		singleSelect:true,		
+		url:'../../archivalCase/findCheckOutLong'"
+		>  
+    <thead>
+        <tr>  
+            <th  width="120px" data-options="field:'ARCHIVES_NO'"  >档案室编号</th>
+            <th  width="120px" data-options="field:'RACK_NO'">档案架编号</th> 
+            <th  width="120px" data-options="field:'RACK_ROW'">档案架内行号</th>
+            <th  width="120px" data-options="field:'RACK_COL'">档案架内列号</th>
+            <th  width="150px" data-options="field:'FILE_NO'">档案序号</th>
+            <th  width="120px" data-options="field:'HPHM'">号牌号码</th>	                
+            <th  width="120px" data-options="field:'HPZL',formatter:hpzlFormat">号牌种类</th>
+            <th  width="120px" data-options="field:'CLSBDH'">车辆识别代号</th>
+            <th  width="120px" data-options="field:'YWLX',formatter:ywlxFormat">业务类型</th>
+            <th  width="120px" data-options="field:'BAR_CODE'">条码</th>
+            <th  width="120px" data-options="field:'ZT',formatter:ztFormat">状态</th>
+            <th  width="150px" data-options="field:'UPDATE_TIME'">出库时间</th>	                
+        </tr>  
+      </thead>  
+</table>
+
+<script type="text/javascript">
+function ztFormat(value,row,index){
+	return comm.getParamNameByValue("dazt", value)
+}
+
+</script>

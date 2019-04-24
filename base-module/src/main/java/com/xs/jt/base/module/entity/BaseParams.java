@@ -25,7 +25,9 @@ public class BaseParams {
 	@Id
 //	@GenericGenerator(name = "idGenerator", strategy = "identity")
 //	@GeneratedValue(generator = "idGenerator")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//////@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = "idGenerator")
+	@GenericGenerator(name = "idGenerator", strategy = "native")
 	@Column(name = "TID")
 	private Integer id;
 

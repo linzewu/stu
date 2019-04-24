@@ -1,28 +1,20 @@
 [{
-	"module": "档案整理",
+	"module": "库房管理",
 	"group": [
 		{
-			"groupName": "档案整理",
+			"groupName": "库房管理",
 			"menus": [
 				{
 					"icon": "../../static/images/store.png",
 					"title": "库房管理",
 					"href": "../../static/html/storeRoomManager.html",
 					"permission":"storeRoom.getStoreRoomList"
-				}
-			]
-		}]
-},{
-	"module": "档案登记",
-	"group": [
-		{
-			"groupName": "档案登记",
-			"menus": [
+				},
 				{
-					"icon": "../../static/images/smart_video.png",
-					"title": "查验PDA管理",
-					"href": "../../static/html/pdaManager.html",
-					"permission":"videoInfo.getVideoInfoList"
+					"icon": "../../static/images/gnumericStatistics.png",
+					"title": "库房统计",
+					"href": "../../static/html/storeRoomStatistics.html",
+					"permission":"storeRoom.getArchiveRackStatistics"
 				}
 			]
 		}]
@@ -33,11 +25,64 @@
 			"groupName": "档案管理",
 			"menus": [
 				{
-					"icon": "../../static/images/warningwatch.png",
-					"title": "查验视频预警",
-					"href": "../../static/html/videoWarn.html",
-					"permission":"videoWarn.getVideoWarnList"
+					"icon": "../../static/images/archive.png",
+					"title": "档案查询",
+					"href": "../../static/html/archiveQuery.html",
+					"permission":"archivalCase.getArchivalCaseList"
+				},
+				{
+					"icon": "../../static/images/archiveextract.png",
+					"title": "档案出库",
+					"href": "../../static/html/archiveCheckOut.html",
+					"permission":"archivalCase.getArchivalCaseCheckInList"
+				},
+				{
+					"icon": "../../static/images/archiveinsert.png",
+					"title": "档案入库",
+					"href": "../../static/html/archiveCheckIn.html",
+					"permission":"archivalCase.getArchivalCaseCheckOutList"
+				},
+				{
+					"icon": "../../static/images/ArchivesList.png",
+					"title": "出入库记录",
+					"href": "../../static/html/archivalRegisterQuery.html",
+					"permission":"archivalRegister.getArchivalRegisterList"
 				}				
+			]
+		},{
+			"groupName": "档案归档",
+			"menus": [				
+				{
+					"icon": "../../static/images/archiveextract.png",
+					"title": "新车档案入库",
+					"href": "../../static/html/newCarCheckIn.html",
+					"permission":"archivalCase.getArchivalCaseCheckInList"
+				},{
+					"icon": "../../static/images/archiveextract.png",
+					"title": "在用车档案入库",
+					"href": "../../static/html/usedCarCheckIn.html",
+					"permission":"archivalCase.getArchivalCaseCheckInList"
+				}				
+			]
+		}]
+},{
+	"module": "业务预警",
+	"group": [
+		{
+			"groupName": "业务预警",
+			"menus": [
+				{
+					"icon": "../../static/images/orangewarn.png",
+					"title": "业务状态预警",
+					"href": "../../static/html/archiveCheckOutLong.html",
+					"permission":"archivalCase.findCheckOutLong"
+				},
+				{
+					"icon": "../../static/images/datawarn.png",
+					"title": "多次办理业务预警",
+					"href": "../../static/html/archiveMultipleProcessWarn.html",
+					"permission":"archivalWarn.getArchivalWarnList"
+				}
 			]
 		}]
 },{

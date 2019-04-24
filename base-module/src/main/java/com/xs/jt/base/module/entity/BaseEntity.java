@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -32,7 +33,9 @@ public abstract class BaseEntity implements Serializable {
 //	@GenericGenerator(name = "idGenerator", strategy = "identity")
 //	@GeneratedValue(generator = "idGenerator")
 	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//////@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = "idGenerator")
+	@GenericGenerator(name = "idGenerator", strategy = "native")   
 	@Column(name="id")
 	private Integer id;
 	

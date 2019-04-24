@@ -1,6 +1,7 @@
 package com.xs.jt.srms.entity;
 
 import javax.persistence.Column;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -8,6 +9,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.xs.jt.base.module.entity.BaseEntity;
+/**
+ * 库房管理
+ * @author admin
+ *
+ */
 @Scope("prototype")
 @Component("storeRoom")
 @Entity
@@ -18,6 +24,12 @@ public class StoreRoom extends BaseEntity{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	//新车业务
+	public final static String CFLB_XC = "0";
+	
+	//过户业务
+	public final static String CFLB_GH = "1";
 
 	//档案室编号
 	@Column
@@ -42,6 +54,7 @@ public class StoreRoom extends BaseEntity{
 	//档案格容量
 	@Column
 	private Integer cellCapacity;
+	
 
 	public String getArchivesNo() {
 		return archivesNo;

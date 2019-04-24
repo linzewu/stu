@@ -16,7 +16,7 @@ public class SRMSConfig {
 	@Bean(name = "srmsDataSource")
 	@Primary
 	@ConfigurationProperties(prefix = "spring.datasource.srms")
-	public DataSource cmsDataSource() {
+	public DataSource srmsDataSource() {
 		return DataSourceBuilder.create().build();
 	}
 	
