@@ -268,7 +268,7 @@ function loadCLHGZ(barArray, strbarcode) {
 		dataInfo["clpp1"] = clpps[0];
 	}
 	dataInfo["clxh"] = barArray[8];
-	if(dataInfo["clxh"] != null && dataInfo["clxh"] != ""){
+	/**if(dataInfo["clxh"] != null && dataInfo["clxh"] != ""){
 		$.post("../../preCarRegister/getGongGaoInfo",{"clxh":dataInfo["clxh"]},function(data){
 			if (data != null){
 				$("#ggbh").val(data['BH']);
@@ -277,7 +277,8 @@ function loadCLHGZ(barArray, strbarcode) {
 			
 		},"json").complete(function(){
 		});
-	}
+	}**/
+	$("#cllx").val("K33");		
 	dataInfo["csys"] = barArray[9];
 
 	dataInfo["clsbdh"] = barArray[13];

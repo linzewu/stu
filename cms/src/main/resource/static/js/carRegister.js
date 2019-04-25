@@ -838,7 +838,7 @@ function shSaveAndPring() {
 	}
 	
 	$('#shForm').form({
-		url: "../../preCarRegister/savePreCarRegister"
+		url: "../../preCarRegister/savePreCarRegisterDJ"
 	});
 	var isValid = $('#shForm').form('validate');
 	if(isValid){

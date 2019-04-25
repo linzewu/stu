@@ -2,10 +2,12 @@ package com.xs.jt.cms.controller;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -376,6 +378,70 @@ public class PreCarRegisterController {
 //		map.put("BH", "001");
 //		map.put("CLLX", "K18");
 		return map;
+	}
+	
+	
+	@UserOperation(code = "savePreCarRegisterDJ", name = "自助机单机保存")
+	@RequestMapping(value = "savePreCarRegisterDJ", method = RequestMethod.POST)
+	public @ResponseBody Map savePreCarRegisterDJ(HttpSession session, @Valid PreCarRegister bcr, BindingResult result) throws Exception {
+		if (!result.hasErrors()) {
+			List<VehicleLock> list = vehicleLockManager.findLockVehicle(bcr.getClsbdh());
+			if (list != null && list.size() > 0) {
+				return ResultHandler.toErrorJSON("车辆已被锁定，不能保存");
+			}
+			User user = (User) session.getAttribute("user");
+			String stationCode = (String) user.getBmdm();// ---------------
+			bcr.setStationCode(stationCode);
+			String lsh = null;
+			if ("A".equals(bcr.getYwlx())) {
+				lsh = getlshdj();
+				//lsh = "123456789101111515";
+				bcr.setLsh(lsh);
+			}
+			if (null == bcr.getDpid() || "".equals(bcr.getDpid().trim())) {
+				bcr.setDpid(null);
+			}
+			bcr = this.preCarRegisterManager.save(bcr); 
+			if ("A".equals(bcr.getYwlx())) {
+				Map<String,Object> data =MapUtil.object2Map(bcr);
+				data.put("createtime", bcr.getCreateTime());
+				data.put("lshCode", BarcodeUtil.generateInputStream(lsh));
+				if(StringUtils.isEmpty(bcr.getHphm())) {
+					data.put("hphm", bcr.getClsbdh());
+				}
+				String template = "template_pt_first.doc";
+//				if ("Y".equals(bcr.getVeh_sfxc())) {
+//					template = "template_pt_xc.doc";
+//					CommonUtil.setXczl(bcr, data);
+//				}
+				Map<String, List<BaseParams>> bpsMap = (Map<String, List<BaseParams>>) servletContext.getAttribute("bpsMap");
+				com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil(template, data,bpsMap);
+				Sql2WordUtil.toCase(doc, cacheDir, "\\report\\template_ptc_01_"+lsh+".jpg");
+			}
+			return ResultHandler.resultHandle(result, lsh, Constant.ConstantMessage.SAVE_SUCCESS);
+		} else {
+			return ResultHandler.toErrorJSON("数据校验失败");
+		}
+	}
+	
+	/**
+	 * 单机  获取流水号
+	 * @return
+	 */
+	private String getlshdj() {
+		String lsh = "";
+		Calendar c = Calendar.getInstance();
+		int year = c.get(Calendar.YEAR) - 1900;
+		String month = (c.get(Calendar.MONTH)+1) < 10?("0"+(c.get(Calendar.MONTH)+1)):(c.get(Calendar.MONTH)+1)+"";
+		String date = (c.get(Calendar.DATE)+1) < 10?("0"+(c.get(Calendar.DATE)+1)):(c.get(Calendar.DATE)+1)+"";
+		String minute = (c.get(Calendar.MINUTE)+1) < 10?("0"+(c.get(Calendar.MINUTE)+1)):(c.get(Calendar.MINUTE)+1)+"";
+		String second = (c.get(Calendar.SECOND)+1) < 10?("0"+(c.get(Calendar.SECOND)+1)):(c.get(Calendar.SECOND)+1)+"";		
+
+		Random random = new Random();
+		int ends = random.nextInt(99);
+		String sjs = String.format("%02d",ends);
+		lsh = year+month+date+minute+second+sjs;
+		return lsh;
 	}
 	
 	
