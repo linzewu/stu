@@ -83,6 +83,10 @@ public class ArchivalRegister extends BaseEntity {
 	@Column(length = 30)
 	private String handleUser;
 	
+	//备注
+	@Column(length = 500)
+	private String remark;
+	
 	
 
 	public String getHphm() {
@@ -187,6 +191,14 @@ public class ArchivalRegister extends BaseEntity {
 
 	public void setFileNo(String fileNo) {
 		this.fileNo = fileNo;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 
 }

@@ -31,7 +31,7 @@ public class DepartmentContorller {
 	private DepartmentManagerImpl deptManager;
 
 	
-	@UserOperation(code="getDepts",name="部门查询")
+	@UserOperation(code="getDepts",name="部门查询",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	@RequestMapping(value = "getDepts", method = RequestMethod.POST)
 	public @ResponseBody List<Department> getDepts() {
 		List<Department> depts = deptManager.getDepts();

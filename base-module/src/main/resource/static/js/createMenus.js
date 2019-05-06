@@ -139,17 +139,21 @@ $(function() {
 	}).responseText;
 	
 	function createTab(data){
+		var c = 0;
 		$.each(data,function(i,n){
-			$("#tabAll").tabs("add",{
-				title:n.module,
-				selected:i==0?true:false,
-				href:n.url==null?"defaultTemplate.html":n.url,
-				onLoad:function(){
-					if(n.url==null){
-						createDefaultMenu(n.module,n.group);
+			if(hasPower(n)){
+				$("#tabAll").tabs("add",{
+					title:n.module,
+					selected:c==0?true:false,
+					href:n.url==null?"defaultTemplate.html":n.url,
+					onLoad:function(){
+						if(n.url==null){
+							createDefaultMenu(n.module,n.group);
+						}
 					}
-				}
-			});
+				});
+				c++;
+			}
 		});
 	};
 	
@@ -157,6 +161,7 @@ $(function() {
 		var currentPanel = $("#tabAll").tabs("getTab",title);
 		var accordion =$(currentPanel).find(".easyui-accordion");
 		var centerPanel = currentPanel.find(".easyui-layout").layout('panel','center');
+		var c = 0;
 		$.each(group,function(i,item){
 			
 			var menus = [];
@@ -165,15 +170,35 @@ $(function() {
 					menus.push(n);
 				}
 			});
-			accordion.accordion('add', {
-				title: item.groupName,
-				content: createItemMume(centerPanel,menus),//授权后修改  //----createItemMume(centerPanel,item.menus),所有权限
-				selected: i==0?true:false
-			});
+			
+			if(menus.length > 0){
+				accordion.accordion('add', {
+					title: item.groupName,
+					content: createItemMume(centerPanel,menus),//授权后修改  //----createItemMume(centerPanel,item.menus),所有权限
+					selected: c==0?true:false
+				});
+				c++;
+			}
 			
 		});
 		
 		
+	}
+	
+	function hasPower(data){
+		var flag = false;
+		$.each(data.group,function(i,item){
+			
+			var menus = [];
+			$.each(item.menus,function(i,n){
+				if(allRolePower.indexOf(n.permission) != -1){
+					flag = true;
+					return ;
+				}
+			});
+			if(flag) return;
+		});
+		return flag;
 	}
 	
 	function createItemMume(centerPanel, data) {

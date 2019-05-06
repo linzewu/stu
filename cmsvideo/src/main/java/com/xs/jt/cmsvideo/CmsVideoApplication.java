@@ -3,6 +3,7 @@ package com.xs.jt.cmsvideo;
 import java.io.IOException;
 
 import org.apache.axis2.transport.http.AxisServlet;
+import org.apache.catalina.connector.Connector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.SpringApplication;
@@ -10,14 +11,15 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import com.xs.jt.cmsvideo.util.FileCopyUtils;
 
@@ -74,6 +76,24 @@ public class CmsVideoApplication extends SpringBootServletInitializer
 	    helloWorldServlet.addInitParameter("axis2.repository.path", path);
 	    helloWorldServlet.setLoadOnStartup(1);
 	    return helloWorldServlet;
+	}
+    
+	// 下面是2.0的配置，1.x请搜索对应的设置
+	@Bean
+	public ServletWebServerFactory servletContainer() {
+		TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
+		tomcat.addAdditionalTomcatConnectors(createHTTPConnector());
+		return tomcat;
+	}
+
+	private Connector createHTTPConnector() {
+		Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+		// 同时启用http（8080）、https（8443）两个端口
+		connector.setScheme("http");
+		connector.setSecure(false);
+		connector.setPort(8087);
+		connector.setRedirectPort(8082);
+		return connector;
 	}
   
 }

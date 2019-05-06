@@ -7,11 +7,13 @@ import javax.persistence.Table;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.xs.jt.base.module.annotation.CheckBit;
 import com.xs.jt.base.module.entity.BaseEntity;
 @Scope("prototype")
 @Component("ftpConfig")
 @Entity
 @Table(name = "tm_Ftp_Config")
+@CheckBit
 public class FtpConfig extends BaseEntity {
 	
 	/**
@@ -76,6 +78,12 @@ public class FtpConfig extends BaseEntity {
 	}
 	public void setCapacity(Integer capacity) {
 		this.capacity = capacity;
+	}
+	@Override
+	public String toString() {
+		return "FtpConfig [jyjgbh=" + jyjgbh + ", ftpHost=" + ftpHost + ", ftpUserName=" + ftpUserName
+				+ ", ftpPassword=" + ftpPassword + ", ftpPort=" + ftpPort + ", cyqxh=" + cyqxh + ", capacity="
+				+ capacity + "]";
 	}
 	
 	

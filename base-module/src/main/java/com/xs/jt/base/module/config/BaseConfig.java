@@ -67,6 +67,7 @@ public class BaseConfig extends WebMvcConfigurationSupport  {
 		excludeList.add("/user/getZzjUser");
 		excludeList.add("/user/login");
 		excludeList.add("/static/**");
+		excludeList.add("/error");
 		excludeList.add("/");
 		if(!StringUtils.isEmpty(baseConfigExtend.getExcludeList())) {
 			String[] excludeLists = baseConfigExtend.getExcludeList().split(",");

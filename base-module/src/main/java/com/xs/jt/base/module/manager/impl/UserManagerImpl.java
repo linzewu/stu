@@ -151,4 +151,25 @@ public class UserManagerImpl implements IUserManager {
 	public List<User> getUsersExceptAdmin() {
 		return userRepository.getUsersExceptAdmin();
 	}
+
+
+	@Override
+	public boolean getUserByGH(String gh,Integer id) {
+		List<User> resultList = null;
+        Specification querySpecifi = new Specification<User>() {
+           
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+
+                List<Predicate> predicates = new ArrayList<Predicate>();
+                predicates.add(criteriaBuilder.equal(root.get("gh"), gh));
+                if(id != null){
+                    predicates.add(criteriaBuilder.notEqual(root.get("id"), id));
+                }
+               
+                return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+            }
+        };
+        resultList =  this.userRepository.findAll(querySpecifi);
+        return resultList == null || resultList.size() == 0 ? true : false;
+	}
 }

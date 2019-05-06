@@ -91,11 +91,23 @@ public class ArchivalCaseController {
 	@UserOperation(code = "findCheckOutLong", name = "查询超过三个工作日未入库档案")
 	@RequestMapping(value = "findCheckOutLong", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> findCheckOutLong(){
-		DecimalFormat   df   =new   DecimalFormat("0.00");  
 		Map<String, Object> data = new HashMap<String, Object>();
 		List<Map<String, Object>> list = archivalCaseManager.findCheckOutLong();
 		data.put("rows", list);
 		return data;
+	}
+	
+	@Transactional
+	@UserOperation(code="archivalCaseAdjust",name="档案格调整")
+	@RequestMapping(value = "archivalCaseAdjust", method = RequestMethod.POST,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8")
+	public @ResponseBody String archivalCaseAdjust(ArchivalCase archivalCase){		
+		boolean flag = this.archivalCaseManager.archivalCaseAdjust(archivalCase);
+		if(flag) {			
+			return  JSONObject.fromObject(ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, Constant.ConstantMessage.SUCCESS)).toString();
+		}else {
+			return  JSONObject.fromObject(ResultHandler.toMyJSON(Constant.ConstantState.STATE_ERROR,Constant.ConstantMessage.FAILURE)).toString();
+		}
+		
 	}
 	
 

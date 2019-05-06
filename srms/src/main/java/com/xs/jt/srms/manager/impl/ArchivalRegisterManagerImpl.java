@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xs.jt.base.module.common.Common;
@@ -32,7 +33,9 @@ import com.xs.jt.srms.dao.CustomRepository;
 import com.xs.jt.srms.entity.ArchivalCase;
 import com.xs.jt.srms.entity.ArchivalRegister;
 import com.xs.jt.srms.entity.ArchivalWarn;
+import com.xs.jt.srms.entity.StoreRoom;
 import com.xs.jt.srms.manager.IArchivalRegisterManager;
+import com.xs.jt.srms.util.NumberFormatUtil;
 @Service
 public class ArchivalRegisterManagerImpl implements IArchivalRegisterManager {
 	
@@ -108,59 +111,150 @@ public class ArchivalRegisterManagerImpl implements IArchivalRegisterManager {
 
 	@Override
 	public boolean archivalCheckOut(ArchivalCase archivalCase) {
-		addArchivalRegister(archivalCase,ArchivalCase.ZT_CK);
+		List<ArchivalCase> list = this.archivalCaseRepository.getArchivalCaseByBarCode(archivalCase.getBarCode());
+		String fileNoStr = "";
+		if("Y".equals(archivalCase.getZyOther())) {
+			if(!CollectionUtils.isEmpty(list)) {
+				if(list.size() == 1) {
+					//一条
+					ArchivalCase noUseCase = archivalCaseRepository.findNoUseArchivalCase(StoreRoom.CFLB_GH, ArchivalCase.ZT_WSY);
+					noUseCase.setClsbdh(list.get(0).getClsbdh());
+					noUseCase.setHphm(list.get(0).getHphm());
+					noUseCase.setHpzl(list.get(0).getHpzl());
+					noUseCase.setYwlx(archivalCase.getYwlx());
+					noUseCase.setBarCode(noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
+							+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo());
+					noUseCase.setZt(ArchivalCase.ZT_CK);
+					archivalCaseRepository.save(noUseCase);	
+					
+					noUseCase.setReason(archivalCase.getReason());
+					noUseCase.setRemark(archivalCase.getRemark());
+					addArchivalRegister(noUseCase,ArchivalCase.ZT_CK,noUseCase.getFileNo());
+					
+				}else if(list.size() >1) {
+					//多条转到其他档案架
+					archivalCase.setCaseNumber(list.size());
+					ArchivalCase caseOne = this.customRepository.findNoUseMultiOtherArchivalCase(archivalCase);
+					if(caseOne != null) {
+						List<String> fileNoList = new ArrayList<String>();
+						String fileNo = caseOne.getFileNo();
+						fileNoList.add(caseOne.getFileNo());
+						for (int i = 1; i < archivalCase.getCaseNumber(); i++) {
+							fileNo = NumberFormatUtil.autoGenericCode(fileNo, 3);
+							fileNoList.add(fileNo);
+						}
+						List<ArchivalCase> caseList = this.archivalCaseRepository.findMultiNoUseArchivalCase(caseOne.getArchivesNo(), caseOne.getRackNo(), caseOne.getRackRow(), caseOne.getRackCol(), fileNoList);
+						String barCode = "";
+						
+						ArchivalCase registerCase = null;
+						int cou = 0;
+						for(ArchivalCase noUseCase:caseList) {
+							noUseCase.setClsbdh(archivalCase.getClsbdh());
+							noUseCase.setHphm(archivalCase.getHphm());
+							noUseCase.setHpzl(archivalCase.getHpzl());
+							noUseCase.setYwlx(archivalCase.getYwlx());
+							if("".equals(barCode)) {
+								barCode = noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
+										+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo();
+							}
+							noUseCase.setBarCode(barCode);
+							noUseCase.setZt(ArchivalCase.ZT_CK);
+							archivalCaseRepository.save(noUseCase);	
+							fileNoStr = "".equals(fileNoStr) ? noUseCase.getFileNo():(fileNoStr+","+noUseCase.getFileNo());
+							if(cou == 0) {
+								registerCase = noUseCase;
+							}
+							cou++;
+							
+						}
+						
+						registerCase.setReason(archivalCase.getReason());
+						registerCase.setRemark(archivalCase.getRemark());
+						addArchivalRegister(registerCase,ArchivalCase.ZT_CK,fileNoStr);
+					}
+				}
+				//调整后原来的格子置为未使用
+//				List<ArchivalCase> originCaseList = this.archivalCaseRepository.getArchivalCaseByBarCode(archivalCase.getBarCode());
+				for(ArchivalCase originCase:list) {
+					originCase.setZt(ArchivalCase.ZT_WSY);
+					originCase.setClsbdh("");
+					originCase.setHphm("");
+					originCase.setHpzl("");
+					originCase.setYwlx("");
+					originCase.setBarCode("");
+					archivalCaseRepository.save(originCase);
+				}
+			}
+		}else {
 		
-		archivalCase.setZt(ArchivalCase.ZT_CK);
-		archivalCaseRepository.save(archivalCase);
+			for(ArchivalCase ac:list) {
+				ac.setZt(ArchivalCase.ZT_CK);
+				archivalCaseRepository.save(ac);
+				fileNoStr = "".equals(fileNoStr) ? ac.getFileNo():(fileNoStr+","+ac.getFileNo());
+			}
+			if(!CollectionUtils.isEmpty(list)) {
+				addArchivalRegister(archivalCase,ArchivalCase.ZT_CK,fileNoStr);
+			}
+		}
 		return true;
 	}
 
 	@Override
 	public boolean archivalCheckIn(ArchivalCase archivalCase) {
-		addArchivalRegister(archivalCase,ArchivalCase.ZT_RK);
+		List<ArchivalCase> list = this.archivalCaseRepository.getArchivalCaseByBarCode(archivalCase.getBarCode());
+		String fileNoStr = "";
 		
-		archivalCase.setZt(ArchivalCase.ZT_RK);
-		archivalCaseRepository.save(archivalCase);
+		for(ArchivalCase ac:list) {
+			ac.setZt(ArchivalCase.ZT_RK);
+			archivalCaseRepository.save(ac);
+			fileNoStr = "".equals(fileNoStr) ? ac.getFileNo():(fileNoStr+","+ac.getFileNo());
+		}
+		if(!CollectionUtils.isEmpty(list)) {
+			addArchivalRegister(archivalCase,ArchivalCase.ZT_RK,fileNoStr);
+		}
 		return true;
 	}
 
-	private void addArchivalRegister(ArchivalCase archivalCase,String zt) {
+	private void addArchivalRegister(ArchivalCase archivalCase,String zt,String fileNoStr) {
 		User user = (User) session.getAttribute("user");
-		ArchivalRegister archivalRegister = new ArchivalRegister();
-		archivalRegister.setArchivesNo(archivalCase.getArchivesNo());
-		archivalRegister.setRackNo(archivalCase.getRackNo());
-		archivalRegister.setRackCol(archivalCase.getRackCol());
-		archivalRegister.setRackRow(archivalCase.getRackRow());
-		archivalRegister.setFileNo(archivalCase.getFileNo());
-		
-		archivalRegister.setZt(zt);
-		archivalRegister.setBarCode(archivalCase.getBarCode());
-		archivalRegister.setClsbdh(archivalCase.getClsbdh());
-		archivalRegister.setHandleUser(user.getYhm());
-		archivalRegister.setHphm(archivalCase.getHphm());
-		archivalRegister.setHpzl(archivalCase.getHpzl());
-		archivalRegister.setReason(archivalCase.getReason());
-		archivalRegister.setYwlx(archivalCase.getYwlx());
-		archivalRegisterRepository.save(archivalRegister);
-		
-		BaseParams bp = baseParamsManager.getBaseParam("yjlx", ArchivalWarn.YJLX_DCBL);
-		if(bp != null) {
-			String paramValue = bp.getParamValue();
-			JSONObject jo = JSONObject.parseObject(paramValue);
-			int blcs = this.archivalRegisterRepository.findMultiArchivalRegister(archivalCase.getBarCode(), Integer.parseInt(jo.get("days").toString()));
-			if(blcs >= Integer.parseInt(jo.get("blcs").toString())) {
-				ArchivalWarn warn = new ArchivalWarn();
-				warn.setArchivesNo(archivalCase.getArchivesNo());
-				warn.setRackNo(archivalCase.getRackNo());
-				warn.setRackCol(archivalCase.getRackCol());
-				warn.setRackRow(archivalCase.getRackRow());
-				warn.setFileNo(archivalCase.getFileNo());
-				warn.setDescribe("条码为"+archivalCase.getBarCode()+"的档案，在"+jo.get("days").toString()+"天内办理了"+blcs+"次出入库");
-				warn.setWarnType(ArchivalWarn.YJLX_DCBL);
-				warn.setWarnDate(new Date());
-				archivalWarnRepository.save(warn);
+//		for(ArchivalCase archivalCase:archivalCaseList) {
+			ArchivalRegister archivalRegister = new ArchivalRegister();
+			archivalRegister.setArchivesNo(archivalCase.getArchivesNo());
+			archivalRegister.setRackNo(archivalCase.getRackNo());
+			archivalRegister.setRackCol(archivalCase.getRackCol());
+			archivalRegister.setRackRow(archivalCase.getRackRow());
+			archivalRegister.setFileNo(fileNoStr);
+			
+			archivalRegister.setZt(zt);
+			archivalRegister.setBarCode(archivalCase.getBarCode());
+			archivalRegister.setClsbdh(archivalCase.getClsbdh());
+			archivalRegister.setHandleUser(user.getYhm());
+			archivalRegister.setHphm(archivalCase.getHphm());
+			archivalRegister.setHpzl(archivalCase.getHpzl());
+			archivalRegister.setReason(archivalCase.getReason());
+			archivalRegister.setRemark(archivalCase.getRemark());
+			archivalRegister.setYwlx(archivalCase.getYwlx());
+			archivalRegisterRepository.save(archivalRegister);
+			
+			BaseParams bp = baseParamsManager.getBaseParam("yjlx", ArchivalWarn.YJLX_DCBL);
+			if(bp != null) {
+				String paramValue = bp.getParamValue();
+				JSONObject jo = JSONObject.parseObject(paramValue);
+				int blcs = this.archivalRegisterRepository.findMultiArchivalRegister(archivalCase.getBarCode(), Integer.parseInt(jo.get("days").toString()));
+				if(blcs >= Integer.parseInt(jo.get("blcs").toString())) {
+					ArchivalWarn warn = new ArchivalWarn();
+					warn.setArchivesNo(archivalCase.getArchivesNo());
+					warn.setRackNo(archivalCase.getRackNo());
+					warn.setRackCol(archivalCase.getRackCol());
+					warn.setRackRow(archivalCase.getRackRow());
+					warn.setFileNo(fileNoStr);
+					warn.setDescribe("条码为"+archivalCase.getBarCode()+"的档案，在"+jo.get("days").toString()+"天内办理了"+blcs+"次出入库");
+					warn.setWarnType(ArchivalWarn.YJLX_DCBL);
+					warn.setWarnDate(new Date());
+					archivalWarnRepository.save(warn);
+				}
 			}
-		}
+//		}
 		
 	}
 

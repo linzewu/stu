@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.xs.jt.base.module.common.Common;
 import com.xs.jt.base.module.entity.User;
@@ -28,6 +29,7 @@ import com.xs.jt.srms.entity.ArchivalCase;
 import com.xs.jt.srms.entity.ArchivalRegister;
 import com.xs.jt.srms.entity.StoreRoom;
 import com.xs.jt.srms.manager.IArchivalCaseManager;
+import com.xs.jt.srms.util.NumberFormatUtil;
 @Service
 public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 	
@@ -135,6 +137,8 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 		noUseCase.setHphm(archivalCase.getHphm());
 		noUseCase.setHpzl(archivalCase.getHpzl());
 		noUseCase.setYwlx(archivalCase.getYwlx());
+		noUseCase.setBarCode(noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
+				+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo());
 		noUseCase.setZt(ArchivalCase.ZT_RK);
 		archivalCaseRepository.save(noUseCase);	
 		saveArchivalRegister(noUseCase);
@@ -158,22 +162,46 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 		archivalRegister.setYwlx(archivalCase.getYwlx());
 		archivalRegisterRepository.save(archivalRegister);
 	}
+	
+	private void saveArchivalRegister(ArchivalCase archivalCase,String fileNoStr) {
+		User user = (User) session.getAttribute("user");
+		ArchivalRegister archivalRegister = new ArchivalRegister();
+		archivalRegister.setArchivesNo(archivalCase.getArchivesNo());
+		archivalRegister.setRackNo(archivalCase.getRackNo());
+		archivalRegister.setRackCol(archivalCase.getRackCol());
+		archivalRegister.setRackRow(archivalCase.getRackRow());
+		archivalRegister.setFileNo(fileNoStr);
+		archivalRegister.setZt(ArchivalCase.ZT_RK);
+		archivalRegister.setBarCode(archivalCase.getBarCode());
+		archivalRegister.setClsbdh(archivalCase.getClsbdh());
+		archivalRegister.setHandleUser(user.getYhm());
+		archivalRegister.setHphm(archivalCase.getHphm());
+		archivalRegister.setHpzl(archivalCase.getHpzl());
+		archivalRegister.setYwlx(archivalCase.getYwlx());
+		archivalRegisterRepository.save(archivalRegister);
+	}
 
 	@Override
 	public boolean UsedCarArchivalCheckIn(ArchivalCase archivalCase) {
-		ArchivalCase oldCase = archivalCaseRepository.getArchivalCaseByClsbdh(archivalCase.getClsbdh());
-		if(oldCase != null) {
-			oldCase.setYwlx(archivalCase.getYwlx());
-			oldCase.setZt(ArchivalCase.ZT_RK);
-			archivalCaseRepository.save(oldCase);
+		List<ArchivalCase> oldCaseList = archivalCaseRepository.getArchivalCaseByClsbdh(archivalCase.getClsbdh());
+		if(!CollectionUtils.isEmpty(oldCaseList)) {
+			String fileNoStr = "";
+			for(ArchivalCase oldCase:oldCaseList) {
+				oldCase.setYwlx(archivalCase.getYwlx());
+				oldCase.setZt(ArchivalCase.ZT_RK);
+				archivalCaseRepository.save(oldCase);				
+				fileNoStr = "".equals(fileNoStr) ? oldCase.getFileNo():(fileNoStr+","+oldCase.getFileNo());
+			}
 			
-			saveArchivalRegister(oldCase);
+			saveArchivalRegister(oldCaseList.get(0),fileNoStr);
 		}else {
 			ArchivalCase noUseCase = archivalCaseRepository.findNoUseArchivalCase(StoreRoom.CFLB_XC, ArchivalCase.ZT_WSY);
 			noUseCase.setClsbdh(archivalCase.getClsbdh());
 			noUseCase.setHphm(archivalCase.getHphm());
 			noUseCase.setHpzl(archivalCase.getHpzl());
 			noUseCase.setYwlx(archivalCase.getYwlx());
+			noUseCase.setBarCode(noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
+					+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo());
 			noUseCase.setZt(ArchivalCase.ZT_RK);
 			archivalCaseRepository.save(noUseCase);	
 			saveArchivalRegister(noUseCase);
@@ -190,6 +218,77 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 	@Override
 	public List<Map<String, Object>> findCheckOutLong() {
 		return this.customRepository.findCheckOutLong();
+	}
+
+	@Override
+	public boolean archivalCaseAdjust(ArchivalCase archivalCase) {
+		boolean flag = false;
+		if(archivalCase.getCaseNumber() == 1) {
+			ArchivalCase noUseCase = archivalCaseRepository.findNoUseArchivalCase(StoreRoom.CFLB_XC, ArchivalCase.ZT_WSY);
+			noUseCase.setClsbdh(archivalCase.getClsbdh());
+			noUseCase.setHphm(archivalCase.getHphm());
+			noUseCase.setHpzl(archivalCase.getHpzl());
+			noUseCase.setYwlx(archivalCase.getYwlx());
+			noUseCase.setBarCode(noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
+					+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo());
+			noUseCase.setZt(ArchivalCase.ZT_RK);
+			archivalCaseRepository.save(noUseCase);	
+			saveArchivalRegister(noUseCase);
+			flag = true;
+		}else if(archivalCase.getCaseNumber() > 1) {
+			ArchivalCase caseOne = this.customRepository.findNoUseMultiArchivalCase(archivalCase);
+			if(caseOne != null) {
+				List<String> fileNoList = new ArrayList<String>();
+				String fileNo = caseOne.getFileNo();
+				fileNoList.add(caseOne.getFileNo());
+				for (int i = 1; i < archivalCase.getCaseNumber(); i++) {
+					fileNo = NumberFormatUtil.autoGenericCode(fileNo, 3);
+					fileNoList.add(fileNo);
+				}
+				List<ArchivalCase> caseList = this.archivalCaseRepository.findMultiNoUseArchivalCase(caseOne.getArchivesNo(), caseOne.getRackNo(), caseOne.getRackRow(), caseOne.getRackCol(), fileNoList);
+				String barCode = "";
+				String fileNoStr = "";
+				ArchivalCase registerCase = null;
+				int cou = 0;
+				for(ArchivalCase noUseCase:caseList) {
+					noUseCase.setClsbdh(archivalCase.getClsbdh());
+					noUseCase.setHphm(archivalCase.getHphm());
+					noUseCase.setHpzl(archivalCase.getHpzl());
+					noUseCase.setYwlx(archivalCase.getYwlx());
+					if("".equals(barCode)) {
+						barCode = noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
+								+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo();
+					}
+					noUseCase.setBarCode(barCode);
+					noUseCase.setZt(ArchivalCase.ZT_RK);
+					archivalCaseRepository.save(noUseCase);	
+					fileNoStr = "".equals(fileNoStr) ? noUseCase.getFileNo():(fileNoStr+","+noUseCase.getFileNo());
+					if(cou == 0) {
+						registerCase = noUseCase;
+					}
+					cou++;
+					
+				}
+				saveArchivalRegister(registerCase,fileNoStr);
+				flag = true;
+			}
+		}
+		if(flag) {
+			//调整后原来的格子置为未使用
+			List<ArchivalCase> originCaseList = this.archivalCaseRepository.getArchivalCaseByBarCode(archivalCase.getBarCode());
+			for(ArchivalCase originCase:originCaseList) {
+				originCase.setZt(ArchivalCase.ZT_WSY);
+				originCase.setClsbdh("");
+				originCase.setHphm("");
+				originCase.setHpzl("");
+				originCase.setYwlx("");
+				originCase.setBarCode("");
+				archivalCaseRepository.save(originCase);
+			}
+			return true;
+		}else {
+			return false;
+		}
 	}
 
 }

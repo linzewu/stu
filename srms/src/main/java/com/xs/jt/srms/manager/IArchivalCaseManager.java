@@ -23,5 +23,7 @@ public interface IArchivalCaseManager {
 	
 	public List<Map<String,Object>> findCheckOutLong();
 	
+	public boolean archivalCaseAdjust(ArchivalCase archivalCase);
+	
 
 }

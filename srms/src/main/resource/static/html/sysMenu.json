@@ -62,6 +62,11 @@
 					"title": "在用车档案入库",
 					"href": "../../static/html/usedCarCheckIn.html",
 					"permission":"archivalCase.getArchivalCaseCheckInList"
+				},{
+					"icon": "../../static/images/adjustment.png",
+					"title": "档案格调整",
+					"href": "../../static/html/archivalCaseAdjust.html",
+					"permission":"archivalCase.getArchivalCaseList"
 				}				
 			]
 		}]
