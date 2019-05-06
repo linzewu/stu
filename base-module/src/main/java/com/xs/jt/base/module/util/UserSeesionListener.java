@@ -45,6 +45,7 @@ public class UserSeesionListener implements HttpSessionListener, HttpSessionAttr
     	HttpSession currentSeesion  =se.getSession();
     	User user = (User) currentSeesion.getAttribute(Constant.ConstantKey.USER_SESSIO_NKEY);
     	if(user!=null) {
+    		currentSeesion.removeAttribute(Constant.ConstantKey.USER_SESSIO_NKEY);
     		Map<String,HttpSession> userSessionList = (Map<String, HttpSession>) currentSeesion.getServletContext().getAttribute("userSessionList");
     		if(userSessionList!=null) {
         		userSessionList.remove(user.getYhm());
@@ -57,7 +58,6 @@ public class UserSeesionListener implements HttpSessionListener, HttpSessionAttr
 		if(event.getName().equals(Constant.ConstantKey.USER_SESSIO_NKEY)) {
 			
 			HttpSession currentSession =event.getSession();
-			
 			ServletContext servletContext =currentSession.getServletContext();
 			
 			User user = (User) currentSession.getAttribute(event.getName());

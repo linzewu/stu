@@ -8,12 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -99,7 +101,7 @@ public class UserController {
 		return user;
 	}
 
-	
+	@RecordLog
 	@UserOperation(code="save",name="编辑用户")
 	@RequestMapping(value = "saveUser", method = RequestMethod.POST,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8")
 	public @ResponseBody String saveUser(User user, BindingResult result) throws IOException {
@@ -171,6 +173,19 @@ public class UserController {
 	@UserOperation(code="login",name="登录",userOperationEnum=CommonUserOperationEnum.NoLogin)
 	public @ResponseBody Map login(HttpServletRequest request, String userName, String password) {
 		HttpSession session = request.getSession();
+		List<BaseParams> bplist = this.baseParamsManager.getBaseParamsByType("maxSessionCount");
+		if(!CollectionUtils.isEmpty(bplist)) {
+			BaseParams bp = bplist.get(0);
+			int sessCou = Integer.parseInt(bp.getParamValue());
+			ServletContext servletContext =session.getServletContext();
+			Map<String,HttpSession> sessionMap = (Map<String,HttpSession>)servletContext.getAttribute("userSessionList");
+			if(sessionMap != null) {
+				if(sessionMap.size() > sessCou) {
+					Map data=ResultHandler.toMyJSON(0, "已经达到用户最大会话数，禁止登录！");
+					return data;
+				}
+			}
+		}
 		RequestContext requestContext = new RequestContext(request);
 		if(blackListManager.checkIpIsBan(Common.getIpAdrress(request))) {
 			Map data=ResultHandler.toMyJSON(0, "当前IP已被列入黑名单，请联系管理员！");
@@ -250,10 +265,11 @@ public class UserController {
 		}
 	}
 
+	@RecordLog
 	@RequestMapping(value = "logout", method = RequestMethod.POST)
 	@UserOperation(code="logout",name="登出",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	public @ResponseBody Map logout(HttpSession session) {
-		session.removeAttribute(Constant.ConstantKey.USER_SESSIO_NKEY);
+		
 		session.invalidate();
 		return ResultHandler.toSuccessJSON("注销成功");
 	}
@@ -535,6 +551,24 @@ public class UserController {
     public String toLogin(){ 
         return "login";
     }
+	
+	@UserOperation(code="save",name="校验警号",isMain=false)
+	@RequestMapping(value = "validateGH")
+	public @ResponseBody boolean validateGH(User user) {
+		return this.userManager.getUserByGH(user.getGh(),user.getId());
+	}
+	
+	@RequestMapping(value = "onlineUser", method = RequestMethod.POST)
+	@UserOperation(code="onlineUser",name="查询在线用户数",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
+	public @ResponseBody Map onlineUser(HttpSession session) {
+		int count = 0;
+		ServletContext servletContext =session.getServletContext();
+		Map<String,HttpSession> sessionMap = (Map<String,HttpSession>)servletContext.getAttribute("userSessionList");
+		if(sessionMap != null) {
+			count = sessionMap.size();
+		}
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "查询在线用户数成功！", count);
+	}
 		
 	
 }

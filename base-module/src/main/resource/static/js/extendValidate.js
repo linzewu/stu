@@ -102,8 +102,8 @@ $.extend(
 		},
 		passwordValide: {			
 	        validator: function(value, param){
-	        	var paramValue = "/^(?![a-zA-Z0-9]+$)(?![^a-zA-Z\/D]+$)(?![^0-9\/D]+$).{6,16}$/";
-	        	var memo = "不能使用默认密码，只能输入6-16个字母、数字、特殊符号";
+	        	var paramValue = "/^(?![a-zA-Z0-9]+$)(?![^a-zA-Z\/D]+$)(?![^0-9\/D]+$).{8,16}$/";
+	        	var memo = "不能使用默认密码，只能输入8-16个字母、数字、特殊符号";
 	        	var bpObj = comm.getBaseParamObjs("mmjygz");
 	        	if (bpObj.length > 0){
 	        		paramValue = bpObj[0].paramValue;
@@ -130,5 +130,28 @@ $.extend(
 	            return /^(13|15|18|17|14|19)\d{9}$/i.test(value);
 	        },
 	        message : '手机号码格式不正确'
-	    }
+	    },
+    	ghValide : {
+			validator : function(value, param) {
+				console.log(param)
+				var bflag=false;
+				
+					var data={};
+					data.gh=value;
+					var id =$(param[0]).val();
+					if(id!=null&&$.trim(id)!=""){
+						data.id=id;
+					}
+					var r = $.ajax({url:'../../user/validateGH',dataType:"json",data:data,async:false,cache:false,type:"post"}).responseText;
+					bflag=r=="true";
+					if(!bflag){
+						param[1]='警号已存在';
+					}
+				
+				
+				
+				return bflag;
+			},
+			message : '{1}'
+		}
 	});

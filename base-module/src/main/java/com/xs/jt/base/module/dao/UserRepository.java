@@ -20,5 +20,6 @@ public interface UserRepository extends JpaRepository<User,Integer>,JpaSpecifica
 	
 	@Query(value = "from User  where yhm!='admin'")
 	public List<User> getUsersExceptAdmin();
+	
 
 }

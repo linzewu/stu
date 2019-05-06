@@ -19,6 +19,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -28,6 +29,7 @@ import com.xs.jt.base.module.entity.User;
 
 @Aspect
 @Component
+@Order(0)
 public class BaseAopAction {
 
 	private static Logger logger = LoggerFactory.getLogger(BaseAopAction.class);

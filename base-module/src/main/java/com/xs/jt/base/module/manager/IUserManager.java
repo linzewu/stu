@@ -36,5 +36,8 @@ public interface IUserManager {
 	public List<User> getUsersExceptAdmin();
 	
 	
+	public boolean getUserByGH(String gh,Integer id);
+	
+	
 
 }

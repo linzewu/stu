@@ -1,6 +1,7 @@
 package com.xs.jt.base.module.entity;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -16,12 +17,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.xs.jt.base.module.annotation.CheckBit;
 
 @Scope("prototype")
 @Component("user")
 @Entity
 @Table(name = "TB_User")
+@CheckBit
 public class User extends BaseEntity {
 	
 	
@@ -373,6 +375,18 @@ public class User extends BaseEntity {
 
 	public void setQmFile(MultipartFile qmFile) {
 		this.qmFile = qmFile;
+	}
+	
+	@Override
+	public String toString() {
+		SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss" );
+		return "User [bmdm=" + bmdm + ", yhxm=" + yhxm + ", yhm=" + yhm + ", mm=" + mm + ", sfzh=" + sfzh + ", gh=" + gh
+				+ ", ipqsdz=" + ipqsdz + ", ipjsdz=" + ipjsdz + ", gdip="
+				+ gdip + ", zt=" + zt + ", qxms=" + qxms + ", js=" + js + ", qx=" + qx
+				+ ", permitBeginTime=" + permitBeginTime + ", permitEndTime=" + permitEndTime + ", isPolice=" + isPolice
+				+ ", loginFailCou=" + loginFailCou + ", ip=" + ip 
+				+ ", lastTimeIP=" + lastTimeIP
+				+ ", lastTimeLoginFailIP=" + lastTimeLoginFailIP + "]";
 	}
 	
 }

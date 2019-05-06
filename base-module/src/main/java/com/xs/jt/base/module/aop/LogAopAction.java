@@ -60,6 +60,8 @@ public class LogAopAction {
 
 	@Autowired
 	private ServletContext servletContext;
+	
+	private static String notLogMethod = "login,passwordReset,updatePassword";
 
 	// @Pointcut("execution(* com.xs.jt.base.module.controller.*.*(..))")
 	@Pointcut("execution(* com.xs.jt..*.controller.*.*(..))")
@@ -163,8 +165,8 @@ public class LogAopAction {
 		Object[] args = pjp.getArgs();
 		StringBuffer sbStr = new StringBuffer("");
 		JsonConfig jsonConfig = new JsonConfig();
-		jsonConfig.setExcludes(new String[] { "qmFile" });
-		if (args != null && args.length > 0) {
+		jsonConfig.setExcludes(new String[] { "qmFile","mm" });
+		if (args != null && args.length > 0 && isNotExistMethod(methodName)) {
 			for (int c = 0; c < args.length; c++) {
 				if (args[c].getClass().getSuperclass() == BaseEntity.class
 						|| args[c].getClass() == LinkedHashMap.class) {
@@ -246,6 +248,16 @@ public class LogAopAction {
 			XFor = request.getRemoteAddr();
 		}
 		return XFor;
+	}
+	
+	private boolean isNotExistMethod(String method) {
+		String[] methodArr = this.notLogMethod.split(",");
+		for(String m:methodArr) {
+			if(m.equals(method)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

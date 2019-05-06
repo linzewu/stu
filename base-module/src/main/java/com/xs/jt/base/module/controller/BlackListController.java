@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.jt.base.module.annotation.Modular;
+import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Common;
 import com.xs.jt.base.module.common.Constant;
@@ -65,6 +66,7 @@ public class BlackListController {
 		}
 	}
 	
+	@RecordLog
 	@UserOperation(code="delete",name="删除黑名单")
 	@RequestMapping(value = "delete", method = RequestMethod.POST)
 	public @ResponseBody void delete(BlackList blackList,HttpSession session){

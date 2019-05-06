@@ -12,6 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.xs.jt.base.module.annotation.CheckBit;
 
 
 /**
@@ -23,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Component("operationLog")
 @Entity
 @Table(name = "TC_OperationLogs")
+@CheckBit
 public class OperationLog extends BaseEntity {
 	
 	public static Integer OPERATION_RESULT_SUCCESS=1;
@@ -214,6 +216,15 @@ public class OperationLog extends BaseEntity {
 
 	public void setCoreFunction(String coreFunction) {
 		this.coreFunction = coreFunction;
+	}
+
+	@Override
+	public String toString() {
+		return "OperationLog [actionTime=" + actionTime + ", operationUser=" + operationUser + ", operationType="
+				+ operationType + ", content=" + content + ", ipAddr=" + ipAddr + ", actionUrl=" + actionUrl
+				+ ", operationResult=" + operationResult + ", failMsg=" + failMsg + ", module=" + module
+				+ ", operationCondition=" + operationCondition + ", coreFunction=" + coreFunction + ", status=" + status
+				+ "]";
 	}
 	
 	

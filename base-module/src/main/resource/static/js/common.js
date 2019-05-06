@@ -350,6 +350,42 @@ var gridUtil = {
     };  
 })(jQuery);
 
+function checkbit(data,errors){
+	var temp;
+	if(typeof(data) == "string"){
+		try{
+			temp=$.parseJSON(data);
+		}catch (e) {
+			console.log("返回非JSON对象");
+		}
+	}else{
+		temp=data;
+	}
+	if(temp){
+		if(!$.isArray(temp)&&typeof(temp)=="object"){
+			if(temp["checkBitOk"]== undefined){
+				$.each(temp,function(i,n){
+					if(typeof(n)=="object"){
+						return checkbit(n,errors);
+					}
+				});
+			}else{
+				if(temp["checkBitOk"]==false){
+					//return temp;
+					errors.push(temp)
+				}
+			}
+		}else if($.isArray(temp)){
+			$.each(temp,function(i,n){
+				return checkbit(n,errors);
+			});
+		}else{
+			return;
+		}
+	}
+	
+}
+
 $(function($){  
     // 备份jquery的ajax方法
     var _ajax=$.ajax;  
@@ -370,7 +406,7 @@ $(function($){
           
         // 扩展增强处理
         var _opt = $.extend(opt,{  
-            error:function(XMLHttpRequest, textStatus, errorThrown){  
+            error:function(XMLHttpRequest, textStatus, errorThrown){
                 fn.error(XMLHttpRequest, textStatus, errorThrown);  
             },
             success:function(data, textStatus){
@@ -395,6 +431,25 @@ $(function($){
                 	$.messager.alert("无权限", "您没有权限访问！请联系管理员进行设置！",'error')
                     // window.location.href="notPermission.html";
                     return;
+                }
+                var errors =[];
+                checkbit(data,errors);
+                if(errors.length > 0){
+                	var msg = JSON.stringify(errors);
+                	
+                	$.messager.show({
+                		title:'数据非法篡改！',
+                		msg:msg,
+                		timeout:0,
+                		 showType:'fade',
+                		 width:'500px',
+                		 height:'500px',
+                         style:{
+                             right:'',
+                             bottom:'',
+                             
+                         }
+                	});
                 }
                 fn.success(data, textStatus);
             }
