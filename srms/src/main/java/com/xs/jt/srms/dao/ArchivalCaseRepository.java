@@ -14,7 +14,11 @@ import com.xs.jt.srms.entity.ArchivalCase;
 public interface ArchivalCaseRepository extends JpaRepository<ArchivalCase, Integer>,JpaSpecificationExecutor<ArchivalCase>{
 
 	@Query(value = "from ArchivalCase where clsbdh = :clsbdh")
-	public ArchivalCase getArchivalCaseByClsbdh(@Param("clsbdh") String clsbdh);
+	public List<ArchivalCase> getArchivalCaseByClsbdh(@Param("clsbdh") String clsbdh);
+	
+	@Query(value = "from ArchivalCase where barCode = :barCode")
+	public List<ArchivalCase> getArchivalCaseByBarCode(@Param("barCode") String barCode);
+	
 	@Query(value = "select * from (select c.* from tm_archival_case c LEFT JOIN tm_store_room r ON  c.rack_no = r.rack_no where r.storage_type = :storageType and zt = :zt  order by r.seq,c.archives_no,c.rack_no,c.rack_row,c.rack_col,c.file_no )where rownum =1 ",nativeQuery=true)
 	public ArchivalCase findNoUseArchivalCase(@Param("storageType")String storageType,@Param("zt")String zt);
 	
@@ -37,4 +41,9 @@ public interface ArchivalCaseRepository extends JpaRepository<ArchivalCase, Inte
 	
 	@Query(value = "from ArchivalCase where zt != :zt and rackNo = :rackNo")
 	public List<ArchivalCase> findUseArchivalCase(@Param("zt")String zt,@Param("rackNo")String rackNo);
+	
+	@Query(value = "from ArchivalCase where archivesNo = :archivesNo and rackNo = :rackNo and rackRow = :rackRow and rackCol = :rackCol and fileNo in (:fileNo)")
+	public List<ArchivalCase> findMultiNoUseArchivalCase(@Param("archivesNo") String archivesNo,
+			@Param("rackNo") String rackNo, @Param("rackRow") Integer rackRow, @Param("rackCol") Integer rackCol,
+			@Param("fileNo") List<String> fileNo);
 }

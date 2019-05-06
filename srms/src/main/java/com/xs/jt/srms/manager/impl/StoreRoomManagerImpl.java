@@ -89,9 +89,9 @@ public class StoreRoomManagerImpl implements IStoreRoomManager {
 		int cols = storeRoom.getRackCols();
 		int capacity = storeRoom.getCellCapacity();
 		List<ArchivalCase> acList = new ArrayList<ArchivalCase>();
-		for(int i=1;i<=rows;i++) {
-			String fileNo = "000";
+		for(int i=1;i<=rows;i++) {			
 			for(int j=1;j<=cols;j++) {
+				String fileNo = "000";
 				for(int k=1;k<=capacity;k++) {
 					ArchivalCase archivalCase = new ArchivalCase();
 					archivalCase.setArchivesNo(storeRoom.getArchivesNo());
@@ -101,7 +101,7 @@ public class StoreRoomManagerImpl implements IStoreRoomManager {
 					archivalCase.setZt(ArchivalCase.ZT_WSY);
 					fileNo = NumberFormatUtil.autoGenericCode(fileNo, 3);
 					archivalCase.setFileNo(fileNo);
-					archivalCase.setBarCode(archivalCase.getArchivesNo()+archivalCase.getRackNo()+archivalCase.getRackCol()+archivalCase.getRackRow()+archivalCase.getFileNo());
+					//archivalCase.setBarCode(archivalCase.getArchivesNo()+archivalCase.getRackNo()+archivalCase.getRackCol()+archivalCase.getRackRow()+archivalCase.getFileNo());
 					acList.add(archivalCase);
 				}
 			}

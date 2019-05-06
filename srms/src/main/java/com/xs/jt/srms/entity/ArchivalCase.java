@@ -80,6 +80,21 @@ public class ArchivalCase extends BaseEntity {
 
 	@Transient
 	private String reason;
+	@Transient
+	private String remark;
+	@Transient
+	private Integer caseNumber;
+	//是否转移到其他档案架
+	@Transient
+	private String zyOther;
+
+	public String getZyOther() {
+		return zyOther;
+	}
+
+	public void setZyOther(String zyOther) {
+		this.zyOther = zyOther;
+	}
 
 	public String getArchivesNo() {
 		return archivesNo;
@@ -175,6 +190,22 @@ public class ArchivalCase extends BaseEntity {
 
 	public void setReason(String reason) {
 		this.reason = reason;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public Integer getCaseNumber() {
+		return caseNumber;
+	}
+
+	public void setCaseNumber(Integer caseNumber) {
+		this.caseNumber = caseNumber;
 	}
 
 }
