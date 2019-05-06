@@ -34,7 +34,7 @@
 					"icon": "../../static/images/smart_video.png",
 					"title": "查验PDA管理",
 					"href": "../../static/html/pdaManager.html",
-					"permission":"videoInfo.getVideoInfoList"
+					"permission":"pdaInfo.getPdaInfoList"
 				}
 			]
 		}]
