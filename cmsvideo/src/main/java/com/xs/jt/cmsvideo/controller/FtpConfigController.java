@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.jt.base.module.annotation.Modular;
+import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
@@ -29,6 +30,7 @@ public class FtpConfigController {
 	@Autowired
 	private IFtpConfigManager ftpConfigManager;
 	
+	@RecordLog
 	@UserOperation(code = "getFtpConfigList", name = "查询Ftp配置列表")
 	@RequestMapping(value = "getFtpConfigList", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> getVideoConfigList(Integer page, Integer rows, FtpConfig ftpConfig) {

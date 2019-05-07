@@ -252,6 +252,11 @@ $(window).load(function() {
          position: 'left',
          content: cont,
          onShow: function(){
+        	 $.post("../../user/onlineUser",function(data){
+        		 if(data.state == 1){
+        			 $('#tipMsg').tooltip("update",cont+",<br/>当前在线人数："+data.data);
+        		 }
+        	});
              $(this).tooltip('tip').css({
                 // backgroundColor: '#666',
                  borderColor: '#666'
