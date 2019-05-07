@@ -6,8 +6,8 @@
 			<thead> 
 				<tr>
 					<th data-options="field:'jsmc'"  style="width: 200px;">角色名称</th>
-					<th data-options="field:'jsjb',formatter:roleManager.jsjbFormatter"  style="width: 200px;">角色级别</th>
-					<th data-options="field:'jslx',formatter:roleManager.jslxFormatter"  style="width: 200px;">角色类型</th>
+					<th data-options="field:'jsjb',formatter:roleManager.jsjbFormatter"  style="width: 200px;">角色类别</th>
+					<th data-options="field:'jslx',formatter:roleManager.jslxFormatter"  style="width: 200px;">角色定义</th>
 					<th data-options="field:'bz'"  style="width: 400px;">备注</th>
 				</tr>
 			</thead>
@@ -20,7 +20,7 @@
 			</div>
 			<div>
 				<label>角色名称：</label><input name="jsmc">
-				<label>角色级别：</label><select name="jsjb" id="list-jsjb"></select>
+				<label>角色类别：</label><select name="jsjb" id="list-jsjb"></select>
 				<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="roleManager.queryRole()">查询</a>
 			</div>
 		</div>
@@ -29,7 +29,7 @@
 <script>
 
 	$(function(){
-		comm.createBaseSelect("select[name=jsjb]","role.jsjb","请选择角色级别");
+		comm.createBaseSelect("select[name=jsjb]","role.jsjb","请选择角色类别");
 	});
 	
 	var roleManager={};
@@ -39,7 +39,12 @@
 	};
 	
 	roleManager.jslxFormatter=function(value){
-		return comm.getParamNameByValue("role.jslx", value);
+		if(value == "0"){
+			return "内置角色";
+		}else{
+			return "自定义角色";
+		}
+		//return comm.getParamNameByValue("role.jslx", value);
 	};
 	
 	roleManager.queryRole=function (){
