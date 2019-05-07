@@ -446,8 +446,7 @@ $(function($){
                 		 height:'500px',
                          style:{
                              right:'',
-                             bottom:'',
-                             
+                             bottom:''
                          }
                 	});
                 }

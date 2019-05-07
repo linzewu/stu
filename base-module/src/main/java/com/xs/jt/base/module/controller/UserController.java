@@ -87,7 +87,7 @@ public class UserController {
 	@Resource(name = "signaturePhotoManager")
 	private ISignaturePhotoManager signaturePhotoManager;
 
-	
+	@RecordLog
 	@UserOperation(code="getUsers",name="用户查询")
 	@RequestMapping(value = "getUsers", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> getUsers(User user, Integer page, Integer rows) {
@@ -306,7 +306,7 @@ public class UserController {
 		user.setZt(0);
 		//修改密码，密码有效期延长3个月
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(user.getMmyxq());
+		//calendar.setTime(user.getMmyxq());
 		calendar.add(Calendar.MONTH, 3);
 		user.setMmyxq(calendar.getTime());
 		this.userManager.saveUser(user);
@@ -339,6 +339,7 @@ public class UserController {
 			securityLog.setUserName(u.getYhm());
 			securityLog.setClbm(SecurityAuditPolicySetting.ACCOUNT_LOCK);
 			securityLog.setIpAddr(ip);
+			securityLog.setSignRed("N");
 			securityLog.setContent("用户:"+u.getYhm()+"违反账户锁定安全审计策略设置，用户锁定");
 			securityLogManager.saveSecurityLog(securityLog);
 		}
@@ -375,6 +376,7 @@ public class UserController {
 				securityLog.setUpdateUser(User.SYSTEM_USER);
 				securityLog.setClbm(SecurityAuditPolicySetting.IP_LOCK);
 				securityLog.setIpAddr(ip);
+				securityLog.setSignRed("N");
 				securityLog.setContent("IP终端:"+ip+"违反IP终端锁定(黑名单)安全审计策略设置，加入黑名单");
 				securityLogManager.saveSecurityLog(securityLog);
 			}

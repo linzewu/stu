@@ -78,6 +78,7 @@ public class BlackListController {
 		securityLog.setUpdateUser(User.SYSTEM_USER);
 		securityLog.setClbm(SecurityAuditPolicySetting.IP_LOCK);
 		securityLog.setIpAddr(Common.getIpAdrress(request));
+		securityLog.setSignRed("N");
 		securityLog.setContent("用户："+user.getYhm()+" 删除黑名单管理IP："+blackList.getIp());
 		securityLogManager.saveSecurityLog(securityLog);
 	}

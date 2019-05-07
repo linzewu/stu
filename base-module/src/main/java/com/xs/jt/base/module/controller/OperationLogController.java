@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.jt.base.module.annotation.Modular;
+import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.entity.OperationLog;
 import com.xs.jt.base.module.manager.IOperationLogManager;
@@ -24,6 +25,7 @@ public class OperationLogController {
 	@Resource(name = "operationLogManager")
 	private IOperationLogManager operationLogManager;
 	
+	@RecordLog
 	@UserOperation(code="getOperationLog",name="日志查询")
 	@RequestMapping(value = "getOperationLog", method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> getOperationLog(Integer page, Integer rows, OperationLog operationLog) {

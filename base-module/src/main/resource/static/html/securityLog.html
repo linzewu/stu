@@ -1,5 +1,10 @@
 <table id="securityLogManager" class="easyui-datagrid"
-	data-options="url:'../../securityLog/getSecurityLog',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#operlogToolbar'">
+	data-options="url:'../../securityLog/getSecurityLog',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#operlogToolbar',
+	rowStyler: function(index,row){
+                    if (row.signRed =='Y'){
+                        return 'background-color:red;color:#fff;font-weight:bold;';
+                    }
+                }">
 	<thead> 
 		<tr>
 			<th data-options="field:'ipAddr',width:55">IP地址</th>

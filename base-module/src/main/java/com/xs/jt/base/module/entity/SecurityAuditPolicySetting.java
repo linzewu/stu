@@ -40,6 +40,8 @@ public class SecurityAuditPolicySetting extends BaseEntity{
 	public static final String ACCOUNT_LOCK = "account_lock";
 	//IP终端锁定(黑名单)
 	public static final String IP_LOCK = "ip_lock";
+	//数据篡改
+	public static final String DATA_TAMPERINT = "data_tampering";
 	
 //	@Id
 //	@GenericGenerator(name = "idGenerator", strategy = "identity")

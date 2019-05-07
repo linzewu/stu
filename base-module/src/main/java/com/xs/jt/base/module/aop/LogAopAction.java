@@ -61,7 +61,7 @@ public class LogAopAction {
 	@Autowired
 	private ServletContext servletContext;
 	
-	private static String notLogMethod = "login,passwordReset,updatePassword";
+	public static String notLogMethod = "login,passwordReset,updatePassword";
 
 	// @Pointcut("execution(* com.xs.jt.base.module.controller.*.*(..))")
 	@Pointcut("execution(* com.xs.jt..*.controller.*.*(..))")

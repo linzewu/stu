@@ -36,6 +36,10 @@ public class SecurityLog extends BaseEntity {
 	
 	@Column(length = 50)
 	private String clbm;
+	
+	//是否标红
+	@Column(length=1)
+	private String signRed;
 
 	public String getIpAddr() {
 		return ipAddr;
@@ -67,6 +71,14 @@ public class SecurityLog extends BaseEntity {
 
 	public void setClbm(String clbm) {
 		this.clbm = clbm;
+	}
+
+	public String getSignRed() {
+		return signRed;
+	}
+
+	public void setSignRed(String signRed) {
+		this.signRed = signRed;
 	}
 	
 	
