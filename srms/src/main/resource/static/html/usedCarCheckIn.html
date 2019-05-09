@@ -117,7 +117,7 @@ function usedCarCheckIn(){
 	var isValid = $('#usedCarArchivesForm').form('validate');
 	if(isValid){
 		var params = $("#usedCarArchivesForm").serializeJson();
-		$.post("../../archivalCase/UsedCarArchivalCheckIn",params,function(data){
+		$.post("../../archivalFiling/UsedCarArchivalCheckIn",params,function(data){
 			if(data.state==1){
 				$.messager.alert("提示","保存成功！","info",function(){
 					$('#usedCarArchivesForm').form('clear');

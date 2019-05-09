@@ -89,7 +89,7 @@ function adjust(){
     	$.messager.prompt('提示', '请输入档案格数量:', function(number){
 		    if (number){
 				row.caseNumber = number;		
-		        $.post('../../archivalCase/archivalCaseAdjust',row,function(result){
+		        $.post('../../archivalFiling/archivalCaseAdjust',row,function(result){
 		            if (result.state==1){
 		             	$.messager.alert("提示","档案调整成功","info");
 		                 $('#datagrid-archiveAdjust').datagrid('reload');    // reload the user data

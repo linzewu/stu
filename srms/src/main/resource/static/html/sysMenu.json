@@ -56,12 +56,12 @@
 					"icon": "../../static/images/archiveextract.png",
 					"title": "新车档案入库",
 					"href": "../../static/html/newCarCheckIn.html",
-					"permission":"archivalCase.newCarArchivalCheckIn"
+					"permission":"archivalFiling.newCarArchivalCheckIn"
 				},{
 					"icon": "../../static/images/archiveextract.png",
 					"title": "在用车档案入库",
 					"href": "../../static/html/usedCarCheckIn.html",
-					"permission":"archivalCase.UsedCarArchivalCheckIn"
+					"permission":"archivalFiling.UsedCarArchivalCheckIn"
 				},{
 					"icon": "../../static/images/adjustment.png",
 					"title": "档案格调整",

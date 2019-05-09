@@ -6,6 +6,10 @@ function ywlxFormat(value,row,index){
 	return comm.getParamNameByValue("ywlx", value)
 }
 
+function ztFormat(value,row,index){
+	return comm.getParamNameByValue("dazt", value)
+}
+
 function readQrLabel() {
 	
 	//var strbarcode = "123";
@@ -45,7 +49,7 @@ function printBQ(printData){
 	$("#l_hphm").text(printData.hphm);
 	$("#l_hpzl").text(comm.getParamNameByValue("hpzl", printData.hpzl));
 	$("#l_clsbdh").text(printData.clsbdh);
-	$.post("../../archivalCase/createLabel",{"barCode":printData.barCode},function(data){
+	$.post("../../archivalFiling/createLabel",{"barCode":printData.barCode},function(data){
 		$("#barImg").attr("src","../cache/barcode/"+printData.barCode+".jpg")
 		var obj = {};
 		obj.prview= false;

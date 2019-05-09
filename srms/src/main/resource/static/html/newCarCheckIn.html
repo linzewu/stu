@@ -119,7 +119,7 @@ function newCarCheckIn(){
 	var isValid = $('#newCarArchivesForm').form('validate');
 	if(isValid){
 		var params = $("#newCarArchivesForm").serializeJson();
-		$.post("../../archivalCase/newCarArchivalCheckIn",params,function(data){
+		$.post("../../archivalFiling/newCarArchivalCheckIn",params,function(data){
 			if(data.state==1){
 				$.messager.alert("提示","保存成功！","info",function(){
 					$('#newCarArchivesForm').form('clear');
