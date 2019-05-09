@@ -843,7 +843,7 @@ function shSaveAndPring() {
 	var isValid = $('#shForm').form('validate');
 	if(isValid){
 		var params = $("#shForm").serializeJson();
-		$.post("../../preCarRegister/savePreCarRegister",params,function(data){
+		$.post("../../preCarRegister/savePreCarRegisterDJ",params,function(data){
 			if(data.state==1){
 				$.messager.alert("提示","保存成功！","info",function(){
 					$('#shForm').form('clear');
