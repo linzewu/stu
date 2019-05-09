@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -42,6 +43,9 @@ public class SecurityLogManagerImpl implements ISecurityLogManager {
 				List<Predicate> list = new ArrayList<Predicate>();				
 //				list.add(criteriaBuilder.equal(root.get("enableFlag").as(String.class), "Y"));
 				
+				List<Order> orders = new ArrayList<Order>();
+				orders.add(criteriaBuilder.desc(root.get("updateTime")));
+				query.orderBy(orders);
 				Predicate[] p = new Predicate[list.size()];
 				return criteriaBuilder.and(list.toArray(p));
 			}

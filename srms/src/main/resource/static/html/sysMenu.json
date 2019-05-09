@@ -46,7 +46,7 @@
 					"icon": "../../static/images/ArchivesList.png",
 					"title": "出入库记录",
 					"href": "../../static/html/archivalRegisterQuery.html",
-					"permission":"archivalRegister.getArchivalRegisterList"
+					"permission":"archivalCase.getArchivalRegisterList"
 				}				
 			]
 		},{
@@ -56,12 +56,12 @@
 					"icon": "../../static/images/archiveextract.png",
 					"title": "新车档案入库",
 					"href": "../../static/html/newCarCheckIn.html",
-					"permission":"archivalCase.getArchivalCaseCheckInList"
+					"permission":"archivalCase.newCarArchivalCheckIn"
 				},{
 					"icon": "../../static/images/archiveextract.png",
 					"title": "在用车档案入库",
 					"href": "../../static/html/usedCarCheckIn.html",
-					"permission":"archivalCase.getArchivalCaseCheckInList"
+					"permission":"archivalCase.UsedCarArchivalCheckIn"
 				},{
 					"icon": "../../static/images/adjustment.png",
 					"title": "档案格调整",
@@ -80,7 +80,7 @@
 					"icon": "../../static/images/orangewarn.png",
 					"title": "业务状态预警",
 					"href": "../../static/html/archiveCheckOutLong.html",
-					"permission":"archivalCase.findCheckOutLong"
+					"permission":"archivalWarn.findCheckOutLong"
 				},
 				{
 					"icon": "../../static/images/datawarn.png",

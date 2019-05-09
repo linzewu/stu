@@ -80,6 +80,7 @@ public class BlackListController {
 		securityLog.setIpAddr(Common.getIpAdrress(request));
 		securityLog.setSignRed("N");
 		securityLog.setContent("用户："+user.getYhm()+" 删除黑名单管理IP："+blackList.getIp());
+		securityLog.setResult("删除黑名单！");
 		securityLogManager.saveSecurityLog(securityLog);
 	}
 

@@ -1,34 +1,60 @@
+<style id="style1">
+.print_Table {
+	font-size: 9px;
+	letter-spacing:1px;	
+	width: 190px;
+	
+}
+.td-font {
+	font-size: 6px;
+	text-align: center;
+}
+.barcodeImg{
+	width: 10px;
+	text-align: left;
+}
+</style>
+
 <div class="easyui-layout" fit='true'>
 	  <div data-options="region:'center'" style="padding-left: 20px; padding-right: 20px;" >
 			<div data-options="title:'基本信息'" >
 			<form id="newCarArchivesForm" method="post" novalidate> 
 				<table class="base_table" cellspacing="0" cellpadding="0"> 
 					<tr><td class="info_title">号牌号码：</td>
-						<td class="info"><input name="hphm" class="easyui-textbox" required="true">
+						<td class="info"><input name="hphm" id="rk_hphm" class="easyui-textbox" required="true">
 						</td>
 						<td class="info_title">号牌种类：</td>
-						<td class="info"><input name="hpzl" prompt='请选择号牌种类' data-options="data:comm.getBaseParames('hpzl'),	valueField: 'id',
+						<td class="info"><input name="hpzl" id="rk_hpzl" prompt='请选择号牌种类' data-options="data:comm.getBaseParames('hpzl'),	valueField: 'id',
 		textField: 'value'"  class="easyui-combobox" required="true">
 						</td>
 					</tr>
 					<tr>
 						<td class="info_title">业务类型：</td>
-						<td class="info"><input name="ywlx" prompt='请选择业务类型' data-options="data:comm.getBaseParames('ywlx'),	valueField: 'id',
+						<td class="info"><input name="ywlx" id="rk_ywlx" prompt='请选择业务类型' data-options="data:comm.getBaseParames('ywlx'),	valueField: 'id',
 		textField: 'value'"  class="easyui-combobox" required="true"></td>
 						<td class="info_title">车辆识别代号：</td>
-						<td class="info"><input name="clsbdh" class="easyui-textbox" required="true">
+						<td class="info"><input name="clsbdh" id="rk_clsbdh" class="easyui-textbox" required="true">
 						</td>
+					</tr>
+					<tr>
+						<td class="info_title">流水号：</td>
+						<td class="info"><input name="lsh" id="rk_lsh" class="easyui-textbox" >
+							<a href="javascript:queryByLsh()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
+						</td>
+						<td class="info_title"></td>
+						<td class="info"></td>
 					</tr>
 					<tr>
 						<td colspan="4" class="info" align="center">
 							<a href="javascript:newCarCheckIn()" class="easyui-linkbutton" data-options="iconCls:'icon-save'">入库</a>
+							
 						</td>
 					</tr>					
 				</table>
 				</form>
 			</div>
 		<table id="datagrid-archiveRegisterNew" title="入库档案记录" class="easyui-datagrid" style="width:100%;height:500px"
-	            pagination="true" url="../../archivalRegister/getArchivalRegistersByHandleUser" pageSize="20"
+	            pagination="true" url="../../archivalCase/getArchivalRegistersByHandleUser" pageSize="20"
 	            pageList="[20,50,100,200,300]" toolbar="#datagrid-archiveRegisterNew-toolbar"
 	            rownumbers="true"  singleSelect="true" >
 	        <thead>
@@ -52,9 +78,40 @@
 	    <div id="datagrid-archiveRegisterNew-toolbar">
 	    	<input class="easyui-datebox" label="入库时间:" labelPosition="left" id="quer_createTime" editable="false" style="width: 220px;">
 		    	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="query()">查询</a>
+		    	<a href="javascript:printRowBQ()" class="easyui-linkbutton" data-options="iconCls:'icon-print'">标签打印</a>
 	    </div>
 	  </div>
 </div>
+<div id="printTemplet" >
+	<div align="left" >
+		<table class="print_Table" cellpadding="1" cellspacing="1">
+			<tr>
+				<td align="right" width="45%">号牌号码：</td>
+				<td id="l_hphm"></td>
+			</tr>
+			<tr>
+				<td align="right">号牌种类：</td>
+				<td id="l_hpzl"></td>
+			</tr>
+			<tr>
+				<td align="right">车辆识别代号：</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center" colspan="2" id="l_clsbdh"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center"><img id="barImg" alt="" src="" ></td>
+			</tr>
+			<tr>
+				<td colspan="2" class="td-font" >盐城市公安局交通警察支队车辆管理所</td>
+			</tr>
+		</table>
+	</div>
+</div>
+<OBJECT ID="srmBarCode" CLASSID="CLSID:F1EFB37B-C778-4AF8-B0C2-B647C9E89E2D" CODEBASE="VehPlatForm_web.CAB#version=2,7,0,0">
+</OBJECT>
+<script type="text/javascript" src="../js/LodopFuncs.js"></script>
 
 <script type="text/javascript">
 //newCarArchivalCheckIn
@@ -67,7 +124,8 @@ function newCarCheckIn(){
 				$.messager.alert("提示","保存成功！","info",function(){
 					$('#newCarArchivesForm').form('clear');
 					$('#datagrid-archiveRegisterNew').datagrid("reload");
-				});
+					printBQ(data.data);
+				});				
 			}else{
 				$.messager.alert("提示",data.message,"error");
 			}
@@ -78,8 +136,44 @@ function newCarCheckIn(){
 	}	
 }
 
+
+
 function query(){
 	var quer_createTime=$("#quer_createTime").datebox("getValue");	
 	$('#datagrid-archiveRegisterNew').datagrid("reload",{createTime:quer_createTime});
 }
+
+function printRowBQ(){
+	var row = $('#datagrid-archiveRegisterNew').datagrid('getSelected');
+    if (row){
+    	printBQ(row);
+    }else{
+		$.messager.alert("提示","请选择档案进行打印!","warning");
+	}
+}
+
+function queryByLsh(){
+	var lsh = $("#rk_lsh").textbox("getValue");
+	if(lsh != null && lsh != ""){
+		findCarByLsh(lsh);
+	}
+}
+
+$(function(){
+	/**if(qrtNumber > 0){
+		window.clearInterval(qrtNumber);
+	}
+	
+	qrtNumber=window.setInterval("readQrLabel();",200);**/
+	
+	$("#rk_lsh").textbox({
+		onChange:function(newValue,oldValue){
+			if(newValue.length >=13){
+				findCarByLsh(newValue);
+			}
+		}
+	})
+});
+
+
 </script>

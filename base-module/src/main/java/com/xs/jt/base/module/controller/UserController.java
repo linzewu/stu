@@ -340,7 +340,8 @@ public class UserController {
 			securityLog.setClbm(SecurityAuditPolicySetting.ACCOUNT_LOCK);
 			securityLog.setIpAddr(ip);
 			securityLog.setSignRed("N");
-			securityLog.setContent("用户:"+u.getYhm()+"违反账户锁定安全审计策略设置，用户锁定");
+			securityLog.setContent("用户:"+u.getYhm()+"违反账户锁定安全审计策略设置");
+			securityLog.setResult("用户锁定！");
 			securityLogManager.saveSecurityLog(securityLog);
 		}
 		return u;
@@ -377,7 +378,8 @@ public class UserController {
 				securityLog.setClbm(SecurityAuditPolicySetting.IP_LOCK);
 				securityLog.setIpAddr(ip);
 				securityLog.setSignRed("N");
-				securityLog.setContent("IP终端:"+ip+"违反IP终端锁定(黑名单)安全审计策略设置，加入黑名单");
+				securityLog.setContent("IP终端:"+ip+"违反IP终端锁定(黑名单)安全审计策略设置");
+				securityLog.setResult("IP加入黑名单！");
 				securityLogManager.saveSecurityLog(securityLog);
 			}
 		}

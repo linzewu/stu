@@ -14,5 +14,7 @@ public @interface Modular {
 	public String modelCode();
 	
 	public boolean isEmpowered() default true;
+	
+	public String jsjb() default "";
 
 }

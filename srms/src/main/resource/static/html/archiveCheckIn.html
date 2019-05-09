@@ -37,7 +37,7 @@ function checkIn(){
     if (row){
     	$.messager.confirm('确认','您确定将档案 '+row.fileNo+' 入库?',function(r){
             if(r){
-                $.post('../../archivalRegister/archivalCheckIn',row,function(result){
+                $.post('../../archivalCase/archivalCheckIn',row,function(result){
                     if (result.state==1){
                     	$.messager.alert("提示","档案入库成功","info");
                         $('#datagrid-archiveIn').datagrid('reload');    // reload the user data

@@ -12,6 +12,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +33,8 @@ import net.sf.json.JSONObject;
 public class CheckBitAopAfter {
 	@Autowired
 	private HttpSession session;
+	@Autowired
+	 private Environment environment;
 	
 	@Autowired
 	private HttpServletRequest request;
@@ -57,26 +60,31 @@ public class CheckBitAopAfter {
 	 */
 	@AfterReturning(returning="rvt",pointcut="execution(* com.xs.jt.*.*.dao.*.find*(..)) || execution(* com.xs.jt.*.dao.*.find*(..)) || execution(* com.xs.jt.*.*.dao.*.get*(..)) || execution(* com.xs.jt.*.dao.*.get*(..))")
 	public void after(JoinPoint joinPoint,Object rvt) throws NoSuchMethodException, SecurityException {
-		if(rvt instanceof Page) {
-			Page page = (Page)rvt;			
-			if(page.getContent() instanceof List) {
-				List array = (List)page.getContent();
-				for(Object o : array) {
-					if(o instanceof BaseEntity&&isCheckBitAnnotation(o)) {
-						BaseEntity be = (BaseEntity)o;
-						be.checkBit();
-						recordLog(joinPoint, be);
+		String isTamper = environment.getProperty("data.validate.tamper");
+		if(StringUtils.isNotEmpty(isTamper) && "true".equals(isTamper)) {
+			if(rvt instanceof Page) {
+				Page page = (Page)rvt;			
+				if(page.getContent() instanceof List) {
+					List array = (List)page.getContent();
+					for(Object o : array) {
+						if(o instanceof BaseEntity&&isCheckBitAnnotation(o)) {
+							BaseEntity be = (BaseEntity)o;
+							be.checkBit();
+							recordLog(joinPoint, be);
+						}
 					}
 				}
 			}
-		}
-		else {
-			if(rvt instanceof BaseEntity&&isCheckBitAnnotation(rvt)) {
-				BaseEntity be = (BaseEntity)rvt;
-				be.checkBit();
-				recordLog(joinPoint, be);
+			else {
+				if(rvt instanceof BaseEntity&&isCheckBitAnnotation(rvt)) {
+					BaseEntity be = (BaseEntity)rvt;
+					be.checkBit();
+					recordLog(joinPoint, be);
+				}
 			}
 		}
+		
+		
 	}
 
 	private void recordLog(JoinPoint joinPoint, BaseEntity be) throws NoSuchMethodException {
@@ -91,7 +99,8 @@ public class CheckBitAopAfter {
 					securityLog.setClbm(SecurityAuditPolicySetting.DATA_TAMPERINT);
 					securityLog.setIpAddr(getIpAdrress());
 					securityLog.setSignRed("Y");
-					securityLog.setContent("数据非法篡改,篡改数据："+JSONObject.fromObject(be).toString());
+					securityLog.setContent("篡改数据："+JSONObject.fromObject(be).toString());
+					securityLog.setResult("数据非法篡改！");
 					securityLogManager.saveSecurityLog(securityLog);
 				}
 			}

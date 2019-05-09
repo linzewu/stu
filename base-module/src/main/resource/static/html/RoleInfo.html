@@ -57,6 +57,7 @@ $(function(){
 	    }
 	});**/
 	$.post("../../role/getPowerPoints",function(data){
+		console.log(data)
 		var pwGroup={};
 		$.each(data,function(i,n){
 			if(!pwGroup[n.modeCode]){

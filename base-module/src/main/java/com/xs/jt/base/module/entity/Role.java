@@ -13,6 +13,14 @@ import org.springframework.stereotype.Component;
 @Entity
 @Table(name = "TB_Role")
 public class Role extends BaseEntity {
+	// 业务办理
+	public static final String JSJB_YWBL = "1";
+	// 系统管理
+	public static final String JSJB_STGL = "2";
+	// 安全管理
+	public static final String JSJB_AQGL = "3";
+	// 审计管理
+	public static final String JSJB_SJGL = "4";
 	
 	//角色名称
 	@Column(length=120)

@@ -9,12 +9,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.xs.jt.base.module.annotation.CheckBit;
@@ -25,8 +27,8 @@ import com.xs.jt.base.module.entity.BaseEntity;
 @Order(999)
 public class CheckBitAop {
 	
-//	@Resource(name = "hibernateTemplate")
-//	private HibernateTemplate hibernateTemplate;
+	 @Autowired
+	 private Environment environment;
 	
 	@Autowired
 	private EntityManager entityManager;
@@ -47,43 +49,47 @@ public class CheckBitAop {
 	@Before("save() || saveDao()")
 	public void doBefore(JoinPoint joinPoint) throws UnsupportedEncodingException, TamperWithDataException {
 		System.out.println("doBefore*********************************************" + joinPoint.getArgs());
-		Object[] params = joinPoint.getArgs();
-		if (params != null) {
-			for (Object obj : params) {
+		String isTamper = environment.getProperty("data.validate.tamper");
+		if(StringUtils.isNotEmpty(isTamper) && "true".equals(isTamper)) {
+			Object[] params = joinPoint.getArgs();
+			if (params != null) {
+				for (Object obj : params) {
 
-//				if (Hibernate.isInitialized(obj)) {
-//					hibernateTemplate.initialize(obj);
-//					if (obj instanceof HibernateProxy) {
-//						obj = (Object) ((HibernateProxy) obj).getHibernateLazyInitializer().getImplementation();
+//					if (Hibernate.isInitialized(obj)) {
+//						hibernateTemplate.initialize(obj);
+//						if (obj instanceof HibernateProxy) {
+//							obj = (Object) ((HibernateProxy) obj).getHibernateLazyInitializer().getImplementation();
+//						}
+	//
 //					}
-//
-//				}
-//
-				System.out.println("class:" + obj.getClass());
-				if (obj.getClass().isAnnotationPresent(CheckBit.class) && obj instanceof BaseEntity) {
-					BaseEntity be = (BaseEntity) obj;
-					String str = be.toString();
-					String md5 = BaseEntity.md5(str);
-					System.out.println("before:" + be.toString() + " md5:" + md5);
-					be.setVehjyw(md5);
-					if (be.getId() != null) {
-						entityManager.clear(); 
-						CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-						CriteriaQuery<?> cq = cb.createQuery(obj.getClass());
-						Root<?> root = cq.from(obj.getClass()); 
-						Predicate pre = cb.equal(root.get("id").as(Integer.class),be.getId());
-						cq.where(pre);
-						Query query = entityManager.createQuery(cq);
-						BaseEntity base = (BaseEntity) query.getSingleResult();
-						base.checkBit();
-						if (!base.isCheckBitOk()) {
-							throw new TamperWithDataException("数据非法篡改!");
+	//
+					System.out.println("class:" + obj.getClass());
+					if (obj.getClass().isAnnotationPresent(CheckBit.class) && obj instanceof BaseEntity) {
+						BaseEntity be = (BaseEntity) obj;
+						String str = be.toString();
+						String md5 = BaseEntity.md5(str);
+						System.out.println("before:" + be.toString() + " md5:" + md5);
+						be.setVehjyw(md5);
+						if (be.getId() != null) {
+							entityManager.clear(); 
+							CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+							CriteriaQuery<?> cq = cb.createQuery(obj.getClass());
+							Root<?> root = cq.from(obj.getClass()); 
+							Predicate pre = cb.equal(root.get("id").as(Integer.class),be.getId());
+							cq.where(pre);
+							Query query = entityManager.createQuery(cq);
+							BaseEntity base = (BaseEntity) query.getSingleResult();
+							base.checkBit();
+							if (!base.isCheckBitOk()) {
+								throw new TamperWithDataException("数据非法篡改!");
 
+							}
 						}
 					}
 				}
 			}
 		}
+		
 
 	}
 

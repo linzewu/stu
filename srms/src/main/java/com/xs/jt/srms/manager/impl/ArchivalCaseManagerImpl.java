@@ -12,7 +12,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -29,10 +32,12 @@ import com.xs.jt.srms.entity.ArchivalCase;
 import com.xs.jt.srms.entity.ArchivalRegister;
 import com.xs.jt.srms.entity.StoreRoom;
 import com.xs.jt.srms.manager.IArchivalCaseManager;
+import com.xs.jt.srms.pt.dao.CarInfoRepository;
 import com.xs.jt.srms.util.NumberFormatUtil;
 @Service
+@Scope("singleton")
 public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
-	
+	private static Logger logger = LoggerFactory.getLogger(ArchivalCaseManagerImpl.class);
 	@Autowired
 	private ArchivalCaseRepository archivalCaseRepository;
 	
@@ -43,6 +48,8 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 	private ArchivalRegisterRepository archivalRegisterRepository;
 	@Autowired
 	private CustomRepository customRepository;
+	@Autowired
+	private CarInfoRepository carInfoRepository;
 
 	@Override
 	public Map<String, Object> getArchivalCaseList(Integer page, Integer rows, ArchivalCase archivalCase) {
@@ -101,6 +108,9 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 				if(Common.isNotEmpty(archivalCase.getRackNo())) {
 					list.add(criteriaBuilder.equal(root.get("rackNo").as(String.class), archivalCase.getRackNo()));
 				}
+				if(Common.isNotEmpty(archivalCase.getBarCode())) {
+					list.add(criteriaBuilder.equal(root.get("barCode").as(String.class), archivalCase.getBarCode()));
+				}
 				
 				List<Order> orders = new ArrayList<Order>();
 				orders.add(criteriaBuilder.asc(root.get("rackRow")));
@@ -131,18 +141,21 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 	}
 
 	@Override
-	public boolean newCarArchivalCheckIn(ArchivalCase archivalCase) {
+	public synchronized ArchivalCase newCarArchivalCheckIn(ArchivalCase archivalCase) {
+		logger.info("newCarArchivalCheckIn begin");
 		ArchivalCase noUseCase = archivalCaseRepository.findNoUseArchivalCase(StoreRoom.CFLB_XC, ArchivalCase.ZT_WSY);
 		noUseCase.setClsbdh(archivalCase.getClsbdh());
 		noUseCase.setHphm(archivalCase.getHphm());
 		noUseCase.setHpzl(archivalCase.getHpzl());
 		noUseCase.setYwlx(archivalCase.getYwlx());
-		noUseCase.setBarCode(noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
-				+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo());
+		noUseCase.setBarCode(noUseCase.getArchivesNo() + noUseCase.getRackNo()
+				+ (noUseCase.getRackCol()<10?("0"+noUseCase.getRackCol()):noUseCase.getRackCol()) + (noUseCase.getRackRow()<10?("0"+noUseCase.getRackRow()):noUseCase.getRackRow()) + noUseCase.getFileNo());
 		noUseCase.setZt(ArchivalCase.ZT_RK);
 		archivalCaseRepository.save(noUseCase);	
+		//Thread.sleep(5000);
 		saveArchivalRegister(noUseCase);
-		return true;
+		logger.info("newCarArchivalCheckIn end");
+		return noUseCase;
 	}
 	
 	private void saveArchivalRegister(ArchivalCase archivalCase) {
@@ -182,7 +195,8 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 	}
 
 	@Override
-	public boolean UsedCarArchivalCheckIn(ArchivalCase archivalCase) {
+	public synchronized ArchivalCase UsedCarArchivalCheckIn(ArchivalCase archivalCase) {
+		ArchivalCase acc = new ArchivalCase();
 		List<ArchivalCase> oldCaseList = archivalCaseRepository.getArchivalCaseByClsbdh(archivalCase.getClsbdh());
 		if(!CollectionUtils.isEmpty(oldCaseList)) {
 			String fileNoStr = "";
@@ -192,7 +206,7 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 				archivalCaseRepository.save(oldCase);				
 				fileNoStr = "".equals(fileNoStr) ? oldCase.getFileNo():(fileNoStr+","+oldCase.getFileNo());
 			}
-			
+			acc = oldCaseList.get(0);
 			saveArchivalRegister(oldCaseList.get(0),fileNoStr);
 		}else {
 			ArchivalCase noUseCase = archivalCaseRepository.findNoUseArchivalCase(StoreRoom.CFLB_XC, ArchivalCase.ZT_WSY);
@@ -200,14 +214,17 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 			noUseCase.setHphm(archivalCase.getHphm());
 			noUseCase.setHpzl(archivalCase.getHpzl());
 			noUseCase.setYwlx(archivalCase.getYwlx());
-			noUseCase.setBarCode(noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
-					+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo());
+//			noUseCase.setBarCode(noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
+//					+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo());
+			noUseCase.setBarCode(noUseCase.getArchivesNo() + noUseCase.getRackNo()
+			+ (noUseCase.getRackCol()<10?("0"+noUseCase.getRackCol()):noUseCase.getRackCol()) + (noUseCase.getRackRow()<10?("0"+noUseCase.getRackRow()):noUseCase.getRackRow()) + noUseCase.getFileNo());
 			noUseCase.setZt(ArchivalCase.ZT_RK);
 			archivalCaseRepository.save(noUseCase);	
 			saveArchivalRegister(noUseCase);
+			acc = noUseCase;
 		}	
 		
-		return true;
+		return acc;
 	}
 
 	@Override
@@ -221,7 +238,7 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 	}
 
 	@Override
-	public boolean archivalCaseAdjust(ArchivalCase archivalCase) {
+	public synchronized boolean archivalCaseAdjust(ArchivalCase archivalCase) {
 		boolean flag = false;
 		if(archivalCase.getCaseNumber() == 1) {
 			ArchivalCase noUseCase = archivalCaseRepository.findNoUseArchivalCase(StoreRoom.CFLB_XC, ArchivalCase.ZT_WSY);
@@ -229,8 +246,12 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 			noUseCase.setHphm(archivalCase.getHphm());
 			noUseCase.setHpzl(archivalCase.getHpzl());
 			noUseCase.setYwlx(archivalCase.getYwlx());
-			noUseCase.setBarCode(noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
-					+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo());
+//			noUseCase.setBarCode(noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
+//					+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo());
+			noUseCase.setBarCode(noUseCase.getArchivesNo() + noUseCase.getRackNo()
+					+ (noUseCase.getRackCol() < 10 ? ("0" + noUseCase.getRackCol()) : noUseCase.getRackCol())
+					+ (noUseCase.getRackRow() < 10 ? ("0" + noUseCase.getRackRow()) : noUseCase.getRackRow())
+					+ noUseCase.getFileNo());
 			noUseCase.setZt(ArchivalCase.ZT_RK);
 			archivalCaseRepository.save(noUseCase);	
 			saveArchivalRegister(noUseCase);
@@ -256,8 +277,12 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 					noUseCase.setHpzl(archivalCase.getHpzl());
 					noUseCase.setYwlx(archivalCase.getYwlx());
 					if("".equals(barCode)) {
-						barCode = noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
-								+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo();
+//						barCode = noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
+//								+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo();
+						barCode = noUseCase.getArchivesNo() + noUseCase.getRackNo()
+						+ (noUseCase.getRackCol() < 10 ? ("0" + noUseCase.getRackCol()) : noUseCase.getRackCol())
+						+ (noUseCase.getRackRow() < 10 ? ("0" + noUseCase.getRackRow()) : noUseCase.getRackRow())
+						+ noUseCase.getFileNo();
 					}
 					noUseCase.setBarCode(barCode);
 					noUseCase.setZt(ArchivalCase.ZT_RK);
@@ -289,6 +314,16 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 		}else {
 			return false;
 		}
+	}
+
+	@Override
+	public List<Map<String, Object>> getCarInfoByBarcode(String barcode) {
+		return carInfoRepository.getCarInfoByBarcode(barcode);
+	}
+
+	@Override
+	public List<ArchivalCase> getArchivalCaseByClsbdh(String clsbdh) {
+		return archivalCaseRepository.getArchivalCaseByClsbdh(clsbdh);
 	}
 
 }

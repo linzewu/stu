@@ -68,7 +68,7 @@ function checkOut(){
 	                 row.reason = out_reason;
 					 row.ywlx = out_ywlx;
 					 row.remark = out_remark;
-				    $.post('../../archivalRegister/archivalCheckOut',row,function(result){
+				    $.post('../../archivalCase/archivalCheckOut',row,function(result){
 				        if (result.state==1){
 				        	$.messager.alert("提示","档案出库成功","info");
 				            $('#datagrid-archiveOut').datagrid('reload');    // reload the user data

@@ -40,6 +40,12 @@ public class SecurityLog extends BaseEntity {
 	//是否标红
 	@Column(length=1)
 	private String signRed;
+	
+	/**
+	 * 内容
+	 */
+	@Column(length=2000)
+	private String result;
 
 	public String getIpAddr() {
 		return ipAddr;
@@ -79,6 +85,14 @@ public class SecurityLog extends BaseEntity {
 
 	public void setSignRed(String signRed) {
 		this.signRed = signRed;
+	}
+
+	public String getResult() {
+		return result;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
 	}
 	
 	

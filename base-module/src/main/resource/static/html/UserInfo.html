@@ -27,11 +27,11 @@
 					<tr>
 						<td class="info_title">是否民警：</td>
 						<td class="info" >
-							<input value="Y" name="isPolice" type="checkbox" >
+							<input value="Y" name="isPolice" id="isPolice" type="checkbox" onchange="gljh(this)">
 						</td>
 						<td class="info_title">警号</td>
 						<td class="info" >
-							<input  name="gh" class="easyui-validatebox" data-options="validType:{ghValide:['#userInfoForm input[name=id]']}">
+							<input  name="gh" id="gh" class="easyui-validatebox" data-options="validType:{ghValide:['#userInfoForm input[name=id]']}">
 						</td>
 					</tr>
 					<tr>
@@ -116,6 +116,18 @@
 
 
 <script type="text/javascript">
+
+function gljh(obj){
+	if(obj.checked){
+		$("#gh").validatebox({
+		    required: true
+		});
+	}else{
+		$("#gh").validatebox({
+		    required: false
+		});
+	}
+}
 
 $(function(){
 	initEditAttr();
