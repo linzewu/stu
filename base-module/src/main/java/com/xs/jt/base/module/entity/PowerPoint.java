@@ -11,6 +11,8 @@ public class PowerPoint {
 	private String modeCode;
 	
 	private boolean isEmpowered;
+	
+	private String jsjb;
 
 	public boolean isEmpowered() {
 		return isEmpowered;
@@ -50,6 +52,14 @@ public class PowerPoint {
 
 	public void setModeCode(String modeCode) {
 		this.modeCode = modeCode;
+	}
+
+	public String getJsjb() {
+		return jsjb;
+	}
+
+	public void setJsjb(String jsjb) {
+		this.jsjb = jsjb;
 	}
 	
 	

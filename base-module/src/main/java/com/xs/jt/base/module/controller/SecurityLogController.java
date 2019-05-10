@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
+import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.base.module.entity.SecurityLog;
 import com.xs.jt.base.module.manager.ISecurityLogManager;
 
@@ -18,7 +19,7 @@ import com.xs.jt.base.module.manager.ISecurityLogManager;
 
 @Controller
 @RequestMapping(value = "/securityLog")
-@Modular(modelCode="SecurityLog",modelName="安全日志管理",isEmpowered=false)
+@Modular(modelCode="SecurityLog",modelName="安全日志管理",isEmpowered=false,jsjb=Role.JSJB_SJGL)
 public class SecurityLogController {
 	
 	@Resource(name = "securityLogManager")

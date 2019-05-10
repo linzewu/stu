@@ -61,6 +61,7 @@ public class InitServerCommonPowerUtil {
 							powerPonit.setCode(key);
 							powerPonit.setName(userOperation.name());
 							powerPonit.setEmpowered(empowered);
+							powerPonit.setJsjb(modular.jsjb());
 							powerPointMap.put(key, powerPonit);
 						}
 						

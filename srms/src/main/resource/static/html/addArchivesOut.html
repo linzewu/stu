@@ -5,7 +5,7 @@
 						<td class="info_title">业务类型：</td>
 						<td class="info">
 							<input name="ywlx" id="out_ywlx" prompt='请选择业务类型' data-options="data:comm.getBaseParames('ywlx'),	valueField: 'id',
-			textField: 'value'"  class="easyui-combobox" required="true">
+			textField: 'value'"  class="easyui-combobox">
 			<span id="sfzySpn"><input class="easyui-checkbox" name="sfzy" id="sfzy" value="true" label="是否转移到其他档案架" labelWidth="160px" labelPosition="after"></span>
 						</td>
 					</tr>
@@ -31,10 +31,14 @@ $(function(){
 			var sfzyArr = comm.getBaseParames("sfzyqtdyj");
 			var bxzyArr = comm.getBaseParames("bxzyqtdaj");
 			if(sfzyArr.length > 0){
-				sfzyStr = sfzyArr[0].id;
+				if(sfzyArr[0].id != null && sfzyArr[0].id !=""){
+					sfzyStr = sfzyArr[0].id;
+				}
 			}
 			if(bxzyArr.length > 0){
-				bxzyStr = bxzyArr[0].id;
+				if(bxzyArr[0].id != null && bxzyArr[0].id != ""){
+					bxzyStr = bxzyArr[0].id;
+				}
 			}
 			
 			if(sfzyStr.indexOf(obj.id) != -1){
