@@ -1,12 +1,11 @@
 <style id="style1">
 .print_Table {
-	font-size: 9px;
+	font-size: 14px;
 	letter-spacing:1px;	
-	width: 190px;
-	
+	width: 215px;
 }
 .td-font {
-	font-size: 6px;
+	font-size: 8px;
 	text-align: center;
 }
 .barcodeImg{
@@ -75,16 +74,16 @@
 	    </table>
 	    <div id="datagrid-archiveRegisterUsed-toolbar">
 	    	<input class="easyui-datebox" label="入库时间:" labelPosition="left" id="quer_createTime" editable="false" style="width: 220px;">
-		    	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="query()">查询</a>
+		    	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryUsedCarArchives()">查询</a>
 		    	<a href="javascript:printRowBQ()" class="easyui-linkbutton" data-options="iconCls:'icon-print'">标签打印</a>
 	    </div>
 	  </div>
 </div>
 <div id="printTemplet" >
 	<div align="left" >
-		<table class="print_Table" cellpadding="1" cellspacing="1">
+		<table class="print_Table" cellpadding="2" cellspacing="1">
 			<tr>
-				<td align="right" width="45%">号牌号码：</td>
+				<td align="right" width="54%">号牌号码：</td>
 				<td id="l_hphm"></td>
 			</tr>
 			<tr>
@@ -122,7 +121,7 @@ function usedCarCheckIn(){
 				$.messager.alert("提示","保存成功！","info",function(){
 					$('#usedCarArchivesForm').form('clear');
 					$('#datagrid-archiveRegisterUsed').datagrid("reload");
-					printBQ(data.data);
+					//printBQ(data.data);
 				});
 			}else{
 				$.messager.alert("提示",data.message,"error");
@@ -134,7 +133,7 @@ function usedCarCheckIn(){
 	}	
 }
 
-function query(){
+function queryUsedCarArchives(){
 	var quer_createTime=$("#quer_createTime").datebox("getValue");	
 	$('#datagrid-archiveRegisterUsed').datagrid("reload",{createTime:quer_createTime});
 }

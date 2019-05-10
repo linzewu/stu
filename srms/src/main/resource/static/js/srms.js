@@ -79,8 +79,8 @@ function printCYD(option) {
 	LODOP.SET_LICENSES("上海翔尚信息技术有限公司","E61FDF8932E17DEFD1AFD1E7F683CA26","","");
 	var strBodyStyle="<style>"+document.getElementById("style1").innerHTML+"</style>";
 	var strFormHtml=strBodyStyle+"<body>"+document.getElementById("printTemplet").innerHTML+"</body>";
-	LODOP.SET_PRINT_PAGESIZE(0,500,300,"");
-	LODOP.ADD_PRINT_HTM(0, 0, 200, 170, strFormHtml);
+	LODOP.SET_PRINT_PAGESIZE(0,580,400,"");
+	LODOP.ADD_PRINT_HTM(0, 0, 215, 220, strFormHtml);
 
 	if(setup){
 	

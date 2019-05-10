@@ -26,12 +26,23 @@ $(function(){
 	$("#sfzySpn").hide();
 	$("#out_ywlx").combobox({
 		onSelect:function(obj){
-			if(obj.value=="转移登记"){
+			var sfzyStr = "";
+			var bxzyStr = "";
+			var sfzyArr = comm.getBaseParames("sfzyqtdyj");
+			var bxzyArr = comm.getBaseParames("bxzyqtdaj");
+			if(sfzyArr.length > 0){
+				sfzyStr = sfzyArr[0].id;
+			}
+			if(bxzyArr.length > 0){
+				bxzyStr = bxzyArr[0].id;
+			}
+			
+			if(sfzyStr.indexOf(obj.id) != -1){
 				$("#sfzySpn").show();
 				$('#sfzy').checkbox({
 				    checked: false
 				});
-			}else if(obj.value == "注册登记"){
+			}else if(bxzyStr.indexOf(obj.id) !=-1){
 				$("#sfzySpn").show();
 				$('#sfzy').checkbox({
 				    checked: true

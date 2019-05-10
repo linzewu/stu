@@ -1,12 +1,11 @@
 <style id="style1">
 .print_Table {
-	font-size: 9px;
+	font-size: 14px;
 	letter-spacing:1px;	
-	width: 190px;
-	
+	width: 215px;
 }
 .td-font {
-	font-size: 6px;
+	font-size: 8px;
 	text-align: center;
 }
 .barcodeImg{
@@ -40,15 +39,15 @@
 		    	<li><label>号牌种类：</label><input id="quer_hpzl"   prompt='请选择号牌种类' data-options="data:comm.getBaseParames('hpzl'),	valueField: 'id',
 		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
 				<li><label>号牌号码：</label><input type="text" class="easyui-textbox" id="quer_hphm" style="width: 160px;"></li>
-		    	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="query()">查询</a>&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="adjust()">档案格调整</a>
+		    	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryArchiveAdjust()">查询</a>&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-edit" onclick="adjust()">档案格调整</a>
 		    	&nbsp;&nbsp;<a href="javascript:printRowBQ()" class="easyui-linkbutton" data-options="iconCls:'icon-print'">标签打印</a></li>
 		    </ul>
 	    </div>
 <div id="printTemplet" style="display: none;">
 	<div align="left" >
-		<table class="print_Table" cellpadding="1" cellspacing="1">
+		<table class="print_Table" cellpadding="2" cellspacing="1">
 			<tr>
-				<td align="right" width="45%">号牌号码：</td>
+				<td align="right" width="54%">号牌号码：</td>
 				<td id="l_hphm"></td>
 			</tr>
 			<tr>
@@ -76,7 +75,7 @@
 function ztFormat(value,row,index){
 	return comm.getParamNameByValue("dazt", value)
 }
-function query(){
+function queryArchiveAdjust(){
 	var quer_clsbdh=$("#quer_clsbdh").textbox("getValue");	
 	var quer_hpzl = $("#quer_hpzl").combobox("getValue");	
 	var quer_hphm = $("#quer_hphm").textbox("getValue");
