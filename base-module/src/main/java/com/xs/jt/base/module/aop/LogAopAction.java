@@ -27,6 +27,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -145,6 +146,14 @@ public class LogAopAction {
 			}
 			servletContext.setAttribute("coreFunctionList", coreList);
 		}
+		List<CoreFunction> policeCoreList = (List<CoreFunction>) servletContext.getAttribute("policeCoreList");
+		if(CollectionUtils.isEmpty(policeCoreList)) {
+			policeCoreList = this.coreFunctionManager.getAllCoreFunction(2);
+			if (policeCoreList == null || policeCoreList.size() == 0) {
+				policeCoreList = new ArrayList<CoreFunction>();
+			}
+			servletContext.setAttribute("policeCoreList", policeCoreList);
+		}
 
 		OperationLog log = new OperationLog();
 		// 日志实体对象
@@ -160,9 +169,13 @@ public class LogAopAction {
 		// 拦截的实体类，就是当前正在执行的controller
 		Object target = pjp.getTarget();
 		// 拦截的方法名称。当前正在执行的方法
-		String methodName = pjp.getSignature().getName();
+		String methodName = pjp.getSignature().getName();		
 		// 拦截的方法参数
 		Object[] args = pjp.getArgs();
+		//登陆的时候，把用户名加到日志里面
+		if("login".equals(methodName)) {
+			log.setOperationUser(args.length>2?args[1].toString():"—— ——");
+		}
 		StringBuffer sbStr = new StringBuffer("");
 		JsonConfig jsonConfig = new JsonConfig();
 		jsonConfig.setExcludes(new String[] { "qmFile","mm" });
@@ -211,6 +224,13 @@ public class LogAopAction {
 					break;
 				}
 			}
+			for (CoreFunction cf : policeCoreList) {
+				if (functionP.equals(cf.getFunctionPoint())) {
+					log.setRuleBussiness("N");
+					break;
+				}
+			}
+			
 			return log;
 		}
 		return null;

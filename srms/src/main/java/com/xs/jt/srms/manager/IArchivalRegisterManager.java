@@ -3,6 +3,7 @@ package com.xs.jt.srms.manager;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.jt.srms.entity.ArchivalCase;
@@ -19,6 +20,8 @@ public interface IArchivalRegisterManager {
 	public boolean archivalCheckOut(ArchivalCase archivalCase);
 	
 	public boolean archivalCheckIn(ArchivalCase archivalCase);
+	
+	public List<ArchivalRegister> findArchivalRegisterCheckIn(String handleUser,String zt,String rksj);
 	
 
 }

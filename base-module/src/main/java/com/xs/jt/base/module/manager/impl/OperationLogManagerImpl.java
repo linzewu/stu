@@ -168,4 +168,87 @@ public class OperationLogManagerImpl implements IOperationLogManager {
 		}
 	}
 
+
+	@Override
+	public List<OperationLog> getExportList(OperationLog operationLog) {
+		List<OperationLog> logList = this.operationLogRepository.findAll(new Specification<OperationLog>() {
+
+			@Override
+			public Predicate toPredicate(Root<OperationLog> root, CriteriaQuery<?> query,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> list = new ArrayList<Predicate>();
+				if (null != operationLog.getOperationUser() && !"".equals(operationLog.getOperationUser())) {
+					list.add(criteriaBuilder.equal(root.get("operationUser").as(String.class), operationLog.getOperationUser()));
+				}
+				if (null != operationLog.getModule() && !"".equals(operationLog.getModule())) {
+					list.add(criteriaBuilder.like(root.get("module").as(String.class), "%"+operationLog.getModule()+"%"));
+				}
+				if(operationLog.getOperationDate() != null && operationLog.getOperationDateEnd() != null) {
+					list.add(criteriaBuilder.between(root.get("operationDate").as(Date.class), operationLog.getOperationDate(),operationLog.getOperationDateEnd()));
+				}
+//				if(operationLog.getOperationDateEnd() != null) {
+//					list.add(Restrictions.le("operationDate", operationLog.getOperationDateEnd()));
+//				}
+				if(operationLog.getCoreFunction() != null) {
+					if("Y".equals(operationLog.getCoreFunction())) {
+						//list.add(Restrictions.eq("coreFunction", operationLog.getCoreFunction()));
+						list.add(criteriaBuilder.equal(root.get("coreFunction").as(String.class), operationLog.getCoreFunction()));
+					}else {
+						list.add(criteriaBuilder.isNull(root.get("coreFunction").as(String.class)));
+					}
+				}
+
+				List<Order> orders = new ArrayList<Order>();
+				orders.add(criteriaBuilder.desc(root.get("id")));
+				query.orderBy(orders);
+				Predicate[] p = new Predicate[list.size()];
+				return criteriaBuilder.and(list.toArray(p));
+			}
+			
+		});
+		return logList;
+	}
+
+
+	@Override
+	public List<OperationLog> getLoginExportList(OperationLog operationLog) {
+		List<OperationLog> logList = this.operationLogRepository.findAll(new Specification<OperationLog>() {
+
+			@Override
+			public Predicate toPredicate(Root<OperationLog> root, CriteriaQuery<?> query,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> list = new ArrayList<Predicate>();
+				list.add(criteriaBuilder.equal(root.get("operationType").as(String.class), "登录"));
+				if (null != operationLog.getOperationUser() && !"".equals(operationLog.getOperationUser())) {
+					list.add(criteriaBuilder.equal(root.get("operationUser").as(String.class), operationLog.getOperationUser()));
+				}
+				if (null != operationLog.getModule() && !"".equals(operationLog.getModule())) {
+					list.add(criteriaBuilder.like(root.get("module").as(String.class), "%"+operationLog.getModule()+"%"));
+				}
+				if(operationLog.getOperationDate() != null && operationLog.getOperationDateEnd() != null) {
+					list.add(criteriaBuilder.between(root.get("operationDate").as(Date.class), operationLog.getOperationDate(),operationLog.getOperationDateEnd()));
+				}
+//				if(operationLog.getOperationDateEnd() != null) {
+//					list.add(Restrictions.le("operationDate", operationLog.getOperationDateEnd()));
+//				}
+				if(operationLog.getCoreFunction() != null) {
+					if("Y".equals(operationLog.getCoreFunction())) {
+						//list.add(Restrictions.eq("coreFunction", operationLog.getCoreFunction()));
+						list.add(criteriaBuilder.equal(root.get("coreFunction").as(String.class), operationLog.getCoreFunction()));
+					}else {
+						list.add(criteriaBuilder.isNull(root.get("coreFunction").as(String.class)));
+					}
+				}
+
+				List<Order> orders = new ArrayList<Order>();
+				orders.add(criteriaBuilder.desc(root.get("id")));
+				query.orderBy(orders);
+				Predicate[] p = new Predicate[list.size()];
+				return criteriaBuilder.and(list.toArray(p));
+			}
+			
+		});
+		return logList;
+	}
+
 }

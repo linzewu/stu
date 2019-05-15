@@ -6,7 +6,9 @@
 			<th data-options="field:'operationUser',width:60">用户姓名</th>
 			<th data-options="field:'operationDate',width:100">操作时间</th>
 			<th data-options="field:'ipAddr',width:100">IP地址</th>
-			<th data-options="field:'operationResult',width:70">操作结果</th>
+			<th data-options="field:'coreFunction',width:80,formatter:formatCoreFun">是否核心功能</th>
+			<th data-options="field:'ruleBussiness',width:80,formatter:formatRuleFun">是否常规功能</th>
+			<th data-options="field:'operationResult',width:70,formatter:formatLogCzjg">操作结果</th>
 			<th data-options="field:'failMsg',width:100">操作失败原因</th>
 			<th data-options="field:'module',width:100">功能模块名称</th>
 			<th data-options="field:'content',width:100,formatter:formatCellTooltip">内容描述</th>
@@ -25,6 +27,8 @@
                 <option value="N">N</option>
                 </select>
 		<a class="easyui-linkbutton" href="#" data-options="iconCls:'icon-search'" onclick="query()"></a>
+		<a href="javascript:exportLoginLogExcel()" class="easyui-linkbutton">导出Excel</a>
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="setCcqxLoginLog()">设置存储期限</a>
 	</div>
 </div>
 
@@ -33,6 +37,23 @@
 function formatCellTooltip(value){  
     return "<span title='" + value + "'>" + value + "</span>";  
 }  
+function formatLogCzjg(value,row,index){
+	return  comm.getParamNameByValue("log.czjg", value);
+}
+function formatCoreFun(value,row,index){
+	if(value =="" || value == null){
+		return "N";
+	}else{
+		return value;
+	}
+}
+function formatRuleFun(value,row,index){
+	if(value =="" || value == null){
+		return "Y";
+	}else{
+		return value;
+	}
+}
 function query(){
 	var operationDate = $("#quer_operationDate").datebox("getValue");
 	var operationDateEnd = $("#quer_operationDateEnd").datebox("getValue");
@@ -60,5 +81,44 @@ function query(){
 	 var opts = $("#operationLogManager").datagrid("options");
 	 opts.url = "../../opeationLog/getLoginOperationLog";
 	$("#operationLogManager").datagrid("reload",param);
+}
+
+function setCcqxLoginLog(){
+	var rzccqx = "";
+	var rzccqxArr = comm.getBaseParames("rzccqx");
+	if(rzccqxArr.length > 0){
+		if(rzccqxArr[0].id != null && rzccqxArr[0].id !=""){
+			rzccqx = rzccqxArr[0].id;
+		}
+	}
+	$.messager.prompt('提示', '请输入存储期限(单位：年):', function(ccqx){			
+		    if (ccqx){
+		        $.post('../../securityLog/saveCcqx',{"rzccqx":ccqx},function(result){
+		            if (result.state==1){
+		             	$.messager.alert("提示","设置存储期限成功","info");
+		             }else{
+		             	$.messager.alert("错误","设置存储期限失败","error");
+		             }
+		         },'json').error(function(){
+		         	$.messager.alert("错误","设置存储期限失败","error");
+		       });
+		    };
+		});
+		$(".messager-input").val(rzccqx);
+}
+
+function exportLoginLogExcel(){
+	var operationDate = $("#quer_operationDate").datebox("getValue");
+	var operationDateEnd = $("#quer_operationDateEnd").datebox("getValue");
+	
+	var operationUser = $("#quer_operationUser").val();
+	var module = $("#quer_module").val();
+	var coreFunction = $("#quer_coreFunction").combobox("getValue");
+	if(operationDate == "" || operationDateEnd == ""){
+		$.messager.alert("提示","请选择操作开始时间，结束时间","info");
+		return;
+	}
+	window.location = "../../opeationLog/exportLoginLog?operationDate="+operationDate+"&operationDateEnd="+operationDateEnd+
+			"&operationUser="+operationUser+"&module="+module+"&coreFunction="+coreFunction;	
 }
 </script>

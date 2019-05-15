@@ -11,11 +11,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.xs.jt.base.module.annotation.CheckBit;
 import com.xs.jt.base.module.entity.BaseEntity;
 @Scope("prototype")
 @Component("videoInfo")
 @Entity
 @Table(name = "tm_Video_Info")
+@CheckBit
 public class VideoInfo extends BaseEntity{
 	
 	/**
@@ -244,6 +246,14 @@ public class VideoInfo extends BaseEntity{
 
 	public void setJyjgbh(String jyjgbh) {
 		this.jyjgbh = jyjgbh;
+	}
+
+	@Override
+	public String toString() {
+		return "VideoInfo [jyjgbh=" + jyjgbh + ", hphm=" + hphm + ", hpzl=" + hpzl + ", clsbdh=" + clsbdh + ", lsh="
+				+ lsh + ", jycs=" + jycs + ", zt=" + zt + ", reason=" + reason + ", taskCount=" + taskCount
+				+ ", videoName=" + videoName + ", videoSize=" + videoSize + ", cyqxh=" + cyqxh + ", cyqtd=" + cyqtd
+				+ ", configId=" + configId + ", deviceName=" + deviceName + ", sfzmhm=" + sfzmhm + "]";
 	}
 	
 	

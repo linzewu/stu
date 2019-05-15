@@ -81,13 +81,13 @@ public class BarcodeUtil {
 
 	}
 	
-	public static void main(String[] args) {
-		List  aa = null;
-		
-		System.out.println(CollectionUtils.isEmpty(aa));
-		aa =new ArrayList();
-		aa.add("dd");
-		System.out.println(CollectionUtils.isEmpty(aa));
-	}
+//	public static void main(String[] args) {
+//		List  aa = null;
+//		
+//		System.out.println(CollectionUtils.isEmpty(aa));
+//		aa =new ArrayList();
+//		aa.add("dd");
+//		System.out.println(CollectionUtils.isEmpty(aa));
+//	}
 
 }

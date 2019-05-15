@@ -268,5 +268,10 @@ public class ArchivalRegisterManagerImpl implements IArchivalRegisterManager {
 		
 	}
 
+	@Override
+	public List<ArchivalRegister> findArchivalRegisterCheckIn(String handleUser, String zt,String rksj) {
+		return archivalRegisterRepository.findArchivalRegisterCheckIn(handleUser, zt,rksj);
+	}
+
 
 }

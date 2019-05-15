@@ -96,3 +96,12 @@ function printCYD(option) {
 		}
 	}
 }
+
+function exportExcel(){
+	var quer_createTime=$("#quer_createTime").datebox("getValue");	
+	if(quer_createTime == ""){
+		$.messager.alert("提示","请选择入库时间!","warning");
+		return;
+	}
+	window.location = "../../archivalFiling/export?rksj="+quer_createTime;	
+}

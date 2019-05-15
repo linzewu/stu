@@ -1,4 +1,4 @@
-package com.xs.jt.cmsvideo.util;
+package com.xs.jt.base.module.util;
 
 import java.io.File;
 
