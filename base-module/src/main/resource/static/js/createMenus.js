@@ -208,7 +208,13 @@ $(function() {
 			li.find("img").attr("src", n.icon);
 			li.find("a").append(n.title);
 			li.click(function(){
-				centerPanel.panel("refresh",n.href);
+				if(n.mode == "new"){
+					var tempwindow=window.open('_blank'); // 先打开页面
+					tempwindow.location=n.href; // 后更改页面地址
+					//window.open(n.href,"_blank");
+				}else{
+					centerPanel.panel("refresh",n.href);
+				}
 			});
 			ul.append(li);
 			if(i==0&&centerPanel.html()==""){

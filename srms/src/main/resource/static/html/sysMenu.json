@@ -71,6 +71,21 @@
 			]
 		}]
 },{
+	"module": "驾驶人档案管理",
+	"group": [
+		{
+			"groupName": "驾驶人档案管理",
+			"menus": [
+				{
+					"icon": "../../static/images/driver.png",
+					"title": "驾驶人档案查询",
+					"href": "http://www.baidu.com",
+					"permission":"driverFiles.getDriverFilesList",
+					"mode":"new"
+				}
+			]
+		}]
+},{
 	"module": "业务预警",
 	"group": [
 		{
