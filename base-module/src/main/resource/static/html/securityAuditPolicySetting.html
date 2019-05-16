@@ -11,6 +11,10 @@ function endEditing(){
     }
 }
 function onDBClickRow(index, field){
+	if(field.canEdit == "N"){
+		$.messager.alert("提示","该策略不能编辑！！！","info");
+		return;
+	}
     if (editIndex != index){
         if (endEditing()){
             $('#policySetManager').datagrid('selectRow', index)

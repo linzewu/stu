@@ -14,6 +14,7 @@ import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -37,6 +38,7 @@ import com.xs.jt.srms.entity.StoreRoom;
 import com.xs.jt.srms.manager.IArchivalRegisterManager;
 import com.xs.jt.srms.util.NumberFormatUtil;
 @Service
+@Scope("singleton")
 public class ArchivalRegisterManagerImpl implements IArchivalRegisterManager {
 	
 	@Autowired
@@ -110,7 +112,7 @@ public class ArchivalRegisterManagerImpl implements IArchivalRegisterManager {
 	}
 
 	@Override
-	public boolean archivalCheckOut(ArchivalCase archivalCase) {
+	public synchronized boolean archivalCheckOut(ArchivalCase archivalCase) {
 		List<ArchivalCase> list = this.archivalCaseRepository.getArchivalCaseByBarCode(archivalCase.getBarCode());
 		String fileNoStr = "";
 		if("Y".equals(archivalCase.getZyOther())) {
@@ -122,8 +124,12 @@ public class ArchivalRegisterManagerImpl implements IArchivalRegisterManager {
 					noUseCase.setHphm(list.get(0).getHphm());
 					noUseCase.setHpzl(list.get(0).getHpzl());
 					noUseCase.setYwlx(archivalCase.getYwlx());
-					noUseCase.setBarCode(noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
-							+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo());
+//					noUseCase.setBarCode(noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
+//							+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo());
+					noUseCase.setBarCode(noUseCase.getArchivesNo() + noUseCase.getRackNo()
+							+ (noUseCase.getRackCol() < 10 ? ("0" + noUseCase.getRackCol()) : noUseCase.getRackCol())
+							+ (noUseCase.getRackRow() < 10 ? ("0" + noUseCase.getRackRow()) : noUseCase.getRackRow())
+							+ noUseCase.getFileNo());
 					noUseCase.setZt(ArchivalCase.ZT_CK);
 					archivalCaseRepository.save(noUseCase);	
 					
@@ -154,8 +160,12 @@ public class ArchivalRegisterManagerImpl implements IArchivalRegisterManager {
 							noUseCase.setHpzl(archivalCase.getHpzl());
 							noUseCase.setYwlx(archivalCase.getYwlx());
 							if("".equals(barCode)) {
-								barCode = noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
-										+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo();
+//								barCode = noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
+//										+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo();
+								barCode = noUseCase.getArchivesNo() + noUseCase.getRackNo()
+								+ (noUseCase.getRackCol() < 10 ? ("0" + noUseCase.getRackCol()) : noUseCase.getRackCol())
+								+ (noUseCase.getRackRow() < 10 ? ("0" + noUseCase.getRackRow()) : noUseCase.getRackRow())
+								+ noUseCase.getFileNo();
 							}
 							noUseCase.setBarCode(barCode);
 							noUseCase.setZt(ArchivalCase.ZT_CK);
@@ -256,6 +266,11 @@ public class ArchivalRegisterManagerImpl implements IArchivalRegisterManager {
 			}
 //		}
 		
+	}
+
+	@Override
+	public List<ArchivalRegister> findArchivalRegisterCheckIn(String handleUser, String zt,String rksj) {
+		return archivalRegisterRepository.findArchivalRegisterCheckIn(handleUser, zt,rksj);
 	}
 
 

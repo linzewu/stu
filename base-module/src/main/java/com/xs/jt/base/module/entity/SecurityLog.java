@@ -1,11 +1,18 @@
 package com.xs.jt.base.module.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.springframework.context.annotation.Scope;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.xs.jt.base.module.annotation.CheckBit;
 
 
 /**
@@ -17,6 +24,7 @@ import org.springframework.stereotype.Component;
 @Component("securityLog")
 @Entity
 @Table(name = "TC_SecurityLogs")
+@CheckBit
 public class SecurityLog extends BaseEntity {
 	
 	/**
@@ -40,6 +48,22 @@ public class SecurityLog extends BaseEntity {
 	//是否标红
 	@Column(length=1)
 	private String signRed;
+	
+	/**
+	 * 内容
+	 */
+	@Column(length=2000)
+	private String result;
+	
+	@Transient
+	@DateTimeFormat(pattern = "yyyy-MM-dd")  
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	private Date operationDateBegin;
+	
+	@Transient
+	@DateTimeFormat(pattern = "yyyy-MM-dd")  
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	private Date operationDateEnd;
 
 	public String getIpAddr() {
 		return ipAddr;
@@ -79,6 +103,36 @@ public class SecurityLog extends BaseEntity {
 
 	public void setSignRed(String signRed) {
 		this.signRed = signRed;
+	}
+
+	public String getResult() {
+		return result;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
+	}
+
+	public Date getOperationDateBegin() {
+		return operationDateBegin;
+	}
+
+	public void setOperationDateBegin(Date operationDateBegin) {
+		this.operationDateBegin = operationDateBegin;
+	}
+
+	public Date getOperationDateEnd() {
+		return operationDateEnd;
+	}
+
+	public void setOperationDateEnd(Date operationDateEnd) {
+		this.operationDateEnd = operationDateEnd;
+	}
+
+	@Override
+	public String toString() {
+		return "SecurityLog [ipAddr=" + ipAddr + ", content=" + content + ", userName=" + userName + ", clbm=" + clbm
+				+ ", signRed=" + signRed + ", result=" + result + "]";
 	}
 	
 	

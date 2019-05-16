@@ -19,7 +19,7 @@
 
 <div id="datagrid-MultipleProcess-toolbar">
 	    	统计时间：<input id="begin" type="text" class="easyui-datebox" required="required">~<input id="end" type="text" class="easyui-datebox" required="required">
-		    	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="query()">查询</a>
+		    	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryArchivalWarn()">查询</a>
 	    </div>
 
 <script type="text/javascript">
@@ -27,7 +27,7 @@ function ztFormat(value,row,index){
 	return comm.getParamNameByValue("dazt", value)
 }
 
-function query(){
+function queryArchivalWarn(){
 	var begin = $("#begin").datebox("getValue");
 	var end = $("#end").datebox("getValue");
 	

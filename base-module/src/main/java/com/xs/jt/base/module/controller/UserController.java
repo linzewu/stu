@@ -33,6 +33,7 @@ import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.entity.BaseParams;
 import com.xs.jt.base.module.entity.BlackList;
 import com.xs.jt.base.module.entity.CoreFunction;
+import com.xs.jt.base.module.entity.OperationLog;
 import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.base.module.entity.SecurityAuditPolicySetting;
 import com.xs.jt.base.module.entity.SecurityLog;
@@ -43,6 +44,7 @@ import com.xs.jt.base.module.manager.IBaseParamsManager;
 import com.xs.jt.base.module.manager.IBlackListManager;
 import com.xs.jt.base.module.manager.ICoreFunctionManager;
 import com.xs.jt.base.module.manager.IDepartmentManager;
+import com.xs.jt.base.module.manager.IOperationLogManager;
 import com.xs.jt.base.module.manager.IRoleManager;
 import com.xs.jt.base.module.manager.ISecurityAuditPolicySettingManager;
 import com.xs.jt.base.module.manager.ISecurityLogManager;
@@ -86,6 +88,10 @@ public class UserController {
 	private IBaseParamsManager baseParamsManager;
 	@Resource(name = "signaturePhotoManager")
 	private ISignaturePhotoManager signaturePhotoManager;
+	@Autowired
+	private HttpSession session;
+	@Autowired
+	private IOperationLogManager operationLogManager;
 
 	@RecordLog
 	@UserOperation(code="getUsers",name="用户查询")
@@ -121,6 +127,7 @@ public class UserController {
 				user.setYhm(oldUser.getYhm());
 				user.setSfzh(oldUser.getSfzh());
 				user.setZjdlsj(oldUser.getZjdlsj());
+				recodeSpecialLog(user,oldUser);
 			}
 			MultipartFile qmFile = user.getQmFile();
 			user = userManager.saveUser(user);
@@ -134,6 +141,55 @@ public class UserController {
 		} else {
 			return JSONObject.fromObject(ResultHandler.resultHandle(result, null, null)).toString();
 		}
+	}
+	
+	public void recodeSpecialLog(User currUser,User oldUser) {
+		//用户解锁
+		if(User.ZT_SD == oldUser.getZt() && User.ZT_CZMM == currUser.getZt()) {
+			String content = "用户"+currUser.getYhm()+"被解锁";
+			String operType = "用户解锁";
+			saveLog(content, operType);
+		}else if(currUser.getMmyxq().after(oldUser.getMmyxq())) {
+			//密码延期
+			String content = "用户"+currUser.getYhm()+"密码有效期延期";
+			String operType = "密码延期";
+			saveLog(content, operType);
+		}else if(currUser.getZhyxq().after(oldUser.getZhyxq())) {
+			String content = "用户"+currUser.getYhm()+"账号有效期延期";
+			String operType = "账号延期";
+			saveLog(content, operType);
+		}
+	}
+
+	private void saveLog(String content, String operType) {
+		OperationLog log = new OperationLog();
+		// 获取当前登陆用户信息
+		User loginUser = (User) session.getAttribute("user");
+		log.setOperationUser(loginUser.getYhm());
+		log.setOperationCondition("");
+		log.setModule("用户管理");
+		log.setOperationType(operType);
+		log.setIpAddr(Common.getIpAdrress(request));
+		log.setContent(content);
+		log.setOperationResult(OperationLog.OPERATION_RESULT_SUCCESS);
+		log.setStatus(1);
+		log.setOperationDate(new Date());
+		operationLogManager.saveOperationLog(log);
+	}
+	
+	private void saveLoginFailLog(String content, String operType,String yhm,String failMsg) {
+		OperationLog log = new OperationLog();
+		log.setOperationUser(yhm);
+		log.setOperationCondition("");
+		log.setModule("用户管理");
+		log.setOperationType(operType);
+		log.setIpAddr(Common.getIpAdrress(request));
+		log.setContent(content);
+		log.setOperationResult(OperationLog.OPERATION_RESULT_ERROR);
+		log.setStatus(1);
+		log.setOperationDate(new Date());
+		log.setFailMsg(failMsg);
+		operationLogManager.saveOperationLog(log);
 	}
 
 	
@@ -182,6 +238,7 @@ public class UserController {
 			if(sessionMap != null) {
 				if(sessionMap.size() > sessCou) {
 					Map data=ResultHandler.toMyJSON(0, "已经达到用户最大会话数，禁止登录！");
+					saveLoginFailLog("已经达到用户最大会话数,登录失败","登录失败",userName,"已经达到用户最大会话数");
 					return data;
 				}
 			}
@@ -189,6 +246,7 @@ public class UserController {
 		RequestContext requestContext = new RequestContext(request);
 		if(blackListManager.checkIpIsBan(Common.getIpAdrress(request))) {
 			Map data=ResultHandler.toMyJSON(0, "当前IP已被列入黑名单，请联系管理员！");
+			saveLoginFailLog("当前IP已被列入黑名单,登录失败","登录失败",userName,"当前IP已被列入黑名单");
 			return data;
 		}
 		User user = userManager.login(userName);
@@ -204,11 +262,13 @@ public class UserController {
 				SecurityAuditPolicySetting set = securityAuditPolicySettingManager.getPolicyByCode(SecurityAuditPolicySetting.ACCOUNT_LOCK);
 				String msg = "登录失败，当前用户登录失败次数超过"+set.getClz()+"次已被锁定，请联系管理员解锁！";
 				Map data = ResultHandler.toMyJSON(Constant.ConstantState.STATE_ERROR, msg, null);
+				saveLoginFailLog("当前用户登录失败次数超过"+set.getClz()+"次已被锁定,登录失败","登录失败",userName,"当前用户登录失败次数超过"+set.getClz()+"次已被锁定");
 				return data;
 			}
 			
 			if(!checkIp(user,request)) {
 				Map data = ResultHandler.toMyJSON(Constant.ConstantState.STATE_ERROR, "登录IP地址不合法！", null);
+				saveLoginFailLog("登录IP地址不合法,登录失败","登录失败",userName,"登录IP地址不合法");
 				return data;
 			}
 			Date nowDate = new Date();
@@ -217,11 +277,13 @@ public class UserController {
 				Map data = ResultHandler.toMyJSON(Constant.ConstantState.STATE_ERROR, "用户账号已过期！", null);		
 				user.setMmyxq(user.getZhyxq());
 				this.userManager.saveUser(user);
+				saveLoginFailLog("用户账号已过期,登录失败","登录失败",userName,"用户账号已过期");
 				return data;
 			}
 			//校验时间是否在允许的时间段内
 			if(!checkLognTime(user)) {
 				Map data = ResultHandler.toMyJSON(Constant.ConstantState.STATE_ERROR, "不在允许的时间段内登录！", null);
+				saveLoginFailLog("不在允许的时间段内登录,登录失败","登录失败",userName,"不在允许的时间段内登录");
 				return data;
 			}
 			String encodePwd =user.encodePwd(password);
@@ -230,6 +292,7 @@ public class UserController {
 				//失败加入黑名单
 				int sycou= addBlackList(request);
 				String msg = "用户名密码错误！当前Ip还有"+sycou+"次机会就会被锁定.";
+				saveLoginFailLog("用户名密码错误,登录失败","登录失败",userName,"用户名密码错误");
 				Map data = ResultHandler.toMyJSON(Constant.ConstantState.STATE_ERROR, msg, null);
 				
 				return data;
@@ -261,6 +324,7 @@ public class UserController {
 			Map data = ResultHandler.toMyJSON(0, requestContext.getMessage(Constant.ConstantMessage.LOGIN_FAILED));
 			data.put("session", session.getId());
 			session.removeAttribute(Constant.ConstantKey.USER_SESSIO_NKEY);
+			saveLoginFailLog("用户名不存在,登录失败","登录失败",userName,"用户名不存在");
 			return data;
 		}
 	}
@@ -340,7 +404,8 @@ public class UserController {
 			securityLog.setClbm(SecurityAuditPolicySetting.ACCOUNT_LOCK);
 			securityLog.setIpAddr(ip);
 			securityLog.setSignRed("N");
-			securityLog.setContent("用户:"+u.getYhm()+"违反账户锁定安全审计策略设置，用户锁定");
+			securityLog.setContent("用户:"+u.getYhm()+"违反账户锁定安全审计策略设置");
+			securityLog.setResult("用户锁定！");
 			securityLogManager.saveSecurityLog(securityLog);
 		}
 		return u;
@@ -377,7 +442,8 @@ public class UserController {
 				securityLog.setClbm(SecurityAuditPolicySetting.IP_LOCK);
 				securityLog.setIpAddr(ip);
 				securityLog.setSignRed("N");
-				securityLog.setContent("IP终端:"+ip+"违反IP终端锁定(黑名单)安全审计策略设置，加入黑名单");
+				securityLog.setContent("IP终端:"+ip+"违反IP终端锁定(黑名单)安全审计策略设置");
+				securityLog.setResult("IP加入黑名单！");
 				securityLogManager.saveSecurityLog(securityLog);
 			}
 		}

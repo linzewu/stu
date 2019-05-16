@@ -36,7 +36,7 @@ public class User extends BaseEntity {
 	
 	public final static Integer ZT_CZMM=0;
 	
-	public final static Integer ZT_ZC=1;
+	public final static Integer ZT_SD=1;
 	
 	public static final String SYSTEM_USER="system";
 	

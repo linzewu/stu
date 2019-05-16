@@ -1,5 +1,5 @@
 <table id="securityLogManager" class="easyui-datagrid"
-	data-options="url:'../../securityLog/getSecurityLog',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#operlogToolbar',
+	data-options="url:'../../securityLog/getSecurityLog',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#securityLogManagerToolbar',
 	rowStyler: function(index,row){
                     if (row.signRed =='Y'){
                         return 'background-color:red;color:#fff;font-weight:bold;';
@@ -11,8 +11,71 @@
 			<th data-options="field:'userName',width:50">账号</th>
 			<th data-options="field:'clbm',width:80">安全审计策略子类型编码</th>
 			<th data-options="field:'content',width:200">内容描述</th>
+			<th data-options="field:'result',width:100">结果</th>
 			<th data-options="field:'createUser',width:40">创建人</th>
 			<th data-options="field:'createTime',width:70">创建时间</th>
 		</tr>
 	</thead>
 </table>
+
+<div id="securityLogManagerToolbar" class="list-query-base">
+	<div>
+		<label>操作时间：</label> <input id="quer_operationDate" class="easyui-datebox" style="width: 130px;">~<input id="quer_operationDateEnd" class="easyui-datebox" style="width: 130px;">
+		<a class="easyui-linkbutton" href="#" data-options="iconCls:'icon-search'" onclick="querySecurityLog()"></a>
+		<a href="javascript:exportSecurityLogExcel()" class="easyui-linkbutton">导出Excel</a>
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="setCcqx()">设置存储期限</a>
+		
+	</div>
+</div>
+
+<script type="text/javascript">
+	function setCcqx(){
+		var rzccqx = "";
+		var rzccqxArr = comm.getBaseParames("rzccqx");
+		if(rzccqxArr.length > 0){
+			if(rzccqxArr[0].id != null && rzccqxArr[0].id !=""){
+				rzccqx = rzccqxArr[0].id;
+			}
+		}
+		$.messager.prompt('提示', '请输入存储期限(单位：年):', function(ccqx){			
+			    if (ccqx){
+			        $.post('../../securityLog/saveCcqx',{"rzccqx":ccqx},function(result){
+			            if (result.state==1){
+			             	$.messager.alert("提示","设置存储期限成功","info");
+			             }else{
+			             	$.messager.alert("错误","设置存储期限失败","error");
+			             }
+			         },'json').error(function(){
+			         	$.messager.alert("错误","设置存储期限失败","error");
+			       });
+			    };
+			});
+			$(".messager-input").val(rzccqx);
+	}
+	
+	function exportSecurityLogExcel(){
+		var operationDate = $("#quer_operationDate").datebox("getValue");
+		var operationDateEnd = $("#quer_operationDateEnd").datebox("getValue");
+		if(operationDate == "" || operationDateEnd == ""){
+			$.messager.alert("提示","请选择操作开始时间，结束时间","info");
+			return;
+		}
+		window.location = "../../securityLog/export?operationDateBegin="+operationDate+"&operationDateEnd="+operationDateEnd;	
+	}
+	
+	function querySecurityLog(){
+		var operationDate = $("#quer_operationDate").datebox("getValue");
+		var operationDateEnd = $("#quer_operationDateEnd").datebox("getValue");
+		var param={};
+		if(operationDate&&$.trim(operationDate)!=""){
+			param.operationDateBegin=operationDate;
+		}
+		if(operationDateEnd&&$.trim(operationDateEnd)!=""){
+			param.operationDateEnd=operationDateEnd;
+		}
+		
+		var opts = $("#securityLogManager").datagrid("options");
+		 //opts.url = "../../opeationLog/getOperationLog";
+		$("#securityLogManager").datagrid("reload",param);
+	}
+</script>

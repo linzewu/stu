@@ -27,7 +27,7 @@
 		    	<li><label>号牌种类：</label><input id="quer_hpzl"   prompt='请选择号牌种类' data-options="data:comm.getBaseParames('hpzl'),	valueField: 'id',
 		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
 				<li><label>号牌号码：</label><input type="text" class="easyui-textbox" id="quer_hphm" style="width: 160px;"></li>
-		    	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="query()">查询</a></li>
+		    	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryArchiveIn()">查询</a></li>
 		    </ul>
 	    </div>
 	    
@@ -37,7 +37,7 @@ function checkIn(){
     if (row){
     	$.messager.confirm('确认','您确定将档案 '+row.fileNo+' 入库?',function(r){
             if(r){
-                $.post('../../archivalRegister/archivalCheckIn',row,function(result){
+                $.post('../../archivalCase/archivalCheckIn',row,function(result){
                     if (result.state==1){
                     	$.messager.alert("提示","档案入库成功","info");
                         $('#datagrid-archiveIn').datagrid('reload');    // reload the user data
@@ -55,7 +55,7 @@ function checkIn(){
 	}
 }
 
-function query(){
+function queryArchiveIn(){
 	var quer_clsbdh=$("#quer_clsbdh").textbox("getValue");	
 	var quer_hpzl = $("#quer_hpzl").combobox("getValue");	
 	var quer_hphm = $("#quer_hphm").textbox("getValue");

@@ -1,3 +1,18 @@
+<style id="style1">
+.print_Table {
+	font-size: 14px;
+	letter-spacing:1px;	
+	width: 215px;
+}
+.td-font {
+	font-size: 8px;
+	text-align: center;
+}
+.barcodeImg{
+	width: 10px;
+	text-align: left;
+}
+</style>
 <table id="datagrid-archiveQuery" title="档案查询" class="easyui-datagrid" style="width:100%;height:500px"
 	            toolbar="#datagrid-archiveQuery-toolbar" pagination="true" url="../../archivalCase/getArchivalCaseList" pageSize="20"
 	            pageList="[20,50,100,200,300]"
@@ -20,23 +35,72 @@
 	    </table>
 	    <div id="datagrid-archiveQuery-toolbar">
 	    	<ul class="querParamList">
-		    	<li><label>车辆识别代号：</label><input type="text" class="easyui-textbox" id="quer_clsbdh" style="width: 160px;"></li>
+	    		<li><label>条码：</label><input type="text" class="easyui-textbox" id="quer_barCode" style="width: 160px;"></li>
+		    	<li><label>车辆识别代号：</label><input type="text" class="easyui-textbox" id="quer_clsbdh" style="width: 160px;"></li><br/>
 		    	<li><label>号牌种类：</label><input id="quer_hpzl"   prompt='请选择号牌种类' data-options="data:comm.getBaseParames('hpzl'),	valueField: 'id',
 		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
 				<li><label>号牌号码：</label><input type="text" class="easyui-textbox" id="quer_hphm" style="width: 160px;"></li>
-		    	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="query()">查询</a></li>
+		    	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryArchival()">查询</a>
+		    	&nbsp;&nbsp;<a href="javascript:printRowBQ()" class="easyui-linkbutton" data-options="iconCls:'icon-print'">标签打印</a></li>
 		    </ul>
 	    </div>
-	    
+<div id="printTemplet" style="display: none;">
+	<div align="left" >
+		<table class="print_Table" cellpadding="2" cellspacing="1">
+			<tr>
+				<td align="right" width="54%">号牌号码：</td>
+				<td id="l_hphm"></td>
+			</tr>
+			<tr>
+				<td align="right">号牌种类：</td>
+				<td id="l_hpzl"></td>
+			</tr>
+			<tr>
+				<td align="right">车辆识别代号：</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center" colspan="2" id="l_clsbdh"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center"><img id="barImg" alt="" src="" ></td>
+			</tr>
+			<tr>
+				<td colspan="2" class="td-font" >盐城市公安局交通警察支队车辆管理所</td>
+			</tr>
+		</table>
+	</div>
+</div>
+<script type="text/javascript" src="../js/LodopFuncs.js"></script>	    
 <script type="text/javascript">
 function ztFormat(value,row,index){
 	return comm.getParamNameByValue("dazt", value)
 }
-function query(){
+function queryArchival(){
+	var quer_barCode = $("#quer_barCode").textbox("getValue");
 	var quer_clsbdh=$("#quer_clsbdh").textbox("getValue");	
 	var quer_hpzl = $("#quer_hpzl").combobox("getValue");	
 	var quer_hphm = $("#quer_hphm").textbox("getValue");
-	$('#datagrid-archiveQuery').datagrid("reload",{clsbdh:quer_clsbdh,hpzl:quer_hpzl,hphm:quer_hphm});
+	$('#datagrid-archiveQuery').datagrid("reload",{clsbdh:quer_clsbdh,hpzl:quer_hpzl,hphm:quer_hphm,barCode:quer_barCode});
 }
+function printRowBQ(){
+	var row = $('#datagrid-archiveQuery').datagrid('getSelected');
+    if (row){
+    	printBQ(row);
+    }else{
+		$.messager.alert("提示","请选择档案进行打印!","warning");
+	}
+}
+
+$(function(){
+	
+	$("#quer_barCode").textbox({
+		onChange:function(newValue,oldValue){
+			if(newValue.length >=11){
+				queryArchival(newValue);
+			}
+		}
+	})
+});
 
 </script>

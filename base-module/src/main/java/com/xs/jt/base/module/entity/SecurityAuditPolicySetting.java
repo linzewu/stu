@@ -66,6 +66,13 @@ public class SecurityAuditPolicySetting extends BaseEntity{
 	
 	@Column(length = 1)
 	private String sfkq;
+	
+	/**
+	 * 能否编辑
+	 */
+	@Column(length = 1)
+	private String canEdit;
+	
 	@Transient
 	List<SecurityAuditPolicySetting> updateList = new ArrayList<SecurityAuditPolicySetting>();
 
@@ -123,6 +130,14 @@ public class SecurityAuditPolicySetting extends BaseEntity{
 
 	public void setAqsjclbm(String aqsjclbm) {
 		this.aqsjclbm = aqsjclbm;
+	}
+
+	public String getCanEdit() {
+		return canEdit;
+	}
+
+	public void setCanEdit(String canEdit) {
+		this.canEdit = canEdit;
 	}
 	
 

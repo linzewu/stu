@@ -31,12 +31,13 @@
 </form>
 
 <script type="text/javascript">
-
+var allPowerPoint;
+var row;
 $(function(){
 	
 	/**comm.createBaseSelect("#roleInfoForm select[name=jsjb]","role.jsjb","请选择角色级别");**/
 	var title = $("#tab-role").tabs("getSelected").panel("options").title;
-	var row;
+	
 	if(title=="编辑角色"){
 		row = $("#roleManager").datagrid("getSelected");
 		$("#roleInfoForm").form("load",row);
@@ -57,69 +58,85 @@ $(function(){
 	    }
 	});**/
 	$.post("../../role/getPowerPoints",function(data){
-		var pwGroup={};
-		$.each(data,function(i,n){
+		allPowerPoint = data;
+		console.log(data)
+		analyPoint(data);
+		initEditAttr();
+	});
+	
+	$("#jsjb").combobox({
+		onChange:function(newValue,oldValue){
+			analyPoint(allPowerPoint);
+		}
+	});
+	
+});
+
+function analyPoint(data){
+	
+	var jsfbV = $("#jsjb").combobox("getValue");
+	var pwGroup={};
+	$.each(data,function(i,n){
+		if(jsfbV == "" || (jsfbV != "" && (n.jsjb == ""  || n.jsjb == jsfbV))){
 			if(!pwGroup[n.modeCode]){
 				pwGroup[n.modeCode]=[n];
 			}else{
 				pwGroup[n.modeCode].push(n);
 			}
-		});
-		var treeArray =[];
-		
-		var isCheck=function(code){
-			if(row&&row.jsqx){
-				return row.jsqx.indexOf(code)!=-1;
-			}
-			return false;
-		};
-		
-		$.each(pwGroup,function(i,n){
-			var treeObj={};
-			treeObj.text=n[0].model;
-			treeObj.attributes = {"empowered":n[0].empowered};
-			treeObj.children=[];
-			$.each(n,function(j,k){
-				var child={};
-				child.id=k.code;
-				child.text=k.name;
-				child.checked= isCheck(k.code);
-				child.attributes = {"empowered":k.empowered};
-				treeObj.children.push(child);
-				
-			});
-			
-			treeArray.push(treeObj);
-		});
-		$("#powerListTree").tree({
-			checkbox:
-				/**function(node){
-				if (node.attributes.empowered){
-					return true;
-				}else{
-					return false;
-				}
-			},**/
-			true,
-			data:treeArray,
-			onCheck:function(){
-				var checkedArray = $("#powerListTree").tree("getChecked");
-				var fp="";
-				$.each(checkedArray,function(i,n){
-					if(n.id){
-						fp+=","+n.id;
-					}
-				});
-				if(fp.length>0){
-					fp=fp.substring(1);
-				}
-				$("#roleInfoForm input[name=jsqx]").val(fp);
-			}
-		});
-		initEditAttr();
+		}
 	});
+	var treeArray =[];
 	
-});
+	var isCheck=function(code){
+		if(row&&row.jsqx){
+			return row.jsqx.indexOf(code)!=-1;
+		}
+		return false;
+	};
+	console.log(pwGroup)
+	$.each(pwGroup,function(i,n){
+		var treeObj={};
+		treeObj.text=n[0].model;
+		treeObj.attributes = {"empowered":n[0].empowered};
+		treeObj.children=[];
+		$.each(n,function(j,k){
+			var child={};
+			child.id=k.code;
+			child.text=k.name;
+			child.checked= isCheck(k.code);
+			child.attributes = {"empowered":k.empowered};
+			treeObj.children.push(child);
+			
+		});
+		
+		treeArray.push(treeObj);
+	});
+	$("#powerListTree").tree({
+		checkbox:
+			/**function(node){
+			if (node.attributes.empowered){
+				return true;
+			}else{
+				return false;
+			}
+		},**/
+		true,
+		data:treeArray,
+		onCheck:function(){
+			var checkedArray = $("#powerListTree").tree("getChecked");
+			var fp="";
+			$.each(checkedArray,function(i,n){
+				if(n.id){
+					fp+=","+n.id;
+				}
+			});
+			if(fp.length>0){
+				fp=fp.substring(1);
+			}
+			$("#roleInfoForm input[name=jsqx]").val(fp);
+		}
+	});
+}
 
 function initEditAttr(){
 	

@@ -1,18 +1,25 @@
 package com.xs.jt.base.module.util;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebListener;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionAttributeListener;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.xs.jt.base.module.common.Common;
 import com.xs.jt.base.module.common.Constant;
+import com.xs.jt.base.module.entity.OperationLog;
 import com.xs.jt.base.module.entity.User;
+import com.xs.jt.base.module.manager.IOperationLogManager;
 
 
 /**
@@ -23,6 +30,10 @@ import com.xs.jt.base.module.entity.User;
 @WebListener
 public class UserSeesionListener implements HttpSessionListener, HttpSessionAttributeListener{
 
+	@Autowired
+	private IOperationLogManager operationLogManager;
+	@Autowired
+	private HttpServletRequest request;
     /**
      * Default constructor. 
      */
@@ -74,6 +85,7 @@ public class UserSeesionListener implements HttpSessionListener, HttpSessionAttr
 					//会话销毁
 					sess.invalidate();
 					map.put(userName, currentSession);
+					saveLog(userName);
 				}
 			}else {
 				map.put(userName, currentSession);
@@ -91,6 +103,21 @@ public class UserSeesionListener implements HttpSessionListener, HttpSessionAttr
 	public void attributeReplaced(HttpSessionBindingEvent se) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void saveLog(String yhm) {
+		OperationLog log = new OperationLog();
+		// 获取当前登陆用户信息
+		log.setOperationUser(yhm);
+		log.setOperationCondition("");
+		log.setModule("注销");
+		log.setOperationType("异地登陆");
+		log.setIpAddr(Common.getIpAdrress(request));
+		log.setContent("用户"+yhm+"异地登陆，下线");
+		log.setOperationResult(OperationLog.OPERATION_RESULT_SUCCESS);
+		log.setStatus(1);
+		log.setOperationDate(new Date());
+		operationLogManager.saveOperationLog(log);
 	}
 
 	

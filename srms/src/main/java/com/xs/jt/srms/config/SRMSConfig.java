@@ -27,5 +27,17 @@ public class SRMSConfig {
 	}
 	
 	
+	@Bean(name = "oraDataSource")
+	@ConfigurationProperties(prefix = "spring.datasource.ora")
+	public DataSource oraDataSource() {
+		return DataSourceBuilder.create().build();
+	}
+	
+	@Bean(name = "oraJdbcTemplate")
+	public JdbcTemplate oraJdbcTemplate(@Qualifier("oraDataSource") DataSource dataSource) {
+		return new JdbcTemplate(dataSource);
+	}
+	
+	
 
 }

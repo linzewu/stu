@@ -82,6 +82,12 @@
 					"title" : "安全日志",
 					"href" : "../../static/html/securityLog.html",
 					"permission":"SecurityLog.getSecurityLog"
+				},
+				{
+					"icon" : "../../static/images/analytics_chart.png",
+					"title" : "安全日志统计",
+					"href" : "../../static/html/securityLogPieChart.html",
+					"permission":"SecurityLog.getStatisticsSecurityLog"
 				}
 			]
 		}

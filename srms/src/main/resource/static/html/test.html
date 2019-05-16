@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style id="style1">
+.print_Table {
+	font-size: 9px;
+	letter-spacing:1px;
+	font-weight: bold;
+	border: 1px solid;
+	width: 190px;
+}
+.td-font {
+	font-size: 6px;
+	text-align: center;
+}
+.barcodeImg{
+	width: 10px;
+	text-align: left;
+}
+</style>
+<script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+<script type="text/javascript" src="../js/jquery-barcode.js"></script>
+</head>
+<body>
+	<div id="printTemplet" >
+	<div align="left" >
+		<table class="print_Table">
+			<tr>
+				<td align="right" width="36%">号牌号码：</td>
+				<td>粤UC6123</td>
+			</tr>
+			<tr>
+				<td align="right">号牌种类：</td>
+				<td>小型汽车</td>
+			</tr>
+			<tr>
+				<td align="right">车辆识别代号：</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center" colspan="2">LGBH52E27HY017233</td>
+			</tr>
+			<tr>
+				<td colspan="2"><div id="bcTarget" class="barcodeImg"></div></td>
+			</tr>
+			<tr>
+				<td colspan="2" class="td-font" >盐城市公安局交通警察支队车辆管理所</td>
+			</tr>
+		</table>
+	</div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+$(function(){
+	$("#bcTarget").empty().barcode("B-16-002-3-1-001", "code39",{barWidth:1, barHeight:12,showHRI:true,moduleSize: 2,fontSize: 4});
+});
+</script>

@@ -104,13 +104,19 @@ public class OperationLog extends BaseEntity {
 	private String operationCondition;
 	
 	/**
-	 * 是否核心功能
+	 * 是否核心功能 值为空代表N
 	 */
 	@Column(length=1)
 	private String coreFunction;
 	
 	@Column
 	private Integer status;
+	
+	/**
+	 * 是否常规业务  值为空代表Y
+	 */
+	@Column(length=1)
+	private String ruleBussiness;
 	
 
 
@@ -225,6 +231,14 @@ public class OperationLog extends BaseEntity {
 				+ ", operationResult=" + operationResult + ", failMsg=" + failMsg + ", module=" + module
 				+ ", operationCondition=" + operationCondition + ", coreFunction=" + coreFunction + ", status=" + status
 				+ "]";
+	}
+
+	public String getRuleBussiness() {
+		return ruleBussiness;
+	}
+
+	public void setRuleBussiness(String ruleBussiness) {
+		this.ruleBussiness = ruleBussiness;
 	}
 	
 	

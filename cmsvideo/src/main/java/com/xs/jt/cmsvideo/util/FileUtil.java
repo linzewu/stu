@@ -5,8 +5,6 @@ import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.xs.jt.cmsvideo.job.VideoListJob;
-
 public class FileUtil {
 
 	protected static Log log = LogFactory.getLog(FileUtil.class);

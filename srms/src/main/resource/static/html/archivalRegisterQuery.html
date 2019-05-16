@@ -1,5 +1,5 @@
 <table id="datagrid-archiveRegister" title="档案出入库记录" class="easyui-datagrid" style="width:100%;height:500px"
-	            toolbar="#datagrid-archiveRegister-toolbar" pagination="true" url="../../archivalRegister/getArchivalRegisterList" pageSize="20"
+	            toolbar="#datagrid-archiveRegister-toolbar" pagination="true" url="../../archivalCase/getArchivalRegisterList" pageSize="20"
 	            pageList="[20,50,100,200,300]"
 	            rownumbers="true"  singleSelect="true" >
 	        <thead>
@@ -14,9 +14,9 @@
 	                <th  width="120px" data-options="field:'hpzl',formatter:hpzlFormat">号牌种类</th>
 	                <th  width="120px" data-options="field:'clsbdh'">车辆识别代号</th>
 	                <th  width="120px" data-options="field:'ywlx',formatter:ywlxFormat">业务类型</th>	                
-	                <th  width="120px" data-options="field:'zt',formatter:ztFormat">状态</th>	   
+	                <th  width="120px" data-options="field:'zt',formatter:ztFormat">类型</th>	   
 	                <th  width="120px" data-options="field:'handleUser'">经办人</th>	 
-	                <th  width="120px" data-options="field:'reason'">原因</th>
+	                <th  width="120px" data-options="field:'reason'">出入库原因</th>
 	                <th  width="150px" data-options="field:'createTime'">出/入库时间</th>	              	                
 	            </tr>
 	        </thead>
@@ -27,12 +27,12 @@
 		    	<li><label>号牌种类：</label><input id="quer_hpzl"   prompt='请选择号牌种类' data-options="data:comm.getBaseParames('hpzl'),	valueField: 'id',
 		textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
 				<li><label>号牌号码：</label><input type="text" class="easyui-textbox" id="quer_hphm" style="width: 160px;"></li>
-		    	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="query()">查询</a></li>
+		    	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryArchiveRegister()">查询</a></li>
 		    </ul>
 	    </div>
 	    
 <script type="text/javascript">
-function query(){
+function queryArchiveRegister(){
 	var quer_clsbdh=$("#quer_clsbdh").textbox("getValue");	
 	var quer_hpzl = $("#quer_hpzl").combobox("getValue");	
 	var quer_hphm = $("#quer_hphm").textbox("getValue");
