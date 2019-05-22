@@ -57,7 +57,7 @@ import net.sf.json.JSONObject;
 
 @RequestMapping(value = "/user")
 @RestController
-@Modular(modelCode="user",modelName="用户管理",isEmpowered=false)
+@Modular(modelCode="user",modelName="用户管理",isEmpowered=false,jsjb= {Role.JSJB_STGL})
 //@ModuleAnnotation(modeName = Constant.ConstantDZYXH.MODE_NAME_SYSTEM, appName = Constant.ConstantDZYXH.APP_NAME_USER,href="/dzyxh/page/system/UserManager.html",icoUrl="/dzyxh/images/user.png",modeIndex=4,appIndex=1)
 public class UserController {
 

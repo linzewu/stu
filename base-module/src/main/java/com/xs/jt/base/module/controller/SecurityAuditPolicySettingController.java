@@ -15,13 +15,14 @@ import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
+import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.base.module.entity.SecurityAuditPolicySetting;
 import com.xs.jt.base.module.manager.ISecurityAuditPolicySettingManager;
 
 
 @Controller
 @RequestMapping(value = "/securityAuditPolicySetting")
-@Modular(modelCode="securityAuditPolicySetting",modelName="安全策略",isEmpowered=false)
+@Modular(modelCode="securityAuditPolicySetting",modelName="安全策略",isEmpowered=false,jsjb= {Role.JSJB_STGL,Role.JSJB_AQGL})
 public class SecurityAuditPolicySettingController {	
 	
 	@Resource(name = "securityAuditPolicySettingManager")

@@ -23,13 +23,14 @@ import com.xs.jt.base.module.common.ComputerInfoUtil;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.entity.BaseParams;
+import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.base.module.enums.CommonUserOperationEnum;
 import com.xs.jt.base.module.manager.IBaseParamsManager;
 import com.xs.jt.base.module.util.PageInfo;
 
 @Controller
 @RequestMapping(value = "/bps")
-@Modular(modelCode="BaseParams",modelName="系统参数",isEmpowered=false)
+@Modular(modelCode="BaseParams",modelName="系统参数",isEmpowered=false,jsjb=Role.JSJB_STGL)
 //@ModuleAnnotation(modeName = Constant.ConstantDZYXH.MODE_NAME_SYSTEM, appName = Constant.ConstantDZYXH.APP_NAME_SYS,icoUrl="/dzyxh/images/system.png",href="/dzyxh/page/system/systemInfo.html",modeIndex=4,appIndex=2)
 public class BaseParamsController {
 

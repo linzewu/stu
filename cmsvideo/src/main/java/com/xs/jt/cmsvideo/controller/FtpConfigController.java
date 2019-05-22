@@ -18,6 +18,7 @@ import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
+import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.cmsvideo.entity.FtpConfig;
 import com.xs.jt.cmsvideo.manager.IFtpConfigManager;
 
@@ -25,7 +26,7 @@ import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping(value = "/ftpConfig")
-@Modular(modelCode = "ftpConfig", modelName = "FTP配置")
+@Modular(modelCode = "ftpConfig", modelName = "FTP配置",jsjb= {Role.JSJB_YWBL})
 public class FtpConfigController {
 	@Autowired
 	private IFtpConfigManager ftpConfigManager;

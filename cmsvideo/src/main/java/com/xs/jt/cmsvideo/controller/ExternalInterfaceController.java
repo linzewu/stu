@@ -12,13 +12,14 @@ import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
+import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.base.module.enums.CommonUserOperationEnum;
 import com.xs.jt.cmsvideo.entity.PdaInfo;
 import com.xs.jt.cmsvideo.manager.IPdaInfoManager;
 
 @Controller
 @RequestMapping(value = "/externalInterface")
-@Modular(modelCode = "externalInterface", modelName = "对外提供接口管理")
+@Modular(modelCode = "externalInterface", modelName = "对外提供接口管理",jsjb= {Role.JSJB_YWBL})
 public class ExternalInterfaceController {
 	
 	@Autowired

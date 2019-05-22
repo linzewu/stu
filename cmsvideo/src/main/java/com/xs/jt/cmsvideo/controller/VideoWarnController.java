@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
+import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.cmsvideo.entity.VideoWarn;
 import com.xs.jt.cmsvideo.manager.IVideoWarnManager;
 
 @Controller
 @RequestMapping(value = "/videoWarn")
-@Modular(modelCode = "videoWarn", modelName = "视频预警")
+@Modular(modelCode = "videoWarn", modelName = "视频预警",jsjb= {Role.JSJB_YWBL})
 public class VideoWarnController {
 	@Autowired
 	private IVideoWarnManager videoWarnManager;

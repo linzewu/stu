@@ -22,6 +22,7 @@ import com.xs.jt.base.module.common.Common;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.entity.BlackList;
+import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.base.module.entity.SecurityAuditPolicySetting;
 import com.xs.jt.base.module.entity.SecurityLog;
 import com.xs.jt.base.module.entity.User;
@@ -31,7 +32,7 @@ import com.xs.jt.base.module.manager.ISecurityLogManager;
 
 @Controller
 @RequestMapping(value = "/blackList",produces="application/json")
-@Modular(modelCode="blackList",modelName="黑名单管理",isEmpowered=false)
+@Modular(modelCode="blackList",modelName="黑名单管理",isEmpowered=false,jsjb= {Role.JSJB_STGL,Role.JSJB_AQGL})
 public class BlackListController {
 	
 	@Autowired

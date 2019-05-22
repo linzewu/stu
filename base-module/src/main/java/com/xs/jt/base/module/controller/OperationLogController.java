@@ -24,6 +24,7 @@ import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.entity.OperationLog;
+import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.base.module.entity.SecurityLog;
 import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.manager.IOperationLogManager;
@@ -35,7 +36,7 @@ import javassist.bytecode.stackmap.TypeData.ClassName;
 
 @Controller
 @RequestMapping(value = "/opeationLog")
-@Modular(modelCode="OperationLog",modelName="日志管理",isEmpowered=false)
+@Modular(modelCode="OperationLog",modelName="日志管理",isEmpowered=false,jsjb= {Role.JSJB_STGL,Role.JSJB_AQGL,Role.JSJB_SJGL})
 public class OperationLogController {
 	@Value("${stu.cache.dir}")
 	private String cacheDir;

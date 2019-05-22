@@ -43,7 +43,7 @@ import javassist.bytecode.stackmap.TypeData.ClassName;
 
 @Controller
 @RequestMapping(value = "/securityLog")
-@Modular(modelCode="SecurityLog",modelName="安全日志管理",isEmpowered=false,jsjb=Role.JSJB_SJGL)
+@Modular(modelCode="SecurityLog",modelName="安全日志管理",isEmpowered=false,jsjb= {Role.JSJB_STGL,Role.JSJB_AQGL,Role.JSJB_SJGL})
 public class SecurityLogController {
 	protected static Log log = LogFactory.getLog(SecurityLogController.class);
 	

@@ -33,6 +33,7 @@ import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.ApplicationException;
 import com.xs.jt.base.module.common.XmlCodeUtil;
+import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.base.module.entity.User;
 import com.xs.jt.cmsvideo.client.TmriJaxRpcOutNewAccessServiceStub;
 import com.xs.jt.cmsvideo.client.TmriJaxRpcOutNewAccessServiceStub.QueryObjectOutNewResponse;
@@ -46,7 +47,7 @@ import net.sf.json.xml.XMLSerializer;
 
 @Controller
 @RequestMapping(value = "/business")
-@Modular(modelCode = "business", modelName = "业务查询")
+@Modular(modelCode = "business", modelName = "业务查询",jsjb= {Role.JSJB_YWBL})
 public class BusinessQueryController {
 
 	protected static Log log = LogFactory.getLog(BusinessQueryController.class);

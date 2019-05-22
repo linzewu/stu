@@ -19,11 +19,12 @@ import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.entity.CoreFunction;
+import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.base.module.manager.ICoreFunctionManager;
 
 @Controller
 @RequestMapping(value = "/coreFunction",produces="application/json")
-@Modular(modelCode="coreFunction",modelName="核心功能管理",isEmpowered=false)
+@Modular(modelCode="coreFunction",modelName="核心功能管理",isEmpowered=false,jsjb= {Role.JSJB_STGL,Role.JSJB_AQGL})
 public class CoreFunctionController {
 	
 	@Resource(name = "coreFunctionManager")

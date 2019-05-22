@@ -16,6 +16,6 @@ public @interface Modular {
 	public boolean isEmpowered() default true;
 	
 	//配置权限给哪种角色级别的角色使用
-	public String jsjb() default "";
+	public String[] jsjb() default {};
 
 }

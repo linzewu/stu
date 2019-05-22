@@ -16,6 +16,7 @@ import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.entity.Department;
+import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.base.module.enums.CommonUserOperationEnum;
 import com.xs.jt.base.module.manager.impl.DepartmentManagerImpl;
 
@@ -23,7 +24,7 @@ import com.xs.jt.base.module.manager.impl.DepartmentManagerImpl;
 
 @Controller
 @RequestMapping(value = "/dept")
-@Modular(modelCode="dept",modelName="组织架构管理",isEmpowered=false)
+@Modular(modelCode="dept",modelName="组织架构管理",isEmpowered=false,jsjb= {Role.JSJB_STGL})
 //@ModuleAnnotation(modeName = Constant.ConstantDZYXH.MODE_NAME_SYSTEM, appName = Constant.ConstantDZYXH.APP_NAME_DEPT,href="/dzyxh/page/system/department.html",icoUrl="/dzyxh/images/Organization_48.png",modeIndex=4,appIndex=4)
 public class DepartmentContorller {
 

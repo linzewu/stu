@@ -17,6 +17,7 @@ import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
+import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.cmsvideo.entity.VideoConfig;
 import com.xs.jt.cmsvideo.manager.IVideoConfigManager;
 
@@ -24,7 +25,7 @@ import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping(value = "/videoConfig")
-@Modular(modelCode = "videoConfig", modelName = "视频配置")
+@Modular(modelCode = "videoConfig", modelName = "视频配置",jsjb= {Role.JSJB_YWBL})
 public class VideoConfigController {
 	
 	@Autowired

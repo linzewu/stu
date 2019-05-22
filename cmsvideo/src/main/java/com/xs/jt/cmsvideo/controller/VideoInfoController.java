@@ -19,12 +19,13 @@ import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
+import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.cmsvideo.entity.VideoInfo;
 import com.xs.jt.cmsvideo.manager.IVideoInfoManager;
 
 @Controller
 @RequestMapping(value = "/videoInfo")
-@Modular(modelCode = "videoInfo", modelName = "视频管理")
+@Modular(modelCode = "videoInfo", modelName = "视频管理",jsjb= {Role.JSJB_YWBL})
 public class VideoInfoController {
 	
 	@Value("${video.ftppath}")

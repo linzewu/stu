@@ -4,7 +4,7 @@
 			<td class="info"><input name="jsmc" class="easyui-validatebox" data-options="required:true"></td>
 			<td class="info_title">角色类别：</td>
 			<td class="info"><input id="jsjb" name="jsjb"   prompt='请选择角色级别' data-options="required:true,editable:false,data:comm.getBaseParames('role.jsjb'),	valueField: 'id',
-		textField: 'value'"  class="easyui-combobox">
+		textField: 'value',onChange:roleOnChange"  class="easyui-combobox">
 		<!--<select name="jsjb" class="easyui-validatebox" data-options="required:true"></select>--> </td>
 		</tr>
 		<tr><td class="info_title">角色定义：</td>
@@ -33,15 +33,19 @@
 <script type="text/javascript">
 var allPowerPoint;
 var row;
+function roleOnChange(){
+	analyPoint(allPowerPoint);
+}
 $(function(){
 	
 	/**comm.createBaseSelect("#roleInfoForm select[name=jsjb]","role.jsjb","请选择角色级别");**/
 	var title = $("#tab-role").tabs("getSelected").panel("options").title;
+	/**$("#jsjb").combobox({
+		onChange:function(newValue,oldValue){
+			analyPoint(allPowerPoint);
+		}
+	});**/
 	
-	if(title=="编辑角色"){
-		row = $("#roleManager").datagrid("getSelected");
-		$("#roleInfoForm").form("load",row);
-	}
 	/**$("#power-list").datagrid({
 		url:'role/getPowers',
 		height:300,
@@ -60,15 +64,15 @@ $(function(){
 	$.post("../../role/getPowerPoints",function(data){
 		allPowerPoint = data;
 		console.log(data)
-		analyPoint(data);
+		//analyPoint(data);
 		initEditAttr();
-	});
-	
-	$("#jsjb").combobox({
-		onChange:function(newValue,oldValue){
-			analyPoint(allPowerPoint);
+		if(title=="编辑角色"){
+			row = $("#roleManager").datagrid("getSelected");
+			$("#roleInfoForm").form("load",row);
 		}
 	});
+	
+	
 	
 });
 
@@ -77,7 +81,7 @@ function analyPoint(data){
 	var jsfbV = $("#jsjb").combobox("getValue");
 	var pwGroup={};
 	$.each(data,function(i,n){
-		if(jsfbV == "" || (jsfbV != "" && (n.jsjb == ""  || n.jsjb == jsfbV))){
+		if(jsfbV == "" || (jsfbV != "" && (n.jsjb.length == 0  || n.jsjb.includes(jsfbV)))){// n.jsjb == jsfbV
 			if(!pwGroup[n.modeCode]){
 				pwGroup[n.modeCode]=[n];
 			}else{
@@ -88,7 +92,8 @@ function analyPoint(data){
 	var treeArray =[];
 	
 	var isCheck=function(code){
-		if(row&&row.jsqx){
+		var title = $("#tab-role").tabs("getSelected").panel("options").title;
+		if(row&&row.jsqx&&title=="编辑角色"){
 			return row.jsqx.indexOf(code)!=-1;
 		}
 		return false;

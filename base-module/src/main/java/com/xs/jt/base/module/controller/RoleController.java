@@ -33,7 +33,7 @@ import com.xs.jt.base.module.manager.IRoleManager;
 @Controller
 @RequestMapping(value = "/role")
 //@ModuleAnnotation(modeName = Constant.ConstantDZYXH.MODE_NAME_SYSTEM, appName = Constant.ConstantDZYXH.APP_NAME_ROLE,href="/dzyxh/page/system/RoleManager.html",icoUrl="/dzyxh/images/group_48.png",modeIndex=4,appIndex=3)
-@Modular(modelCode="role",modelName="角色权限管理",isEmpowered=false)
+@Modular(modelCode="role",modelName="角色权限管理",isEmpowered=false,jsjb= {Role.JSJB_STGL})
 public class RoleController {
 	
 	protected static Log log = LogFactory.getLog(RoleController.class);

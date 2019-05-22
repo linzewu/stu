@@ -16,6 +16,7 @@ import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
+import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.cmsvideo.entity.PdaInfo;
 import com.xs.jt.cmsvideo.manager.IPdaInfoManager;
 
@@ -23,7 +24,7 @@ import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping(value = "/pdaInfo")
-@Modular(modelCode = "pdaInfo", modelName = "PDA管理")
+@Modular(modelCode = "pdaInfo", modelName = "PDA管理",jsjb= {Role.JSJB_YWBL})
 public class PdaInfoController {
 	
 	@Autowired
