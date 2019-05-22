@@ -88,6 +88,90 @@
 			]
 		}]
 },{
+	"module": "业务查询",
+	"group": [
+		{
+			"groupName": "业务查询",
+			"menus": [
+				{
+					"icon": "../../static/images/check_fj.png",
+					"title": "机动车查验复核",
+					"href": "../../static/html/businessquery/checkNotPassInfo.html",
+					"permission":"pdaInfo.getPdaInfoList"
+				},
+				{
+					"icon": "../../static/images/Cash_register.png",
+					"title": "查验预登记信息",
+					"href": "../../static/html/businessquery/preregisterInfo.html",
+					"permission":"pdaInfo.getPdaInfoList"
+				},
+				{
+					"icon": "../../static/images/text_file.png",
+					"title": "机动车公告技术参数文本信息",
+					"href": "../../static/html/businessquery/CHSixInfo.html",
+					"permission":"pdaInfo.getPdaInfoList"
+				},
+				{
+					"icon": "../../static/images/checking.png",
+					"title": "获取机动车查验抽查复核结果",
+					"href": "../../static/html/businessquery/CHEightInfo.html",
+					"permission":"pdaInfo.getPdaInfoList"
+				},
+				{
+					"icon": "../../static/images/sign_error.png",
+					"title": "机动车违规产品信息",
+					"href": "../../static/html/businessquery/CHNineInfo.html",
+					"permission":"pdaInfo.getPdaInfoList"
+				},
+				{
+					"icon": "../../static/images/images.png",
+					"title": "机动车标准照片等信息",
+					"href": "../../static/html/businessquery/CHAInfo.html",
+					"permission":"pdaInfo.getPdaInfoList"
+				}
+				]},
+				{
+			"groupName": "业务查询",
+			"menus": [
+				{
+					"icon": "../../static/images/person_checked.png",
+					"title": "查验员备案信息",
+					"href": "../../static/html/businessquery/CFOneInfo.html",
+					"permission":"pdaInfo.getPdaInfoList"
+				},
+				{
+					"icon": "../../static/images/Book_record.png",
+					"title": "查验区备案信息",
+					"href": "../../static/html/businessquery/CFTwoInfo.html",
+					"permission":"pdaInfo.getPdaInfoList"
+				},
+				{
+					"icon": "../../static/images/Folder_System.png",
+					"title": "查验智能终端系统备案信息",
+					"href": "../../static/html/businessquery/CFThreeInfo.html",
+					"permission":"pdaInfo.getPdaInfoList"
+				},
+				{
+					"icon": "../../static/images/automatic.png",
+					"title": "外廓尺寸自动查验装置备案信息",
+					"href": "../../static/html/businessquery/CFFourInfo.html",
+					"permission":"pdaInfo.getPdaInfoList"
+				},
+				{
+					"icon": "../../static/images/Web_Quality.png",
+					"title": "整备质量自动测量仪备案信息",
+					"href": "../../static/html/businessquery/CFFiveInfo.html",
+					"permission":"pdaInfo.getPdaInfoList"
+				},
+				{
+					"icon": "../../static/images/smartphone.png",
+					"title": "上门查验服务备案信息",
+					"href": "../../static/html/businessquery/CFSixInfo.html",
+					"permission":"pdaInfo.getPdaInfoList"
+				}
+			]
+		}]
+},{
 	"module": "系统管理",
 	"group": [{
 			"groupName": "权限管理",

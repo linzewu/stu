@@ -793,6 +793,8 @@ public interface HCNetSDK extends StdCallLibrary {
         public byte byStopHour;	        //结束时间
         public byte byStopMin;
     }
+    
+    
 
   public static class NET_DVR_HANDLEEXCEPTION_V30 extends Structure {
 	public int dwHandleType;	/*处理方式,处理方式的"或"结果*//*0x00: 无响应*//*0x01: 监视器上警告*//*0x02: 声音警告*//*0x04: 上传中心*/	/*0x08: 触发报警输出*//*0x20: 触发抓图*/  //(JPEG定制)
