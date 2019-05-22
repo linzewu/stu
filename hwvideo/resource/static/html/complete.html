@@ -1,0 +1,107 @@
+<table id="completeDG" class="easyui-datagrid" style="height:500px" data-options="rownumbers:true,
+		toolbar:'#completeDGToolbar',
+		singleSelect:true,
+		url:'../../weigh/getCompleteData'"
+		>
+    <thead>
+        <tr>
+           <th data-options="field:'billNo',width:180" >派车单号</th>
+            <th data-options="field:'hphm',width:120" >号牌号码</th>
+            <th data-options="field:'inWeight',width:120" >进场重量</th>
+            <th data-options="field:'outWeight',width:120" >出厂重量</th>
+            <th data-options="field:'inRecordId',width:200,formatter:fmtPhoto" >进场照片</th>
+            <th data-options="field:'outRecordId',width:150,formatter:fmtPhoto" >出场照片</th>
+            <th data-options="field:'inRecordId_',width:150,formatter:fmtInVideo" >进场视频</th>
+            <th data-options="field:'outRecordId_',width:150,formatter:fmtOutVideo" >出场视频</th>
+        </tr>  
+      </thead>  
+</table>
+<div id="completeDGToolbar"  style="padding:5px;height:auto">
+    <div style="margin-bottom:5px">
+    	<a href="#" class="easyui-linkbutton" iconCls="icon-reload" onclick="uploadFiles()">数据重传</a>
+    	
+    	<input type="checkbox" name="uploadType" value="1" id="uploadType_1"><label for="uploadType_1">进场照片</label> |
+    	<input type="checkbox" name="uploadType" value="2" id="uploadType_2"><label  for="uploadType_2">出场照片</label> |
+    	<input type="checkbox" name="uploadType" value="3" id="uploadType_3"><label  for="uploadType_3">进场视频</label>|
+    	<input type="checkbox" name="uploadType" value="4" id="uploadType_4"><label  for="uploadType_4">出场视频</label>
+    	
+    </div>
+</div>
+<div id="imgWin" class="easyui-window" title="图片" style="width:1000px;height:600px"
+        data-options="iconCls:'icon-save',modal:true,closed:true">
+    <img  src="" id="ccimg" width="80%" height="80%">
+</div>
+
+<div id="imgVideo" class="easyui-window" title="视频" style="width:1000px;height:600px"
+        data-options="iconCls:'icon-save',modal:true,closed:true">
+    <video src="" controls="controls" id="ccVideo" width="800px;" height="500px;">
+</video>
+</div>
+
+<script type="text/javascript">
+
+function showImgWin(id){
+	$("#ccimg").attr("src","../cache/pic/"+id+".jpg")
+	$("#imgWin").window("open");
+	
+}
+
+function showVideoWin(id){
+	$("#ccVideo").attr("src","../cache/pic/"+id+".mp4")
+	$("#imgVideo").window("open");
+	
+}
+
+
+
+function fmtPhoto(val,row){
+	return "<a href='#' onclick=showImgWin('"+val+"')>查看图片</a>";
+}
+
+function fmtInVideo(val,row){
+	return "<a href='#' onclick=showVideoWin('"+row.inRecordId+"')>播放视频</a>";
+}
+
+function fmtOutVideo(val,row){
+	return "<a href='#' onclick=showVideoWin('"+row.outRecordId+"')>播放视频</a>";
+}
+
+
+function uploadFiles(){
+	var row = $("#completeDG").datagrid("getSelected");
+	if(row){
+		
+		var ckeckeds = $("[name=uploadType]:checked");
+		var uploadType="";
+		if(ckeckeds.length>0){
+			$.each(ckeckeds,function(i,n){
+				uploadType+=","+$(n).val();
+			});
+			uploadType=uploadType.substring(1);
+		    row.uploadType=uploadType;
+			$.messager.confirm("确认","您确重新上传数据？",function(r){
+				if(r){
+					row.type="IN";
+					 $.ajax({
+					        url: '../../weigh/uploadFiles',
+					        type: 'POST',
+					        dataType: 'json',
+					        contentType: 'application/json',
+					        data: JSON.stringify(row),
+					        complete: function(d) {
+					        	$("#completeDG").datagrid("reload");
+					        }
+					   })
+				}
+			});
+			
+		}else{
+			$.messager.alert("提示","请勾选上传类型！");
+			return;
+		}
+		
+	}
+	
+}
+
+</script>

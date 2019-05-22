@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>视频播放</title>
+    <script type="text/javascript" src="../js/play.js"></script>
+</head>
+<body onload="initPlay()">
+    <div style="width:100%">
+        <table style="width:100%; border:1px solid;" cellpadding=0; cellspacing=0>
+          <tr style="width:100%; height:60px" >
+              <td colspan=2 ; style="border:1px solid; text-align:center">
+                     流水号：
+                    <input id="insid" type="text" style="width:90px" value="111AQQs"/>
+                    车牌号：
+                    <input id="hphm" type="text" style="width:90px" value="苏"/>
+                    号牌种类：
+                    <select id="hpzl" style="width:80px">
+                        <option value ="-1"></option>
+                    </select>
+                    <input type="hidden" id="hiddeJylsh" value="eee"/> 
+                    <input  id="searchVideo" type="button" onclick="searchVideo()" value="查询" style="width:200px"/>
+                    <in>
+              </td>
+          </tr>
+          <tr>
+          <td style="width:70%;border:1px solid; text-align:center; vertical-align:middle">
+              视频播放控件区间
+              <br />
+              <!--<div id="camplayerDiv" style="width: 710px; border-left: 1px solid #DDDDDD;float: left;">	<!-->
+			      <object id="camplayer" width="700" height="470" classid="clsid:f6e2ebaa-fbe0-4c24-85b6-e4779f43c73a"></object>
+		      <!--</div>></!-->
+          </td>
+          <td style="width:70%;border:1px solid;">
+               播放项目列表
+               <br />
+               <div id="videoList">
+               
+               </div>
+          </td>
+          </tr>
+        </table>
+    </div>
+</body>
+</html>

@@ -49,6 +49,11 @@
 			<artifactId>jna</artifactId>
 			<version>4.1.0</version>
 		</dependency>
+		<dependency> 
+			<groupId>com.hynnet</groupId>
+			<artifactId>jacob</artifactId>
+			<version>1.19</version>
+		</dependency>
 	</dependencies>
 	<!--maven的插件 -->
 	<build>

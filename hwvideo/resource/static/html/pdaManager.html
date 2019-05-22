@@ -1,0 +1,158 @@
+<table id="pdaInfoDg" title="PDA管理配置" class="easyui-datagrid" style="width:100%;height:500px"
+           url="../../pdaInfo/getPdaInfoList"
+           toolbar="#pdaToolbar" 
+           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true",
+		   pageSize="10" data-options="onLoadSuccess:loadSuccess">
+       <thead>
+           <tr>
+               <th field="useDept" width="100" data-options="formatter:jyjgbhFormatter">使用部门 </th>
+               <th field="brand" width="50">PDA品牌</th>
+               <th field="useBy" width="50">使用人</th>
+               <th field="idCard" width="50">身份证</th>               
+               <th field="serialCode" width="50">串码</th>               
+               <th field="zt" width="50" data-options="formatter:pdaZtFormatter">状态</th>
+               <th field="dueTime" width="50">到期时间</th>               
+           </tr>
+       </thead>
+   </table>
+   <div id="pdaToolbar">
+   	 <div>
+   	 	<label>机构名称:</label>&nbsp;&nbsp;&nbsp;&nbsp;<input  class="easyui-combotree" id="jyjgbh_pda" style="width: 300px"> 
+	 	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="query()" >查询</a>
+     </div>
+   	 <div>
+       <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newPdaInfo()">新增</a>
+       <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editPdaInfo()">编辑</a>
+       <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyPdaInfo()">删除</a>
+     </div>
+   </div>
+   
+   
+<script type="text/javascript">
+function pdaZtFormatter(value) {
+	return comm.getParamNameByValue("pdazt", value);
+}
+
+var  url = '../../pdaInfo/save';
+
+function loadSuccess(data){    	  
+	  var tree = $('#jyjgbh_pda').combotree('tree'); 
+	  if(tree.tree('getRoot') == null){
+	  	  loadComboboxTree("jyjgbh_pda");
+	  }
+}
+
+ function newPdaInfo(){
+	 $('<div></div>').dialog({
+		 	id:'dlgPda',
+		    title: '新增PDA配置',
+		    href : 'addPda.html',
+		    width: 530,
+		    height: 400,
+		    closed: true,
+		    cache: false,
+		    modal: true,
+		    buttons : [{
+		    	iconCls:'icon-ok',
+		    	text : '保存',
+	            handler : function() {
+	                 savePdaInfo();
+	            }
+	       },{
+				text : '取消',
+				iconCls:'icon-cancel',
+	            handler : function() {
+	                 $('#dlgPda').dialog('close');
+	            }
+			}],                                    
+		    onClose: function () {
+		        $(this).dialog('destroy',true);
+		    },
+		    onLoad:function(){
+		    	loadComboboxTree("useDept_pda");
+		    }
+		});
+     $('#dlgPda').dialog('open'); 
+ }
+ function editPdaInfo(){
+	 
+     var row = $('#pdaInfoDg').datagrid('getSelected');
+     if (row){
+    	 $('<div></div>').dialog({
+ 		 	id:'dlgPda',
+ 		    title: '修改PDA配置',
+ 		    href : 'addPda.html',
+ 		    width: 530,
+ 		    height: 400,
+ 		    closed: true,
+ 		    cache: false,
+ 		    modal: true,
+ 		    buttons : [{
+ 		    	iconCls:'icon-ok',
+ 		    	text : '保存',
+ 	            handler : function() {
+ 	                 savePdaInfo();
+ 	            }
+ 	       },{
+ 				text : '取消',
+ 				iconCls:'icon-cancel',
+ 	            handler : function() {
+ 	                 $('#dlgPda').dialog('close');
+ 	            }
+ 			}],                                    
+ 		    onClose: function () {
+ 		        $(this).dialog('destroy',true);
+ 		    },
+ 		    onLoad:function(){
+ 		    	$('#pdafm').form('clear');
+ 		    	loadComboboxTree("useDept_pda");
+ 		    	$('#pdafm').form('load',row);
+ 		         $("#serialCode").textbox({disabled:true});
+ 		    }
+ 		});
+      $('#dlgPda').dialog('open'); 
+     }
+ }
+ function savePdaInfo(){
+	 var flag = $("#pdafm").form("validate");
+	 console.log(flag)
+     $('#pdafm').form('submit',{
+         url: url,
+         onSubmit: function(){
+             return flag;
+         },
+         success: function(result){      	  
+      	     result=$.parseJSON(result);
+      	   
+             if (result.state==1){
+          	     $('#dlgPda').dialog('close');        // close the dialog
+                 $('#pdaInfoDg').datagrid('reload');    // reload the user data
+                 $.messager.alert("提示","保存成功","info");
+             } else {
+          	   $.messager.alert("提示","保存失败","error");
+             }
+         }
+     });
+ }
+ function destroyPdaInfo(){
+     var row = $('#pdaInfoDg').datagrid('getSelected');
+     if (row){
+          $.messager.confirm('确认','您是否删除该记录?',function(r){
+              if(r){
+                  $.post('../../pdaInfo/delete',{id:row.id},function(result){
+                  	//debugger;
+                  	//result=$.parseJSON(result);
+                      if (result.state==1){
+                      	$.messager.alert("提示","删除成功","info");
+                          $('#pdaInfoDg').datagrid('reload');    // reload the user data
+                      }else{
+                      	$.messager.alert("错误","删除失败","error");
+                      }
+                  },'json').error(function(){
+                  	$.messager.alert("错误","删除失败","error");
+                  });
+              }
+          });
+      }
+  }
+</script>

@@ -1,0 +1,51 @@
+<table id="vehOut" class="easyui-datagrid" style="height:500px" data-options="rownumbers:true,
+		toolbar:'#vehOutToolbar',
+		singleSelect:true,
+		url:'../../weigh/getOutVehList?type=IN'"
+		>
+    <thead>
+        <tr>
+           <th data-options="field:'billNo',width:180" >派车单号</th>
+            <th data-options="field:'vehicleNo',width:120" >号牌号码</th>
+            <th data-options="field:'driver',width:120" >驾驶员</th>
+            <th data-options="field:'supercargo',width:120" >押运员</th>
+            <th data-options="field:'transEntName',width:200" >运输公司</th>
+            <th data-options="field:'planDispatchTime',width:150" >计划派车时间</th>
+        </tr>  
+      </thead>  
+</table>
+<div id="vehOutToolbar"  style="padding:5px;height:auto">
+    <div style="margin-bottom:5px">
+    	<a href="#" class="easyui-linkbutton" iconCls="icon-reload" onclick="configVeh()">确认车辆出场</a>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+function configVeh(){
+	var row = $("#vehOut").datagrid("getSelected");
+	if(row){
+		$.messager.confirm("确认","是否确认车辆出场？",function(r){
+			
+			if(r){
+				row.type="OUT";
+				 $.ajax({
+				        url: '../../weigh/confingVeh',
+				        type: 'POST',
+				        dataType: 'json',
+				        contentType: 'application/json',
+				        data: JSON.stringify(row),
+				        complete: function(d) {
+				        	$("#vehOut").datagrid("reload");
+				        }
+				   })
+				
+			}
+			
+		});
+	}
+	
+}
+
+</script>

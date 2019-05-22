@@ -1,0 +1,34 @@
+<html>
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>点播测试</title>
+  <script type="text/JavaScript" charset="UTF-8">
+  var vdUrl =""; // 播放路径（定义为全局变量，给子页面播放控件提供播放路径）
+  function showDialog(type){
+     vdUrl="E:\\太极宗师06.avi";
+     var temp=document.getElementsByName('fileName')[0].value;
+     if(temp==''){
+      alert('请选择一个有效的本地视频文件，或者输入网络视频地址...');
+      return;
+     }    
+     vdUrl=temp;
+     eventCode="XXXX";
+     if(type==1){
+        var winObj=window.open('./empty_play.html','play',
+           'height=640, width=740,toolbar=yes, menubar=yes, scrollbars=no, resizable=no,location=no, status=no');
+     }else if(type==2){
+        var winObj=window.open('./play.html','play',
+           'height=640, width=740,toolbar=yes, menubar=no, scrollbars=no, resizable=no,location=no, status=no');
+     }
+    
+  }
+ </script>
+ </head>
+ <body>
+ <input type="file" name="fileName" style="width: 350px">  
+ <input type="button" value=" 播  放 " onclick="showDialog(1);">
+ <br>
+ <span style="color: red;font-weight: bold;font-size: 14px">提示：</span>
+ <span style="color: blue;font-weight: normal;font-size: 14px">请选择本地视频或者输入一个网络视频路径（建议先通过VLC media player播放通过）。</span>
+ </body>
+</html>

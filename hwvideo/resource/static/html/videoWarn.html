@@ -1,0 +1,127 @@
+<style type="text/css">
+
+.progressbar-text{
+z-index: 2;
+}
+</style>
+<table id="videoWarnDG" class="easyui-datagrid"  data-options="rownumbers:true,
+		toolbar:'#videoWarnToolbar',
+		singleSelect:true,
+		pagination:true,
+		pageSize:10,
+		url:'../../videoWarn/getVideoWarnList',
+		onLoadSuccess: onLoadSuccess",
+		
+		>  
+    <thead>
+        <tr>  
+        	<th data-options="field:'lsh',width:160" >流水号</th>
+        	<th data-options="field:'jyjgbh',width:280,formatter:jyjgbhFormatter" >机构名称</th>
+        	<th data-options="field:'jycs',width:100" >检验次数</th>
+        	<th data-options="field:'deviceName',width:100" >视频名称</th>
+        	<th data-options="field:'vid',width:40,formatter:showImg" >播放</th>
+            <th data-options="field:'type',width:160,formatter:formatterSpyj" >预警类型</th>
+            <th data-options="field:'remark',width:160" >预警信息</th>
+            
+        </tr>  
+      </thead>  
+</table>
+<div id="videoWarnToolbar"  style="padding:5px;height:auto">
+   <label>预警类型：</label><input id="quer_spyj"   prompt='请选择预警类型' data-options="data:comm.getBaseParames('spyj'),	valueField: 'id',
+				textField: 'value'"  class="easyui-combobox" style="width: 160px;">
+	<label>检验机构名称：</label><input  class="easyui-combotree" id="jyjgbh_w" style="width: 300px;">
+	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryVideoWarn()">查询</a>
+	    		
+    	
+</div>
+
+<script type="text/javascript">
+//播放图片展示
+function showImg(value, row, index){
+		return "<img style='' border='0' src='../images/play.png' onclick='openPlayWin(\""+row.vid+"\",\""+row.jyjgbh+"\")'/>";
+}
+var currentVideoPath = null;
+function openPlayWin(vid,jyjgbh){
+	var ftpHost = findFtpByJyjgbh(jyjgbh);
+	if(ftpHost == ""){
+		$.messager.alert("错误","获取不到视频Ftp地址！","error");
+		return;
+	}
+	
+	
+	$.post("../../videoInfo/getVideoInfoById", {id:vid}, function(data) {
+		console.log(data)
+		if(data.state =="1"){
+			var info = data.data;
+			console.log(info)
+			if(info != null){
+				if(info.videoName == "" || info.videoName == null){
+					$.messager.alert("警告","没有视频文件可进行播放！","warning");
+					return;
+				}else{
+					var ym = info.createTime.substring(0,4)+info.createTime.substring(5,7);
+					var d =info.createTime.substring(8,10);
+					
+					currentVideoPath="ftp://"+ftpHost+"/"+ym+"/"+d+"/"+info.videoName;
+					$('#win_video').window('open');
+					$('#win_video').window('refresh', 'empty_play.html?'+new Date().getTime());
+				}
+			}else{
+				$.messager.alert("警告","没有视频文件可进行播放！","warning");
+				return;
+			}
+		}
+		$.messager.progress('close');
+
+	}, "json");
+	
+	
+}
+function onLoadSuccess(data){
+	var tree = $('#jyjgbh_w').combotree('tree'); 
+	  if(tree.tree('getRoot') == null){
+	  	  loadComboboxTree("jyjgbh_w");
+	  }
+	var start = 0;
+    var end = 0;
+    if (data.total > 0) {
+        var temp = data.rows[0].lsh;
+        for (var i = 1; i < data.rows.length; i++) {
+            if (temp == data.rows[i].lsh) {
+                end++;
+            } else {
+                if (end > start) {
+                    $(this).datagrid('mergeCells', {
+                        index: start,
+                        rowspan: end - start + 1,
+                        field: 'lsh'
+                    })
+                }
+                temp = data.rows[i].lsh;
+                start = i;
+                end = i;
+            }
+        }
+        /*这里是为了判断重复内容出现在最后的情况，如ABCC*/
+        if (end > start) {
+            $(this).datagrid('mergeCells', {
+                index: start,
+                rowspan: end - start + 1,
+                field: 'lsh'
+            })
+        }
+    }
+}
+
+function formatterSpyj(value, row, index) {
+	return comm.getParamNameByValue("spyj", value);
+}
+
+function queryVideoWarn(){	
+	var quer_spyj = $("#quer_spyj").combobox("getValue");
+	var jyjgbh = $("#jyjgbh_w").combotree("getValue");
+	$('#videoWarnDG').datagrid("reload",{type:quer_spyj,jyjgbh:jyjgbh});
+
+}
+
+</script>

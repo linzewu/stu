@@ -1,0 +1,130 @@
+<table id="videoInDG" class="easyui-datagrid" style="height:500px"  data-options="rownumbers:true,
+		toolbar:'#videoInToolbar',
+		singleSelect:true,
+		pagination:true,
+		pageSize:10,
+		url:'../../videoInfo/getVideoInfoList',
+		onLoadSuccess:onLoadSuccess"
+		>
+	<thead data-options="frozen:true">
+           <tr>
+           	   <th data-options="field:'lsh',width:120"  >流水号</th>
+        	   <th data-options="field:'jyjgbh',width:180,formatter:jyjgbhFormatter" >机构名称</th>
+           </tr>
+     </thead>   
+    <thead>
+        <tr>          	
+            <th data-options="field:'clsbdh',width:180" >车辆识别码</th>  
+            <th data-options="field:'hphm',width:80" >号牌号码</th>
+            <th data-options="field:'hpzl',width:100,formatter:formatterHpzl" >号牌种类</th>
+            <th data-options="field:'cyqxh',width:100" >查验区序号</th>
+            <th data-options="field:'cyqtd',width:100,align:'center'" >查验区通道</th>
+            <th data-options="field:'deviceName',width:100" >视频名称</th>
+            <th data-options="field:'videoName',width:40,formatter:showImg" >播放</th>
+            <th data-options="field:'jycs',width:100" >检验次数</th>
+            <th data-options="field:'videoSize',width:100,formatter:formatterSize" >视频大小(MB)</th>
+            <th data-options="field:'videoBegin',width:150">视频开始时间</th>
+            <th data-options="field:'videoEnd',width:150" >视频结束时间</th>
+            <th data-options="field:'reason',width:150" >失败原因</th>
+            <th data-options="field:'taskCount',width:150" >失败次数</th>
+            <th data-options="field:'zt',width:150,formatter:ztFormatter" >状态</th>
+        </tr>  
+      </thead>  
+</table>
+<div id="videoInToolbar"  style="padding:5px;height:auto">
+    <div style="margin-bottom:5px">    	
+    	<div style="height: 34px;">
+    	号牌号码：<input type="text" class="easyui-textbox" id="hphm" >
+    	流水号：<input type="text" class="easyui-textbox" id="lsh" >
+    	车辆识别代号：<input type="text" class="easyui-textbox" id="clsbdh" >
+    	</div>
+    	<div style="height: 34px;">
+    	号牌种类：<input type="text" class="easyui-textbox" id="hpzl" >
+    	状      态：&nbsp;&nbsp;&nbsp;<input id="zt"   prompt='请选择状态' data-options="data:comm.getBaseParames('spzt'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 170px;">
+		检验机构名称：<input  class="easyui-combotree" id="jyjgbh_q" style="width: 300px">
+    	<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryVideo()">查询</a>
+    	</div>
+    </div>
+</div>
+
+<script type="text/javascript">
+var ftpConfig;
+var currentVideoPath = null;
+$(function(){
+	$.post("../../ftpConfig/getAllFtp",null,function(data){
+		if(data.state==1){
+			ftpConfig = data.data;
+		}else{
+			$.messager.alert("提示",data.message,"error");
+		}
+	},"json").complete(function(){
+		$.messager.progress('close');
+	});
+});
+
+
+function queryVideo(){
+	var clsbdh=$("#clsbdh").textbox("getValue");
+	var lsh = $("#lsh").textbox("getValue");
+	var hphm = $("#hphm").textbox("getValue");
+	var hpzl = $("#hpzl").textbox("getValue");
+	var zt = $("#zt").combobox("getValue");
+	var jyjgbh = $("#jyjgbh_q").combotree("getValue");
+	$('#videoInDG').datagrid("reload",{clsbdh:clsbdh,lsh:lsh,hphm:hphm,hpzl:hpzl,zt:zt,jyjgbh:jyjgbh});
+}
+
+function ztFormatter(value,row,index){
+	return comm.getParamNameByValue("spzt", value)
+}
+
+//播放图片展示
+function showImg(value, row, index){
+		return "<img style='' border='0' src='../images/play.png' onclick='openPlayWin(\""+row.videoName+"\",\""+row.jyjgbh+"\",\""+row.createTime+"\")'/>";
+}
+
+
+function openPlayWin(videoName,jyjgbh,createTime){
+	if(videoName == "" || videoName == null){
+		$.messager.alert("警告","没有视频文件可进行播放！","warning");
+		return;
+	}
+	var ftpHost = findFtpByJyjgbh(jyjgbh);
+	if(ftpHost == ""){
+		$.messager.alert("错误","获取不到视频Ftp地址！","error");
+		return;
+	}
+	
+	var ym = createTime.substring(0,4)+createTime.substring(5,7);
+	var d =createTime.substring(8,10);
+	
+	currentVideoPath="ftp://"+ftpHost+"/"+ym+"/"+d+"/"+videoName;
+	$('#win_video').window('open');
+	$('#win_video').window('refresh', 'empty_play.html?'+new Date().getTime());
+}
+
+
+function findFtpByJyjgbh(jyjgbh){
+	var ftpIp = "";
+	$.each(ftpConfig,function(i,n){
+		if(n.jyjgbh == jyjgbh){
+			ftpIp = n.ftpHost;
+			return;
+		}
+	});
+	return ftpIp;
+}
+
+function onLoadSuccess(data){
+	var tree = $('#jyjgbh_q').combotree('tree'); 
+	  if(tree.tree('getRoot') == null){
+	  	  loadComboboxTree("jyjgbh_q");
+	  }
+	var start = 0;
+    var end = 0;
+    if (data.total > 0) {
+    	mergeCellsByField("videoInDG","lsh")
+    }
+}
+
+</script>

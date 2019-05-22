@@ -1,0 +1,160 @@
+
+<link rel="stylesheet" type="text/css" href="../css/formTable.css"/>
+<table id="datagrid-ftpConfig" title="Ftp配置" class="easyui-datagrid" style="width:100%;height:400px"
+	            toolbar="#datagrid-ftp-toolbar" pagination="true" url="../../ftpConfig/getFtpConfigList" pageSize="100"
+	            pageList="[20,50,100,200,300]"
+	            rownumbers="true"  singleSelect="true" >
+	        <thead>
+	            <tr>
+	                <th  width="280px" data-options="field:'jyjgbh',formatter:jyjgbhFormatter"  >机构名称</th>
+	                <th  width="100px" data-options="field:'cyqxh'">查验区序号</th> 
+	                <th  width="150px" data-options="field:'ftpHost'">Ftp Ip</th>
+	                <th  width="150px" data-options="field:'ftpUserName'">用户名</th>
+	                <th  width="80px" data-options="field:'ftpPort'">端口</th>
+	                <th  width="120px" data-options="field:'capacity'">容量(单位：T)</th>
+	                	                
+	            </tr>
+	        </thead>
+	    </table>
+	    <div id="datagrid-ftp-toolbar">
+	    	<div>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newFtpConfig()">新增</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editFtpConfig()">编辑</a>
+		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="deleteFtpConfig()">删除</a>
+	    	</div>
+	    	
+	    </div>
+	    
+<!--<div id="dlgFtp" class="easyui-dialog" style="width:530px;height:400px;padding:10px 20px"
+           closed="true" buttons="#dlgFtp-buttons"  modal=true>        
+   </div>
+   <div id="dlgFtp-buttons">
+       <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveFtpConfig()" style="width:90px">保存</a>
+       <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlgFtp').dialog('close')" style="width:90px">取消</a>
+   </div>-->
+   
+<script type="text/javascript">
+var  url = '../../ftpConfig/save';
+function newFtpConfig(){
+	$('<div></div>').dialog({
+	 	id:'dlgFtp',
+	    title: '新增Ftp配置',
+	    href : 'addFtpConfig.html',
+	    width: 530,
+	    height: 400,
+	    closed: true,
+	    cache: false,
+	    modal: true,
+	    buttons : [{
+	    	iconCls:'icon-ok',
+	    	text : '保存',
+            handler : function() {
+                 saveFtpConfig();
+            }
+       },{
+			text : '取消',
+			iconCls:'icon-cancel',
+            handler : function() {
+                 $('#dlgFtp').dialog('close');
+            }
+		}],                                    
+	    onClose: function () {
+	        $(this).dialog('destroy',true);
+	    },
+	    onLoad:function(){
+	    	$('#ftpfm').form('clear');
+	    	loadComboboxTree("jyjgbh_ftp");
+	    	$("#ftpfm").form("load",{ftpPort:'21',});
+	    }
+	});
+    $('#dlgFtp').dialog('open');
+	//////
+    /* $('#dlgFtp').dialog('open').dialog('center').dialog('setTitle','新增配置');
+    $('#ftpfm').form('clear');
+    loadComboboxTree("jyjgbh_ftp");
+    $("#ftpfm").form("load",{ftpPort:'21',}); */
+   
+}
+function editFtpConfig(){
+    var row = $('#datagrid-ftpConfig').datagrid('getSelected');
+    if (row){
+    	$('<div></div>').dialog({
+ 		 	id:'dlgFtp',
+ 		    title: '修改Ftp配置',
+ 		    href : 'addFtpConfig.html',
+ 		    width: 530,
+ 		    height: 400,
+ 		    closed: true,
+ 		    cache: false,
+ 		    modal: true,
+ 		    buttons : [{
+ 		    	iconCls:'icon-ok',
+ 		    	text : '保存',
+ 	            handler : function() {
+ 	                 saveFtpConfig();
+ 	            }
+ 	       },{
+ 				text : '取消',
+ 				iconCls:'icon-cancel',
+ 	            handler : function() {
+ 	                 $('#dlgFtp').dialog('close');
+ 	            }
+ 			}],                                    
+ 		    onClose: function () {
+ 		        $(this).dialog('destroy',true);
+ 		    },
+ 		    onLoad:function(){
+ 		    	$('#ftpfm').form('clear');
+ 		    	loadComboboxTree("jyjgbh_ftp");
+ 		    	$('#ftpfm').form('load',row);
+ 		    }
+ 		});
+      $('#dlgFtp').dialog('open'); 
+    	////
+        /* $('#dlgFtp').dialog('open').dialog('center').dialog('setTitle','修改配置');
+        loadComboboxTree("jyjgbh_ftp");
+        $('#ftpfm').form('load',row); */
+    }
+}
+function saveFtpConfig(){
+    $('#ftpfm').form('submit',{
+        url: url,
+        onSubmit: function(){
+            return $(this).form('validate');
+        },
+        success: function(result){
+     	  
+     	   result=$.parseJSON(result);
+     	   
+            if (result.state==1){
+         	   $('#dlgFtp').dialog('close');        // close the dialog
+                $('#datagrid-ftpConfig').datagrid('reload');    // reload the user data
+                $.messager.alert("提示","保存成功","info");
+            } else {
+         	   $.messager.alert("提示","保存失败","error");
+            }
+        }
+    });
+}
+
+function deleteFtpConfig(){
+    var row = $('#datagrid-ftpConfig').datagrid('getSelected');
+    if (row){
+         $.messager.confirm('确认','您是否删除该记录?',function(r){
+             if(r){
+                 $.post('../../ftpConfig/delete',{id:row.id},function(result){
+
+                     if (result.state==1){
+                     	$.messager.alert("提示","删除成功","info");
+                         $('#datagrid-ftpConfig').datagrid('reload');    // reload the user data
+                     }else{
+                     	$.messager.alert("错误","删除失败","error");
+                     }
+                 },'json').error(function(){
+                 	$.messager.alert("错误","删除失败","error");
+                 });
+             }
+         });
+     }
+ }
+</script>

@@ -1,0 +1,39 @@
+<link rel="stylesheet" type="text/css" href="../css/formTable.css"/>
+<div class="easyui-layout" fit='true'>
+			<div data-options="region:'center'" style="padding-left: 10px; padding-right: 10px;">
+			   <div class="ftitle">PDA管理配置</div>
+		       <form id="pdafm" method="post" novalidate>
+		           <div class="fitem">
+		               <label>使用部门:</label>
+		               <input name="useDept" class="easyui-combotree" id="useDept_pda" style="width: 350px" required="true">
+		           </div>
+		           <div class="fitem">
+		               <label>PDA品牌:</label>
+		               <input name="brand" class="easyui-textbox" required="true">
+		           </div>
+		           <div class="fitem">
+		               <label>使用人:</label>
+		               <input name="useBy" class="easyui-textbox" required="true">
+		           </div>		           
+		           <div class="fitem">
+		               <label>身份证:</label>
+		               <input name="idCard" class="easyui-textbox" data-options="required:true,validType:{idCardVad:''}">		               
+		           </div>
+		           <div class="fitem">
+		               <label>串码:</label>
+		               <input name="serialCode" id="serialCode" class="easyui-textbox" data-options="required:true,validType:{serialCodeVad:['#pdafm input[name=id]']}" >
+		           </div>
+		           <div class="fitem">
+		               <label>状态:</label>
+		               <input name="zt" data-options="required:true,editable:false,data:comm.getBaseParames('pdazt'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox">
+		           </div>
+		           	
+		           <div class="fitem">
+		               <label>到期时间:</label>
+		               <input name="dueTime" class="easyui-datebox" required="true">
+		               <input name="id"  type="hidden">
+		           </div>           
+		       </form>
+			</div>
+		</div>	

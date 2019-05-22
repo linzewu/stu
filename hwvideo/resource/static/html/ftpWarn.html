@@ -1,0 +1,31 @@
+<style type="text/css">
+
+.progressbar-text{
+z-index: 2;
+}
+</style>
+<table id="videoStatisDG" class="easyui-datagrid"  data-options="rownumbers:true,
+		
+		singleSelect:true,
+		
+		url:'../../videoInfo/getVideoInfoStatistics'"
+		>  
+    <thead>
+        <tr>  
+        	<th data-options="field:'jyjgbh',width:280,formatter:jyjgbhFormatter" >机构名称</th>
+        	
+            <th data-options="field:'videoSizeT',width:160" >已使用(G)</th>
+            <th data-options="field:'capacity',width:160" >总容量(G)</th>
+            <th data-options="field:'videoSize',width:500,formatter:showProgess" >占用比例</th>
+        </tr>  
+      </thead>  
+</table>
+
+<script type="text/javascript">
+function showProgess(value, row, index){
+	var bl = ((row.videoSizeT/row.capacity)*100).toFixed(4);
+	var htmlstr = '<div class="progressbar-text" style="width:398px;height: 20px; line-height: 20px;border:1px;border-color: #cccccc;border-style: solid;">'+bl+'%</div><div class="progressbar-value" style="width:'+bl+'%;height: 20px; line-height: 20px;">&nbsp; </div>';  
+	//var htmlstr = '<div class="progressbar-text" style="width:398px;">' + bl + '</div><div class="progressbar-value" style="width:' + bl + ';">&nbsp; </div>';
+	return htmlstr;
+}
+</script>
