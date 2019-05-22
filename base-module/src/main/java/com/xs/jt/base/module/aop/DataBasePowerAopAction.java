@@ -29,10 +29,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import com.xs.jt.base.module.common.Common;
+import com.xs.jt.base.module.common.DataBaseWhiteListExctption;
 import com.xs.jt.base.module.entity.BaseParams;
 import com.xs.jt.base.module.entity.OperationLog;
+import com.xs.jt.base.module.entity.SecurityAuditPolicySetting;
+import com.xs.jt.base.module.entity.SecurityLog;
+import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.manager.IBaseParamsManager;
 import com.xs.jt.base.module.manager.IOperationLogManager;
+import com.xs.jt.base.module.manager.ISecurityLogManager;
 
 @Aspect
 @Component
@@ -51,6 +56,10 @@ public class DataBasePowerAopAction {
 	
 	@Autowired
 	private IOperationLogManager operationLogManager;
+	
+	@Autowired
+	private ISecurityLogManager securityLogManager;
+	
 	@Autowired
 	private HttpServletRequest request;
 
@@ -110,6 +119,7 @@ public class DataBasePowerAopAction {
 					saveLog();
 					logger.info("服务器IP地址不在数据库白名单中，不能访问数据库");
 					session.invalidate();
+					throw new DataBaseWhiteListExctption("服务器IP地址不在数据库白名单中，拒绝访问！");
 				}
 				
 				
@@ -134,6 +144,18 @@ public class DataBasePowerAopAction {
 		log.setStatus(1);
 		log.setOperationDate(new Date());
 		operationLogManager.saveOperationLog(log);
+		
+		
+		SecurityLog securityLog = new SecurityLog();
+		securityLog.setCreateUser(User.SYSTEM_USER);
+		securityLog.setUpdateUser(User.SYSTEM_USER);
+		securityLog.setClbm(SecurityAuditPolicySetting.DATABASE_WHITELIST);
+		securityLog.setIpAddr(Common.getIpAdrress(request));
+		securityLog.setSignRed("Y");
+		securityLog.setContent("服务器IP地址不在数据库白名单中！");
+		securityLog.setResult("拒绝访问");
+		securityLogManager.saveSecurityLog(securityLog);
+		
 	}
 	
 	/**

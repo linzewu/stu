@@ -91,11 +91,20 @@ function setCcqxLoginLog(){
 			rzccqx = rzccqxArr[0].id;
 		}
 	}
-	$.messager.prompt('提示', '请输入存储期限(单位：年):', function(ccqx){			
+	$.messager.prompt('提示', '请输入存储期限(单位：年):', function(ccqx){		
+		
+		if(ccqx<1){
+			$.messager.alert("提示","存储期限最少一年");
+			return;
+		}
+		
 		    if (ccqx){
 		        $.post('../../securityLog/saveCcqx',{"rzccqx":ccqx},function(result){
 		            if (result.state==1){
-		             	$.messager.alert("提示","设置存储期限成功","info");
+		             	$.messager.alert("提示","设置存储期限成功","info",function(){
+		             		window.location.reload();
+		             	});
+		             	
 		             }else{
 		             	$.messager.alert("错误","设置存储期限失败","error");
 		             }

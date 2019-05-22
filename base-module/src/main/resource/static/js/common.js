@@ -437,6 +437,12 @@ $(function($){
                     // window.location.href="notPermission.html";
                     return;
                 }
+                if(temp['state'] == 556) {                	
+                	$.messager.alert("警告",temp['message'] ,'error')
+                    // window.location.href="notPermission.html";
+                    return;
+                }
+                
                 if(temp['state'] == 555) {                	
                 	$.messager.alert("数据非法篡改", "数据非法篡改！",'error',function(){
                 		window.location.href="login.html";

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.xs.jt.base.module.common.DataBaseWhiteListExctption;
 import com.xs.jt.base.module.common.TamperWithDataException;
 
 //全局异常拦截
@@ -21,11 +22,15 @@ public class ErrorAdvice {
 		HashMap<String, Object> map = new HashMap<>();
 		if(e instanceof TamperWithDataException) {
 			map.put("state", "555");
-		}else {
+		}
+		else if(e instanceof DataBaseWhiteListExctption) {
+			map.put("state", "556");
+		}
+		else {
 			map.put("state", "500");
 		}
 		
-		
+		map.put("message",e.getMessage());
 		return map;
 	}
 

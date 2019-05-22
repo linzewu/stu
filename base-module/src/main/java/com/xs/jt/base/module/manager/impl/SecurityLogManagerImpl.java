@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.querydsl.QPageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.xs.jt.base.module.dao.SecurityLogRepository;
@@ -37,7 +38,7 @@ public class SecurityLogManagerImpl implements ISecurityLogManager {
     @PersistenceContext
     private EntityManager entityManager;
 
-	
+	@Async
 	public void saveSecurityLog(SecurityLog securityLog) {
 		securityLogRepository.save(securityLog);
 	}
