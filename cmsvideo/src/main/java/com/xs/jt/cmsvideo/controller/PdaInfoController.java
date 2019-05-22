@@ -37,13 +37,13 @@ public class PdaInfoController {
 	
 	
 	@UserOperation(code="save",name="保存PDA配置")
-	@RequestMapping(value = "save", method = RequestMethod.POST,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8")
-	public @ResponseBody String savePdaInfo(@Valid PdaInfo pdaInfo, BindingResult result) {
+	@RequestMapping(value = "save", method = RequestMethod.POST)//,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8"
+	public @ResponseBody Map<String, Object> savePdaInfo(@Valid PdaInfo pdaInfo, BindingResult result) {
 		if (!result.hasErrors()) {
 			pdaInfoManager.savePdaInfo(pdaInfo);
-			return  JSONObject.fromObject(ResultHandler.resultHandle(result,null ,Constant.ConstantMessage.SAVE_SUCCESS)).toString();
+			return  ResultHandler.resultHandle(result,null ,Constant.ConstantMessage.SAVE_SUCCESS);
 		}else{
-			return JSONObject.fromObject(ResultHandler.resultHandle(result,null ,null)).toString();
+			return ResultHandler.resultHandle(result,null ,null);
 		}
 	}
 	

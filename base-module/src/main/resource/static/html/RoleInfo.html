@@ -222,7 +222,7 @@ function saveRole(url,callback){
 		msg:"数据保存中..."
 	});
 	
-	$.post(url,$("#roleInfoForm").serializeJson(),callback).error(function(){
+	$.post(url,$("#roleInfoForm").serializeJson(),callback).error(function(aa){
 		$.messager.alert("错误","保存错误","error");
 	}).complete(function() {
 		$.messager.progress("close");

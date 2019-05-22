@@ -635,7 +635,7 @@ function query(){
            }
        }
        function saveUser(){
-           $('#fm').form('submit',{
+          /** $('#fm').form('submit',{
                url: url,
                onSubmit: function(){
                    return $(this).form('validate');
@@ -652,7 +652,25 @@ function query(){
                 	   $.messager.alert("提示","保存失败","error");
                    }
                }
-           });
+           });**/
+           
+           if($("#fm").form('validate')){
+       	    $.post(url,$("#fm").serializeJson(),function(result){
+       			//result=$.parseJSON(result);
+       	     	   
+       			if (result.state==1){
+             	   $('#dlg').dialog('close');        // close the dialog
+                    $('#videoConfigDg').datagrid('reload');    // reload the user data
+                    $.messager.alert("提示","保存成功","info");
+                } else {
+             	   $.messager.alert("提示","保存失败","error");
+                }
+       		},"json").error(function(aa){
+       			$.messager.alert("错误","保存错误","error");
+       		}).complete(function() {
+       			$.messager.progress("close");
+       		});
+           }
        }
        function destroyUser(){
            var row = $('#videoConfigDg').datagrid('getSelected');

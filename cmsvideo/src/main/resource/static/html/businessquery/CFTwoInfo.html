@@ -1,0 +1,62 @@
+<table id="cfTwoDg" title="查验区备案信息" class="easyui-datagrid" style="width:100%;height:500px"
+           url=""
+           toolbar="#cfTwoInfoToolbar" 
+           rownumbers="true" fitColumns="true" singleSelect="true">
+       <thead>
+           <tr>
+           	   <th field="cyqxh" width="50">查验区序号</th>
+               <th field="cyqmc" width="100">查验区名称</th>
+               <th field="cyqlb" width="50">查验区类别</th>
+               <th field="kblywlx" width="50">可办理业务类型</th>
+               <th field="kcycllx" width="50">可查验车辆类型</th>
+               <th field="kcysylx" width="50">可查验使用性质</th>
+               <th field="sfqydzwl" width="50">是否启用查验区电子围栏</th>
+               <th field="dzwlzxwz" width="50">查验区中心位置 地理位置坐标</th>
+               <th field="dzwlbj" width="50">查验区半径</th>
+               <th field="fzjg" width="50">发证机关</th>
+               <th field="fzr" width="50">查验区负责人</th>   
+               <th field="zt" width="50">状态标记</th>
+               <th field="gxrq" width="50">更新日期</th>              
+               
+               <th field="bz" width="50">备注</th>
+               <th field="syglbm" width="50">使用管理部门</th>
+               <th field="tyyy" width="50">停用原因</th>
+               <th field="cyqdz" width="50">查验区地址</th>
+               <th field="lxr" width="50">联系人</th>              
+               <th field="lxdh" width="50">联系电话</th>
+               
+               <th field="fzrlxdh" width="50">负责人联系电话</th>              
+               <th field="jksbbh" width="50">监控设备编号</th>          
+           </tr>
+       </thead>
+   </table>
+   <div id="cfTwoInfoToolbar">
+   	 <div>
+   	 	<label>查验区序号:</label><input  class="easyui-textbox" id="check_cyqxh" >  
+   	 	<label>更新日期:</label><input  class="easyui-datebox" id="check_gxrq" >
+   	 	
+	 	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="queryCFTwo()" >查询</a>
+     </div>
+   </div>
+   
+
+<script type="text/javascript">
+function queryCFTwo(){
+	 var opts = $("#cfTwoDg").datagrid("options");
+	 opts.url = "../../business/getCheckAreaInfo";
+	 var param = {};
+	 param.cyqxh = $("#check_cyqxh").textbox("getValue");
+	 param.gxrq = $("#check_gxrq").datebox("getValue");
+	 
+	 if(param.cyqxh == ""){
+		 $.messager.alert("提示","查验区序号不能为空");
+		 return;
+	 }
+	 
+	 /**if(param.hphm == "" && param.cylsh == ""){
+		 $.messager.alert("提示","查验流水号，号牌号码必须选择一个查询条件查询");
+		 return;
+	 }**/
+	$("#cfTwoDg").datagrid("reload",param);
+}
+</script>

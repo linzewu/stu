@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.xs.jt.base.module.annotation.CheckBit;
 import com.xs.jt.base.module.entity.BaseEntity;
 @Scope("prototype")
 @Component("pdaInfo")

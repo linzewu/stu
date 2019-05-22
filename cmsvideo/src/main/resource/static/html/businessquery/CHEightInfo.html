@@ -1,0 +1,56 @@
+<table id="eightDg" title="机动车查验抽查复核结果" class="easyui-datagrid" style="width:100%;height:500px"
+           url=""
+           toolbar="#eightInfoToolbar" 
+           rownumbers="true" fitColumns="true" singleSelect="true">
+       <thead>
+           <tr>
+               <th field="cylsh" width="100">查验流水号</th>
+               <th field="cyqxh" width="50">查验区序号</th>
+               <th field="hphm" width="50">号牌号码</th>
+               <th field="hpzl" width="50">号牌种类</th>               
+               <th field="cllx" width="50">车辆类型</th>               
+               <th field="syxz" width="50" >使用性质</th>
+               <th field="zdcl" width="50">是否重点车辆</th>   
+               
+               <th field="ccjg" width="50">抽查结果</th>   
+               <th field="ccbtgyy" width="50">抽查不通过原因</th>   
+               <th field="ccbtgyyms" width="50">抽查不通过原因描述</th>   
+               <th field="gxsj" width="50">更新时间</th>               
+           </tr>
+       </thead>
+   </table>
+   <div id="eightInfoToolbar">
+   	 <div>
+   	 	<label>号牌号码:</label><input  class="easyui-textbox" id="check_hphm" >  
+   	 	<label>号牌种类:</label><input  class="easyui-textbox" id="check_hpzl" >
+   	 	<label>查验流水号:</label><input  class="easyui-textbox" id="check_cylsh" >
+   	 	<label>查验区序号:</label><input  class="easyui-textbox" id="check_cyqxh" ><br/>
+   	 	<label>返回最大记录数:</label><input  class="easyui-textbox" id="check_fhzdjls" >
+	 	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="query3()" >查询</a>
+     </div>
+   </div>
+   
+
+<script type="text/javascript">
+function query3(){
+	 var opts = $("#eightDg").datagrid("options");
+	 opts.url = "../../business/getRecheckInfo";
+	 var param = {};
+	 param.cylsh = $("#check_cylsh").textbox("getValue");
+	 param.hphm = $("#check_hphm").textbox("getValue");
+	 param.hpzl = $("#check_hpzl").textbox("getValue");
+	 param.cyqxh = $("#check_cyqxh").textbox("getValue");
+	 param.fhzdjls = $("#check_fhzdjls").textbox("getValue");
+	 
+	 if(param.cyqxh == "" || param.fhzdjls == ""){
+		 $.messager.alert("提示","查验区序号，返回最大记录数不能为空");
+		 return;
+	 }
+	 
+	 if(param.hphm == "" && param.cylsh == ""){
+		 $.messager.alert("提示","查验流水号，号牌号码必须选择一个查询条件查询");
+		 return;
+	 }
+	$("#eightDg").datagrid("reload",param);
+}
+</script>

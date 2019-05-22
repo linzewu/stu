@@ -1,0 +1,327 @@
+<style type="text/css">
+.content-gif li{width:192px;height:192px;border:1px solid #EEE;float:left;margin:14px 14px 0 0;position:relative;overflow:hidden;cursor:pointer}
+.content-gif span{width:192px;height:192px;text-align:center;vertical-align:middle;display:table-cell}
+.content-gif span img{margin-top:expression(100-this.height/2)}
+.save{width:100%;height:30px;line-height:30px;top:192px;left:0;position:absolute;color:#fff;background:#000;
+font-size:12px;text-align:center;opacity:.8;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=80);-MS-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)"}
+.save a{color:#fff;display:block;cursor:pointer}
+.content-b{width:1100px;line-height:20px;font-size:14px;float:left;margin-bottom:30px;padding:10px 0;overflow:hidden}
+</style>
+<table id="chSixDg" title="机动车公告技术参数文本信息" class="easyui-datagrid" style="width:100%;height:500px"
+           url=""
+           toolbar="#chsixInfoToolbar" 
+           rownumbers="true" fitColumns="true" singleSelect="true" data-options="onDblClickRow:onDBClickRow">
+       <thead>
+           <tr>
+               <th field="bh" fixed="true">整车公告编号</th>
+               <th field="clpp1" fixed="true">车辆品牌(中文)</th>
+               <th field="clpp2" fixed="true">车辆品牌(英文)</th>
+               <th field="clxh" fixed="true">车辆型号</th>
+				<th field="qyid" fixed="true">企业ID</th>
+				<th field="scdz" fixed="true">生产地址</th>
+				<th field="fdjxh" fixed="true">发动机型号</th>
+				<th field="sbdhxl" fixed="true">识别代号序列</th>
+				<th field="cllx" fixed="true">车辆类型</th>
+				<th field="zzg" fixed="true">制造国</th>
+				<th field="zxxs" fixed="true">转向形式</th>
+				<th field="rlzl" fixed="true">燃料种类</th>
+				<th field="pl" fixed="true">排量</th>
+				<th field="gl" fixed="true">功率</th>
+				<th field="cwkc" fixed="true">车外廓长</th>
+				<th field="cwkk" fixed="true">车外廓宽</th>
+				<th field="cwkg" fixed="true">车外廓高</th>
+				<th field="hxnbcd" fixed="true">货箱内部长度</th>
+				<th field="hxnbkd" fixed="true">货箱内部宽度</th>
+				<th field="hxnbgd" fixed="true">货箱内部高度</th>
+				<th field="gbthps" fixed="true">钢板弹簧片数</th>
+				<th field="zs" fixed="true">轴数</th>
+				<th field="zj" fixed="true">轴距</th>
+				<th field="qlj" fixed="true">前轮距</th>
+				<th field="hlj" fixed="true">后轮距</th>
+				<th field="lts" fixed="true">轮胎数</th>
+				<th field="ltgg" fixed="true">轮胎规格</th>
+				<th field="zzl" fixed="true">总质量</th>
+				<th field="zbzl" fixed="true">整备质量</th>
+				<th field="hdzzl" fixed="true">额定载质量</th>
+				<th field="zqyzl" fixed="true">准牵引总质量</th>
+				<th field="hdzk" fixed="true">额定载客</th>
+				<th field="qpzk" fixed="true">驾驶室前排人数</th>
+				<th field="hpzk" fixed="true">驾驶室后排人数</th>
+				<th field="pc" fixed="true">批次</th>
+				<th field="dpid" fixed="true">底盘ID</th>
+				<th field="hbdbqk" fixed="true">环保达标情况</th>
+				<th field="cslx" fixed="true">公告发布类型</th>
+				<th field="gxrq" fixed="true">更新日期</th>
+				<th field="bz" fixed="true">备注</th>
+				<th field="zzcmc" fixed="true">车辆制造企业</th>
+				<th field="ggrq" fixed="true">公告发布日期</th>
+				<th field="sfmj" fixed="true">免检标记</th>
+				<th field="cxsxrq" fixed="true">撤销生效日期</th>
+				<th field="dpqyxh" fixed="true">底盘企业及型号</th>
+				<th field="cplb" fixed="true">产品类别</th>
+				<th field="clggbh" fixed="true">车型公告编号</th>
+				<th field="sfyxzc" fixed="true">是否允许注册</th>
+				<th field="ggsxrq" fixed="true">公告生效日期</th>
+				<th field="ggyxqbj" fixed="true">公告有效期标记</th>
+				<th field="cxggpc" fixed="true">撤销公告批次</th>
+				<th field="cxggrq" fixed="true">撤销公告发布日期</th>
+				<th field="tzscrq" fixed="true">停止生产日期</th>
+				<th field="yxqms" fixed="true">有效期描述</th>
+				<th field="zps" fixed="true">照片数</th>
+				<th field="mjyxqz" fixed="true">免检有效期止</th>
+				<th field="fgbsxh" fixed="true">反光标识型号</th>
+				<th field="fgbssb" fixed="true">反光标识商标</th>
+				<th field="fgbsqy" fixed="true">反光标识企业</th>
+				<th field="zh" fixed="true">轴荷</th>
+				<th field="zzllyxs" fixed="true">载质量利用系数</th>
+				<th field="bgazzdyxzzl" fixed="true">半挂鞍座最大允许总质量</th>
+				<th field="jjlqj" fixed="true">接近离去角</th>
+				<th field="qxhx" fixed="true">前悬后悬</th>
+				<th field="jsslx" fixed="true">驾驶室类型</th>
+				<th field="cdxs" fixed="true">传动型式</th>
+				<th field="zgcs" fixed="true">最高车速</th>
+				<th field="yh" fixed="true">油耗</th>
+				<th field="qzdfs" fixed="true">前制动方式</th>
+				<th field="hzdfs" fixed="true">后制动方式</th>
+				<th field="qzdczfs" fixed="true">前制动操作方式</th>
+				<th field="hzdczfs" fixed="true">后制动操作方式</th>
+				<th field="fdjqy" fixed="true">发动机企业</th>
+				<th field="fdjsb" fixed="true">发动机商标</th>
+				<th field="ywabs" fixed="true">是否带防抱死系统</th>
+				<th field="clmc" fixed="true">车辆名称</th>
+				<th field="qydm" fixed="true">企业代码</th>
+				<th field="ggbj" fixed="true">公告标记</th>
+				<th field="by1" fixed="true">备用1</th>
+				<th field="by2" fixed="true">备用2</th>
+				<th field="by3" fixed="true">备用3</th>
+				<th field="by4" fixed="true">备用4</th>
+				<th field="by5" fixed="true">备用5</th>
+				<th field="sfxny" fixed="true">是否新能源汽车</th>
+				<th field="xnyzl" fixed="true">新能源汽车种类</th>          
+           </tr>
+       </thead>
+   </table>
+   <div id="chsixInfoToolbar">
+   	 <div>
+   	 	<label>整车公告编号:</label><input  class="easyui-textbox" id="check_bh" >  
+   	 	<label>车辆品牌(中文):</label><input  class="easyui-textbox" id="check_clpp1" >
+   	 	<label>车辆型号:</label><input  class="easyui-textbox" id="check_clxh" >
+	 	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="querychsix()" >查询</a>
+     </div>
+   </div>
+
+<div id="dlggg" class="easyui-dialog" style="width:870px;height:530px;padding:10px 20px;"
+           closed="true" buttons="#dlg-buttons"  modal=true>
+       <table id="chassisDg" title="公告技术参数底盘信息" class="easyui-datagrid" style="width:100%;height:250px"
+           url=""
+           rownumbers="true" fitColumns="true" singleSelect="true">
+       <thead>
+           <tr>
+           	   <th field="bh" fixed="true">底盘公告编号</th>
+				<th field="dpid" fixed="true">底盘ID</th>
+				<th field="qyid" fixed="true">企业ID</th>
+				<th field="scdz" fixed="true">生产地址</th>
+				<th field="dpxh" fixed="true">底盘型号</th>
+				<th field="dplb" fixed="true">底盘类别</th>
+				<th field="cpmc" fixed="true">产品名称</th>
+				<th field="cpsb" fixed="true">产品商标</th>
+				<th field="c" fixed="true">外廓长</th>
+				<th field="k" fixed="true">外廓宽</th>
+				<th field="g" fixed="true">外廓高</th>
+				<th field="rlzl" fixed="true">燃料种类</th>
+				<th field="yjbz" fixed="true">依据标准</th>
+				<th field="zxxs" fixed="true">转向形式</th>
+				<th field="zs" fixed="true">轴数</th>
+				<th field="zj" fixed="true">轴距</th>
+				<th field="gbthps" fixed="true">钢板弹簧片数</th>
+				<th field="lts" fixed="true">轮胎数</th>
+				<th field="ltgg" fixed="true">轮胎规格</th>
+				<th field="qlj" fixed="true">前轮距</th>
+				<th field="hlj" fixed="true">后轮距</th>
+				<th field="zzl" fixed="true">总质量</th>
+				<th field="zbzl" fixed="true">整备质量</th>
+				<th field="zqyzl" fixed="true">准牵引总质量</th>
+				<th field="fdjxh" fixed="true">发动机型号</th>
+				<th field="pl" fixed="true">排量</th>
+				<th field="gl" fixed="true">功率</th>
+				<th field="sbdh" fixed="true">识别代号序列</th>
+				<th field="pc" fixed="true">批次</th>
+				<th field="cslx" fixed="true">公告发布类型</th>
+				<th field="gxrq" fixed="true">更新日期</th>
+				<th field="bz" fixed="true">备注</th>
+				<th field="zzcmc" fixed="true">车辆制造企业</th>
+				<th field="ggrq" fixed="true">公告发布日期</th>
+				<th field="cxsxrq" fixed="true">撤销生效日期</th>
+				<th field="qpzk" fixed="true">驾驶室前排人数</th>
+				<th field="hpzk" fixed="true">驾驶室后排人数</th>
+				<th field="ggsxrq" fixed="true">公告生效日期</th>
+				<th field="ggyxqbj" fixed="true">公告有效期标记</th>
+				<th field="cxggpc" fixed="true">撤销公告批次</th>
+				<th field="cxggrq" fixed="true">撤销公告发布日期</th>
+				<th field="tzscrq" fixed="true">停止生产日期</th>
+				<th field="yxqms" fixed="true">有效期描述</th>
+				<th field="fdjqy" fixed="true">发动机企业</th>
+				<th field="fdjsb" fixed="true">发动机商标</th>
+				<th field="jjlqj" fixed="true">接近离去角</th>
+				<th field="qxhx" fixed="true">前悬后悬</th>
+				<th field="zh" fixed="true">轴荷</th>
+				<th field="zgcs" fixed="true">最高车速</th>
+				<th field="ywabs" fixed="true">是否带防抱死系统</th>
+				<th field="qydm" fixed="true">企业代码</th>
+				<th field="ggbj" fixed="true">公告标记</th>
+				<th field="by1" fixed="true">备用1</th>
+				<th field="by2" fixed="true">备用2</th>
+				<th field="by3" fixed="true">备用3</th>
+				<th field="by4" fixed="true">备用4</th>
+				<th field="by5" fixed="true">备用5</th>
+				<th field="sfxny" fixed="true">是否新能源汽车</th>
+				<th field="xnyzl" fixed="true">新能源汽车种类</th>
+               
+                        
+           </tr>
+       </thead>
+   </table>  
+        
+   <table id="photodesDg" title="公告技术参数图片" class="easyui-datagrid" style="width:100%;height:250px"
+           url=""
+           rownumbers="true" fitColumns="true" singleSelect="true">
+       <thead>
+           <tr>
+           	   <th field="bh" fixed="true">整车公告编号</th>
+               <th field="clggbh" fixed="true">车型公告编号</th>
+               <th field="sxh" fixed="true">顺序号</th>
+               <th field="pc" fixed="true">批次</th>
+               <th field="ggrq" fixed="true">公告发布日期</th>
+               <th field="zpbh" fixed="true">照片编号</th>
+               <th field="gxrq" fixed="true">更新日期</th>               
+                        
+           </tr>
+       </thead>
+   </table> 
+   <div class='content-b' id="imagelist"></div>
+   </div>   
+
+<script type="text/javascript">
+var chassisArr = [];
+var photodesArr = [];
+
+var chassisShowArr = [];
+var photodesShowArr = [];
+
+var imageArr = [];
+var imageShowArr = [];
+function querychsix(){
+	imageArr = [];
+	chassisArr = [];
+	photodesArr = [];
+	 var opts = $("#chSixDg").datagrid("options");
+	 opts.url = "../../business/getGonggaoInfo";
+	 var param = {};
+	 param.bh = $("#check_bh").textbox("getValue");
+	 param.clpp1 = $("#check_clpp1").textbox("getValue");
+	 param.clxh = $("#check_clxh").textbox("getValue");
+	 /**if(param.cyqxh == "" || param.fhzdjls == ""){
+		 $.messager.alert("提示","查验区序号，返回最大记录数不能为空");
+		 return;
+	 }
+	 
+	 if(param.hphm == "" && param.cylsh == ""){
+		 $.messager.alert("提示","查验流水号，号牌号码必须选择一个查询条件查询");
+		 return;
+	 }**/
+	 $.post("../../business/getGonggaoInfo",param,function(result){
+		 var reData= result.body;
+		 if(reData != null){
+			 
+			 if(reData.vehicle != null && reData.vehicle != ""){
+				 if(Array.isArray(reData.vehicle)){
+				 	$("#chSixDg").datagrid('loadData',reData.vehicle);
+				 }else{
+					 var vehArr = [];
+					 vehArr.push(reData.vehicle);
+					 $("#chSixDg").datagrid('loadData',vehArr);
+				 }
+			 }
+			 
+			 if(reData.photodes != null && reData.photodes != ""){
+				 if(Array.isArray(reData.photodes)){
+					 photodesArr = reData.photodes;
+				 }else{
+					 var vehArr = [];
+					 vehArr.push(reData.photodes);
+					 photodesArr = vehArr;
+				 }
+				 for(var a in photodesArr){
+					 $.post("../../business/getGonggaoImageInfo",{"zpbh":photodesArr[a].zpbh},function(data){
+						 for(var p in data.rows){
+							 imageArr.push(data.rows[p]);
+						 }
+					 },'json').error(function(){
+					     	$.messager.alert("错误","查询公告图片失败","error");
+					     });
+				 }
+			 }
+			 
+			 if(reData.chassis != null && reData.chassis != ""){
+				 if(Array.isArray(reData.chassis)){
+					 chassisArr = reData.chassis;
+				 }else{
+					 var vehArr = [];
+					 vehArr.push(reData.chassis);
+					 chassisArr = vehArr;
+				 }
+			 }
+			 
+		 }
+     	
+     },'json').error(function(){
+     	$.messager.alert("错误","查询失败","error");
+     });
+	//$("#chSixDg").datagrid("reload",param);
+}
+
+function onDBClickRow(index, row){
+	$('#dlggg').dialog('open'); 
+	chassisShowArr = [];
+	photodesShowArr = [];
+	imageShowArr = [];
+	for ( var i in chassisArr) {
+		if(row.bh == chassisArr[i].bh){
+			chassisShowArr.push(chassisArr[i]);
+		}
+	}
+	
+	for ( var i in photodesArr) {
+		if(row.bh == photodesArr[i].bh){
+			photodesShowArr.push(photodesArr[i]);
+		}
+	}
+	
+	for(var i in photodesShowArr){
+		for(var m in imageArr){
+			if(photodesShowArr[i].zpbh == imageArr[m].zpbh){
+				imageShowArr.push(imageArr[m].zp);
+				break;
+				
+			}
+		}
+	}
+
+	var div = $("#imagelist");
+	div.html("");
+	var ul=$("<ul id='photoView' class='content-gif'></ul>");
+	$.each(imageShowArr,function(i,n){
+		var li=$("<li></li>");
+		var span = $("<span></span>");
+		var img = $("<img id='"+(i+1)+"Img' width='180px' height='180px'/>");
+		img.attr("src","data:image/png;base64,"+n)
+		span.append(img);
+		li.append(span);
+		ul.append(li);
+	});
+	div.append(ul);
+	
+	$("#chassisDg").datagrid('loadData',chassisShowArr);
+	$("#photodesDg").datagrid('loadData',photodesShowArr);
+}
+</script>

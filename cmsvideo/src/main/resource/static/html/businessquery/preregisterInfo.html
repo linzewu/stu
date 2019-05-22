@@ -1,0 +1,49 @@
+<table id="preregDg" title="查验预登记信息" class="easyui-datagrid" style="width:100%;height:500px"
+           url=""
+           toolbar="#checkNotPassInfoToolbar" 
+           rownumbers="true" fitColumns="true" singleSelect="true">
+       <thead>
+           <tr>
+               <th field="cylsh" width="100">查验流水号</th>
+               <th field="cyqxh" width="50">查验区序号</th>
+               <th field="hphm" width="50">号牌号码</th>
+               <th field="hpzl" width="50">号牌种类</th>               
+               <th field="ywlxs" width="50">业务类型</th>               
+               <th field="clpp1" width="50" >中文品牌</th>
+               <th field="clxh" width="50">车辆型号</th>               
+           </tr>
+       </thead>
+   </table>
+   <div id="checkNotPassInfoToolbar">
+   	 <div>
+   	 	<label>车辆识别代号:</label><input  class="easyui-textbox" id="check_clsbdh" >     	 	
+   	 	<label>查验流水号:</label><input  class="easyui-textbox" id="check_cylsh" >
+   	 	<label>查验区序号:</label><input  class="easyui-textbox" id="check_cyqxh" >
+   	 	<label>查验员身份证明号码:</label><input  class="easyui-textbox" id="check_sfzmhm" >
+	 	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="query2()" >查询</a>
+     </div>
+   </div>
+   
+
+<script type="text/javascript">
+function query2(){
+	 var opts = $("#preregDg").datagrid("options");
+	 opts.url = "../../business/getPreregistInfo";
+	 var param = {};
+	 param.cylsh = $("#check_cylsh").textbox("getValue");
+	 param.clsbdh = $("#check_clsbdh").textbox("getValue");
+	 param.sfzmhm = $("#check_sfzmhm").textbox("getValue");
+	 param.cyqxh = $("#check_cyqxh").textbox("getValue");
+	 
+	 if(param.cyqxh == "" || param.sfzmhm == ""){
+		 $.messager.alert("提示","查验区序号，查验员身份证明号码不能为空");
+		 return;
+	 }
+	 
+	 if(param.clsbdh == "" && param.cylsh == ""){
+		 $.messager.alert("提示","查验流水号，车辆识别代号必须选择一个查询条件查询");
+		 return;
+	 }
+	$("#preregDg").datagrid("reload",param);
+}
+</script>

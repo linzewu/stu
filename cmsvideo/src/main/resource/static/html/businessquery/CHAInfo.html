@@ -1,0 +1,70 @@
+<style type="text/css">
+.content-gif li{width:192px;height:192px;border:1px solid #EEE;float:left;margin:14px 14px 0 0;position:relative;overflow:hidden;cursor:pointer}
+.content-gif span{width:192px;height:192px;text-align:center;vertical-align:middle;display:table-cell}
+.content-gif span img{margin-top:expression(100-this.height/2)}
+.save{width:100%;height:30px;line-height:30px;top:192px;left:0;position:absolute;color:#fff;background:#000;
+font-size:12px;text-align:center;opacity:.8;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=80);-MS-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)"}
+.save a{color:#fff;display:block;cursor:pointer}
+.content-b{width:1100px;line-height:20px;font-size:14px;float:left;margin-bottom:30px;padding:10px 0;overflow:hidden}
+</style>
+<table id="chaDg" title="机动车标准照片等信息" class="easyui-datagrid" style="width:100%;height:500px"
+           url=""
+           toolbar="#chaInfoToolbar" 
+           rownumbers="true" fitColumns="true" singleSelect="true">
+       <thead>
+           <tr>
+               <th field="lsh" width="100">流水号</th>
+               <th field="zpzl" width="50">照片种类</th>
+                         
+           </tr>
+       </thead>
+   </table>
+   <div id="chaInfoToolbar">
+   	 <div>
+   	 	<label>流水号:</label><input  class="easyui-textbox" id="check_lsh" >  
+   	 	<label>照片种类:</label><input  class="easyui-textbox" id="check_zpzl" >
+   	 	
+	 	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="queryCha()" >查询</a>
+     </div>
+   </div>
+   <div class='content-b' id="imagelistCha"></div>
+
+<script type="text/javascript">
+function queryCha(){
+	 var opts = $("#chaDg").datagrid("options");
+	 opts.url = "../../business/getVehImage";
+	 var param = {};
+	 param.lsh = $("#check_lsh").textbox("getValue");
+	 param.zpzl = $("#check_zpzl").textbox("getValue");
+	 
+	 if(param.lsh == "" || param.zpzl == ""){
+		 $.messager.alert("提示","流水号，照片种类不能为空");
+		 return;
+	 }
+	 /**
+	 if(param.hphm == "" && param.cylsh == ""){
+		 $.messager.alert("提示","查验流水号，号牌号码必须选择一个查询条件查询");
+		 return;
+	 }**/
+	$("#chaDg").datagrid("reload",param);
+}
+
+$(function(){
+	$("#chaDg").datagrid({onLoadSuccess:function(data){
+		var div = $("#imagelistCha");
+		div.html("");
+		var ul=$("<ul id='photoView' class='content-gif'></ul>");
+		$.each(data,function(i,n){
+			var li=$("<li></li>");
+			var span = $("<span></span>");
+			var img = $("<img id='"+(i+1)+"Img' width='180px' height='180px'/>");
+			img.attr("src","data:image/png;base64,"+n.zp)
+			span.append(img);
+			li.append(span);
+			ul.append(li);
+		});
+		div.append(ul);
+	}
+	});
+});
+</script>

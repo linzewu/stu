@@ -1,0 +1,67 @@
+<table id="cfSixDg" title="上门查验服务备案信息" class="easyui-datagrid" style="width:100%;height:500px"
+           url=""
+           toolbar="#cfSixInfoToolbar" 
+           rownumbers="true" fitColumns="true" singleSelect="true">
+       <thead>
+           <tr>
+           	   <th field="babh" width="50">备案编号</th>
+               <th field="cyglbm" width="100">上门查验管理部门</th>
+               <th field="cybmmc" width="50">上门查验部门名称</th>
+               <th field="cyfwdw" width="50">上门查验服务单位名称</th>
+               <th field="cyys" width="50">查验员身份证号</th>
+               <th field="cllxs" width="50">查验车辆类型</th>
+               <th field="syxzs" width="50">使用性质</th>
+               <th field="bdsyzt" width="50">本地使用状态</th>
+               
+               <th field="tyyy" width="50">停用原因</th>              
+ 
+               <th field="jbr" width="50">经办人</th>
+               <th field="fzjg" width="50">发证机关</th>
+               <th field="glbm" width="50">管理部门</th>
+               
+               <th field="syglbm" width="50">使用管理部门</th>
+               <th field="zt" width="50">状态</th>
+               
+               <th field="sqsy" width="50">申请事由</th>
+               <th field="ywlxs" width="50">业务类型</th>
+               <th field="clsl" width="50">上门查验车辆数量</th>
+               <th field="cyyxq" width="50">查验截止日期</th>
+               <th field="cydd" width="50">查验地点</th>
+               <th field="lxr" width="50">联系人</th>
+               <th field="lxdh" width="50">联系电话</th>
+               <th field="sqrq" width="50">申请日期</th>
+               <th field="cyclqd" width="50">车辆清单</th>
+               <th field="bz" width="50">备注</th>         
+           </tr>
+       </thead>
+   </table>
+   <div id="cfSixInfoToolbar">
+   	 <div>
+   	 	<label>备案编号:</label><input  class="easyui-textbox" id="check_babh" >  
+   	 	<label>更新日期:</label><input  class="easyui-datebox" id="check_gxrq" >
+   	 	
+	 	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="query6()" >查询</a>
+     </div>
+   </div>
+   
+
+<script type="text/javascript">
+function query6(){
+	 var opts = $("#cfSixDg").datagrid("options");
+	 opts.url = "../../business/getSmcyBackupInfo";
+	 var param = {};
+	 param.babh = $("#check_babh").textbox("getValue");
+	 param.gxrq = $("#check_gxrq").datebox("getValue");
+	 
+	 if(param.babh == ""){
+		 $.messager.alert("提示","备案编号不能为空");
+		 return;
+	 }
+	 /**
+	 if(param.hphm == "" && param.cylsh == ""){
+		 $.messager.alert("提示","查验流水号，号牌号码必须选择一个查询条件查询");
+		 return;
+	 }**/
+	$("#cfSixDg").datagrid("reload",param);
+}
+</script>
