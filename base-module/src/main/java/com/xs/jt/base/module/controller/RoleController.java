@@ -104,7 +104,7 @@ public class RoleController {
 
 		if (!result.hasErrors()) {
 			if(role.getJslx()==0){
-				throw new Exception("无法新增系统超级管理员");
+				throw new Exception("无法新增内置管理员");
 			}
 			role = roleManager.add(role);
 			return ResultHandler.resultHandle(result, role, Constant.ConstantMessage.SAVE_SUCCESS);

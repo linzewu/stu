@@ -159,10 +159,10 @@ public class InitServerCommonUtil {
 			role.setJsjb(0);
 			role.setJslx(0);
 			role.setJsqx(powerStr);
-			role.setJsmc("系统超级管理员");
+			role.setJsmc("内置管理员");
 			this.roleManager.add(role);
 		}else {
-			Role sysRole = roleManager.getRole("系统超级管理员");
+			Role sysRole = roleManager.getRole("内置管理员");
 			sysRole.setJsqx(powerStr);
 			roleManager.save(sysRole);
 		}
@@ -187,7 +187,7 @@ public class InitServerCommonUtil {
 			calendar.add(Calendar.YEAR, 3);
 			user.setZhyxq(calendar.getTime());
 			user.setMmyxq(user.getZhyxq());
-			user.setYhxm("系统超级管理员");
+			user.setYhxm("内置管理员");
 			user = this.userManager.saveUser(user);
 			user.setMm(user.encodePwd("888888"));
 			this.userManager.saveUser(user);

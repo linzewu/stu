@@ -1,0 +1,57 @@
+<table id="cfThreeDg" title="查验智能终端系统备案信息" class="easyui-datagrid" style="width:100%;height:500px"
+           url=""
+           toolbar="#cfThreeInfoToolbar" 
+           rownumbers="true" fitColumns="true" singleSelect="true">
+       <thead>
+           <tr>
+           	   <th field="babh" width="50">备案编号</th>
+               <th field="xtmc" width="100">系统名称</th>
+               <th field="xtsm" width="50">系统说明</th>
+               <th field="bbbh" width="50">版本编号</th>
+               <th field="kfdw" width="50">开发单位</th>
+               <th field="cyqxh" width="50">查验区序号</th>
+               <th field="jcsj" width="50">检测时间</th>
+               <th field="yssj" width="50">验收时间</th>
+               <th field="bdsyzt" width="50">本地使用状态</th>
+               <th field="tyyy" width="50">停用原因</th>
+               <th field="jbr" width="50">经办人</th>   
+               <th field="fzjg" width="50">发证机关</th>
+               <th field="glbm" width="50">管理部门</th>              
+               
+               <th field="syglbm" width="50">使用管理部门</th>
+               <th field="zt" width="50">状态</th>
+               <th field="cyzdbh" width="50">查验智能终端编号</th>
+                        
+           </tr>
+       </thead>
+   </table>
+   <div id="cfThreeInfoToolbar">
+   	 <div>
+   	 	<label>备案编号:</label><input  class="easyui-textbox" id="check_babh" >  
+   	 	<label>更新日期:</label><input  class="easyui-datebox" id="check_gxrq" >
+   	 	
+	 	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="querycfthree()" >查询</a>
+     </div>
+   </div>
+   
+
+<script type="text/javascript">
+function querycfthree(){
+	 var opts = $("#cfThreeDg").datagrid("options");
+	 opts.url = "../../business/getSysBackupInfo";
+	 var param = {};
+	 param.babh = $("#check_babh").textbox("getValue");
+	 param.gxrq = $("#check_gxrq").datebox("getValue");
+	 
+	 if(param.babh == ""){
+		 $.messager.alert("提示","备案编号不能为空");
+		 return;
+	 }
+	 /**
+	 if(param.hphm == "" && param.cylsh == ""){
+		 $.messager.alert("提示","查验流水号，号牌号码必须选择一个查询条件查询");
+		 return;
+	 }**/
+	$("#cfThreeDg").datagrid("reload",param);
+}
+</script>

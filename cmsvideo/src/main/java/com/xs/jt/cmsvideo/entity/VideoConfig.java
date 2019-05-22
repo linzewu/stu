@@ -7,11 +7,13 @@ import javax.persistence.Table;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.xs.jt.base.module.annotation.CheckBit;
 import com.xs.jt.base.module.entity.BaseEntity;
 @Scope("prototype")
 @Component("videoConfig")
 @Entity
 @Table(name = "tm_Video_Config")
+@CheckBit
 public class VideoConfig extends BaseEntity {
 	/**
 	 * 
@@ -141,6 +143,13 @@ public class VideoConfig extends BaseEntity {
 
 	public void setHdPort(String hdPort) {
 		this.hdPort = hdPort;
+	}
+
+	@Override
+	public String toString() {
+		return "VideoConfig [jyjgbh=" + jyjgbh + ", ip=" + ip + ", port=" + port + ", hdPort=" + hdPort + ", userName="
+				+ userName + ", password=" + password + ", channel=" + channel + ", deviceName=" + deviceName
+				+ ", cyqxh=" + cyqxh + ", cyqtd=" + cyqtd + "]";
 	}
 	
 

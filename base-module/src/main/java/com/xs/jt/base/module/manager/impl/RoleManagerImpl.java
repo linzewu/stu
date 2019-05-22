@@ -61,7 +61,7 @@ public class RoleManagerImpl implements IRoleManager {
 		Role role = this.roleRepository.findById(id).get();//this.hibernateTemplate.load(Role.class, id);
 
 		if (role.getJslx() == 0) {
-			throw new Exception("系统超级管理员无法删除");
+			throw new Exception("内置管理员无法删除");
 		} else {
 			this.roleRepository.delete(role);
 		}

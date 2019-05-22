@@ -38,14 +38,14 @@ public class VideoConfigController {
 	
 	
 	@UserOperation(code="save",name="保存视频配置")
-	@RequestMapping(value = "save", method = RequestMethod.POST,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8")
-	public @ResponseBody String saveVideoConfig(@Valid VideoConfig videoConfig, BindingResult result) {
+	@RequestMapping(value = "save", method = RequestMethod.POST)//,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8"
+	public @ResponseBody Map<String, Object> saveVideoConfig(@Valid VideoConfig videoConfig, BindingResult result) {
 		if (!result.hasErrors()) {
 			
 			this.videoConfigManager.saveVideoConfig(videoConfig);
-			return  JSONObject.fromObject(ResultHandler.resultHandle(result,null ,Constant.ConstantMessage.SAVE_SUCCESS)).toString();
+			return  ResultHandler.resultHandle(result,null ,Constant.ConstantMessage.SAVE_SUCCESS);
 		}else{
-			return JSONObject.fromObject(ResultHandler.resultHandle(result,null ,null)).toString();
+			return ResultHandler.resultHandle(result,null ,null);
 		}
 	}
 	

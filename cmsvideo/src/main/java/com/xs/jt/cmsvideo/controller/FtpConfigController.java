@@ -38,14 +38,14 @@ public class FtpConfigController {
 	}
 	
 	@UserOperation(code="save",name="保存Ftp配置")
-	@RequestMapping(value = "save", method = RequestMethod.POST,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8")
-	public @ResponseBody String saveFtpConfig(@Valid FtpConfig ftpConfig, BindingResult result) {
+	@RequestMapping(value = "save", method = RequestMethod.POST)//,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8"
+	public @ResponseBody Map<String, Object> saveFtpConfig(@Valid FtpConfig ftpConfig, BindingResult result) {
 		if (!result.hasErrors()) {
 			
 			this.ftpConfigManager.saveFtpConfig(ftpConfig);
-			return  JSONObject.fromObject(ResultHandler.resultHandle(result,null ,Constant.ConstantMessage.SAVE_SUCCESS)).toString();
+			return  ResultHandler.resultHandle(result,null ,Constant.ConstantMessage.SAVE_SUCCESS);
 		}else{
-			return JSONObject.fromObject(ResultHandler.resultHandle(result,null ,null)).toString();
+			return ResultHandler.resultHandle(result,null ,null);
 		}
 	}
 	

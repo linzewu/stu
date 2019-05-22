@@ -89,7 +89,6 @@ function saveAndPring() {
 }
 
 function implSaveAndPring() {	
-	debugger;
 	$('#myformImpl').form({
 		url: "../../preCarRegister/savePreCarRegister"
 	});

@@ -30,6 +30,7 @@ import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Common;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
+import com.xs.jt.base.module.common.TamperWithDataException;
 import com.xs.jt.base.module.entity.BaseParams;
 import com.xs.jt.base.module.entity.BlackList;
 import com.xs.jt.base.module.entity.CoreFunction;
@@ -109,11 +110,12 @@ public class UserController {
 
 	@RecordLog
 	@UserOperation(code="save",name="编辑用户")
-	@RequestMapping(value = "saveUser", method = RequestMethod.POST,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8")
-	public @ResponseBody String saveUser(User user, BindingResult result) throws IOException {
+	@RequestMapping(value = "saveUser", method = RequestMethod.POST)//,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8"
+	public @ResponseBody Map saveUser(User user, BindingResult result) throws Exception {
 		if (!result.hasErrors()) {
 			if(!"Y".equals(String.valueOf(user.getIsPolice())) && checkIsPolice(user)) {
-				return JSONObject.fromObject((ResultHandler.toMyJSON(Constant.ConstantState.STATE_VALIDATE_ERROR, "该角色包含警员功能，不允许授予非警员账号！"))).toString();
+				return ResultHandler.toMyJSON(Constant.ConstantState.STATE_VALIDATE_ERROR, "该角色包含警员功能，不允许授予非警员账号！");
+				//return JSONObject.fromObject((ResultHandler.toMyJSON(Constant.ConstantState.STATE_VALIDATE_ERROR, "该角色包含警员功能，不允许授予非警员账号！"))).toString();
 			}
 
 			if (user.getId() == null) {
@@ -137,9 +139,9 @@ public class UserController {
 				signaturePhoto.setPhoto(qmFile.getBytes());
 				signaturePhotoManager.saveSignaturePhoto(signaturePhoto);
 			}
-			return JSONObject.fromObject(ResultHandler.resultHandle(result, null, Constant.ConstantMessage.SAVE_SUCCESS)).toString();
+			return ResultHandler.resultHandle(result, null, Constant.ConstantMessage.SAVE_SUCCESS);//JSONObject.fromObject(ResultHandler.resultHandle(result, null, Constant.ConstantMessage.SAVE_SUCCESS)).toString();
 		} else {
-			return JSONObject.fromObject(ResultHandler.resultHandle(result, null, null)).toString();
+			return ResultHandler.resultHandle(result, null, null);//JSONObject.fromObject(ResultHandler.resultHandle(result, null, null)).toString();
 		}
 	}
 	
@@ -361,8 +363,8 @@ public class UserController {
 	}
 	
 	@UserOperation(code="updatePassword",name="修改用户密码",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
-	@RequestMapping(value = "updatePassword", method = RequestMethod.POST,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8")
-	public @ResponseBody String updatePassword(HttpSession session,String newPassword) {
+	@RequestMapping(value = "updatePassword", method = RequestMethod.POST)//,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8"
+	public @ResponseBody Map<String,Object> updatePassword(HttpSession session,String newPassword) {
 		User sessionUser = (User)session.getAttribute("user");
 		User user = this.userManager.getUser(sessionUser.getId());
 		
@@ -375,7 +377,7 @@ public class UserController {
 		user.setMmyxq(calendar.getTime());
 		this.userManager.saveUser(user);
 		session.invalidate();
-		return JSONObject.fromObject(ResultHandler.toSuccessJSON("密碼修改成功！")).toString();
+		return ResultHandler.toSuccessJSON("密碼修改成功！");
 	}
 	
 	private User failLoginCount(User u,HttpServletRequest request) {

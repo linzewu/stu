@@ -332,9 +332,12 @@ function saveUser(url,callback){
 		msg:"数据保存中..."
 	});
 	
+	
+	/**
 	$('#userInfoForm').form('submit', {
 		url: url,
 	    success: function(data){
+	    	console.log(data)
 	        var data = $.parseJSON(data);
 	        
 	        if (data.state == "1"){
@@ -343,10 +346,31 @@ function saveUser(url,callback){
 	        	$.messager.alert("错误",data.message,"error");
 	        }
 	    	$.messager.progress("close");
-	    }
-	});
+	    },
+	    error: function(XmlHttpRequest, textStatus, errorThrown){  
+	    	debugger;
+            alert( "error");  
+        }  
+	});**/
 	
-	/**$.post(url,$('#user-info-tab').tabs('getSelected').find("form").serializeJson(),callback).error(function(){
+	if($("#userInfoForm").form('validate')){
+	    $.post(url,$("#userInfoForm").serializeJson(),function(data){
+			//result=$.parseJSON(result);
+	     	   
+			if (data.state == "1"){
+	        	callback();	            
+	        }else{
+	        	$.messager.alert("错误",data.message,"error");
+	        }
+	    	$.messager.progress("close");
+		},"json").error(function(aa){
+			$.messager.alert("错误","保存错误","error");
+		}).complete(function() {
+			$.messager.progress("close");
+		});
+    }
+	/**
+	$.post(url,$('#user-info-tab').tabs('getSelected').find("form").serializeJson(),callback).error(function(){
 		$.messager.alert("错误","保存错误","error");
 	}).complete(function() {
 		$.messager.progress("close");

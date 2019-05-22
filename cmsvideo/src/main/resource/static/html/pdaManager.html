@@ -116,7 +116,7 @@ function loadSuccess(data){
  function savePdaInfo(){
 	 var flag = $("#pdafm").form("validate");
 	 console.log(flag)
-     $('#pdafm').form('submit',{
+    /** $('#pdafm').form('submit',{
          url: url,
          onSubmit: function(){
              return flag;
@@ -132,7 +132,25 @@ function loadSuccess(data){
           	   $.messager.alert("提示","保存失败","error");
              }
          }
-     });
+     });**/
+	 
+	 if(flag){
+		 $.post(url,$("#pdafm").serializeJson(),function(result){
+				//result=$.parseJSON(result);
+		     	   
+				if (result.state==1){
+	          	     $('#dlgPda').dialog('close');        // close the dialog
+	                 $('#pdaInfoDg').datagrid('reload');    // reload the user data
+	                 $.messager.alert("提示","保存成功","info");
+	             } else {
+	          	   $.messager.alert("提示","保存失败","error");
+	             }
+			},"json").error(function(aa){
+				$.messager.alert("错误","保存错误","error");
+			}).complete(function() {
+				$.messager.progress("close");
+			});
+	 }
  }
  function destroyPdaInfo(){
      var row = $('#pdaInfoDg').datagrid('getSelected');

@@ -8,6 +8,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
@@ -32,6 +33,9 @@ public class CheckBitAop {
 	
 	@Autowired
 	private EntityManager entityManager;
+	
+	@Autowired
+	private HttpSession session;
 	
 	@Pointcut("execution(* com.xs.jt.*.*.dao.*.save*(..))")
 	public void save() {
@@ -81,6 +85,7 @@ public class CheckBitAop {
 							BaseEntity base = (BaseEntity) query.getSingleResult();
 							base.checkBit();
 							if (!base.isCheckBitOk()) {
+								session.invalidate();
 								throw new TamperWithDataException("数据非法篡改!");
 
 							}

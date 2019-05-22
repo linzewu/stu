@@ -1,0 +1,59 @@
+<table id="checkNotPassInfoDg" title="机动车查验复核不通过原因" class="easyui-datagrid" style="width:100%;height:500px"
+           url=""
+           toolbar="#checkNotPassInfoToolbar" 
+           rownumbers="true" fitColumns="true" singleSelect="true">
+       <thead>
+           <tr>
+               <th field="cylsh" width="100">查验流水号</th>
+               <th field="cyqxh" width="50">查验区序号</th>
+               <th field="hphm" width="50">号牌号码</th>
+               <th field="hpzl" width="50">号牌种类</th>               
+               <th field="fhjg" width="50">复核结果</th>               
+               <th field="bhgcyxm" width="50" >不合格查验项目</th>
+               <th field="dueTime" width="50">复核不通过原因描述</th>               
+           </tr>
+       </thead>
+   </table>
+   <div id="checkNotPassInfoToolbar">
+   	 <div>
+   	 	<label>号牌号码:</label><input  class="easyui-textbox" id="check_hphm" >  
+   	 	<label>号牌种类:</label><input  class="easyui-textbox" id="check_hpzl" >
+   	 	<label>查验流水号:</label><input  class="easyui-textbox" id="check_cylsh" >
+   	 	<label>查验区序号:</label><input  class="easyui-textbox" id="check_cyqxh" ><br/>
+   	 	<label>查询状态:</label><select id="check_cxzt"  class="easyui-combobox" style="width: 170px;">
+   	 							<option value="">请选择查询状态</option>
+							    <option value="0">查验未复核</option>
+							    <option value="1">正在查验复核</option>
+							    <option value="2">查验复核通过</option>
+							    <option value="3">查验复核不通过</option>
+							</select>
+   	 	<label>返回最大记录数:</label><input  class="easyui-textbox" id="check_fhzdjls" >
+	 	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="query1()" >查询</a>
+     </div>
+   </div>
+   
+
+<script type="text/javascript">
+function query1(){
+	 var opts = $("#checkNotPassInfoDg").datagrid("options");
+	 opts.url = "../../business/getCheckNotPassInfo";
+	 var param = {};
+	 param.cylsh = $("#check_cylsh").textbox("getValue");
+	 param.hphm = $("#check_hphm").textbox("getValue");
+	 param.hpzl = $("#check_hpzl").textbox("getValue");
+	 param.cyqxh = $("#check_cyqxh").textbox("getValue");
+	 param.cxzt = $("#check_cxzt").combobox("getValue");
+	 param.fhzdjls = $("#check_fhzdjls").textbox("getValue");
+	 
+	 if(param.cyqxh == "" || param.fhzdjls == ""){
+		 $.messager.alert("提示","查验区序号，返回最大记录数不能为空");
+		 return;
+	 }
+	 
+	 if(param.hphm == "" && param.cylsh == ""){
+		 $.messager.alert("提示","查验流水号，号牌号码必须选择一个查询条件查询");
+		 return;
+	 }
+	$("#checkNotPassInfoDg").datagrid("reload",param);
+}
+</script>

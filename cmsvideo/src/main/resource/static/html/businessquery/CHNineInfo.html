@@ -1,0 +1,44 @@
+<table id="nineDg" title="机动车违规产品信息" class="easyui-datagrid" style="width:100%;height:500px"
+           url=""
+           toolbar="#nineInfoToolbar" 
+           rownumbers="true" fitColumns="true" singleSelect="true">
+       <thead>
+           <tr>
+               <th field="clpp1" width="100">车辆品牌(中文)</th>
+               <th field="clxh" width="50">车辆型号</th>
+               <th field="zzcmc" width="50">制造厂名称</th>
+               <th field="yjnr" width="50">预警内容</th>               
+           </tr>
+       </thead>
+   </table>
+   <div id="nineInfoToolbar">
+   	 <div>
+   	 	<label>车辆品牌(中文):</label><input  class="easyui-textbox" id="check_clpp1" >  
+   	 	<label>车辆型号:</label><input  class="easyui-textbox" id="check_clxh" >
+   	 	<label>制造厂名称:</label><input  class="easyui-textbox" id="check_zzcmc" >
+	 	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="query4()" >查询</a>
+     </div>
+   </div>
+   
+
+<script type="text/javascript">
+function query4(){
+	 var opts = $("#nineDg").datagrid("options");
+	 opts.url = "../../business/getViolationInfo";
+	 var param = {};
+	 param.clpp1 = $("#check_clpp1").textbox("getValue");
+	 param.clxh = $("#check_clxh").textbox("getValue");
+	 param.zzcmc = $("#check_zzcmc").textbox("getValue");
+	 
+	 if(param.clpp1 == "" || param.clxh == "" || param.zzcmc == ""){
+		 $.messager.alert("提示","车辆品牌(中文),车辆型号,制造厂名称不能为空");
+		 return;
+	 }
+	 /**
+	 if(param.hphm == "" && param.cylsh == ""){
+		 $.messager.alert("提示","查验流水号，号牌号码必须选择一个查询条件查询");
+		 return;
+	 }**/
+	$("#nineDg").datagrid("reload",param);
+}
+</script>

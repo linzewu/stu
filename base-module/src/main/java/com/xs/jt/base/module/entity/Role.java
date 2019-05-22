@@ -7,11 +7,14 @@ import javax.persistence.Table;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.xs.jt.base.module.annotation.CheckBit;
+
 
 @Scope("prototype")
 @Component("role")
 @Entity
 @Table(name = "TB_Role")
+@CheckBit
 public class Role extends BaseEntity {
 	/**
 	 * 业务办理
@@ -89,6 +92,11 @@ public class Role extends BaseEntity {
 
 	public void setJslx(Integer jslx) {
 		this.jslx = jslx;
+	}
+
+	@Override
+	public String toString() {
+		return "Role [jsmc=" + jsmc + ", jsjb=" + jsjb + ", jslx=" + jslx + ", jsqx=" + jsqx + ", bz=" + bz + "]";
 	} 
 
 }

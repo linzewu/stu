@@ -1,0 +1,58 @@
+<table id="cfoneDg" title="查验员备案信息" class="easyui-datagrid" style="width:100%;height:500px"
+           url=""
+           toolbar="#cfoneInfoToolbar" 
+           rownumbers="true" fitColumns="true" singleSelect="true">
+       <thead>
+           <tr>
+               <th field="sfzmhm" width="100">身份证明号码</th>
+               <th field="xm" width="50">姓名</th>
+               <th field="ywlx" width="50">查验业务类型</th>
+               <th field="cllx" width="50">车辆类型</th>
+               <th field="syxz" width="50">使用性质</th>
+               <th field="glbm" width="50">管理部门</th>
+               <th field="syglbm" width="50">使用管理部门</th>
+               <th field="fzjg" width="50">发证机关</th>
+               <th field="gxrq" width="50">更新日期</th>
+               <th field="bz" width="50">备注</th>
+               <th field="zt" width="50">状态</th>
+               <th field="jczbh" width="50">安检机构编号</th>
+               <th field="cyzgzbh" width="50">查验资格证编号</th>
+               <th field="cyzgzyxqz" width="50">查验资格证有效期止</th>
+               <th field="cyzgzffdw" width="50">查验资格证发放单位</th>
+               <th field="cyydj" width="50">查验员等级</th>
+               <th field="sfmj" width="50">是否民警</th>   
+               <th field="cyqxh" width="50">查验区序号</th>
+               <th field="cyzdbh" width="50">查验智能终端编号</th>          
+           </tr>
+       </thead>
+   </table>
+   <div id="cfoneInfoToolbar">
+   	 <div>
+   	 	<label>身份证明号码:</label><input  class="easyui-textbox" id="check_sfzmhm" >  
+   	 	<label>更新日期:</label><input  class="easyui-datebox" id="check_gxrq" >
+   	 	
+	 	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="querycfone()" >查询</a>
+     </div>
+   </div>
+   
+
+<script type="text/javascript">
+function querycfone(){
+	 var opts = $("#cfoneDg").datagrid("options");
+	 opts.url = "../../business/getInspectorInfo";
+	 var param = {};
+	 param.sfzmhm = $("#check_sfzmhm").textbox("getValue");
+	 param.gxrq = $("#check_gxrq").datebox("getValue");
+	 
+	 if(param.sfzmhm == "" ){
+		 $.messager.alert("提示","身份证明号码不能为空");
+		 return;
+	 }
+	 /**
+	 if(param.hphm == "" && param.cylsh == ""){
+		 $.messager.alert("提示","查验流水号，号牌号码必须选择一个查询条件查询");
+		 return;
+	 }**/
+	$("#cfoneDg").datagrid("reload",param);
+}
+</script>

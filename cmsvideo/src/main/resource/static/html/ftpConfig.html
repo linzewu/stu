@@ -117,7 +117,7 @@ function editFtpConfig(){
     }
 }
 function saveFtpConfig(){
-    $('#ftpfm').form('submit',{
+   /** $('#ftpfm').form('submit',{
         url: url,
         onSubmit: function(){
             return $(this).form('validate');
@@ -134,7 +134,24 @@ function saveFtpConfig(){
          	   $.messager.alert("提示","保存失败","error");
             }
         }
-    });
+    });**/
+    if($("#ftpfm").form('validate')){
+	    $.post(url,$("#ftpfm").serializeJson(),function(result){
+			//result=$.parseJSON(result);
+	     	   
+            if (result.state==1){
+         	   $('#dlgFtp').dialog('close');        // close the dialog
+                $('#datagrid-ftpConfig').datagrid('reload');    // reload the user data
+                $.messager.alert("提示","保存成功","info");
+            } else {
+         	   $.messager.alert("提示","保存失败","error");
+            }
+		},"json").error(function(aa){
+			$.messager.alert("错误","保存错误","error");
+		}).complete(function() {
+			$.messager.progress("close");
+		});
+    }
 }
 
 function deleteFtpConfig(){

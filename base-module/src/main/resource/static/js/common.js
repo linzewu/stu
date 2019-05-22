@@ -406,8 +406,13 @@ $(function($){
           
         // 扩展增强处理
         var _opt = $.extend(opt,{  
-            error:function(XMLHttpRequest, textStatus, errorThrown){
-                fn.error(XMLHttpRequest, textStatus, errorThrown);  
+            error:function(XMLHttpRequest, textStatus, errorThrown){                
+                if(XMLHttpRequest.responseJSON.message.indexOf("数据非法篡改") != -1){
+                	$.messager.alert("提示",XMLHttpRequest.responseJSON.message,"error",function(r){
+                		window.location.reload();
+                	});
+                }
+                fn.error(XMLHttpRequest, textStatus, errorThrown); 
             },
             success:function(data, textStatus){
             	var temp={};
@@ -429,6 +434,14 @@ $(function($){
                 }
                 if(temp['state'] == 403) {                	
                 	$.messager.alert("无权限", "您没有权限访问！请联系管理员进行设置！",'error')
+                    // window.location.href="notPermission.html";
+                    return;
+                }
+                if(temp['state'] == 555) {                	
+                	$.messager.alert("数据非法篡改", "数据非法篡改！",'error',function(){
+                		window.location.href="login.html";
+                	});
+                	
                     // window.location.href="notPermission.html";
                     return;
                 }
