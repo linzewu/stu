@@ -150,14 +150,12 @@ public class DataBasePowerAopAction {
 		log.setOperationDate(new Date());
 		operationLogManager.saveOperationLog(log);
 		
-		SecurityAuditPolicySetting saps = this.securityAuditPolicySettingManager.getPolicyByCode(SecurityAuditPolicySetting.DATABASE_WHITELIST);
+		//SecurityAuditPolicySetting saps = this.securityAuditPolicySettingManager.getPolicyByCode(SecurityAuditPolicySetting.DATABASE_WHITELIST);
 		SecurityLog securityLog = new SecurityLog();
 		securityLog.setCreateUser(User.SYSTEM_USER);
 		securityLog.setUpdateUser(User.SYSTEM_USER);
 		securityLog.setClbm(SecurityAuditPolicySetting.DATABASE_WHITELIST);
-		if(saps != null) {
-			securityLog.setClbmmc(saps.getAqsjcllxmc());
-		}
+		securityLog.setClbmmc("数据库白名单");
 		securityLog.setIpAddr(Common.getIpAdrress(request));
 		securityLog.setSignRed("Y");
 		securityLog.setContent("服务器IP地址不在数据库白名单中！");
