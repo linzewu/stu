@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +38,7 @@ import com.xs.jt.base.module.entity.SecurityLog;
 import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.manager.IBaseParamsManager;
 import com.xs.jt.base.module.manager.IOperationLogManager;
+import com.xs.jt.base.module.manager.ISecurityAuditPolicySettingManager;
 import com.xs.jt.base.module.manager.ISecurityLogManager;
 
 @Aspect
@@ -59,6 +61,9 @@ public class DataBasePowerAopAction {
 	
 	@Autowired
 	private ISecurityLogManager securityLogManager;
+	
+	@Resource(name = "securityAuditPolicySettingManager")
+	private ISecurityAuditPolicySettingManager securityAuditPolicySettingManager;
 	
 	@Autowired
 	private HttpServletRequest request;
@@ -145,11 +150,12 @@ public class DataBasePowerAopAction {
 		log.setOperationDate(new Date());
 		operationLogManager.saveOperationLog(log);
 		
-		
+		//SecurityAuditPolicySetting saps = this.securityAuditPolicySettingManager.getPolicyByCode(SecurityAuditPolicySetting.DATABASE_WHITELIST);
 		SecurityLog securityLog = new SecurityLog();
 		securityLog.setCreateUser(User.SYSTEM_USER);
 		securityLog.setUpdateUser(User.SYSTEM_USER);
 		securityLog.setClbm(SecurityAuditPolicySetting.DATABASE_WHITELIST);
+		securityLog.setClbmmc("数据库白名单");
 		securityLog.setIpAddr(Common.getIpAdrress(request));
 		securityLog.setSignRed("Y");
 		securityLog.setContent("服务器IP地址不在数据库白名单中！");

@@ -64,6 +64,9 @@ public class SecurityLog extends BaseEntity {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")  
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date operationDateEnd;
+	
+	@Column(length = 120)
+	private String clbmmc;
 
 	public String getIpAddr() {
 		return ipAddr;
@@ -129,10 +132,18 @@ public class SecurityLog extends BaseEntity {
 		this.operationDateEnd = operationDateEnd;
 	}
 
+	public String getClbmmc() {
+		return clbmmc;
+	}
+
+	public void setClbmmc(String clbmmc) {
+		this.clbmmc = clbmmc;
+	}
+
 	@Override
 	public String toString() {
 		return "SecurityLog [ipAddr=" + ipAddr + ", content=" + content + ", userName=" + userName + ", clbm=" + clbm
-				+ ", signRed=" + signRed + ", result=" + result + "]";
+				+ ", signRed=" + signRed + ", result=" + result +", updateTime=" +this.getUpdateTime()+ "id"+"yhm"+"sfzmhm"+"ygh"+"xm]";
 	}
 	
 	

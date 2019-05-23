@@ -92,11 +92,15 @@ public class CheckBitAopAfter {
 			SecurityAuditPolicySetting set = securityAuditPolicySettingManager.getPolicyByCode(SecurityAuditPolicySetting.DATA_TAMPERINT);
 			if(set!=null) {
 				if("0".equals(set.getSfkq())) {
+					SecurityAuditPolicySetting saps = this.securityAuditPolicySettingManager.getPolicyByCode(SecurityAuditPolicySetting.DATA_TAMPERINT);
 					//写入安全日志
 					SecurityLog securityLog = new SecurityLog();
 					securityLog.setCreateUser(User.SYSTEM_USER);
 					securityLog.setUpdateUser(User.SYSTEM_USER);
 					securityLog.setClbm(SecurityAuditPolicySetting.DATA_TAMPERINT);
+					if(saps != null) {
+						securityLog.setClbmmc(saps.getAqsjcllxmc());
+					}
 					securityLog.setIpAddr(getIpAdrress());
 					securityLog.setSignRed("Y");
 					securityLog.setContent("篡改数据："+JSONObject.fromObject(be).toString());

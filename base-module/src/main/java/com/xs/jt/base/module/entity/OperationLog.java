@@ -230,7 +230,7 @@ public class OperationLog extends BaseEntity {
 				+ operationType + ", content=" + content + ", ipAddr=" + ipAddr + ", actionUrl=" + actionUrl
 				+ ", operationResult=" + operationResult + ", failMsg=" + failMsg + ", module=" + module
 				+ ", operationCondition=" + operationCondition + ", coreFunction=" + coreFunction + ", status=" + status
-				+ "]";
+				+ ", updateTime=" +this.getUpdateTime()+"yhm"+"sfzmhm"+"ygh"+"xm]";
 	}
 
 	public String getRuleBussiness() {

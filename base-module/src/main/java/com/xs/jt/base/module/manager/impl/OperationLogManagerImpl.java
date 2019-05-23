@@ -12,6 +12,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -37,6 +38,8 @@ import com.xs.jt.base.module.manager.IOperationLogManager;
 
 @Service("operationLogManager")
 public class OperationLogManagerImpl implements IOperationLogManager {
+	
+	public static String[] loginTypes = new String[]{"登录","登出","登录失败"}; 
 	@Autowired
 	private OperationLogRepository operationLogRepository;
 	
@@ -103,9 +106,16 @@ public class OperationLogManagerImpl implements IOperationLogManager {
 		@SuppressWarnings("serial")
 		Page<OperationLog> bookPage = this.operationLogRepository.findAll(new Specification<OperationLog>() {
 			public Predicate toPredicate(Root<OperationLog> root, CriteriaQuery<?> query,
-					CriteriaBuilder criteriaBuilder) {				
+					CriteriaBuilder criteriaBuilder) {	
+				
 				List<Predicate> list = new ArrayList<Predicate>();
-				list.add(criteriaBuilder.equal(root.get("operationType").as(String.class), "登录"));
+				
+				In<String> in = criteriaBuilder.in(root.get("operationType").as(String.class));
+				for (String type : loginTypes) {
+					in.value(type);
+				}
+				list.add(in);
+				//list.add(criteriaBuilder.equal(root.get("operationType").as(String.class), "登录"));
 				if (null != operationLog.getOperationUser() && !"".equals(operationLog.getOperationUser())) {
 					list.add(criteriaBuilder.equal(root.get("operationUser").as(String.class), operationLog.getOperationUser()));
 				}
@@ -218,7 +228,13 @@ public class OperationLogManagerImpl implements IOperationLogManager {
 			public Predicate toPredicate(Root<OperationLog> root, CriteriaQuery<?> query,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> list = new ArrayList<Predicate>();
-				list.add(criteriaBuilder.equal(root.get("operationType").as(String.class), "登录"));
+				
+				In<String> in = criteriaBuilder.in(root.get("operationType").as(String.class));
+				for (String type : loginTypes) {
+					in.value(type);
+				}
+				list.add(in);
+				//list.add(criteriaBuilder.equal(root.get("operationType").as(String.class), "登录"));
 				if (null != operationLog.getOperationUser() && !"".equals(operationLog.getOperationUser())) {
 					list.add(criteriaBuilder.equal(root.get("operationUser").as(String.class), operationLog.getOperationUser()));
 				}

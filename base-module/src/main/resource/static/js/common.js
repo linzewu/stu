@@ -496,8 +496,15 @@ $(document).ajaxComplete(function(){
 
 function rowTapmerStyle(index,row){
     if (!row.checkBitOk){
+<<<<<<< HEAD
         return 'color:red;';
     }
 }
 
+=======
+    	console.log("dddddddddddd")
+        return 'color:red;';
+    }
+}
+>>>>>>> branch 'master' of https://github.com/linzewu/stu.git
 

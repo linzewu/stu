@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.jt.base.module.annotation.Modular;
+import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
@@ -45,6 +46,7 @@ public class RoleController {
 	private ServletContext servletContext;
 
 	
+	@RecordLog
 	@UserOperation(code="getRoles",name="查询角色")
 	@RequestMapping(value = "getRoles", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> getRoles(Role role, Integer page, Integer rows) {
@@ -98,6 +100,7 @@ public class RoleController {
 	}**/
 
 	//@FunctionAnnotation(name = "角色新增")
+	@RecordLog
 	@UserOperation(code="add",name="角色新增")
 	@RequestMapping(value = "add", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> add(Role role, BindingResult result) throws Exception {
@@ -113,7 +116,7 @@ public class RoleController {
 		}
 	}
 
-	
+	@RecordLog
 	@UserOperation(code="save",name="角色编辑")
 	@RequestMapping(value = "save", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> save(Role role, BindingResult result) throws Exception {
@@ -125,7 +128,7 @@ public class RoleController {
 		}
 	}
 
-	
+	@RecordLog
 	@UserOperation(code="delete",name="角色删除")
 	@RequestMapping(value = "delete", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> delete(@RequestParam Integer id) throws Exception {
@@ -133,6 +136,7 @@ public class RoleController {
 		return ResultHandler.toSuccessJSON("角色删除成功");
 	}
 	
+	@RecordLog
 	@UserOperation(code="getPowerPoints",name="获取所有权限",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	@RequestMapping(value = "getPowerPoints", method = RequestMethod.POST)
 	public @ResponseBody List<PowerPoint> getPowerPoints() {
@@ -140,6 +144,7 @@ public class RoleController {
 		return powerPoints;
 	}
 	
+	@RecordLog
 	@UserOperation(code="getRolePower",name="获取当前用户的权限",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	@RequestMapping(value = "getRolePower", method = RequestMethod.POST)
 	public @ResponseBody String getRolePower(HttpServletRequest request) {
@@ -160,6 +165,7 @@ public class RoleController {
 		return roleqx.toString();
 	}
 	
+	@RecordLog
 	@UserOperation(code="getAllRole",name="获取所有角色",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	@RequestMapping(value = "getAllRole", method = RequestMethod.POST)
 	public @ResponseBody List<Role> getAllRole() {

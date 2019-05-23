@@ -195,6 +195,7 @@ public class UserController {
 	}
 
 	
+	@RecordLog
 	@UserOperation(code="passwordReset",name="密码重置",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	@RequestMapping(value = "passwordReset", method = RequestMethod.POST)
 	public @ResponseBody Map passwordReset(User user) {
@@ -206,6 +207,7 @@ public class UserController {
 		return ResultHandler.toSuccessJSON("密码重置成功");
 	}
 
+	@RecordLog
 	@UserOperation(code="delete",name="删除用户")
 	@RequestMapping(value = "delete", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> delete(User user) {
@@ -213,12 +215,14 @@ public class UserController {
 		return ResultHandler.toSuccessJSON("用户删除成功");
 	}
 
+	@RecordLog
 	@UserOperation(code="save",name="校验用户名",isMain=false)
 	@RequestMapping(value = "validateUserName")
 	public @ResponseBody boolean validateUserName(User user) {
 		return this.userManager.isExistUserName(user);
 	}
 
+	@RecordLog
 	@RequestMapping(value = "getCurrentUser", method = RequestMethod.POST)
 	@UserOperation(code="getCurrentUser",name="获取当前用户",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	public @ResponseBody User getCurrentUser(HttpSession session) {
@@ -350,6 +354,7 @@ public class UserController {
 		}
 	}
 	
+	@RecordLog
 	@UserOperation(code="updatePassword",name="校验密码",userOperationEnum=CommonUserOperationEnum.AllLoginUser,isMain=false)
 	@RequestMapping(value = "validatePassworrd")
 	public @ResponseBody boolean validatePassworrd(HttpSession session,String oldPassword) {
@@ -362,6 +367,7 @@ public class UserController {
 		}
 	}
 	
+	@RecordLog
 	@UserOperation(code="updatePassword",name="修改用户密码",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	@RequestMapping(value = "updatePassword", method = RequestMethod.POST)//,produces = MediaType.TEXT_PLAIN_VALUE+";charset=UTF-8"
 	public @ResponseBody Map<String,Object> updatePassword(HttpSession session,String newPassword) {
@@ -399,11 +405,15 @@ public class UserController {
 		this.userManager.saveUser(u);
 		if (u.getZt() == 1) {
 			//写入安全日志
+			SecurityAuditPolicySetting saps = this.securityAuditPolicySettingManager.getPolicyByCode(SecurityAuditPolicySetting.ACCOUNT_LOCK);
 			SecurityLog securityLog = new SecurityLog();
 			securityLog.setCreateUser(User.SYSTEM_USER);
 			securityLog.setUpdateUser(User.SYSTEM_USER);
 			securityLog.setUserName(u.getYhm());
 			securityLog.setClbm(SecurityAuditPolicySetting.ACCOUNT_LOCK);
+			if(saps != null) {
+				securityLog.setClbmmc(saps.getAqsjcllxmc());
+			}
 			securityLog.setIpAddr(ip);
 			securityLog.setSignRed("N");
 			securityLog.setContent("用户:"+u.getYhm()+"违反账户锁定安全审计策略设置");
@@ -437,11 +447,15 @@ public class UserController {
 			blackListManager.saveBlackList(black);
 			sycou = clz-black.getFailCount();
 			if("Y".equals(black.getEnableFlag())) {
+				SecurityAuditPolicySetting saps = this.securityAuditPolicySettingManager.getPolicyByCode(SecurityAuditPolicySetting.IP_LOCK);
 				//写入安全日志
 				SecurityLog securityLog = new SecurityLog();
 				securityLog.setCreateUser(User.SYSTEM_USER);
 				securityLog.setUpdateUser(User.SYSTEM_USER);
 				securityLog.setClbm(SecurityAuditPolicySetting.IP_LOCK);
+				if(saps != null) {
+					securityLog.setClbmmc(saps.getAqsjcllxmc());
+				}
 				securityLog.setIpAddr(ip);
 				securityLog.setSignRed("N");
 				securityLog.setContent("IP终端:"+ip+"违反IP终端锁定(黑名单)安全审计策略设置");
@@ -581,6 +595,7 @@ public class UserController {
 		return flag;
 	}
 	
+	@RecordLog
 	@UserOperation(code="save",name="校验身份证",isMain=false)
 	@RequestMapping(value = "validateIdCard")
 	public @ResponseBody boolean validateIdCard(User user) {
@@ -593,6 +608,7 @@ public class UserController {
 
 	}
 	
+	@RecordLog
 	@RequestMapping(value = "getZzjUser", method = RequestMethod.POST)
 	@UserOperation(code="getZzjUser",name="获取自助机账号",userOperationEnum=CommonUserOperationEnum.NoLogin)
 	public @ResponseBody Map<String, String> getZzjUser() {
@@ -608,6 +624,7 @@ public class UserController {
 		return map;
 	}
 	
+	@RecordLog
 	@UserOperation(code="save",name="查看签名照片",isMain=false)
 	@RequestMapping(value = "findSignaturePhotoByYhm", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> findSignaturePhotoByYhm(String yhm){
@@ -616,18 +633,21 @@ public class UserController {
 		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "查看签名照片成功！", imgPath);
 	}
 	
+	@RecordLog
 	@UserOperation(code="save",name="跳到登录页面",userOperationEnum=CommonUserOperationEnum.NoLogin)
 	@RequestMapping("/toLogin")
     public String toLogin(){ 
         return "login";
     }
 	
+	@RecordLog
 	@UserOperation(code="save",name="校验警号",isMain=false)
 	@RequestMapping(value = "validateGH")
 	public @ResponseBody boolean validateGH(User user) {
 		return this.userManager.getUserByGH(user.getGh(),user.getId());
 	}
 	
+	@RecordLog
 	@RequestMapping(value = "onlineUser", method = RequestMethod.POST)
 	@UserOperation(code="onlineUser",name="查询在线用户数",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	public @ResponseBody Map onlineUser(HttpSession session) {

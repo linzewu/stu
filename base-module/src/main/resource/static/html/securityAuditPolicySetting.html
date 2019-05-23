@@ -64,7 +64,7 @@ function save(){
 }
 </script>
 <table id="policySetManager" class="easyui-datagrid"
-	data-options="url:'../../securityAuditPolicySetting/getPolicySettingList',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#policySetToolbar',onDblClickRow:onDBClickRow">
+	data-options="url:'../../securityAuditPolicySetting/getPolicySettingList',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#policySetToolbar',onDblClickRow:onDBClickRow,rowStyler:rowTapmerStyle">
 	<thead> 
 		<tr>
 			<th data-options="field:'aqsjcllxmc',width:90">安全审计策略类型名称</th>

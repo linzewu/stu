@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.xs.jt.base.module.common.DataBaseWhiteListExctption;
+import com.xs.jt.base.module.common.HighFrequencyException;
 import com.xs.jt.base.module.common.TamperWithDataException;
 
 //全局异常拦截
@@ -25,6 +26,10 @@ public class ErrorAdvice {
 		}
 		else if(e instanceof DataBaseWhiteListExctption) {
 			map.put("state", "556");
+		}
+		
+		else if(e instanceof HighFrequencyException) {
+			map.put("state", "557");
 		}
 		else {
 			map.put("state", "500");

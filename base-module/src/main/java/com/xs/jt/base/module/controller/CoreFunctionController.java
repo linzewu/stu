@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.jt.base.module.annotation.Modular;
+import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.entity.CoreFunction;
@@ -33,6 +34,7 @@ public class CoreFunctionController {
 	@Autowired
 	private ServletContext servletContext;
 	
+	@RecordLog
 	@UserOperation(code="save",name="保存核心功能")
 	@RequestMapping(value = "save", method = RequestMethod.POST)
 	@Transactional 
@@ -53,6 +55,7 @@ public class CoreFunctionController {
 			return  ResultHandler.toSuccessJSON("保存核心功能成功！");		
 	}
 	
+	@RecordLog
 	@UserOperation(code="getAllCoreFunction",name="获取核心功能")
 	@RequestMapping(value = "getAllCoreFunction", method = RequestMethod.POST)
 	public @ResponseBody List<CoreFunction> getAllCoreFunction() {
@@ -60,6 +63,7 @@ public class CoreFunctionController {
 		return list;
 	}
 	
+	@RecordLog
 	@UserOperation(code="getAllSpecialCoreFunction",name="获取非常规功能")
 	@RequestMapping(value = "getAllSpecialCoreFunction", method = RequestMethod.POST)
 	public @ResponseBody List<CoreFunction> getAllSpecialCoreFunction() {
@@ -67,6 +71,7 @@ public class CoreFunctionController {
 		return coreList;
 	}
 	
+	@RecordLog
 	@UserOperation(code="getAllPoliceCoreFunction",name="获取警员功能")
 	@RequestMapping(value = "getAllPoliceCoreFunction", method = RequestMethod.POST)
 	public @ResponseBody List<CoreFunction> getAllPoliceCoreFunction() {
@@ -74,6 +79,7 @@ public class CoreFunctionController {
 		return coreList;
 	}
 	
+	@RecordLog
 	@UserOperation(code="saveSpecialCoreFunction",name="保存非常规功能")
 	@RequestMapping(value = "saveSpecialCoreFunction", method = RequestMethod.POST)
 	@Transactional 
@@ -92,6 +98,7 @@ public class CoreFunctionController {
 			return  ResultHandler.toSuccessJSON("保存非常规功能成功！");		
 	}
 	
+	@RecordLog
 	@UserOperation(code="savePoliceCoreFunction",name="保存警员功能")
 	@RequestMapping(value = "savePoliceCoreFunction", method = RequestMethod.POST)
 	@Transactional 

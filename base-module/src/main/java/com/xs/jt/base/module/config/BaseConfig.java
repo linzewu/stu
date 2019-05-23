@@ -1,7 +1,9 @@
 package com.xs.jt.base.module.config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -17,6 +18,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import com.xs.jt.base.module.entity.SecurityAuditPolicySetting;
+import com.xs.jt.base.module.manager.impl.SecurityAuditPolicySettingManagerImpl;
 import com.xs.jt.base.module.util.SecurityInterceptor;
 import com.xs.jt.base.module.util.UserInterceptor;
 
@@ -39,6 +42,9 @@ public class BaseConfig extends WebMvcConfigurationSupport  {
 	protected UserInterceptor userInterceptor;
 	@Autowired
 	protected SecurityInterceptor securityInterceptor;
+	
+	@Autowired
+	private SecurityAuditPolicySettingManagerImpl saps;
 	
 	@Bean
 	public Docket createRestApi() {
@@ -101,6 +107,38 @@ public class BaseConfig extends WebMvcConfigurationSupport  {
 	     registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
 	 
 	     super.addViewControllers(registry);
-	}  
+	}
+	
+	@Bean("minHF")
+	public Map<String,Integer> minHF() {
+		HashMap<String,Integer> minHF = new HashMap<String,Integer>();
+		return minHF;
+	}
+	
+	@Bean("hourHF")
+	public Map<String,Integer> hourHF() {
+		 Map<String,Integer> hourHF =new HashMap<String,Integer>();
+		return hourHF;
+	}
+	
+	@Bean("dayHF")
+	public Map<String,Integer> dayHF() {
+		Map<String,Integer> dayHF=new HashMap<String,Integer>();
+		return dayHF;
+	}
+	
+	@Bean("hfMap")
+	public Map<String,Integer> hfMap() {
+		SecurityAuditPolicySetting spas = saps.getPolicyByCode(SecurityAuditPolicySetting.VISIT_NUMBER_ONEDAY);
+		Map<String,Integer> hfMap=new HashMap<String,Integer>();
+		hfMap.put("dayHF", Integer.valueOf(spas.getClz()));
+		spas = saps.getPolicyByCode(SecurityAuditPolicySetting.VISIT_NUMBER_ONEHOUR);
+		hfMap.put("hourHF", Integer.valueOf(spas.getClz()));
+		spas = saps.getPolicyByCode(SecurityAuditPolicySetting.VISIT_NUMBER_ONEMINUTE);
+		hfMap.put("minHF", Integer.valueOf(spas.getClz()));
+		
+		return hfMap;
+	}
+
 
 }

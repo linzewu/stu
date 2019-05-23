@@ -507,7 +507,7 @@ function query(){
            url="../../videoConfig/getVideoConfigList"
            toolbar="#toolbar" 
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true",
-		   pageSize="10" data-options="onLoadSuccess:loadSuccess">
+		   pageSize="10" data-options="onLoadSuccess:loadSuccess,rowStyler:rowTapmerStyle">
        <thead>
            <tr>
                <th field="jyjgbh" width="100" data-options="formatter:jyjgbhFormatter" >机构名称</th>

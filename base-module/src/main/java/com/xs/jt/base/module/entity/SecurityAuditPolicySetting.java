@@ -11,10 +11,13 @@ import javax.persistence.Transient;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.xs.jt.base.module.annotation.CheckBit;
+
 @Scope("prototype")
 @Component("securityAuditPolicySetting")
 @Entity
 @Table(name = "TM_SAPS")
+@CheckBit
 public class SecurityAuditPolicySetting extends BaseEntity{
 	
 	//策略编码
@@ -140,6 +143,12 @@ public class SecurityAuditPolicySetting extends BaseEntity{
 
 	public void setCanEdit(String canEdit) {
 		this.canEdit = canEdit;
+	}
+
+	@Override
+	public String toString() {
+		return "SecurityAuditPolicySetting [aqsjclbm=" + aqsjclbm + ", aqsjcllxmc=" + aqsjcllxmc + ", aqsjclzlxmc="
+				+ aqsjclzlxmc + ", clz=" + clz + ", clzsm=" + clzsm + ", sfkq=" + sfkq + ", canEdit=" + canEdit + "id"+"yhm"+"sfzmhm"+"ygh"+"xm]";
 	}
 	
 

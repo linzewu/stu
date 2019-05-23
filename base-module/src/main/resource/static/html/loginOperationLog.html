@@ -1,5 +1,5 @@
 <table id="operationLogManager" class="easyui-datagrid"
-	data-options="url:'',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#operlogToolbar'">
+	data-options="url:'',fitColumns:true,singleSelect:true,fit:true,pagination:true,pageSize:20,toolbar:'#operlogToolbar',rowStyler:rowTapmerStyle">
 	<thead> 
 		<tr>
 			<th data-options="field:'operationType',width:70">操作类型</th>
@@ -42,9 +42,9 @@ function formatLogCzjg(value,row,index){
 }
 function formatCoreFun(value,row,index){
 	if(value =="" || value == null){
-		return "N";
+		return "否";
 	}else{
-		return value;
+		return "是";
 	}
 }
 function formatRuleFun(value,row,index){

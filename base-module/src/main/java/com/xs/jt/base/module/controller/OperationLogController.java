@@ -55,6 +55,7 @@ public class OperationLogController {
 		return this.operationLogManager.getOperationLogs(page-1, rows, operationLog);
 	}
 	
+	@RecordLog
 	@UserOperation(code="getLoginOperationLog",name="登录日志查询")
 	@RequestMapping(value = "getLoginOperationLog", method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> getLoginOperationLog(Integer page, Integer rows, OperationLog operationLog) {
@@ -63,6 +64,7 @@ public class OperationLogController {
 		return this.operationLogManager.getLoginOperationLogs(page-1, rows, operationLog);
 	}
 	
+	@RecordLog
 	@UserOperation(code="exportLog",name="操作日志导出")
 	@RequestMapping(value = "/exportLog", method = RequestMethod.GET)
 	@ResponseBody
@@ -108,6 +110,7 @@ public class OperationLogController {
 
     }
 	
+	@RecordLog
 	@UserOperation(code="exportLoginLog",name="登录日志导出")
 	@RequestMapping(value = "/exportLoginLog", method = RequestMethod.GET)
 	@ResponseBody
