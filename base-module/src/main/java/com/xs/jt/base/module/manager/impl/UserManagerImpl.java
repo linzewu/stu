@@ -172,4 +172,10 @@ public class UserManagerImpl implements IUserManager {
         resultList =  this.userRepository.findAll(querySpecifi);
         return resultList == null || resultList.size() == 0 ? true : false;
 	}
+
+
+	@Override
+	public List<User> getUsersByZjdlsj(int days) {
+		return this.userRepository.getUsersByZjdlsj(days);
+	}
 }

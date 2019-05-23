@@ -21,5 +21,8 @@ public interface UserRepository extends JpaRepository<User,Integer>,JpaSpecifica
 	@Query(value = "from User  where yhm!='admin'")
 	public List<User> getUsersExceptAdmin();
 	
+	@Query(value = "from User  where DateDiff(dd,zjdlsj,getdate()) >= :days")
+	public List<User> getUsersByZjdlsj(@Param("days")int days);
+	
 
 }

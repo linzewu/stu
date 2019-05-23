@@ -3,6 +3,8 @@ package com.xs.jt.base.module.manager;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.repository.query.Param;
+
 import com.xs.jt.base.module.entity.SecurityLog;
 import com.xs.jt.base.module.entity.User;
 
@@ -37,6 +39,8 @@ public interface IUserManager {
 	
 	
 	public boolean getUserByGH(String gh,Integer id);
+	
+	public List<User> getUsersByZjdlsj(int days);
 	
 	
 
