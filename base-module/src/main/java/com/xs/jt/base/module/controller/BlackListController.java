@@ -27,6 +27,7 @@ import com.xs.jt.base.module.entity.SecurityAuditPolicySetting;
 import com.xs.jt.base.module.entity.SecurityLog;
 import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.manager.IBlackListManager;
+import com.xs.jt.base.module.manager.ISecurityAuditPolicySettingManager;
 import com.xs.jt.base.module.manager.ISecurityLogManager;
 
 
@@ -44,6 +45,10 @@ public class BlackListController {
 	@Autowired
 	private ISecurityLogManager securityLogManager;
 	
+	@Resource(name = "securityAuditPolicySettingManager")
+	private ISecurityAuditPolicySettingManager securityAuditPolicySettingManager;
+	
+	@RecordLog
 	@UserOperation(code="getBlackList",name="查询黑名单")
 	@RequestMapping(value = "getBlackList", method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> getBlackList(Integer page, Integer rows, BlackList black) {				
@@ -51,6 +56,7 @@ public class BlackListController {
 		return blackListManager.getBlackLists(page-1, rows, black);
 	}
 	
+	@RecordLog
 	@UserOperation(code="save",name="保存黑名单")
 	@RequestMapping(value = "save", method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> saveBlackList(HttpSession session,@Valid BlackList blackList, BindingResult result) {
@@ -74,10 +80,14 @@ public class BlackListController {
 		User user = (User)session.getAttribute("user");
 		this.blackListManager.deleteBlackList(blackList);
 		//写入安全日志
+		SecurityAuditPolicySetting saps = this.securityAuditPolicySettingManager.getPolicyByCode(SecurityAuditPolicySetting.IP_LOCK);
 		SecurityLog securityLog = new SecurityLog();
 		securityLog.setCreateUser(User.SYSTEM_USER);
 		securityLog.setUpdateUser(User.SYSTEM_USER);
 		securityLog.setClbm(SecurityAuditPolicySetting.IP_LOCK);
+		if(saps != null) {
+			securityLog.setClbmmc(saps.getAqsjcllxmc());
+		}
 		securityLog.setIpAddr(Common.getIpAdrress(request));
 		securityLog.setSignRed("N");
 		securityLog.setContent("用户："+user.getYhm()+" 删除黑名单管理IP："+blackList.getIp());

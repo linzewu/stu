@@ -253,7 +253,7 @@ public class VideoInfo extends BaseEntity{
 		return "VideoInfo [jyjgbh=" + jyjgbh + ", hphm=" + hphm + ", hpzl=" + hpzl + ", clsbdh=" + clsbdh + ", lsh="
 				+ lsh + ", jycs=" + jycs + ", zt=" + zt + ", reason=" + reason + ", taskCount=" + taskCount
 				+ ", videoName=" + videoName + ", videoSize=" + videoSize + ", cyqxh=" + cyqxh + ", cyqtd=" + cyqtd
-				+ ", configId=" + configId + ", deviceName=" + deviceName + ", sfzmhm=" + sfzmhm + "]";
+				+ ", configId=" + configId + ", deviceName=" + deviceName + ", sfzmhm=" + sfzmhm + "id"+"yhm"+"sfzmhm"+"ygh"+"xm]";
 	}
 	
 	

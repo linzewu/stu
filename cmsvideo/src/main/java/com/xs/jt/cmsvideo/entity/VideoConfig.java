@@ -149,7 +149,7 @@ public class VideoConfig extends BaseEntity {
 	public String toString() {
 		return "VideoConfig [jyjgbh=" + jyjgbh + ", ip=" + ip + ", port=" + port + ", hdPort=" + hdPort + ", userName="
 				+ userName + ", password=" + password + ", channel=" + channel + ", deviceName=" + deviceName
-				+ ", cyqxh=" + cyqxh + ", cyqtd=" + cyqtd + "]";
+				+ ", cyqxh=" + cyqxh + ", cyqtd=" + cyqtd + "id"+"yhm"+"sfzmhm"+"ygh"+"xm]";
 	}
 	
 

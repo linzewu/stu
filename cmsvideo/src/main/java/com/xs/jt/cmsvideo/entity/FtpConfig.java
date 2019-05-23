@@ -83,7 +83,7 @@ public class FtpConfig extends BaseEntity {
 	public String toString() {
 		return "FtpConfig [jyjgbh=" + jyjgbh + ", ftpHost=" + ftpHost + ", ftpUserName=" + ftpUserName
 				+ ", ftpPassword=" + ftpPassword + ", ftpPort=" + ftpPort + ", cyqxh=" + cyqxh + ", capacity="
-				+ capacity + "]";
+				+ capacity + "id"+"yhm"+"sfzmhm"+"ygh"+"xm]";
 	}
 	
 	

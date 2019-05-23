@@ -488,5 +488,10 @@ $(document).ajaxComplete(function(){
 
 });
 
-
+function rowTapmerStyle(index,row){
+    if (!row.checkBitOk){
+    	console.log("dddddddddddd")
+        return 'color:red;';
+    }
+}
 

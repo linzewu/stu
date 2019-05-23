@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.jt.base.module.annotation.Modular;
+import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
@@ -62,6 +63,7 @@ public class SecurityLogController {
 	@Value("${stu.cache.dir}")
 	private String cacheDir;
 	
+	@RecordLog
 	@UserOperation(code="getSecurityLog",name="安全日志查询")
 	@RequestMapping(value = "getSecurityLog", method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> getSecurityLog(Integer page, Integer rows, SecurityLog securityLog) {		
@@ -70,6 +72,7 @@ public class SecurityLogController {
 	}
 	
 	
+	@RecordLog
 	@UserOperation(code="saveCcqx",name="设置日志存储期限")
 	@RequestMapping(value = "saveCcqx", method = RequestMethod.POST)
 	public @ResponseBody Map save(String rzccqx) {
@@ -95,6 +98,7 @@ public class SecurityLogController {
 		return ResultHandler.toSuccessJSON("设置日志存储期限成功");
 	}
 	
+	@RecordLog
 	@UserOperation(code="export",name="安全日志导出")
 	@RequestMapping(value = "/export", method = RequestMethod.GET)
 	@ResponseBody
@@ -129,6 +133,7 @@ public class SecurityLogController {
 
     }
 	
+	@RecordLog
 	@UserOperation(code="getStatisticsSecurityLog",name="安全日志统计")
 	@RequestMapping(value = "getStatisticsSecurityLog", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> getStatisticsSecurityLog(){

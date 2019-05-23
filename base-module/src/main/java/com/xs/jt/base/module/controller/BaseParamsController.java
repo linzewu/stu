@@ -18,6 +18,7 @@ import org.springframework.web.servlet.support.RequestContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xs.jt.base.module.annotation.Modular;
+import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.ComputerInfoUtil;
 import com.xs.jt.base.module.common.Constant;
@@ -40,6 +41,7 @@ public class BaseParamsController {
 	@Autowired
 	private HttpServletRequest request;
 
+	@RecordLog
 	@RequestMapping(value = "all.js", produces = "application/javascript; charset=utf-8",method=RequestMethod.GET)
 	@UserOperation(code="all.js",name="数据字典",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	public @ResponseBody String getBaseParamsOfJS() throws JsonProcessingException {
@@ -51,6 +53,7 @@ public class BaseParamsController {
 		return js;
 	}
 
+	@RecordLog
 	@RequestMapping(value = "all.json",method=RequestMethod.GET)
 	@UserOperation(code="all.js",name="数据字典",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	public @ResponseBody Map getBaseParams() {
@@ -64,6 +67,7 @@ public class BaseParamsController {
 		return ResultHandler.toMyJSON(1, requestContext.getMessage(Constant.ConstantKey.SUCCESS), bps);
 	}
 	
+	@RecordLog
 	@UserOperation(code="getComputerInfo",name="系统参数查询")
 	@RequestMapping(value = "getComputerInfo",method=RequestMethod.POST)
 	public @ResponseBody Map getComputer() {
@@ -78,6 +82,7 @@ public class BaseParamsController {
 		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, Constant.ConstantMessage.SUCCESS, map);
 	}
 	
+	@RecordLog
 	@UserOperation(code="save",name="保存系统参数")
 	@RequestMapping(value = "save", method = RequestMethod.POST)
 	public @ResponseBody Map save(BaseParams baseParams) {
@@ -85,6 +90,7 @@ public class BaseParamsController {
 		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "保存成功",baseParams);
 	}
 	
+	@RecordLog
 	@UserOperation(code="delete",name="删除系统参数")
 	@RequestMapping(value = "delete", method = RequestMethod.POST)
 	public @ResponseBody Map delete(@RequestParam Integer id) {
@@ -92,6 +98,7 @@ public class BaseParamsController {
 		return ResultHandler.toSuccessJSON("删除成功！");
 	}
 
+	@RecordLog
 	@UserOperation(code="getBaseParamsOfPage",name="查询数据字典")
 	@RequestMapping(value = "getBaseParamsOfPage",method = RequestMethod.POST)
 	public @ResponseBody Map getBaseParamsOfPage(Integer page, Integer rows,BaseParams param) {
@@ -99,6 +106,7 @@ public class BaseParamsController {
 		return data;
 	}
 	
+	@RecordLog
 	@UserOperation(code="refresh",name="刷新系统参数")
 	@RequestMapping(value = "refresh",method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> refresh() {
@@ -111,6 +119,7 @@ public class BaseParamsController {
 		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "刷新成功", list);
 	}
 	
+	@RecordLog
 	@UserOperation(code="getBaseParamsByType",name="根据字典类型查询数据字典",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	@RequestMapping(value = "getBaseParamsByType",method = RequestMethod.POST)
 	public @ResponseBody List<BaseParams> getBaseParamsByType(String type) {
@@ -118,6 +127,7 @@ public class BaseParamsController {
 		return list;
 	}
 	
+	@RecordLog
 	@UserOperation(code="save",name="保存系统参数平台IP",isMain=false)
 	@RequestMapping(value = "savePtip", method = RequestMethod.POST)
 	public @ResponseBody Map savePtip(BaseParams baseParams) {

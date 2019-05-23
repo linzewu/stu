@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.jt.base.module.annotation.Modular;
+import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
@@ -31,7 +32,7 @@ public class DepartmentContorller {
 	@Resource(name = "departmentManager")
 	private DepartmentManagerImpl deptManager;
 
-	
+	@RecordLog
 	@UserOperation(code="getDepts",name="部门查询",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	@RequestMapping(value = "getDepts", method = RequestMethod.POST)
 	public @ResponseBody List<Department> getDepts() {
@@ -39,6 +40,7 @@ public class DepartmentContorller {
 		return depts;
 	}
 
+	@RecordLog
 	@UserOperation(code="save",name="部门信息修改")
 	@RequestMapping(value = "save", method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> saveDept(Department dept, BindingResult result) {
@@ -54,7 +56,7 @@ public class DepartmentContorller {
 
 	}
 
-	
+	@RecordLog
 	@UserOperation(code="delete",name="部门信息删除")
 	@RequestMapping(value = "delete", method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> deleteDept(Department dept, BindingResult result) {
@@ -62,6 +64,7 @@ public class DepartmentContorller {
 		return ResultHandler.toSuccessJSON("删除成功！");
 	}
 	
+	@RecordLog
 	@UserOperation(code="getAllDepts",name="所有部门查询",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
 	@RequestMapping(value = "getAllDepts", method = RequestMethod.POST)
 	public @ResponseBody List<Department> getAllDepts() {

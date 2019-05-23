@@ -37,9 +37,12 @@ import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.entity.BaseEntity;
 import com.xs.jt.base.module.entity.CoreFunction;
 import com.xs.jt.base.module.entity.OperationLog;
+import com.xs.jt.base.module.entity.SecurityAuditPolicySetting;
+import com.xs.jt.base.module.entity.SecurityLog;
 import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.manager.ICoreFunctionManager;
 import com.xs.jt.base.module.manager.IOperationLogManager;
+import com.xs.jt.base.module.manager.ISecurityLogManager;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -61,6 +64,9 @@ public class LogAopAction {
 
 	@Autowired
 	private ServletContext servletContext;
+	
+	@Autowired
+	private ISecurityLogManager securityLogManager;
 	
 	public static String notLogMethod = "login,passwordReset,updatePassword";
 
@@ -229,6 +235,31 @@ public class LogAopAction {
 					log.setRuleBussiness("N");
 					break;
 				}
+			}
+			if("Y".equals(log.getCoreFunction())) {
+				SecurityLog securityLog = new SecurityLog();
+				securityLog.setCreateUser(User.SYSTEM_USER);
+				securityLog.setUpdateUser(User.SYSTEM_USER);
+				securityLog.setUserName(log.getOperationUser());
+				securityLog.setClbmmc("核心功能调用");
+				securityLog.setIpAddr(log.getIpAddr());
+				securityLog.setSignRed("N");
+				securityLog.setContent(log.getOperationType()+","+log.getOperationCondition());
+				securityLog.setResult(log.getOperationType()+"成功！");
+				securityLogManager.saveSecurityLog(securityLog);
+			}
+			
+			if("N".equals(log.getRuleBussiness())) {
+				SecurityLog securityLog = new SecurityLog();
+				securityLog.setCreateUser(User.SYSTEM_USER);
+				securityLog.setUpdateUser(User.SYSTEM_USER);
+				securityLog.setUserName(log.getOperationUser());
+				securityLog.setClbmmc("非常规功能调用");
+				securityLog.setIpAddr(log.getIpAddr());
+				securityLog.setSignRed("N");
+				securityLog.setContent(log.getOperationType()+","+log.getOperationCondition());
+				securityLog.setResult(log.getOperationType()+"成功！");
+				securityLogManager.saveSecurityLog(securityLog);
 			}
 			
 			return log;
