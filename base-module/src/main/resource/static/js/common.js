@@ -438,11 +438,17 @@ $(function($){
                     return;
                 }
                 if(temp['state'] == 556) {                	
-                	$.messager.alert("警告",temp['message'] ,'error')
-                    // window.location.href="notPermission.html";
+                	$.messager.alert("警告",temp['message'] ,'error',function(){
+                		window.location.href="login.html";
+                	});
                     return;
                 }
-                
+                if(temp['state'] == 557) {                	
+                	$.messager.alert("警告",temp['message'] ,'error',function(){
+                		 window.location.href="login.html";
+                	})
+                    return;
+                }
                 if(temp['state'] == 555) {                	
                 	$.messager.alert("数据非法篡改", "数据非法篡改！",'error',function(){
                 		window.location.href="login.html";
@@ -488,5 +494,10 @@ $(document).ajaxComplete(function(){
 
 });
 
+function rowTapmerStyle(index,row){
+    if (!row.checkBitOk){
+        return 'color:red;';
+    }
+}
 
 
