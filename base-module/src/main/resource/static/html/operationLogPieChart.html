@@ -1,0 +1,51 @@
+<script src="../js/highcharts/modules/exporting.js"></script>
+<div id="operationcontainer" style="min-width:400px;height:400px"></div>
+<script type="text/javascript">
+//Build the chart
+$(function(){
+	$.post("../../opeationLog/getStatisticsOperationLog",function(data){
+		 console.log(data);
+		 var dataArr = [];
+		 if(data.state == 1){
+			 var datas = data.data;
+			 for(var i=0;i<datas.length;i++){
+				 var item = {};
+				 item.name = datas[i].module;
+				 item.y = Number((datas[i].cou/datas[i].allCount).toFixed(2));
+				 dataArr.push(item);
+			 }
+			 console.log(dataArr)
+			 $('#operationcontainer').highcharts({
+					chart: {
+						plotBackgroundColor: null,
+						plotBorderWidth: null,
+						plotShadow: false,
+						type: 'pie'
+					},
+					title: {
+						text: '操作日志分布统计'
+					},
+					tooltip: {
+						pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+					},
+					plotOptions: {
+						pie: {
+							allowPointSelect: true,
+							cursor: 'pointer',
+							dataLabels: {
+								enabled: false
+							},
+							showInLegend: true
+						}
+					},
+					series: [{
+						name: '',
+						colorByPoint: true,
+						data: dataArr
+					}]
+				});
+		 }
+	});
+
+});
+</script>

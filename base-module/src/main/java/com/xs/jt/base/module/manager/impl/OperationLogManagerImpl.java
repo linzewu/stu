@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
@@ -20,6 +23,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.hibernate.SQLQuery;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -48,6 +53,10 @@ public class OperationLogManagerImpl implements IOperationLogManager {
 	
 	@Autowired
 	private HttpSession session;
+	
+	@Autowired
+    @PersistenceContext
+    private EntityManager entityManager;
 	
 	@Async 
 	public void saveOperationLog(OperationLog operationLog) {
@@ -265,6 +274,28 @@ public class OperationLogManagerImpl implements IOperationLogManager {
 			
 		});
 		return logList;
+	}
+
+
+	@Override
+	public List getStatisticsLoginLog() {
+		Query query = entityManager.createNativeQuery("SELECT operation_type operationType,COUNT(operation_type) cou,(select count(operation_type) from tc_operation_logs where operation_type in ('登录','登出','登录失败')) allCount FROM tc_operation_logs where operation_type in ('登录','登出','登录失败') group by operation_type");
+		//"select c.aqsjcllxmc,sum(c.cou) cou,c.allCount from ( select clbm ,count(clbm) cou,sap.aqsjcllxmc ,(select count(clbm) from tc_security_logs) allCount from tc_security_logs left join tm_saps sap on clbm = sap.aqsjclbm group by clbm,sap.aqsjcllxmc) c group  by c.aqsjcllxmc,c.allCount");
+		query.unwrap(SQLQuery.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		List list = query.getResultList();
+		
+		return list;
+	}
+
+
+	@Override
+	public List getStatisticsOperationLog() {
+		Query query = entityManager.createNativeQuery("SELECT module,COUNT(module) cou,(select count(module) from tc_operation_logs ) allCount FROM tc_operation_logs  group by module");
+		//"select c.aqsjcllxmc,sum(c.cou) cou,c.allCount from ( select clbm ,count(clbm) cou,sap.aqsjcllxmc ,(select count(clbm) from tc_security_logs) allCount from tc_security_logs left join tm_saps sap on clbm = sap.aqsjclbm group by clbm,sap.aqsjcllxmc) c group  by c.aqsjcllxmc,c.allCount");
+		query.unwrap(SQLQuery.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		List list = query.getResultList();
+		
+		return list;
 	}
 
 }

@@ -80,7 +80,7 @@ public class SecurityLogManagerImpl implements ISecurityLogManager {
 
 	@Override
 	public List getStatisticsSecurityLog() {
-		Query query = entityManager.createNativeQuery("select t.clbmmc aqsjcllxmc,COUNT(t.clbmmc) cou,(select count(clbm) from tc_security_logs) allCount from tc_security_logs t group  by t.clbmmc;");
+		Query query = entityManager.createNativeQuery("select t.clbmmc aqsjcllxmc,COUNT(t.clbmmc) cou,(select count(clbm) from tc_security_logs) allCount from tc_security_logs t group  by t.clbmmc");
 				//"select c.aqsjcllxmc,sum(c.cou) cou,c.allCount from ( select clbm ,count(clbm) cou,sap.aqsjcllxmc ,(select count(clbm) from tc_security_logs) allCount from tc_security_logs left join tm_saps sap on clbm = sap.aqsjclbm group by clbm,sap.aqsjcllxmc) c group  by c.aqsjcllxmc,c.allCount");
 		query.unwrap(SQLQuery.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		List list = query.getResultList();

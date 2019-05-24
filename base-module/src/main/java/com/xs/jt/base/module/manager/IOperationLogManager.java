@@ -29,4 +29,8 @@ public interface IOperationLogManager {
 	public List<OperationLog> getExportList(OperationLog operationLog);
 	
 	public List<OperationLog> getLoginExportList(OperationLog operationLog);
+	
+	public List  getStatisticsLoginLog();
+	
+	public List  getStatisticsOperationLog();
 }

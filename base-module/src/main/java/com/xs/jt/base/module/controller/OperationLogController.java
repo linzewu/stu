@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
+import com.xs.jt.base.module.common.Constant;
+import com.xs.jt.base.module.common.ResultHandler;
 import com.xs.jt.base.module.entity.OperationLog;
 import com.xs.jt.base.module.entity.Role;
 import com.xs.jt.base.module.entity.SecurityLog;
@@ -155,5 +157,23 @@ public class OperationLogController {
         FileUtil.deleteFile(path + name);
 
     }
+	
+	@RecordLog
+	@UserOperation(code="getStatisticsLoginLog",name="登录日志统计")
+	@RequestMapping(value = "getStatisticsLoginLog", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getStatisticsLoginLog(){
+		List list = this.operationLogManager.getStatisticsLoginLog();
+		
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "登录日志统计", list);
+	}
+	
+	@RecordLog
+	@UserOperation(code="getStatisticsOperationLog",name="操作日志统计")
+	@RequestMapping(value = "getStatisticsOperationLog", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getStatisticsOperationLog(){
+		List list = this.operationLogManager.getStatisticsOperationLog();
+		
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "操作日志统计", list);
+	}
 
 }

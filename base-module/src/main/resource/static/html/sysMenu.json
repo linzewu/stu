@@ -88,6 +88,18 @@
 					"title" : "安全日志统计",
 					"href" : "../../static/html/securityLogPieChart.html",
 					"permission":"SecurityLog.getStatisticsSecurityLog"
+				},
+				{
+					"icon" : "../../static/images/pie_chart2.png",
+					"title" : "登录日志统计",
+					"href" : "../../static/html/loginLogPieChart.html",
+					"permission":"OperationLog.getStatisticsLoginLog"
+				},
+				{
+					"icon" : "../../static/images/pie_chart3.png",
+					"title" : "操作日志统计",
+					"href" : "../../static/html/operationLogPieChart.html",
+					"permission":"OperationLog.getStatisticsOperationLog"
 				}
 			]
 		}
