@@ -118,6 +118,12 @@ public class OperationLog extends BaseEntity {
 	@Column(length=1)
 	private String ruleBussiness;
 	
+	/**
+	 * 是否警员功能
+	 */
+	@Column(length=1)
+	private String policeFun;
+	
 
 
 	public Integer getStatus() {
@@ -239,6 +245,14 @@ public class OperationLog extends BaseEntity {
 
 	public void setRuleBussiness(String ruleBussiness) {
 		this.ruleBussiness = ruleBussiness;
+	}
+
+	public String getPoliceFun() {
+		return policeFun;
+	}
+
+	public void setPoliceFun(String policeFun) {
+		this.policeFun = policeFun;
 	}
 	
 	

@@ -95,6 +95,8 @@ public class CoreFunctionController {
 				funs.add(core);
 			}
 			this.coreFunctionManager.save(funs);
+			List<CoreFunction> policeCoreList = this.coreFunctionManager.getAllCoreFunction(1);
+			servletContext.setAttribute("specialCoreList", policeCoreList);
 			return  ResultHandler.toSuccessJSON("保存非常规功能成功！");		
 	}
 	
@@ -114,6 +116,8 @@ public class CoreFunctionController {
 				funs.add(core);
 			}
 			this.coreFunctionManager.save(funs);
+			List<CoreFunction> policeCoreList = this.coreFunctionManager.getAllCoreFunction(2);
+			servletContext.setAttribute("policeCoreList", policeCoreList);
 			return  ResultHandler.toSuccessJSON("保存警员功能成功！");		
 	}
 

@@ -8,6 +8,7 @@
 			<th data-options="field:'ipAddr',width:100">IP地址</th>
 			<th data-options="field:'coreFunction',width:80,formatter:formatCoreFun">是否核心功能</th>
 			<th data-options="field:'ruleBussiness',width:80,formatter:formatRuleFun">是否非常规功能</th>
+			<th data-options="field:'policeFun',width:80,formatter:formatPoliceFun">是否警员功能</th>
 			<th data-options="field:'operationResult',width:70,formatter:formatLogCzjg">操作结果</th>
 			<th data-options="field:'failMsg',width:100">操作失败原因</th>
 			<th data-options="field:'module',width:100">功能模块名称</th>
@@ -49,6 +50,13 @@ function formatCoreFun(value,row,index){
 }
 
 function formatRuleFun(value,row,index){
+	if(value =="" || value == null){
+		return "否";
+	}else{
+		return "是";
+	}
+}
+function formatPoliceFun(value,row,index){
 	if(value =="" || value == null){
 		return "否";
 	}else{

@@ -160,6 +160,15 @@ public class LogAopAction {
 			}
 			servletContext.setAttribute("policeCoreList", policeCoreList);
 		}
+		
+		List<CoreFunction> specialCoreList = (List<CoreFunction>) servletContext.getAttribute("specialCoreList");
+		if(CollectionUtils.isEmpty(specialCoreList)) {
+			specialCoreList = this.coreFunctionManager.getAllCoreFunction(1);
+			if (specialCoreList == null || specialCoreList.size() == 0) {
+				specialCoreList = new ArrayList<CoreFunction>();
+			}
+			servletContext.setAttribute("specialCoreList", specialCoreList);
+		}
 
 		OperationLog log = new OperationLog();
 		// 日志实体对象
@@ -232,7 +241,15 @@ public class LogAopAction {
 			}
 			for (CoreFunction cf : policeCoreList) {
 				if (functionP.equals(cf.getFunctionPoint())) {
-					log.setRuleBussiness("N");
+					//log.setRuleBussiness("N");
+					log.setPoliceFun("Y");
+					break;
+				}
+			}
+			
+			for (CoreFunction cf : specialCoreList) {
+				if (functionP.equals(cf.getFunctionPoint())) {
+					log.setRuleBussiness("Y");
 					break;
 				}
 			}
@@ -249,12 +266,25 @@ public class LogAopAction {
 				securityLogManager.saveSecurityLog(securityLog);
 			}
 			
-			if("N".equals(log.getRuleBussiness())) {
+			if("Y".equals(log.getRuleBussiness())) {
 				SecurityLog securityLog = new SecurityLog();
 				securityLog.setCreateUser(User.SYSTEM_USER);
 				securityLog.setUpdateUser(User.SYSTEM_USER);
 				securityLog.setUserName(log.getOperationUser());
 				securityLog.setClbmmc("非常规功能调用");
+				securityLog.setIpAddr(log.getIpAddr());
+				securityLog.setSignRed("N");
+				securityLog.setContent(log.getOperationType()+","+log.getOperationCondition());
+				securityLog.setResult(log.getOperationType()+"成功！");
+				securityLogManager.saveSecurityLog(securityLog);
+			}
+			
+			if("Y".equals(log.getPoliceFun())) {
+				SecurityLog securityLog = new SecurityLog();
+				securityLog.setCreateUser(User.SYSTEM_USER);
+				securityLog.setUpdateUser(User.SYSTEM_USER);
+				securityLog.setUserName(log.getOperationUser());
+				securityLog.setClbmmc("警员功能调用");
 				securityLog.setIpAddr(log.getIpAddr());
 				securityLog.setSignRed("N");
 				securityLog.setContent(log.getOperationType()+","+log.getOperationCondition());
