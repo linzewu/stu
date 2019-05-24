@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -24,12 +25,14 @@ import com.xs.jt.base.module.manager.ISecurityAuditPolicySettingManager;
 @Service("securityAuditPolicySettingManager")
 public class SecurityAuditPolicySettingManagerImpl implements ISecurityAuditPolicySettingManager {
 	
+	
 	@Autowired
 	private SecurityAuditPolicySettingRepository securityAuditPolicySettingRepository;
 
 	
 	public void updateSecurityAuditPolicySetting(List<SecurityAuditPolicySetting> list) {
 		for(SecurityAuditPolicySetting vo:list) {
+			
 			securityAuditPolicySettingRepository.save(vo);
 		}
 	}

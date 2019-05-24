@@ -26,6 +26,9 @@ import com.xs.jt.base.module.manager.ISecurityAuditPolicySettingManager;
 @Modular(modelCode="securityAuditPolicySetting",modelName="安全策略",isEmpowered=false,jsjb= {Role.JSJB_STGL,Role.JSJB_AQGL})
 public class SecurityAuditPolicySettingController {	
 	
+	@Resource(name="hfMap")
+	private Map<String,Integer> hfMap;
+	
 	@Resource(name = "securityAuditPolicySettingManager")
 	private ISecurityAuditPolicySettingManager securityAuditPolicySettingManager;
 	
@@ -43,6 +46,19 @@ public class SecurityAuditPolicySettingController {
 	public @ResponseBody Map save(@RequestBody SecurityAuditPolicySetting svo, BindingResult result) {
 		
 		if (!result.hasErrors()) {
+			
+			for(SecurityAuditPolicySetting vo:svo.getUpdateList()) {
+				if(SecurityAuditPolicySetting.VISIT_NUMBER_ONEMINUTE.equals(vo.getAqsjclbm())) {
+					hfMap.put("minHF", Integer.valueOf(vo.getClz()));
+				}
+				if(SecurityAuditPolicySetting.VISIT_NUMBER_ONEHOUR.equals(vo.getAqsjclbm())) {
+					hfMap.put("hourHF", Integer.valueOf(vo.getClz()));
+				}
+				if(SecurityAuditPolicySetting.VISIT_NUMBER_ONEDAY.equals(vo.getAqsjclbm())) {
+					hfMap.put("dayHF", Integer.valueOf(vo.getClz()));
+				}
+			}
+			
 			this.securityAuditPolicySettingManager.updateSecurityAuditPolicySetting(svo.getUpdateList());
 			return  ResultHandler.resultHandle(result,null ,Constant.ConstantMessage.SAVE_SUCCESS);
 		}else{

@@ -7,7 +7,7 @@
 			<th data-options="field:'operationDate',width:100">操作时间</th>
 			<th data-options="field:'ipAddr',width:100">IP地址</th>
 			<th data-options="field:'coreFunction',width:80,formatter:formatCoreFun">是否核心功能</th>
-			<th data-options="field:'ruleBussiness',width:80,formatter:formatRuleFun">是否常规功能</th>
+			<th data-options="field:'ruleBussiness',width:80,formatter:formatRuleFun">是否非常规功能</th>
 			<th data-options="field:'operationResult',width:70,formatter:formatLogCzjg">操作结果</th>
 			<th data-options="field:'failMsg',width:100">操作失败原因</th>
 			<th data-options="field:'module',width:100">功能模块名称</th>
@@ -23,8 +23,8 @@
 	    <label>功能模块名称：</label><input class="easyui-textbox" id="quer_module" style="width: 100px;"  />
 	    <label>是否核心功能：</label><select class="easyui-combobox" id="quer_coreFunction" style="width: 100px;">
 	    		<option value="">ALL</option>
-                <option value="Y">Y</option>
-                <option value="N">N</option>
+                <option value="Y">是</option>
+                <option value="N">否</option>
                 </select>
 		<a class="easyui-linkbutton" href="#" data-options="iconCls:'icon-search'" onclick="query()"></a>
 		<a href="javascript:exportOperationLogExcel()" class="easyui-linkbutton">导出Excel</a>
@@ -50,9 +50,9 @@ function formatCoreFun(value,row,index){
 
 function formatRuleFun(value,row,index){
 	if(value =="" || value == null){
-		return "Y";
+		return "否";
 	}else{
-		return value;
+		return "是";
 	}
 }
 function query(){
