@@ -32,7 +32,7 @@ public class SecurityAuditPolicySettingController {
 	@Resource(name = "securityAuditPolicySettingManager")
 	private ISecurityAuditPolicySettingManager securityAuditPolicySettingManager;
 	
-	@RecordLog
+	@RecordLog()
 	@UserOperation(code="getPolicySettingList",name="查询安全策略")
 	@RequestMapping(value = "getPolicySettingList", method = RequestMethod.POST)
 	public @ResponseBody Map<String,Object> getPolicySettingList(Integer page, Integer rows, SecurityAuditPolicySetting securityAuditPolicySetting) {		
@@ -40,7 +40,7 @@ public class SecurityAuditPolicySettingController {
 		return securityAuditPolicySettingManager.getSecurityAuditPolicySettings(page-1, rows, securityAuditPolicySetting);
 	}
 	
-	@RecordLog
+	@RecordLog(fields= {"updateList.aqsjcllxmc","updateList.aqsjclzlxmc","updateList.aqsjclzlxmc"})
 	@UserOperation(code="save",name="编辑安全策略")
 	@RequestMapping(value = "save", method = RequestMethod.POST)
 	public @ResponseBody Map save(@RequestBody SecurityAuditPolicySetting svo, BindingResult result) {

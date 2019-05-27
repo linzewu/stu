@@ -21,6 +21,7 @@
 						<td class="info"><input name="yhxm"  class="easyui-validatebox" data-options="required:true"></td>
 						<td class="info_title">身份证号码：</td>
 						<td class="info" >
+						<!-- invalidMessage:'该身份证已使用',  -->
 							<input name="sfzh" id="sfzh" class="easyui-validatebox" data-options="required:true,validType:{idCardVad:'',remote:['../../user/validateIdCard','sfzh']}">
 						</td>
 					</tr>
@@ -122,10 +123,12 @@ function gljh(obj){
 		$("#gh").validatebox({
 		    required: true
 		});
+		$("#gh").attr("disabled",false);
 	}else{
 		$("#gh").validatebox({
 		    required: false
 		});
+		$("#gh").attr("disabled",true)
 	}
 }
 
@@ -138,6 +141,8 @@ $(function(){
 	    editable:false,
 	    required:true	    
 	});
+	
+	
 });
 
 
