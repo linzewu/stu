@@ -131,12 +131,17 @@ public class BaseConfig extends WebMvcConfigurationSupport  {
 	public Map<String,Integer> hfMap() {
 		SecurityAuditPolicySetting spas = saps.getPolicyByCode(SecurityAuditPolicySetting.VISIT_NUMBER_ONEDAY);
 		Map<String,Integer> hfMap=new HashMap<String,Integer>();
-		hfMap.put("dayHF", Integer.valueOf(spas.getClz()));
+		if(spas != null) {
+			hfMap.put("dayHF", Integer.valueOf(spas.getClz()));
+		}
 		spas = saps.getPolicyByCode(SecurityAuditPolicySetting.VISIT_NUMBER_ONEHOUR);
-		hfMap.put("hourHF", Integer.valueOf(spas.getClz()));
+		if(spas != null) {
+			hfMap.put("hourHF", Integer.valueOf(spas.getClz()));
+		}
 		spas = saps.getPolicyByCode(SecurityAuditPolicySetting.VISIT_NUMBER_ONEMINUTE);
-		hfMap.put("minHF", Integer.valueOf(spas.getClz()));
-		
+		if(spas != null) {
+			hfMap.put("minHF", Integer.valueOf(spas.getClz()));
+		}
 		return hfMap;
 	}
 

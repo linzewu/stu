@@ -163,8 +163,15 @@ public class InitServerCommonUtil {
 			this.roleManager.add(role);
 		}else {
 			Role sysRole = roleManager.getRole("内置管理员");
-			sysRole.setJsqx(powerStr);
-			roleManager.save(sysRole);
+			if(sysRole == null) {
+				Role sysRoleCj = roleManager.getRole("系统超级管理员");
+				sysRoleCj.setJsqx(powerStr);
+				sysRoleCj.setJsmc("内置管理员");
+				roleManager.save(sysRoleCj);
+			}else {
+				sysRole.setJsqx(powerStr);
+				roleManager.save(sysRole);
+			}
 		}
 	}
 
@@ -191,6 +198,11 @@ public class InitServerCommonUtil {
 			user = this.userManager.saveUser(user);
 			user.setMm(user.encodePwd("888888"));
 			this.userManager.saveUser(user);
+		}else {
+			User sysUser = userManager.getUser("admin");
+			sysUser.setYhxm("内置管理员");
+			sysUser.setMm(sysUser.encodePwd("888888"));
+			this.userManager.saveUser(sysUser);
 		}
 	}
 
