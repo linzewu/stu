@@ -45,7 +45,7 @@ import com.xs.jt.cmsvideo.util.FtpUtil;
 import com.xs.jt.cmsvideo.util.HCNetSDK;
 import com.xs.jt.cmsvideo.util.HCNetSDK.NET_DVR_TIME;
 
-@Component("videoListJob")
+//@Component("videoListJob")
 public class VideoListJob {
 
 	protected static Log log = LogFactory.getLog(VideoListJob.class);
@@ -92,7 +92,7 @@ public class VideoListJob {
 	 * 
 	 * @throws InterruptedException
 	 */
-	@Scheduled(cron = "0/5 * * * * ? ")
+	//@Scheduled(cron = "0/5 * * * * ? ")
 	public void sendDownLoadVideoMessage() throws InterruptedException {
 		log.info("***************downLoadVideo begin*********************");
 		// 目录不存在则创建目录
@@ -214,7 +214,7 @@ public class VideoListJob {
 		lpStartTime.dwSecond = now.get(Calendar.SECOND);
 	}
 
-	@Scheduled(cron = "0/5 * * * * ? ")
+	//@Scheduled(cron = "0/5 * * * * ? ")
 	public void sendUploadVideoMessage() {
 		// 查询所有已下载数据
 		List<VideoInfo> uploadList = videoInfoManager.getVideoInfoByZt(VideoInfo.ZT_YXZ, getMaxTaskCou());
@@ -229,7 +229,7 @@ public class VideoListJob {
 		}
 	}
 
-	@RabbitListener(queues = RabbitConfig.QUEUE_VIDEO_UPLOAD, containerFactory = "videoContainerFactory")
+	//@RabbitListener(queues = RabbitConfig.QUEUE_VIDEO_UPLOAD, containerFactory = "videoContainerFactory")
 	public void convertVideoAndUpload(String message) {
 		log.info("***************convertVideoAndUpload begin*********************");
 		VideoInfo vi = JSONObject.parseObject(message, VideoInfo.class);

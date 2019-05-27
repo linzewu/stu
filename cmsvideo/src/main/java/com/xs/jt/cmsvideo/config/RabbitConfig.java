@@ -31,12 +31,12 @@ public class RabbitConfig {
 	@Value("${spring.rabbitmq.port}")
 	Integer port;
 
-	@Bean
+	//@Bean
     public Queue videoUpLoadQueue(){
         return new Queue(QUEUE_VIDEO_UPLOAD);
     }
 	
-	@Bean("videoContainerFactory")
+	//@Bean("videoContainerFactory")
 	public SimpleRabbitListenerContainerFactory containerFactory(SimpleRabbitListenerContainerFactoryConfigurer configurer, ConnectionFactory connectionFactory) {
 		SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
 		//每个消费者一次抓取数量
@@ -47,14 +47,14 @@ public class RabbitConfig {
 		return factory;
 	}
 	
-	@Bean("simpleMessageListenerContainerMap")
+	//@Bean("simpleMessageListenerContainerMap")
 	public Map<String,SimpleMessageListenerContainer> simpleMessageListenerContainerMap(){
 		return new HashMap<String,SimpleMessageListenerContainer>();
 	}
 
 
 	// 创建mq连接
-	@Bean(name = "connectionFactory")
+	//@Bean(name = "connectionFactory")
 	public ConnectionFactory connectionFactory() {
 		CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
 		connectionFactory.setUsername(username);
@@ -66,7 +66,7 @@ public class RabbitConfig {
 
 	}
 	
-	@Bean
+	//@Bean
 	public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory){
 	    return new RabbitAdmin(connectionFactory);
 	}

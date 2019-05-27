@@ -77,6 +77,21 @@ public class BusinessQueryController {
 
 	@Autowired
 	private HttpSession session;
+	
+	// 18CH1
+	@UserOperation(code = "getTimeSyn", name = "时间同步")
+	@RequestMapping(value = "getTimeSyn", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getTimeSyn(@RequestBody Map param) {
+		Map map = new HashMap();
+		List list = new ArrayList();
+		try {
+			map = queryws("18CH1", param);
+		} catch (Exception e) {
+			log.error("时间同步异常", e);
+			throw new ApplicationException("时间同步异常", e);
+		}
+		return map;
+	}
 
 	// 18CH3
 	@UserOperation(code = "getCheckNotPassInfo", name = "获取机动车查验复核不通过原因")
