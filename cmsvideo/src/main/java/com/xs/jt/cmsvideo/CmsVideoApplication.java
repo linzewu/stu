@@ -91,8 +91,8 @@ public class CmsVideoApplication extends SpringBootServletInitializer
 		// 同时启用http（8080）、https（8443）两个端口
 		connector.setScheme("http");
 		connector.setSecure(false);
-		connector.setPort(8086);
-		connector.setRedirectPort(8085);
+		connector.setPort(8087);
+		connector.setRedirectPort(8082);
 		return connector;
 	}
   
