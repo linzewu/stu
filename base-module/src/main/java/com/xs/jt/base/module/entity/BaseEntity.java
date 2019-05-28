@@ -28,7 +28,7 @@ public abstract class BaseEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-
+	//id生成策略
 	@Id
 //	@GenericGenerator(name = "idGenerator", strategy = "identity")
 //	@GeneratedValue(generator = "idGenerator")

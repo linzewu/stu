@@ -230,8 +230,11 @@ public class LogAopAction {
 			log.setOperationType(userOperation.name());
 			log.setIpAddr(getIpAdrress());
 			log.setActionUrl(request.getRequestURI());
+			
 			log.setContent("用户" + log.getOperationUser() + "在" + sdf.format(new Date()) + "时间,IP为" + log.getIpAddr()
-					+ "操作了" + userOperation.name());
+			+ "操作了" + userOperation.name());
+			
+			
 			functionP = functionP + "." + userOperation.code();
 			for (CoreFunction cf : coreList) {
 				if (functionP.equals(cf.getFunctionPoint())) {
@@ -296,6 +299,8 @@ public class LogAopAction {
 		}
 		return null;
 	}
+
+	
 
 	private String getIpAdrress() {
 		String Xip = request.getHeader("X-Real-IP");

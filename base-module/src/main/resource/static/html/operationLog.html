@@ -13,7 +13,7 @@
 			<th data-options="field:'failMsg',width:100">操作失败原因</th>
 			<th data-options="field:'module',width:100">功能模块名称</th>
 			<th data-options="field:'content',width:100,formatter:formatCellTooltip">内容描述</th>
-			<th data-options="field:'operationCondition',width:100,formatter:formatCellTooltip">操作条件</th>
+			<th data-options="field:'operationCondition',width:100,formatter:formatCellTooltip1">操作条件</th>
 		</tr>
 	</thead>
 </table>
@@ -35,7 +35,25 @@
 
 <script type="text/javascript">
 //格式化单元格提示信息  
-function formatCellTooltip(value){  
+function formatCellTooltip1(value,row){  
+	var cvalue="";
+	if(row.operationType=="编辑安全策略"){
+		value = value.trim();
+		var json = $.parseJSON(value.substring(4,value.length-1));
+		$.each(json.updateList,function(i,n){
+			cvalue=n.aqsjcllxmc+","+n.aqsjclzlxmc+",策略值："+n.clz;
+		})
+	}
+	if(cvalue.length>0){
+		return "<span title='" + cvalue + "'>" + cvalue + "</span>";
+		
+	}
+	
+    return "<span title='" + value + "'>" + value + "</span>";  
+}
+
+function formatCellTooltip(value,row){  
+	
     return "<span title='" + value + "'>" + value + "</span>";  
 }
 function formatLogCzjg(value,row,index){
