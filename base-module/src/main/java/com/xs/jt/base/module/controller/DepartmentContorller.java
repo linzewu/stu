@@ -39,6 +39,14 @@ public class DepartmentContorller {
 		List<Department> depts = deptManager.getDepts();
 		return depts;
 	}
+	
+	@RecordLog
+	@UserOperation(code="getDeptList",name="部门列表查询")
+	@RequestMapping(value = "getDeptList", method = RequestMethod.POST)
+	public @ResponseBody List<Department> getDeptList() {
+		List<Department> depts = deptManager.getDepts();
+		return depts;
+	}
 
 	@RecordLog
 	@UserOperation(code="save",name="部门信息修改")

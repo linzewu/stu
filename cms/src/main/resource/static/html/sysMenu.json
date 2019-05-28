@@ -66,7 +66,7 @@
 					"icon": "../../static/images/Organization_48.png",
 					"title": "组织架构管理",
 					"href": "../../static/html/department.html",
-					"permission":"dept.getDepts"
+					"permission":"dept.getDeptList"
 				}
 			]
 		},{
