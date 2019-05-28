@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css"
+	href="../js/easyui/themes/gray/easyui.css">
+<link rel="stylesheet" type="text/css"
+	href="../js/easyui/themes/color.css">
+<link rel="stylesheet" type="text/css"
+	href="../js/easyui/themes/icon.css">
+<script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+<script type="text/javascript" src="../js/json2.js"></script>
+<script type="text/javascript"
+	src="../js/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript"
+	src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript">
+var zzjUser = "";
+var curIp = "";
+//intervalLogin();
+getCurrIp();
+
+function getCurrIp(){
+	$.ajax({ 
+	    type : "post", 
+	    url : "../../user/getZzjUser", 
+	    data : null,
+	    async : false, 
+	    success : function(data){
+	    		zzjUser = data.zzjzh;
+	    		curIp = data.curIp;
+	    		intervalLogin();
+	    	},
+	    	dataType:"json"
+	    });
+}
+
+function intervalLogin(){ 
+	var userName = zzjUser;
+	var password = "888888";
+	var param = {};
+	param.userName = userName;
+	param.password = password;
+
+	$.ajax({ 
+	    type : "post", 
+	    url : "../../user/login", 
+	    data : param,
+	    async : false, 
+	    success : function(data){
+	    		var datajson = data;
+	    		if (datajson['state'] == 1) {
+	    		}else{
+	    			alert(datajson['message']);
+	    			
+	    		}
+	    	},
+	    	dataType:"json"
+	    }); 
+}
+
+$(function(){
+	$("#curIp").text(curIp);
+	window.setInterval("intervalLogin();",1200000);
+});
+
+
+</script>
+<title>机动车查验自助终端</title>
+<style type="text/css">
+.subTitle{
+    width:400px;height:68px;  /*设置div的大小*/
+    display:table-cell; 
+    vertical-align:bottom;
+    padding-left: 100px;
+    color: white;
+    font-size: 18px;
+    font-weight:bold;
+    letter-spacing: 1px;
+    text-align: right;
+ }
+ .title{
+ color: white;padding-left: 100px;letter-spacing: 1px;float: left;
+ }
+ .label-date{
+    width:400px;height:68px;  /*设置div的大小*/
+    display:table-cell; 
+    vertical-align:bottom;
+    padding-left: 100px;
+    color: white;
+    font-size: 16px;
+    font-weight:bold;
+    letter-spacing: 1px;
+    text-align: right;
+ }
+</style>
+
+</head>
+<body style="background-color: rgb(5,84,163);">
+<div style="background-image: url('../images/selfHelpLogin.jpg');width: 1270px;height: 1000px;background-repeat: no-repeat;">
+	<div style="width: 270px;position: absolute;top: 524px;left: 870px;height: 135px;" onclick="checkCar();"></div>
+	<!--<div style="width: 270px;position: absolute;top: 687px;left: 870px;height: 135px;" onclick="openPage('Y');"></div>-->
+	<div style="position: absolute;top: 2px;left: 2px;" id="tt">当前ip：<span id="curIp"></span></div>
+</div>
+</body>
+<script type="text/javascript">
+function checkCar(){
+	window.location.href="checkAndRegisterCar.html";
+}
+</script>
+</html>
