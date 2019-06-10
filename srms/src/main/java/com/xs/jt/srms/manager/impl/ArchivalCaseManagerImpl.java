@@ -201,6 +201,8 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 		if(!CollectionUtils.isEmpty(oldCaseList)) {
 			String fileNoStr = "";
 			for(ArchivalCase oldCase:oldCaseList) {
+				oldCase.setHphm(archivalCase.getHphm());
+				oldCase.setHpzl(archivalCase.getHpzl());
 				oldCase.setYwlx(archivalCase.getYwlx());
 				oldCase.setZt(ArchivalCase.ZT_RK);
 				archivalCaseRepository.save(oldCase);				
@@ -221,6 +223,7 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 			noUseCase.setZt(ArchivalCase.ZT_RK);
 			archivalCaseRepository.save(noUseCase);	
 			saveArchivalRegister(noUseCase);
+			noUseCase.setUsedCarNewCheckIn("Y");
 			acc = noUseCase;
 		}	
 		

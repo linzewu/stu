@@ -87,6 +87,9 @@ public class ArchivalCase extends BaseEntity {
 	//是否转移到其他档案架
 	@Transient
 	private String zyOther;
+	//在用车档案入库（档案室原先没有该档案，新分配档案格存放）
+	@Transient
+	private String usedCarNewCheckIn;
 
 	public String getZyOther() {
 		return zyOther;
@@ -206,6 +209,14 @@ public class ArchivalCase extends BaseEntity {
 
 	public void setCaseNumber(Integer caseNumber) {
 		this.caseNumber = caseNumber;
+	}
+
+	public String getUsedCarNewCheckIn() {
+		return usedCarNewCheckIn;
+	}
+
+	public void setUsedCarNewCheckIn(String usedCarNewCheckIn) {
+		this.usedCarNewCheckIn = usedCarNewCheckIn;
 	}
 
 }

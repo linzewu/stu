@@ -122,7 +122,10 @@ function usedCarCheckIn(){
 				$.messager.alert("提示","保存成功！","info",function(){
 					$('#usedCarArchivesForm').form('clear');
 					$('#datagrid-archiveRegisterUsed').datagrid("reload");
-					//printBQ(data.data);
+					
+					if(data.data.usedCarNewCheckIn == "Y"){
+						printBQ(data.data);
+					}
 				});
 			}else{
 				$.messager.alert("提示",data.message,"error");
