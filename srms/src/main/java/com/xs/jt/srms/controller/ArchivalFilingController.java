@@ -43,8 +43,10 @@ import com.xs.jt.base.module.manager.IBaseParamsManager;
 import com.xs.jt.base.module.util.FileUtil;
 import com.xs.jt.srms.entity.ArchivalCase;
 import com.xs.jt.srms.entity.ArchivalRegister;
+import com.xs.jt.srms.entity.StoreRoom;
 import com.xs.jt.srms.manager.IArchivalCaseManager;
 import com.xs.jt.srms.manager.IArchivalRegisterManager;
+import com.xs.jt.srms.manager.IStoreRoomManager;
 import com.xs.jt.srms.util.BarcodeUtil;
 
 import javassist.bytecode.stackmap.TypeData.ClassName;
@@ -73,6 +75,9 @@ public class ArchivalFilingController {
 	@Autowired
 	private IBaseParamsManager baseParamsManager;
 	
+	@Autowired
+	private IStoreRoomManager storeRoomManager;
+	
 	@Transactional
 	@UserOperation(code="newCarArchivalCheckIn",name="新车档案入库")
 	@RequestMapping(value = "newCarArchivalCheckIn", method = RequestMethod.POST)
@@ -82,6 +87,9 @@ public class ArchivalFilingController {
 			return  ResultHandler.toErrorJSON("库房已存在该车辆信息，不能做新车档案入库，请核对！");
 		}
 		ArchivalCase ac = this.archivalCaseManager.newCarArchivalCheckIn(archivalCase);
+		if(ac == null) {
+			return  ResultHandler.toMyJSON(Constant.ConstantState.STATE_ERROR, "档案格已满，无法入库！", ac);
+		}
 		return  ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, Constant.ConstantMessage.SUCCESS, ac);//JSONObject.fromObject(ResultHandler.toSuccessJSON(Constant.ConstantMessage.SUCCESS)).toString();
 	}
 	
@@ -90,6 +98,9 @@ public class ArchivalFilingController {
 	@RequestMapping(value = "UsedCarArchivalCheckIn", method = RequestMethod.POST)
 	public @ResponseBody Map UsedCarArchivalCheckIn(ArchivalCase archivalCase){		
 		ArchivalCase ac = this.archivalCaseManager.UsedCarArchivalCheckIn(archivalCase);
+		if(ac == null) {
+			return  ResultHandler.toMyJSON(Constant.ConstantState.STATE_ERROR, "档案格已满，无法入库！", ac);
+		}
 		//return  JSONObject.fromObject(ResultHandler.toSuccessJSON(Constant.ConstantMessage.SUCCESS)).toString();
 		return  ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, Constant.ConstantMessage.SUCCESS, ac);
 	}
@@ -237,7 +248,19 @@ public class ArchivalFilingController {
     }
 
 
-	
+    @UserOperation(code="newCarArchivalCheckIn",name="查看库房信息",isMain=false)
+	@RequestMapping(value = "getStoreRoomInfoList", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getStoreRoomList(Integer page, Integer rows, StoreRoom storeRoom) {
+		return storeRoomManager.getStoreRoomList(page - 1, rows, storeRoom);
+	}
+    
+    @UserOperation(code="newCarArchivalCheckIn",name="查看档案格信息",isMain=false)
+	@RequestMapping(value = "getNoUsedByArchivesNoAndRackNo", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getNoUsedByArchivesNoAndRackNo(StoreRoom storeRoom) {
+    	Map<String, Object> data = new HashMap<String, Object>();
+		data.put("rows", this.archivalCaseManager.getNoUsedByArchivesNoAndRackNo(storeRoom.getArchivesNo(), storeRoom.getRackNo()));
+		return data;
+	}
 	
 	
 	

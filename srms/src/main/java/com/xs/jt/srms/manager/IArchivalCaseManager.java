@@ -31,5 +31,7 @@ public interface IArchivalCaseManager {
 	
 	public List<ArchivalCase> getArchivalCaseByClsbdh(String clsbdh);
 	
+	public List<Map> getNoUsedByArchivesNoAndRackNo(String archivesNo,String rackNo);
+	
 
 }

@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xs.jt.base.module.annotation.Modular;
+import com.xs.jt.base.module.annotation.RecordLog;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
+import com.xs.jt.base.module.entity.User;
 import com.xs.jt.srms.entity.ArchivalCase;
 import com.xs.jt.srms.entity.StoreRoom;
 import com.xs.jt.srms.manager.IArchivalCaseManager;
@@ -94,6 +96,18 @@ public class StoreRoomController {
 		}
 		data.put("rows", list);
 		return data;
+	}
+	
+	@RecordLog
+	@UserOperation(code="save",name="校验档案架编号",isMain=false)
+	@RequestMapping(value = "validateRackNo")
+	public @ResponseBody boolean validateRackNo(StoreRoom storeRoom) {
+		StoreRoom room = storeRoomManager.findByRackNo(storeRoom.getRackNo());
+		if (room == null) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 
 }

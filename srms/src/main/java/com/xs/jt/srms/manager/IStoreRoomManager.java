@@ -16,5 +16,7 @@ public interface IStoreRoomManager {
 	public void deleteStoreRoomByArchivesNo(String archivesNo);
 	
 	public List<Map> getArchiveRackStatistics(String zt);
+	
+	public StoreRoom findByRackNo(String rackNo);
 
 }

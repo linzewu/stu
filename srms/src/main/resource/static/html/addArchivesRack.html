@@ -4,12 +4,12 @@
 			<form id="archivesRackForm" method="post" novalidate> 
 				<table class="base_table" cellspacing="0" cellpadding="0"> 
 					<tr><td class="info_title">档案区域：</td>
-						<td class="info"><input name="archivesNo" class="easyui-textbox" required="true">
+						<td class="info"><input name="archivesNo" id="edit_archivesNo" class="easyui-textbox" required="true">
 						</td>
 					</tr>
 					<tr>
 						<td class="info_title">档案架编号：</td>
-						<td class="info"><input name="rackNo" class="easyui-textbox" required="true"></td>
+						<td class="info"><input name="rackNo" id="edit_rackNo" class="easyui-textbox" data-options="required:true,validType:{rackNoVad:['#archivesRackForm input[name=id]']}"></td>
 					</tr>
 					<tr><td class="info_title">档案架列数：</td>
 						<td class="info"><input name="rackCols" id="edit_rackCols" class="easyui-textbox" required="true"></td>

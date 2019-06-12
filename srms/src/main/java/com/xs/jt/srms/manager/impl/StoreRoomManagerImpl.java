@@ -23,6 +23,7 @@ import com.xs.jt.srms.dao.ArchivalCaseRepository;
 import com.xs.jt.srms.dao.StoreRoomRepository;
 import com.xs.jt.srms.entity.ArchivalCase;
 import com.xs.jt.srms.entity.StoreRoom;
+import com.xs.jt.srms.manager.IArchivalCaseManager;
 import com.xs.jt.srms.manager.IStoreRoomManager;
 import com.xs.jt.srms.util.NumberFormatUtil;
 @Service
@@ -32,6 +33,9 @@ public class StoreRoomManagerImpl implements IStoreRoomManager {
 	private StoreRoomRepository storeRoomRepository;
 	@Autowired
 	private ArchivalCaseRepository archivalCaseRepository;
+	
+	@Autowired
+	private IArchivalCaseManager archivalCaseManager;
 
 	@Override
 	public Map<String, Object> getStoreRoomList(Integer page, Integer rows, StoreRoom storeRoom) {
@@ -64,16 +68,54 @@ public class StoreRoomManagerImpl implements IStoreRoomManager {
 	public void saveStoreRoom(StoreRoom storeRoom) {
 		if (storeRoom.getId() != null) {
 			StoreRoom oldStoreRoom = this.storeRoomRepository.findById(storeRoom.getId()).get();
+			storeRoom.setRackNo(oldStoreRoom.getRackNo());
 			//修改
-			
-			if (oldStoreRoom.getCellCapacity() != storeRoom.getCellCapacity()
-					|| oldStoreRoom.getRackCols() != storeRoom.getRackCols()
-					|| oldStoreRoom.getRackRows() != storeRoom.getRackRows()) {
-				this.archivalCaseRepository.deleteArchivalCaseByRackNo(storeRoom.getRackNo());
-				newStoreRoom(storeRoom);
-			}else {
+			List<ArchivalCase> useCase = this.archivalCaseManager.findUseArchivalCase(ArchivalCase.ZT_WSY, storeRoom.getRackNo());
+			if(useCase != null && useCase.size() > 0) {
+				//档案架有在使用				
+				if(oldStoreRoom.getCellCapacity() != storeRoom.getCellCapacity()) {
+					List<Map> acLi = this.archivalCaseRepository.getMaxFileNoByArchivesNoAndRackNo(storeRoom.getArchivesNo(), storeRoom.getRackNo());
+					List<ArchivalCase> acList = new ArrayList<ArchivalCase>();
+					for(Map c:acLi) {
+						String fileNo = c.get("fileNo").toString();
+						for(int k=1;k<=(storeRoom.getCellCapacity()-oldStoreRoom.getCellCapacity());k++) {
+							ArchivalCase archivalCase = new ArchivalCase();
+							archivalCase.setArchivesNo(c.get("archivesNo").toString());
+							archivalCase.setRackCol(Integer.parseInt(c.get("rackCol").toString()));
+							archivalCase.setRackNo(c.get("rackNo").toString());
+							archivalCase.setRackRow(Integer.parseInt(c.get("rackRow").toString()));
+							archivalCase.setZt(ArchivalCase.ZT_WSY);
+							fileNo = NumberFormatUtil.autoGenericCode(fileNo, 3);
+							archivalCase.setFileNo(fileNo);
+							//archivalCase.setBarCode(archivalCase.getArchivesNo()+archivalCase.getRackNo()+archivalCase.getRackCol()+archivalCase.getRackRow()+archivalCase.getFileNo());
+							acList.add(archivalCase);
+						}
+					}
+					this.archivalCaseRepository.saveAll(acList);
+				}
 				storeRoomRepository.save(storeRoom);
+			}else {
+				//档案架没有在使用
+				if (oldStoreRoom.getCellCapacity() != storeRoom.getCellCapacity()
+						|| oldStoreRoom.getRackCols() != storeRoom.getRackCols()
+						|| oldStoreRoom.getRackRows() != storeRoom.getRackRows()) {
+					this.archivalCaseRepository.deleteArchivalCaseByRackNo(storeRoom.getRackNo());
+					newStoreRoom(storeRoom);
+				}else {
+					storeRoomRepository.save(storeRoom);
+				}
 			}
+//			if (oldStoreRoom.getRackCols() != storeRoom.getRackCols()
+//					|| oldStoreRoom.getRackRows() != storeRoom.getRackRows()) {
+//				this.archivalCaseRepository.deleteArchivalCaseByRackNo(storeRoom.getRackNo());
+//				newStoreRoom(storeRoom);
+//			}else {
+//				if(oldStoreRoom.getCellCapacity() != storeRoom.getCellCapacity()) {
+//					
+//				}else {
+//					storeRoomRepository.save(storeRoom);
+//				}
+//			}
 			
 		}else {
 			//新增
@@ -126,6 +168,11 @@ public class StoreRoomManagerImpl implements IStoreRoomManager {
 	public List<Map> getArchiveRackStatistics(String zt) {
 		
 		return storeRoomRepository.getArchiveRackStatistics(zt);
+	}
+
+	@Override
+	public StoreRoom findByRackNo(String rackNo) {
+		return storeRoomRepository.findByRackNo(rackNo);
 	}
 
 }

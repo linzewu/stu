@@ -12,6 +12,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,7 +144,16 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 	@Override
 	public synchronized ArchivalCase newCarArchivalCheckIn(ArchivalCase archivalCase) {
 		logger.info("newCarArchivalCheckIn begin");
-		ArchivalCase noUseCase = archivalCaseRepository.findNoUseArchivalCase(StoreRoom.CFLB_XC, ArchivalCase.ZT_WSY);
+		ArchivalCase noUseCase = null;
+		if ((StringUtils.isNotEmpty(archivalCase.getArchivesNo())) && (StringUtils.isNotEmpty(archivalCase.getRackNo()))
+				&& (archivalCase.getRackRow() != null) && (archivalCase.getRackCol() != null)) {
+			noUseCase = archivalCaseRepository.findSpecialNoUseArchivalCase(archivalCase.getArchivesNo(), archivalCase.getRackNo(), archivalCase.getRackRow(), archivalCase.getRackCol(), ArchivalCase.ZT_WSY);
+		}else {
+		    noUseCase = archivalCaseRepository.findNoUseArchivalCase(StoreRoom.CFLB_XC, ArchivalCase.ZT_WSY);
+		}
+		if(noUseCase == null) {
+			return noUseCase;
+		}
 		noUseCase.setClsbdh(archivalCase.getClsbdh());
 		noUseCase.setHphm(archivalCase.getHphm());
 		noUseCase.setHpzl(archivalCase.getHpzl());
@@ -212,6 +222,9 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 			saveArchivalRegister(oldCaseList.get(0),fileNoStr);
 		}else {
 			ArchivalCase noUseCase = archivalCaseRepository.findNoUseArchivalCase(StoreRoom.CFLB_XC, ArchivalCase.ZT_WSY);
+			if(noUseCase == null) {
+				return noUseCase;
+			}
 			noUseCase.setClsbdh(archivalCase.getClsbdh());
 			noUseCase.setHphm(archivalCase.getHphm());
 			noUseCase.setHpzl(archivalCase.getHpzl());
@@ -327,6 +340,11 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 	@Override
 	public List<ArchivalCase> getArchivalCaseByClsbdh(String clsbdh) {
 		return archivalCaseRepository.getArchivalCaseByClsbdh(clsbdh);
+	}
+
+	@Override
+	public List<Map> getNoUsedByArchivesNoAndRackNo(String archivesNo, String rackNo) {
+		return archivalCaseRepository.getNoUsedByArchivesNoAndRackNo(archivesNo, rackNo);
 	}
 
 }

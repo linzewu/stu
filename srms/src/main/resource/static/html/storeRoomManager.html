@@ -29,6 +29,8 @@ function formatStorageType(value) {
 	return comm.getParamNameByValue("cflb", value);
 }
 var url = "../../storeRoom/save";
+var rl = 0;
+var isUse = false;
 function newArchivesRack(){
 	$('<div></div>').dialog({
 	 	id:'dlgStoreroom',
@@ -56,6 +58,8 @@ function newArchivesRack(){
 	        $(this).dialog('destroy',true);
 	    },
 	    onLoad:function(){
+	    	rl = 0;
+	    	isUse = false;
 	    	$('#archivesRackForm').form('clear');
 	    }
 	});
@@ -93,16 +97,22 @@ function editArchivesRack(){
 		    onLoad:function(){
 		    	$('#archivesRackForm').form('clear');
 		    	$('#archivesRackForm').form('load',row);
-		    	
+		    	rl = row.cellCapacity;
+		    	//$("#edit_rackNo").textbox({readonly:true});
+         		$("#edit_archivesNo").textbox({readonly:true});
+         		//$("#edit_rackNo").textbox('textbox').css({"background-color":"#f0f1ef"});
+         		$("#edit_archivesNo").textbox('textbox').css({"background-color":"#f0f1ef"});
+         		$("#edit_rackNo").textbox({disabled:true});
 		    	 $.post('../../archivalCase/findUseArchivalCase',{rackNo:row.rackNo},function(result){
                      if (result.state==1){
                      	if(result.data == "true"){
+                     		isUse = true;
                      		$("#edit_rackCols").textbox({readonly:true});
-                     		$("#edit_rackRows").textbox({readonly:true});
-                     		$("#edit_cellCapacity").textbox({readonly:true});
+                     		$("#edit_rackRows").textbox({readonly:true});                     		
+                     		//$("#edit_cellCapacity").textbox({readonly:true});
                      		$("#edit_rackCols").textbox('textbox').css({"background-color":"#f0f1ef"});
-                     		$("#edit_rackRows").textbox('textbox').css({"background-color":"#f0f1ef"});
-                     		$("#edit_cellCapacity").textbox('textbox').css({"background-color":"#f0f1ef"});
+                     		$("#edit_rackRows").textbox('textbox').css({"background-color":"#f0f1ef"});                     		
+                     		//$("#edit_cellCapacity").textbox('textbox').css({"background-color":"#f0f1ef"});
                      	}
                      }else{
                      	$.messager.alert("错误","查询档案架中是否有档案格在使用失败！","error");
@@ -118,7 +128,13 @@ function editArchivesRack(){
 
 function saveStoreRoom(){
 	var flag = $("#archivesRackForm").form("validate");
-	 console.log(flag)
+	if(isUse){
+		if($("#edit_cellCapacity").textbox("getValue") < rl){
+			$.messager.alert("警告","档案格容量不能修改小于原来的容量！","warn");
+			return;
+		}
+	}
+	
     $('#archivesRackForm').form('submit',{
         url: url,
         onSubmit: function(){

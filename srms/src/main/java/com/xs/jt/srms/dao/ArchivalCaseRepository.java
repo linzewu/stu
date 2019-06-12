@@ -1,6 +1,7 @@
 package com.xs.jt.srms.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -46,4 +47,15 @@ public interface ArchivalCaseRepository extends JpaRepository<ArchivalCase, Inte
 	public List<ArchivalCase> findMultiNoUseArchivalCase(@Param("archivesNo") String archivesNo,
 			@Param("rackNo") String rackNo, @Param("rackRow") Integer rackRow, @Param("rackCol") Integer rackCol,
 			@Param("fileNo") List<String> fileNo);
+	
+	
+	@Query(value = "select new map(archivesNo as archivesNo,rackNo as rackNo,rackRow as rackRow,rackCol as rackCol,max(fileNo) as fileNo) from ArchivalCase  where archivesNo = :archivesNo and rackNo = :rackNo group  by archivesNo,rackNo,rackRow,rackCol")
+	public List<Map> getMaxFileNoByArchivesNoAndRackNo(@Param("archivesNo")String archivesNo,@Param("rackNo")String rackNo);
+	
+	@Query(value = "select new map(archivesNo as archivesNo,rackNo as rackNo,rackRow as rackRow,rackCol as rackCol) from ArchivalCase  where archivesNo = :archivesNo and rackNo = :rackNo and zt =0  group by archivesNo,rackNo,rackRow,rackCol order by archivesNo,rackNo,rackRow,rackCol")
+	public List<Map> getNoUsedByArchivesNoAndRackNo(@Param("archivesNo")String archivesNo,@Param("rackNo")String rackNo);
+	
+	
+	@Query(value = "select * from (select c.* from tm_archival_case c   where archives_no = :archivesNo and c.rack_no = :rackNo and rack_row = :rackRow and rack_col = :rackCol and zt = :zt  order by c.archives_no,c.rack_no,c.rack_row,c.rack_col,c.file_no )where rownum =1 ",nativeQuery=true)
+	public ArchivalCase findSpecialNoUseArchivalCase(@Param("archivesNo")String archivesNo,@Param("rackNo")String rackNo,@Param("rackRow") Integer rackRow, @Param("rackCol") Integer rackCol,@Param("zt")String zt);
 }

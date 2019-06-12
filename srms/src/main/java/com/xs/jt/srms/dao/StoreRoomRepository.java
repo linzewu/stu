@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.xs.jt.base.module.entity.User;
 import com.xs.jt.srms.entity.StoreRoom;
 @Repository
 public interface StoreRoomRepository extends JpaRepository<StoreRoom, Integer>,JpaSpecificationExecutor<StoreRoom>{
@@ -22,4 +23,7 @@ public interface StoreRoomRepository extends JpaRepository<StoreRoom, Integer>,J
 	
 	@Query(value = "select new map(r.archivesNo as archivesNo,r.rackNo as rackNo,(r.rackCols*r.rackRows*r.cellCapacity) as capacity,(select count(c.fileNo) from ArchivalCase c where c.rackNo = r.rackNo and c.zt != :zt) as use )from StoreRoom r")
 	public List<Map> getArchiveRackStatistics(@Param("zt")String zt);
+	
+	@Query(value = "from StoreRoom where rackNo= :rackNo")
+	StoreRoom findByRackNo(@Param("rackNo")String rackNo);
 }

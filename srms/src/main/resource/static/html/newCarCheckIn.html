@@ -39,6 +39,8 @@
 						<td class="info_title">流水号：</td>
 						<td class="info"><input name="lsh" id="rk_lsh" class="easyui-textbox" >
 							<a href="javascript:queryByLsh()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
+							&nbsp;&nbsp;&nbsp;
+							<a href="javascript:checkDAG()" class="easyui-linkbutton" data-options="iconCls:'icon-filter'">档案格选择</a>
 						</td>
 						<td class="info_title"></td>
 						<td class="info"></td>
@@ -82,6 +84,53 @@
 	    </div>
 	  </div>
 </div>
+<div id="dagDlg" class="easyui-dialog" title="档案格选择" style="width:900px;height:750px;padding:10px"
+            data-options="
+                iconCls: 'icon-save',
+                closed: true,
+                buttons: [{
+                    text:'确定',
+                    iconCls:'icon-ok',
+                    handler:function(){
+                        checkRack();
+                    }
+                },{
+                    text:'关闭',
+                    iconCls:'icon-no',
+                    handler:function(){
+                        closeDagDlg();
+                    }
+                }]
+            ">
+       <table id="datagrid-storeroom3" title="库房信息" class="easyui-datagrid" style="width:100%;height:270px"
+	            pagination="true" url="../../archivalFiling/getStoreRoomInfoList" pageSize="20"
+	            pageList="[20,50,100,200,300]"
+	            rownumbers="true"  singleSelect="true" data-options="onDblClickRow:storeDBClick">
+	        <thead>
+	            <tr>
+	                <th  width="120px" data-options="field:'archivesNo'"  >档案区域</th>
+	                <th  width="120px" data-options="field:'rackNo'">档案架编号</th> 
+	                <th  width="120px" data-options="field:'rackCols'">档案架列数</th>
+	                <th  width="120px" data-options="field:'rackRows'">档案架行数</th>
+	                <th  width="150px" data-options="field:'storageType',formatter:formatStorageType">存放类别</th>
+	                <th  width="120px" data-options="field:'cellCapacity'">档案格容量</th>
+	                <th  width="120px" data-options="field:'seq'">排序</th>	                
+	            </tr>
+	        </thead>
+	    </table>
+       
+       <table id="datagrid-case" title="档案格信息" class="easyui-datagrid" style="width:100%;height:370px"
+	            rownumbers="true"  singleSelect="true" >
+	        <thead>
+	            <tr>
+	                <th  width="120px" data-options="field:'archivesNo'"  >档案区域</th>
+	                <th  width="120px" data-options="field:'rackNo'">档案架编号</th> 
+	                <th  width="120px" data-options="field:'rackRow'">档案架内行号</th>
+	                <th  width="120px" data-options="field:'rackCol'">档案架内列号</th>               
+	            </tr>
+	        </thead>
+	    </table>
+    </div>
 <div id="printTemplet" >
 	<div align="left" >
 		<table class="print_Table" cellpadding="2" cellspacing="1">
@@ -114,11 +163,18 @@
 <script type="text/javascript" src="../js/LodopFuncs.js"></script>
 
 <script type="text/javascript">
+var caseInfo =null;
 //newCarArchivalCheckIn
 function newCarCheckIn(){
 	var isValid = $('#newCarArchivesForm').form('validate');
 	if(isValid){
 		var params = $("#newCarArchivesForm").serializeJson();
+		if(caseInfo != null){
+			params.archivesNo = caseInfo.archivesNo;
+			params.rackNo = caseInfo.rackNo;
+			params.rackRow = caseInfo.rackRow;
+			params.rackCol = caseInfo.rackCol;
+		}
 		$.post("../../archivalFiling/newCarArchivalCheckIn",params,function(data){
 			if(data.state==1){
 				$.messager.alert("提示","保存成功！","info",function(){
@@ -178,4 +234,25 @@ $(function(){
 });
 
 
+function checkDAG(){
+	$('#dagDlg').dialog('open');
+}
+
+function storeDBClick(index,row){
+	$("#datagrid-case").datagrid({url:'../../archivalFiling/getNoUsedByArchivesNoAndRackNo',queryParams:{archivesNo:row.archivesNo,rackNo:row.rackNo}})
+}
+
+function closeDagDlg(){
+	$('#dagDlg').dialog('close');
+}
+
+function checkRack(){
+	var row = $('#datagrid-case').datagrid('getSelected');
+    if (row){
+    	caseInfo = row;
+    	$('#dagDlg').dialog('close');
+    }else{
+		$.messager.alert("提示","请选择档案格!","warning");
+	}
+}
 </script>

@@ -105,3 +105,32 @@ function exportExcel(){
 	}
 	window.location = "../../archivalFiling/export?rksj="+quer_createTime;	
 }
+
+$.extend(
+		$.fn.validatebox.defaults.rules,
+		{
+			
+			rackNoVad : {
+				validator : function(value, param) {
+					
+					var bflag=false;
+					//param[1]='';
+					
+					//if(aflag){
+						var data={};
+						data.rackNo=value;
+						var r = $.ajax({url:'../../storeRoom/validateRackNo',dataType:"json",data:data,async:false,cache:false,type:"post"}).responseText;
+						bflag=r=="true";
+						if(!bflag){
+							param[1]='档案架编号已存在';
+						}
+					//}
+					
+					
+					
+					return bflag;
+				},
+				message : '{1}'
+			}
+		});
+		
