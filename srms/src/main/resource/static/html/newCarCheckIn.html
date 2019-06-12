@@ -42,7 +42,7 @@
 														
 						</td>
 						<td class="info_title">指定档案格：</td>
-						<td class="info"><a href="javascript:checkDAG()" class="easyui-linkbutton" data-options="iconCls:'icon-filter'">档案格选择</a><span id="dagtxt"></span></td>
+						<td class="info"><a href="javascript:checkDAG()" class="easyui-linkbutton" data-options="iconCls:'icon-filter'">档案格选择</a><span id="dagtxt"></span>&nbsp;&nbsp;<a href="javascript:clearDAG()" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">清除</a></td>
 					</tr>
 					<tr>
 						<td colspan="4" class="info" align="center">
@@ -254,5 +254,9 @@ function checkRack(){
     }else{
 		$.messager.alert("提示","请选择档案格!","warning");
 	}
+}
+function clearDAG(){
+	$("#dagtxt").text("");
+	caseInfo =null;
 }
 </script>
