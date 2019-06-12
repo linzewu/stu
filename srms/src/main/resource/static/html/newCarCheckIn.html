@@ -39,11 +39,10 @@
 						<td class="info_title">流水号：</td>
 						<td class="info"><input name="lsh" id="rk_lsh" class="easyui-textbox" >
 							<a href="javascript:queryByLsh()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
-							&nbsp;&nbsp;&nbsp;
-							<a href="javascript:checkDAG()" class="easyui-linkbutton" data-options="iconCls:'icon-filter'">档案格选择</a>
+														
 						</td>
-						<td class="info_title"></td>
-						<td class="info"></td>
+						<td class="info_title">指定档案格：</td>
+						<td class="info"><a href="javascript:checkDAG()" class="easyui-linkbutton" data-options="iconCls:'icon-filter'">档案格选择</a><span id="dagtxt"></span></td>
 					</tr>
 					<tr>
 						<td colspan="4" class="info" align="center">
@@ -250,6 +249,7 @@ function checkRack(){
 	var row = $('#datagrid-case').datagrid('getSelected');
     if (row){
     	caseInfo = row;
+    	$("#dagtxt").text(row.rackNo+"-"+row.rackRow+"行-"+row.rackCol+"列")
     	$('#dagDlg').dialog('close');
     }else{
 		$.messager.alert("提示","请选择档案格!","warning");
