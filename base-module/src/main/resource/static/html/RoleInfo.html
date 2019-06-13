@@ -81,7 +81,7 @@ function analyPoint(data){
 	var jsfbV = $("#jsjb").combobox("getValue");
 	var pwGroup={};
 	$.each(data,function(i,n){
-		if(jsfbV == "" || (jsfbV != "" && (n.jsjb.length == 0  || n.jsjb.includes(jsfbV)))){// n.jsjb == jsfbV
+		if(jsfbV == "" || (jsfbV != "" && (n.jsjb.length == 0  || $.inArray(jsfbV, n.jsjb) != -1 ))){// n.jsjb == jsfbV
 			if(!pwGroup[n.modeCode]){
 				pwGroup[n.modeCode]=[n];
 			}else{

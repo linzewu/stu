@@ -10,6 +10,10 @@ function ztFormat(value,row,index){
 	return comm.getParamNameByValue("dazt", value)
 }
 
+function formatStorageType(value) {
+	return comm.getParamNameByValue("cflb", value);
+}
+
 function readQrLabel() {
 	
 	//var strbarcode = "123";

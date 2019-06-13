@@ -25,9 +25,7 @@
 	    	
 	    </div>
 <script type="text/javascript">
-function formatStorageType(value) {
-	return comm.getParamNameByValue("cflb", value);
-}
+
 var url = "../../storeRoom/save";
 var rl = 0;
 var isUse = false;
@@ -134,7 +132,10 @@ function saveStoreRoom(){
 			return;
 		}
 	}
-	
+	$.messager.progress({
+		title:"请等待",
+		msg:"数据处理中。。。"
+	}); 
     $('#archivesRackForm').form('submit',{
         url: url,
         onSubmit: function(){
@@ -150,6 +151,7 @@ function saveStoreRoom(){
             } else {
          	   $.messager.alert("提示","保存失败","error");
             }
+            $.messager.progress('close');
         }
     });
 }
