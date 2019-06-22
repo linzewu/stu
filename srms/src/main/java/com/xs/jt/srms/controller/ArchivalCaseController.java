@@ -22,8 +22,10 @@ import com.xs.jt.base.module.annotation.Modular;
 import com.xs.jt.base.module.annotation.UserOperation;
 import com.xs.jt.base.module.common.Constant;
 import com.xs.jt.base.module.common.ResultHandler;
+import com.xs.jt.base.module.entity.BaseParams;
 import com.xs.jt.base.module.entity.User;
 import com.xs.jt.base.module.enums.CommonUserOperationEnum;
+import com.xs.jt.base.module.manager.IBaseParamsManager;
 import com.xs.jt.srms.entity.ArchivalCase;
 import com.xs.jt.srms.entity.ArchivalRegister;
 import com.xs.jt.srms.manager.IArchivalCaseManager;
@@ -41,6 +43,9 @@ public class ArchivalCaseController {
 	@Value("${stu.cache.dir}")
 	private String cacheDir;
 	
+	@Value("${case.page.count}")
+	private String caseCount;
+	
 	@Autowired
 	private IArchivalCaseManager archivalCaseManager;
 	
@@ -49,6 +54,8 @@ public class ArchivalCaseController {
 	
 	@Autowired
 	private IArchivalRegisterManager archivalRegisterManager;
+	@Autowired
+	private IBaseParamsManager baseParamsManager;
 	
 	@UserOperation(code = "getArchivalCaseList", name = "档案查询")
 	@RequestMapping(value = "getArchivalCaseList", method = RequestMethod.POST)
@@ -97,6 +104,53 @@ public class ArchivalCaseController {
 		Map<String, Object> data = new HashMap<String, Object>();
 		if(!CollectionUtils.isEmpty(list)) {
 			data = list.get(0);
+		}
+		
+//		data.put("hphm", "UC6123");
+//		data.put("hpzl", "02");
+//		data.put("clsbdh", "LGBH52E27HY017233");
+		return ResultHandler.toMyJSON(Constant.ConstantState.STATE_SUCCESS, "根据条码查询车辆信息成功", data);
+	}
+	
+	@UserOperation(code = "findUseCarInfoByBarCode", name = "在用车根据条码查询车辆信息",userOperationEnum=CommonUserOperationEnum.AllLoginUser)
+	@RequestMapping(value = "findUseCarInfoByBarCode", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> findUseCarInfoByBarCode(String barCode){
+		List<Map<String,Object>> list = archivalCaseManager.getCarInfoByBarcode(barCode);
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		List<BaseParams> bps = baseParamsManager.getBaseParamsByType("ywzs");
+		//档案张数
+		int zs = 0;
+		//存放格数
+		int dags = 0;
+		if(!CollectionUtils.isEmpty(list)) {
+			data = list.get(0);
+			
+			List<ArchivalCase> oldCaseList = archivalCaseManager.getArchivalCaseByClsbdh(data.get("CLSBDH").toString());
+			
+			if(!CollectionUtils.isEmpty(oldCaseList)) {
+				//办理过的业务
+				List<Map<String,Object>> blywList = archivalCaseManager.getCarInfoByClsbdh(data.get("CLSBDH").toString());
+					
+				for(Map<String,Object> bl:blywList) {
+					for(BaseParams bp:bps) {
+						if(bp.getParamValue().equals(bl.get("YWLX").toString())) {
+							zs = zs + Integer.parseInt(bp.getParamName());
+							break;
+						}
+					}
+				}
+			}
+			
+			for(BaseParams bp:bps) {
+				if(bp.getParamValue().equals(data.get("YWLX").toString())) {
+					zs = zs + Integer.parseInt(bp.getParamName());
+					break;
+				}
+			}
+			int count = Integer.parseInt(caseCount);
+			dags = (zs%count == 0 ? zs/count : ((zs/count)+1));
+			data.put("dags", dags);
 		}
 		
 //		data.put("hphm", "UC6123");

@@ -33,5 +33,7 @@ public interface IArchivalCaseManager {
 	
 	public List<Map> getNoUsedByArchivesNoAndRackNo(String archivesNo,String rackNo);
 	
+	public List<Map<String,Object>> getCarInfoByClsbdh(String clsbdh);
+	
 
 }

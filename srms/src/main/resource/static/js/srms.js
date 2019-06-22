@@ -48,6 +48,20 @@ function findCarByLsh(lsh){
 	});
 }
 
+function findCarByLsh_Use(lsh){
+	$.post("../../archivalCase/findUseCarInfoByBarCode",{"barCode":lsh},function(data){
+		if (data.state == "1"){
+			$("#rk_hphm").textbox("setValue",data.data['HPHM']);
+			$("#rk_hpzl").combobox("setValue",data.data['HPZL']);	
+			$("#rk_clsbdh").textbox("setValue",data.data['CLSBDH']);
+			$("#rk_ywlx").combobox("setValue",data.data['YWLX']);
+			$("#tjgs").textbox("setValue",data.data['dags']);
+		}
+		
+	},"json").complete(function(){
+	});
+}
+
 function printBQ(printData){
 	
 	$("#l_hphm").text(printData.hphm);

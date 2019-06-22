@@ -65,6 +65,40 @@ public class CustomRepository {
 		return arCase;
 	}
 	
+	/**
+	 * 在用车指定档案格入库
+	 * @param archivalCase
+	 * @return
+	 */
+	public ArchivalCase findSpecialNoUseMultiArchivalCase(ArchivalCase archivalCase){
+		ArchivalCase arCase = null;
+		StringBuffer existSql = new StringBuffer("");
+		StringBuffer inSql = new StringBuffer("");
+		for (int i = 1; i < archivalCase.getCaseNumber(); i++) {
+			existSql.append(" and exists (select 1 from tm_archival_case c1 where c1.archives_no = c.archives_no")
+					.append(" and c1.rack_no = c.rack_no and c1.rack_row = c.rack_row and c1.rack_col = c.rack_col")
+					.append(" and c1.file_no = replace(lpad((to_number(c.file_no)+"+i+"),3),' ','0') ) ");
+			
+			inSql.append(",replace(lpad((to_number(b.file_no)+"+i+"),3),' ','0')");
+		}
+		String sql="select * from (select c.* from tm_archival_case c LEFT JOIN tm_store_room r ON c.rack_no = r.rack_no" + 
+				" where c.archives_no = '"+archivalCase.getArchivesNo()+"' and c.rack_no = '"+archivalCase.getRackNo()+
+				"' and c.rack_row = '"+archivalCase.getRackRow()+"' and c.rack_col = '"+archivalCase.getRackCol()+"' and zt = '0' " + 
+				existSql + 
+				"         order by r.seq," + 
+				"                  c.archives_no," + 
+				"                  c.rack_no," + 
+				"                  c.rack_row," + 
+				"                  c.rack_col," + 
+				"                  c.file_no)" + 
+				"where rownum = 1";
+		List<ArchivalCase> list = jdbcTemplate.query(sql,new BeanPropertyRowMapper(ArchivalCase.class));
+		if(!CollectionUtils.isEmpty(list)) {
+			arCase = list.get(0);
+		}
+		return arCase;
+	}
+	
 	
 	public ArchivalCase findNoUseMultiOtherArchivalCase(ArchivalCase archivalCase){
 		ArchivalCase arCase = null;

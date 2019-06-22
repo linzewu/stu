@@ -207,6 +207,75 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 	@Override
 	public synchronized ArchivalCase UsedCarArchivalCheckIn(ArchivalCase archivalCase) {
 		ArchivalCase acc = new ArchivalCase();
+		List<ArchivalCase> oldCaseList = archivalCaseRepository.getArchivalCaseByClsbdh(archivalCase.getClsbdh());		
+		ArchivalCase caseOne = null;
+		if ((StringUtils.isNotEmpty(archivalCase.getArchivesNo())) && (StringUtils.isNotEmpty(archivalCase.getRackNo()))
+				&& (archivalCase.getRackRow() != null) && (archivalCase.getRackCol() != null)) {
+			caseOne = customRepository.findSpecialNoUseMultiArchivalCase(archivalCase);
+		}else {
+		    caseOne = this.customRepository.findNoUseMultiArchivalCase(archivalCase);
+		}
+		
+		//ArchivalCase caseOne = this.customRepository.findNoUseMultiArchivalCase(archivalCase);
+		if(caseOne != null) {
+			List<String> fileNoList = new ArrayList<String>();
+			String fileNo = caseOne.getFileNo();
+			fileNoList.add(caseOne.getFileNo());
+			for (int i = 1; i < archivalCase.getCaseNumber(); i++) {
+				fileNo = NumberFormatUtil.autoGenericCode(fileNo, 3);
+				fileNoList.add(fileNo);
+			}
+			List<ArchivalCase> caseList = this.archivalCaseRepository.findMultiNoUseArchivalCase(caseOne.getArchivesNo(), caseOne.getRackNo(), caseOne.getRackRow(), caseOne.getRackCol(), fileNoList);
+			String barCode = "";
+			String fileNoStr = "";
+			ArchivalCase registerCase = null;
+			int cou = 0;
+			for(ArchivalCase noUseCase:caseList) {
+				noUseCase.setClsbdh(archivalCase.getClsbdh());
+				noUseCase.setHphm(archivalCase.getHphm());
+				noUseCase.setHpzl(archivalCase.getHpzl());
+				noUseCase.setYwlx(archivalCase.getYwlx());
+				if("".equals(barCode)) {
+//					barCode = noUseCase.getArchivesNo() + "-" + noUseCase.getHpzl() + "-" + noUseCase.getRackNo() + "-"
+//							+ noUseCase.getRackCol() + "-" + noUseCase.getRackRow() + "-" + noUseCase.getFileNo();
+					barCode = noUseCase.getArchivesNo() + noUseCase.getRackNo()
+					+ (noUseCase.getRackCol() < 10 ? ("0" + noUseCase.getRackCol()) : noUseCase.getRackCol())
+					+ (noUseCase.getRackRow() < 10 ? ("0" + noUseCase.getRackRow()) : noUseCase.getRackRow())
+					+ noUseCase.getFileNo();
+				}
+				noUseCase.setBarCode(barCode);
+				noUseCase.setZt(ArchivalCase.ZT_RK);
+				archivalCaseRepository.save(noUseCase);	
+				fileNoStr = "".equals(fileNoStr) ? noUseCase.getFileNo():(fileNoStr+","+noUseCase.getFileNo());
+				if(cou == 0) {
+					registerCase = noUseCase;
+					acc = noUseCase;
+				}
+				cou++;
+				
+			}
+			saveArchivalRegister(registerCase,fileNoStr);
+			//flag = true;
+			
+			//原来的档案格置为未使用
+			if(!CollectionUtils.isEmpty(oldCaseList)) {
+				for(ArchivalCase originCase:oldCaseList) {
+					originCase.setZt(ArchivalCase.ZT_WSY);
+					originCase.setClsbdh("");
+					originCase.setHphm("");
+					originCase.setHpzl("");
+					originCase.setYwlx("");
+					originCase.setBarCode("");
+					archivalCaseRepository.save(originCase);
+				}
+			}
+		}
+		
+		return acc;
+	}
+	/**@Override
+	public synchronized ArchivalCase UsedCarArchivalCheckIn(ArchivalCase archivalCase) {
+		ArchivalCase acc = new ArchivalCase();
 		List<ArchivalCase> oldCaseList = archivalCaseRepository.getArchivalCaseByClsbdh(archivalCase.getClsbdh());
 		if(!CollectionUtils.isEmpty(oldCaseList)) {
 			String fileNoStr = "";
@@ -241,7 +310,7 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 		}	
 		
 		return acc;
-	}
+	}**/
 
 	@Override
 	public List<ArchivalCase> findUseArchivalCase(String zt, String rackNo) {
@@ -345,6 +414,11 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 	@Override
 	public List<Map> getNoUsedByArchivesNoAndRackNo(String archivesNo, String rackNo) {
 		return archivalCaseRepository.getNoUsedByArchivesNoAndRackNo(archivesNo, rackNo);
+	}
+
+	@Override
+	public List<Map<String, Object>> getCarInfoByClsbdh(String clsbdh) {
+		return carInfoRepository.getCarInfoByClsbdh(clsbdh);
 	}
 
 }
