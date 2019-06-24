@@ -148,7 +148,7 @@ public class PreCarRegisterController {
 				}
 			}
 			else {
-				map.put("ggxx", new Object());
+				map.put("ggxx", new JSONObject());
 			}
 		} catch (Exception e) {
 			log.error("获取机动车公告技术参数文本信息异常", e);
@@ -172,7 +172,7 @@ public class PreCarRegisterController {
 				lsh = getlsh();
 				bcr.setLsh(lsh);
 			}
-			/**if (null == bcr.getDpid() || "".equals(bcr.getDpid().trim())) {
+			if (null == bcr.getDpid() || "".equals(bcr.getDpid().trim())) {
 				bcr.setDpid(null);
 			}
 			Map<String,Object> paramdata =MapUtil.object2Map(bcr);
@@ -197,7 +197,7 @@ public class PreCarRegisterController {
 					com.aspose.words.Document doc = Sql2WordUtil.map2WordUtil(template, data,bpsMap);
 					Sql2WordUtil.toCase(doc, cacheDir, "\\report\\template_ptc_01_"+lsh+".jpg");
 				}
-			}**/
+			}
 			
 			
 			return ResultHandler.resultHandle(result, lsh, Constant.ConstantMessage.SAVE_SUCCESS);

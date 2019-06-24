@@ -268,17 +268,23 @@ function loadCLHGZ(barArray, strbarcode) {
 	}
 	dataInfo["clxh"] = barArray[8];
 	if(dataInfo["clxh"] != null && dataInfo["clxh"] != ""){
-		$.post("../../preCarRegister/getGongGaoInfo",{"clxh":dataInfo["clxh"]},function(data){
+		$.post("../../preCarRegister/getGongGaoInfo",{"clxh":dataInfo["clxh"],"clpp1":dataInfo["clpp1"]},function(data){
 			var ggxx = data.ggxx;
+			if (JSON.stringify(ggxx) == "{}"){
+				$.messager.alert("提示","不能获取到公告信息！","info");
+				reloadIndex();
+				return;
+			}
 			if (ggxx != null){
-				$("#ggbh").val(data['bh']);
-				$("#cllx").val(data['cllx']);				
+				$("#ggbh").val(ggxx['bh']);
+				$("#cllx").val(ggxx['cllx']);				
 			}
 			
 		},"json").complete(function(){
 		});
 	}
-	dataInfo["csys"] = barArray[9];
+	//dataInfo["csys"] = "A";
+	//dataInfo["zzg"] = "156";
 
 	dataInfo["clsbdh"] = barArray[13];
 	dataInfo["fdjh"] = barArray[15];
@@ -423,6 +429,154 @@ function shSaveAndPring() {
 	
 	
 	
+}
+
+function getHlj(m_SourceValue, m_zs) {
+	// 是否为数字
+	var newgbthps;
+	var i_lj = 0;
+
+	if (m_SourceValue.length == 0) {
+		return "";
+	}
+	var i_zs = parseInt(m_zs);
+	if (m_SourceValue.indexOf("/") > 0) {
+		var paraArray = m_SourceValue.split("/"); // 根据","分割成字符串数组
+		if (i_zs == 3) {
+			i_lj = parseInt(paraArray[0]);
+		} else {
+			i_lj = parseInt(paraArray[paraArray.length - 2]);
+		}
+	} else {
+		if (m_SourceValue.indexOf("+") > 0) {
+			var paraArray = m_SourceValue.split("+"); // 根据","分割成字符串数组
+			var i;
+			for (i = 0; i < paraArray.length; i++) {
+				if (!isNaN(paraArray[i])) {
+					// 如为数字，直接判断
+					i_lj += parseInt(paraArray[i]);
+				}
+			}
+		} else {
+			i_lj = parseInt(m_SourceValue);
+		}
+	}
+	return i_lj;
+}
+
+function getGbthps(m_SourceValue, m_zxzs) {
+
+	// 是否为数字
+	var newgbthps;
+	var i_gbthps = 0;
+	if (m_SourceValue.length == 0) {
+		return "";
+	}
+	// m_SourceValue="-/"+m_SourceValue;
+	var paraArray = m_SourceValue.split(","); // 根据","分割成字符串数组
+	var i;
+	var j;
+	var k
+	for (i = 0; i < paraArray.length; i++) {
+		if (!isNaN(paraArray[i])) {
+			// 如为数字，直接判断
+			i_gbthps = parseInt(paraArray[i]);
+		} else {
+			i_gbthps = 0;
+			if (paraArray[i].indexOf("/") > -1) {
+
+				for (k = 0; k < m_zxzs; k++) {
+					paraArray[i] = paraArray[i].substr(paraArray[i]
+							.indexOf("/") + 1)
+				}
+				paraArray[i] += "/";
+
+				while (paraArray[i].indexOf("/") > -1) {
+					newgbthps = paraArray[i].substring(0, paraArray[i]
+							.indexOf("/"));
+					if (!isNaN(newgbthps)) {
+						i_gbthps += parseInt(newgbthps);
+					} else {
+						if (newgbthps.indexOf("+") > 0) {
+							var valueSplit = newgbthps.split("+");
+							for (j = 0; j < valueSplit.length; j++) {
+								// 为了应对钢板弹簧片数形式为‘-/8+-’的情况，所以增加valueSplit[j]是否为数字的判断
+								if (!isNaN(valueSplit[j])) {
+									i_gbthps += parseInt(valueSplit[j]);
+								}
+							}
+							// i_gbthps = i_gbthps+(parseInt(valueSplit[0]) +
+							// parseInt(valueSplit[1]));
+						}
+					}
+					paraArray[i] = paraArray[i].substr(paraArray[i]
+							.indexOf("/") + 1);
+				}
+			} else {
+				if (paraArray[i].indexOf("+") > 0) {
+					var valueSplit = paraArray[i].split("+");
+					for (j = 0; j < valueSplit.length; j++) {
+						if (!isNaN(valueSplit[j])) {
+							i_gbthps += parseInt(valueSplit[j]);
+						}
+					}
+					// i_gbthps=parseInt(valueSplit[0]) +
+					// parseInt(valueSplit[1]);
+				}
+			}
+		}
+	}
+	if (i_gbthps == 0) {
+		return "";
+	} else {
+		return i_gbthps;
+	}
+}
+
+function getZj(m_SourceValue) {
+
+	// 是否为数字
+	var newgbthps;
+	var i_zj = 0;
+	if (m_SourceValue.length == 0) {
+		i_zj = 0;
+	}
+	var paraArray = m_SourceValue.split("+"); // 根据","分割成字符串数组
+	var i;
+	for (i = 0; i < paraArray.length; i++) {
+		if (!isNaN(paraArray[i])) {
+			// 如为数字，直接判断
+			i_zj += parseInt(paraArray[i]);
+		}
+	}
+	return i_zj;
+}
+
+function printCYD(option) {
+	var prview=false;
+	var setup=false;
+	if(option){
+		if(option.prview){
+			prview=option.prview
+		}
+		if(option.setup){
+			setup=option.setup
+		}
+	}
+	var LODOP = getLodop(document.getElementById('LODOP_OB'),
+			document.getElementById('LODOP_EM'));
+	LODOP.ADD_PRINT_HTM(-35, 0, 1024, 1200, document
+			.getElementById("printTemplet").innerHTML);
+	
+	if(setup){
+		LODOP.PRINT_SETUP();
+	}else{
+		if(prview){
+			LODOP.PREVIEW();
+		}else{
+			LODOP.PRINT();
+		}
+	}
 }
 </script>
 </html>
