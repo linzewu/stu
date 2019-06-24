@@ -125,13 +125,16 @@ function nextStep(){
 						<input type="hidden" name="syr" id="syr"/>
 						<input type="hidden" name="sfz" id="sfz"/>
 						<input type="hidden" name="dz" id="dz"/>
-						
+						<input type="hidden" name="hpzl" id="hpzl" value='02' />
+						<input type="hidden" name="syxz" id="syxz" value='A' />
 						<input type="hidden" value="A" name="ywlx" id="ywlx"/>
 						<input	type="hidden" id="clsbdh" name="clsbdh">
 						<input	type="hidden" id="hdzk" name="hdzk">
 						<input	type="hidden" id="csys" name="csys">
+						<input	type="hidden" id="zzg" name="zzg">
 						<input	type="hidden" id="clxh" name="clxh">
 						<input	type="hidden" id="ggbh" name="ggbh">
+						<input	type="hidden" id="bh" name="bh">
 						<input	type="hidden" id="cllx" name="cllx">
 					 	                      
 					 	<input	type="hidden" id="hgzbh" name="hgzbh">
@@ -277,14 +280,15 @@ function loadCLHGZ(barArray, strbarcode) {
 			}
 			if (ggxx != null){
 				$("#ggbh").val(ggxx['bh']);
+				$("#bh").val(ggxx['bh']);
 				$("#cllx").val(ggxx['cllx']);				
 			}
 			
 		},"json").complete(function(){
 		});
 	}
-	//dataInfo["csys"] = "A";
-	//dataInfo["zzg"] = "156";
+	dataInfo["csys"] = "A";
+	dataInfo["zzg"] = "156";
 
 	dataInfo["clsbdh"] = barArray[13];
 	dataInfo["fdjh"] = barArray[15];
