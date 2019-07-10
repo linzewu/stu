@@ -113,6 +113,11 @@ public class ArchivalRegisterManagerImpl implements IArchivalRegisterManager {
 
 	@Override
 	public synchronized boolean archivalCheckOut(ArchivalCase archivalCase) {
+		List<BaseParams> bps = baseParamsManager.getBaseParamsByType("sfzyqtdyj");
+		String sfzyStr = "";
+		if(!CollectionUtils.isEmpty(bps)) {
+			sfzyStr = bps.get(0).getParamValue();
+		}
 		List<ArchivalCase> list = this.archivalCaseRepository.getArchivalCaseByBarCode(archivalCase.getBarCode());
 		String fileNoStr = "";
 		if("Y".equals(archivalCase.getZyOther())) {
@@ -194,6 +199,20 @@ public class ArchivalRegisterManagerImpl implements IArchivalRegisterManager {
 					originCase.setBarCode("");
 					archivalCaseRepository.save(originCase);
 				}
+			}
+		}else if (sfzyStr.indexOf(archivalCase.getYwlx()) != -1){
+			for(ArchivalCase originCase:list) {
+				originCase.setZt(ArchivalCase.ZT_WSY);
+				originCase.setClsbdh("");
+				originCase.setHphm("");
+				originCase.setHpzl("");
+				originCase.setYwlx("");
+				originCase.setBarCode("");
+				archivalCaseRepository.save(originCase);
+				fileNoStr = "".equals(fileNoStr) ? originCase.getFileNo():(fileNoStr+","+originCase.getFileNo());
+			}
+			if(!CollectionUtils.isEmpty(list)) {
+				addArchivalRegister(archivalCase,ArchivalCase.ZT_CK,fileNoStr);
 			}
 		}else {
 		

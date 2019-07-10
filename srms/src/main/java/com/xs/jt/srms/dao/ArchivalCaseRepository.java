@@ -43,7 +43,7 @@ public interface ArchivalCaseRepository extends JpaRepository<ArchivalCase, Inte
 	@Query(value = "from ArchivalCase where zt != :zt and rackNo = :rackNo")
 	public List<ArchivalCase> findUseArchivalCase(@Param("zt")String zt,@Param("rackNo")String rackNo);
 	
-	@Query(value = "from ArchivalCase where archivesNo = :archivesNo and rackNo = :rackNo and rackRow = :rackRow and rackCol = :rackCol and fileNo in (:fileNo)")
+	@Query(value = "from ArchivalCase where archivesNo = :archivesNo and rackNo = :rackNo and rackRow = :rackRow and rackCol = :rackCol and fileNo in (:fileNo) order by fileNo asc")
 	public List<ArchivalCase> findMultiNoUseArchivalCase(@Param("archivesNo") String archivesNo,
 			@Param("rackNo") String rackNo, @Param("rackRow") Integer rackRow, @Param("rackCol") Integer rackCol,
 			@Param("fileNo") List<String> fileNo);

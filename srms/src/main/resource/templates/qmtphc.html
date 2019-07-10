@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>申请表</title>
+<style type="text/css">
+.signElement {
+	background-color:white;
+    width:160px;
+    height:80px;
+    margin-left:100px;
+    z-index: 999;
+	position:absolute;
+}
+</style>
+<link rel="stylesheet" href="../static/js/viewer/viewer.min.css">
+<link rel="stylesheet" type="text/css"
+	href="../static/js/easyui/themes/gray/easyui.css">
+<!--[if lt IE 9]>  
+<script src="../static/js/viewer/html5shiv.min.js"></script>  
+<script src="../static/js/viewer/respond.min.js"></script>  
+<![endif]-->  
+
+<script type="text/javascript" src="../static/js/easyui/jquery.min.js"></script>
+<script type="text/javascript" src="../static/js/viewer/viewer.min.js"></script>
+
+<script type="text/javascript" src="../static/js/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../static/js/common.js"></script>
+<script type="text/javascript" src="../bps/all.js"></script>
+</head>
+<body>
+<form action="../photoCompose/composeImage"  method="post" name="myform" id="myform">
+	<img alt="" src="" id="bgdImage">
+	<input type="hidden" name="base64Img" id="base64Img" value="">
+	<div  class="signElement" id="sigD">
+	 <object ID="signObject" border=0  classid="clsid:BFAA2FD5-B6E7-41D0-B104-A433ED33F461" ></object>
+	</div>
+	
+</form>
+<div>	
+	<div style="text-align: center;">
+		<input id="signType" type="hidden"  />
+		<input class="submit_01" type="button" value="确定" onclick="save()" /> 
+		<input class="submit_01" type="button" value="重签" onclick="clearSign()" /> 
+		
+	</div>
+</div>
+</body>
+</html>
+
+<script th:inline="javascript">
+var tempName = [[${tempName}]];
+if("注册申请表" == tempName){
+	$('#sigD').css({'left':'420px','top':'926px'});
+}else if("机动车变更登记备案申请表" == tempName){
+	$('#sigD').css({'left':'460px','top':'882px'});
+}else if("机动车抵押登记质押备案申请表" == tempName){
+	$('#sigD').css({'left':'440px','top':'942px'});
+}else if("机动车牌证申请表" == tempName){
+	$('#sigD').css({'left':'320px','top':'972px'});
+}else if("校车标牌领取表" == tempName){
+	$('#sigD').css({'left':'440px','top':'932px'});
+}
+
+var reqParam = [[${reqParam}]];
+console.log("reqParam:"+reqParam);
+for(var i in reqParam){
+	var temp = document.getElementById("myform");
+    var opt = document.createElement("input");
+    opt.name = i;
+    opt.value = reqParam[i];
+    opt.type = "hidden";
+    // alert(opt.name)
+    temp.appendChild(opt);
+    console.log("i:"+i+" value:"+reqParam[i]);
+}
+
+$("#bgdImage").attr("src","../static/cache/qmtp/"+[[${bgdImage}]]);
+
+$(function(){	
+	initSign();
+});
+
+var m_deviceID=2;
+var ulFormat=2;
+var signZpzlValue='099';
+var proxySignZpzlValue='098';
+function initSign(){
+	
+	var signObject = document.getElementById("signObject");
+    var canvasWidth = 160;
+    var canvasHeight = 80;
+    var initial;
+    initial = signObject.PPL398_InitialDevice(m_deviceID, 0, 0, canvasWidth, canvasHeight);
+    if (initial == 0) {
+        setTimeout(function() {
+        	signObject.PPL398_SetCanvasSize(m_deviceID, 0, 0, canvasWidth, canvasHeight);
+        	signObject.PPL398_SetPenColor(m_deviceID, 0, 0, 0);
+        	signObject.PPL398_EnableSaveVideoData(m_deviceID, true);
+			signObject.PPL398_SetPenWidth(m_deviceID,1);
+            var i = signObject.PPL398_SignatureStatusCallback(m_deviceID, 'jsPPL398_StatusChanged');
+        }, 50);
+        //jsSetCtrStatusByInitial();
+       // InitialSelectOption();
+      //  disabledPointOptions();
+    } else {
+        alert('没有接入签名设备');
+    }
+    //setTimeout("$('.signElement').hide()",1000);
+}
+
+function signClose(){
+	$(".signElement").hide();
+	$("#ScanCtrl").show();
+}
+
+function wClose(){
+	window.close();
+}
+
+function clearSign(){
+	var signObject = document.getElementById("signObject");
+	signObject.PPL398_Clear(m_deviceID);
+}
+/**
+function saveSign(){
+	var signObject = document.getElementById("signObject");
+	var img64 = signObject.PPL398_PacketsBase64Encode(m_deviceID, ulFormat);
+	
+	if(!img64){
+		alert("签名异常！");
+		return;
+	}
+	
+	var ywlx=GetQueryString("ywlx");
+	var lsh=GetQueryString("lsh");
+	var clsbdh=GetQueryString("clsbdh");
+	var hpzl=GetQueryString("hpzl");
+	var hphm=GetQueryString("hphm");
+	var param={};
+	param.ywlx=ywlx;
+	param.lsh=lsh;
+	param.clsbdh=clsbdh;
+	param.hpzl=hpzl;
+	param.hphm=hphm;
+	param.base64Img=img64;
+	param.zplx=$("#signType").val();
+	var zpObj= $("input[name=zplx][value="+param.zplx+"]");
+	var zpid=zpObj.attr("zpid");
+	if(zpid){
+		param.zpid=zpid;
+	}
+	$.post("vehWin/saveImg",param,function(data){
+		if(data.state==1){
+			$(".docs-pictures img[zplx="+data.data.zplx+"]").attr("src","vehWin/getImgById?id="+data.data.id);
+			zpObj.attr("zpid",data.data.id);
+			signClose();
+		}
+	});
+	
+	
+
+}**/
+
+function save(){
+	var signObject = document.getElementById("signObject");
+	var img64 = signObject.PPL398_PacketsBase64Encode(m_deviceID, ulFormat);
+	//String base64="";
+	$("#base64Img").val(img64);
+	//document.myform.submit();
+	$.post("../photoCompose/composeImage",$('#myform').serialize(),function(data){
+		if(data.state==1){
+			//$(".docs-pictures img[zplx="+data.data.zplx+"]").attr("src","/dzyxh/vehWin/getImgById?id="+data.data.id);
+			//zpObj.attr("zpid",data.data.id);
+			$("#bgdImage").attr("src","../static/cache/qmtp/"+data.data);
+			//signClose();
+			wClose();
+		}
+	}).error(function(e){
+		alert(e.toString())
+	});
+}
+</script>

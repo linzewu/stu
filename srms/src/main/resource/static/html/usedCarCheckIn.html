@@ -18,6 +18,14 @@
 			<div data-options="title:'基本信息'" >
 			<form id="usedCarArchivesForm" method="post" novalidate> 
 				<table class="base_table" cellspacing="0" cellpadding="0"> 
+					<tr>
+						<td class="info_title">流水号：</td>
+						<td class="info"><input name="lsh" id="rk_lsh" class="easyui-textbox" >
+							<a href="javascript:queryByLsh_Use()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
+						</td>
+						<td class="info_title">指定档案格：</td>
+						<td class="info"><a href="javascript:checkDAGUsedCar()" class="easyui-linkbutton" data-options="iconCls:'icon-filter'">档案格选择</a><span id="dagusetxt"></span>&nbsp;&nbsp;<a href="javascript:clearDAGUsedCar()" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">清除</a></td>
+					</tr>
 					<tr><td class="info_title">号牌号码：</td>
 						<td class="info"><input name="hphm" id="rk_hphm" class="easyui-textbox" required="true">
 						</td>
@@ -34,14 +42,7 @@
 						<td class="info"><input name="clsbdh" id="rk_clsbdh" class="easyui-textbox" required="true">
 						</td>
 					</tr>
-					<tr>
-						<td class="info_title">流水号：</td>
-						<td class="info"><input name="lsh" id="rk_lsh" class="easyui-textbox" >
-							<a href="javascript:queryByLsh_Use()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
-						</td>
-						<td class="info_title">指定档案格：</td>
-						<td class="info"><a href="javascript:checkDAGUsedCar()" class="easyui-linkbutton" data-options="iconCls:'icon-filter'">档案格选择</a><span id="dagusetxt"></span>&nbsp;&nbsp;<a href="javascript:clearDAGUsedCar()" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">清除</a></td>
-					</tr>
+					
 					<tr>
 						<td class="info_title">推荐格数：</td>
 						<td class="info"><input name="caseNumber" id="tjgs" class="easyui-textbox" ></td>
@@ -186,7 +187,8 @@ function usedCarCheckIn(){
 					$('#datagrid-archiveRegisterUsed').datagrid("reload");
 					
 					//if(data.data.usedCarNewCheckIn == "Y"){
-						printBQ(data.data);
+					printBQ(data.data);
+					$('#rk_lsh').textbox('textbox').focus();
 					//}
 				});
 			}else{
@@ -233,7 +235,7 @@ $(function(){
 		}
 	})
 });
-
+setTimeout("$('#rk_lsh').textbox('textbox').focus();",1000);
 
 function checkDAGUsedCar(){
 	$('#dagUseDlg').dialog('open');

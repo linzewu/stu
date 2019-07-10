@@ -1,0 +1,45 @@
+<style type="text/css">
+.content-gif li{width:192px;height:192px;border:1px solid #EEE;float:left;margin:14px 14px 0 0;position:relative;overflow:hidden;cursor:pointer}
+.content-gif span{width:192px;height:192px;text-align:center;vertical-align:middle;display:table-cell}
+.content-gif span img{margin-top:expression(100-this.height/2)}
+.content-b{width:1100px;line-height:20px;font-size:14px;float:left;margin-bottom:30px;padding:10px 0;overflow:hidden}
+
+</style>
+<div id="eleImg">
+</div>
+
+<script type="text/javascript">
+
+var ctab = $('#elecTab').tabs("getSelected");
+
+
+var lsh = ctab.panel("options").lsh;
+
+$.post("../../electronArchives/getPhotosByLsh",{"lsh":lsh},function(data){
+	if(data.state==1){
+		var photos = data.data;
+		if(photos.length > 0 ){
+			var div = $("<div class='content-b'></div>")
+			var ul=$("<ul id='photoView_"+lsh+"' class='content-gif'></ul>");
+			$.each(photos,function(i,n){
+				var li=$("<li></li>");
+				var span = $("<span></span>");
+				var img = $("<img id='"+n.id+"Img' width='160px' height='160px'/>");
+				img.attr("src","../cache/vehimg/"+n.id+".jpg")
+				span.append(img);
+				li.append(span);
+				ul.append(li);
+			});
+			div.append(ul);
+			ctab.find("#eleImg").append(div);
+			$("#photoView_"+lsh).viewer({});
+		}
+	}else{
+		$.messager.alert("提示",data.message,"error");
+	}
+	
+	
+},"json").complete(function(){
+	$.messager.progress('close');
+});
+</script>

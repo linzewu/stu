@@ -38,6 +38,17 @@ public class SRMSConfig {
 		return new JdbcTemplate(dataSource);
 	}
 	
+	@Bean(name = "imgOraDataSource")
+	@ConfigurationProperties(prefix = "spring.datasource.ora.image")
+	public DataSource oraImageDataSource() {
+		return DataSourceBuilder.create().build();
+	}
+	
+	@Bean(name = "imgOraJdbcTemplate")
+	public JdbcTemplate oraImageJdbcTemplate(@Qualifier("imgOraDataSource") DataSource dataSource) {
+		return new JdbcTemplate(dataSource);
+	}
+	
 	
 
 }

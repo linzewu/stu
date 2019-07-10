@@ -1,0 +1,120 @@
+<style type="text/css">
+.docs-pictures{
+POSITION: absolute;
+}
+.docs-pictures li img { width: 100%;}
+
+.docs-pictures li{ display: inline-block; width: 60px; margin-left: 1%; padding-top: 1%; text-align: center;}
+</style>
+<div class="easyui-layout" fit="true">
+		<div data-options="region:'north'" style="height:75px">
+			<table style="height: 60px">
+				<tr><td align="left" style="width: 300px" >流水号：<input name="lsh" id="sm_lsh" class="easyui-textbox" ></td>
+				    <td align="right" style="width: 120px">车辆识别代号：</td><td style="width: 120px"><input name="clsbdh" id="clsbdh_sm" /> </td>
+				    <td align="right" style="width: 120px">号牌号码：</td><td style="width: 120px"><input name="hphm" id="hphm_sm"></td></tr>
+				<tr><td></td><td align="right">号牌种类：</td><td><input name="hpzl" id="hpzl_sm"></td>
+				    <td align="right">业务类型：</td><td><input name="ywlx" id="ywlx_sm">
+					    <input name="hpzl_hid" id="hpzl_hid" type="hidden">
+					    <input name="ywlx_hid" id="ywlx_hid" type="hidden">
+				    </td></tr>
+				
+			</table>
+		</div>
+		<div data-options="region:'center'">
+			<object classid="clsid:15D142CD-E529-4B01-9D62-22C9A6C00E9B" id="scaner1" width="100%" height="600" codebase="../cabs/ScanOnWeb.cab#version=1,0,0,10"> 
+  			</object>
+		</div>
+		
+		<div data-options="region:'south',split:true" style="height:100px">
+			<div  style="display:block;white-space:nowrap;width:800px;overflow:auto;">
+			 <ul class="docs-pictures" id="photos">
+	            
+          	 </ul>
+		</div>
+		</div>
+</div>
+
+<script type="text/javascript">
+
+function findCarByLsh_sm(lsh){
+	$.post("../../archivalCase/findCarInfoByBarCode",{"barCode":lsh},function(data){
+	
+		if (data.state == "1"){
+			$("#hphm_sm").textbox("setValue",data.data['HPHM']);
+			$("#hpzl_sm").textbox("setValue",comm.getParamNameByValue("hpzl",data.data['HPZL']));	
+			$("#clsbdh_sm").textbox("setValue",data.data['CLSBDH']);
+			$("#ywlx_sm").textbox("setValue",comm.getParamNameByValue("ywlx",data.data['YWLX']));	
+			
+			$("#hpzl_hid").val(data.data['HPZL']);
+			$("#ywlx_hid").val(data.data['YWLX']);
+		}
+		
+	},"json").complete(function(){
+	});
+}
+
+$(function(){
+	$("#sm_lsh").textbox({
+		onChange:function(newValue,oldValue){
+			if(newValue.length >=13){
+				findCarByLsh_sm(newValue);
+			}
+		}
+	});
+	$("#clsbdh_sm").textbox({readonly:true});
+	$("#clsbdh_sm").textbox('textbox').css({"background-color":"#f0f1ef"});
+	$("#hphm_sm").textbox({readonly:true});
+	$("#hphm_sm").textbox('textbox').css({"background-color":"#f0f1ef"});	
+	
+	$("#hpzl_sm").textbox({readonly:true});
+	$("#hpzl_sm").textbox('textbox').css({"background-color":"#f0f1ef"});
+	$("#ywlx_sm").textbox({readonly:true});
+	$("#ywlx_sm").textbox('textbox').css({"background-color":"#f0f1ef"});
+	
+	
+});
+var currIndex = 0;
+function uploadFile(imgIndex){
+   var scanObj = document.getElementById('scaner1');
+   var imgCount = scanObj.imagesCount; 
+   console.log("uploadFile:"+imgIndex);
+
+	  
+    var param={};
+	param.ywlx=$("#ywlx_hid").val();
+	param.lsh=$("#sm_lsh").textbox("getValue");
+	param.clsbdh=$("#clsbdh_sm").textbox("getValue");
+	param.hpzl=$("#hpzl_hid").val();
+	param.hphm=$("#hphm_sm").textbox("getValue");
+	param.base64Img=scanObj.getJpegBase64DataById(imgIndex+1);
+	param.zplx=99;  //其他
+	$.post("../../historyArchivesScan/saveImg",param,function(data){
+		
+		if(data.state==1){
+			var mid = data.data.id;
+			var temp="<li><img  style='width:60px;height:60px;' src=\"data:image/jpeg;base64,"+param.base64Img+"\" ></img><br><input name=\"zplx_"+data.data.id+"\" id=\"zplx_"+data.data.id+"\" style='width:50px;'> </li>";
+			$(".docs-pictures").append(temp);
+			$("#zplx_"+mid).combobox({
+				valueField:'id',
+			    textField:'value',
+			    required:true,
+			    editable:false,
+			    data:comm.getBaseParames('zplx'),
+			    onSelect: function(rec){	            
+		            $.post("../../historyArchivesScan/updateZplx",{id:mid,zplx:rec.id},function(data){		        		
+		        		if(data.state==1){
+		        			$.messager.alert("提示", "修改成功!");
+		        		}
+		            });
+		        }
+			});
+			//$("#zplx_"+mid).combobox("select",data.data.zplx)
+			//$(".docs-pictures img[zplx="+data.data.zplx+"]").attr("src","/dzyxh/vehWin/getImgById?id="+data.data.id);
+			//$("input[name=zplx]:checked").attr("zpid",data.data.id);
+			$("#photos").viewer({});
+		}
+	});
+		
+
+}
+</script>
