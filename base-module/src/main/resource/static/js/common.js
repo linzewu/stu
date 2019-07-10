@@ -356,7 +356,7 @@ function checkbit(data,errors){
 		try{
 			temp=$.parseJSON(data);
 		}catch (e) {
-			console.log("返回非JSON对象");
+			//console.log("返回非JSON对象");
 		}
 	}else{
 		temp=data;

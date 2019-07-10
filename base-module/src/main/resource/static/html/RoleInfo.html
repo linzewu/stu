@@ -63,7 +63,7 @@ $(function(){
 	});**/
 	$.post("../../role/getPowerPoints",function(data){
 		allPowerPoint = data;
-		console.log(data)
+		
 		//analyPoint(data);
 		initEditAttr();
 		if(title=="编辑角色"){
@@ -98,7 +98,7 @@ function analyPoint(data){
 		}
 		return false;
 	};
-	console.log(pwGroup)
+	
 	$.each(pwGroup,function(i,n){
 		var treeObj={};
 		treeObj.text=n[0].model;

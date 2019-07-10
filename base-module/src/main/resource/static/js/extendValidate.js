@@ -133,7 +133,7 @@ $.extend(
 	    },
     	ghValide : {
 			validator : function(value, param) {
-				console.log(param)
+				
 				var bflag=false;
 				
 					var data={};
