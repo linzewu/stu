@@ -50,10 +50,10 @@ function openPlayWin(vid,jyjgbh){
 	
 	
 	$.post("../../videoInfo/getVideoInfoById", {id:vid}, function(data) {
-		console.log(data)
+		
 		if(data.state =="1"){
 			var info = data.data;
-			console.log(info)
+			
 			if(info != null){
 				if(info.videoName == "" || info.videoName == null){
 					$.messager.alert("警告","没有视频文件可进行播放！","warning");

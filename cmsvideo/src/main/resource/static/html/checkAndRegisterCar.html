@@ -125,8 +125,6 @@ function nextStep(){
 						<input type="hidden" name="syr" id="syr"/>
 						<input type="hidden" name="sfz" id="sfz"/>
 						<input type="hidden" name="dz" id="dz"/>
-						<input type="hidden" name="hpzl" id="hpzl" value='02' />
-						<input type="hidden" name="syxz" id="syxz" value='A' />
 						<input type="hidden" value="A" name="ywlx" id="ywlx"/>
 						<input	type="hidden" id="clsbdh" name="clsbdh">
 						<input	type="hidden" id="hdzk" name="hdzk">
@@ -233,7 +231,7 @@ function readQrLabel() {
 			return;
 		}
 	}catch (e) {
-		alert(e);
+		//alert(e);
 		return ;
 	}
 
@@ -287,7 +285,7 @@ function loadCLHGZ(barArray, strbarcode) {
 		},"json").complete(function(){
 		});
 	}
-	dataInfo["csys"] = "A";
+	//dataInfo["csys"] = "A";
 	dataInfo["zzg"] = "156";
 
 	dataInfo["clsbdh"] = barArray[13];

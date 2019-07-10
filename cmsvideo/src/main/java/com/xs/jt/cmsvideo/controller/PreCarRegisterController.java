@@ -177,6 +177,7 @@ public class PreCarRegisterController {
 			}
 			Map<String,Object> paramdata =MapUtil.object2Map(bcr);
 			paramdata.put("xh", "AAAAAAAAAAAAAA");
+			paramdata.put("sfzmhm", bcr.getSfz());
 			Document document = writeData(paramdata,"18CJ9");
 
 			Element root = document.getRootElement();

@@ -141,10 +141,10 @@ function clickLogin(bmdm) {
 		clickLogout();
 	}
 	$.post("../../videoConfig/getVideoConfigByJyjgbh", {jyjgbh:bmdm}, function(data) {
-		console.log(data)
+		
 		if(data.state =="1"){
 			var config = data.data;
-			console.log(config)
+			
 			if(config.length > 0){
 				
 				var szIP = config[0].ip,
@@ -175,8 +175,7 @@ function clickLogin(bmdm) {
 			            }, 10);
 			        },
 			        error: function (status, xmlDoc) {
-			        	console.log("status:"+status)
-			        	console.log("xmlDoc:"+xmlDoc)
+			        	
 			            //showOPInfo(szDeviceIdentify + " 登录失败！", status, xmlDoc);
 			            LogMessage(getErrorMsg(szDeviceIdentify + " 登录失败！",status, xmlDoc));
 			        }
@@ -223,7 +222,7 @@ function getChannelInfo(szDeviceIdentifys) {
                 channel.id=id;
 				channel.name=name;
 				channelList.push(channel);
-				console.log("Camera "+name)
+				
                 //oSel.append("<option value='" + id + "' bZero='false'>" + name + "</option>");
             });
             LogMessage(szDeviceIdentify + " 获取模拟通道成功！");
@@ -250,7 +249,7 @@ function getChannelInfo(szDeviceIdentifys) {
                 if ("" == name) {
                     name = "IPCamera " + (i < 9 ? "0" + (i + 1) : (i + 1));
                 }
-                console.log("IPCamera "+name)
+                
                 channel.id=id;
 				channel.name=name;
 				channelList.push(channel);
@@ -276,7 +275,7 @@ function getChannelInfo(szDeviceIdentifys) {
                 if ("" == name) {
                     name = "Zero Channel " + (i < 9 ? "0" + (i + 1) : (i + 1));
                 }
-                console.log("Zero "+name)
+                
                 if ("true" == $(this).find("enabled").eq(0).text()) {// 过滤禁用的零通道
                     //oSel.append("<option value='" + id + "' bZero='true'>" + name + "</option>");
                     channel.id=id;
@@ -291,12 +290,12 @@ function getChannelInfo(szDeviceIdentifys) {
             LogMessage(getErrorMsg(szDeviceIdentify + " 获取零通道失败！",status, xmlDoc));
         }
     });
-    console.log(channelList)
+    
     changeWndNum(channelList.length);
     monitor_channelCount = channelList.length;
     //$("#input_channel").combobox("loadData",channelList);
     $.each(channelList,function(i,o){
-    	console.log("预览："+i+" "+o.id+"  "+o.name+" "+(1000*(i+1)));
+    	
     	window.setTimeout(function(){
     		clickStartRealPlay(o.id,i);
     		},(500*(i+1)));
@@ -307,7 +306,7 @@ function getChannelInfo(szDeviceIdentifys) {
 //开始预览
 function clickStartRealPlay(channelId,index) {
 	var  m_iNowChanNo =channelId;
-    console.log(m_iNowChanNo);
+    
     if (m_iNowChanNo !="") {
 
     	var szDeviceIdentify = loginDevice;
@@ -348,15 +347,15 @@ function clickStartRealPlay(channelId,index) {
 	    };
 	
 	    if (oWndInfo != null) {// 已经在播放了，先停止
-	    	console.log("oWndInfo:"+oWndInfo)
+	    	
 	        WebVideoCtrl.I_Stop({
 	            success: function () {
-	            	console.log("stop success:")
+	            	
 	                startRealPlay();
 	            }
 	        });
 	    } else {
-	    	console.log("startRealPlay:")
+	    	
 	        startRealPlay();
 	    }
     	
@@ -383,13 +382,13 @@ function changeWndNum(count) {
 function clickLogout() {
     var szDeviceIdentify = loginDevice,
         szInfo = "";
-    console.log("clickLogout:"+szDeviceIdentify)
+    
     if ("" == szDeviceIdentify) {
         return;
     }
 	
     var iRet = WebVideoCtrl.I_Logout(szDeviceIdentify);
-    console.log("clickLogout:"+iRet)
+    
     if (0 == iRet) {
         szInfo = "退出成功！";
 
