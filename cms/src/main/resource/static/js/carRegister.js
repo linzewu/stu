@@ -516,7 +516,7 @@ function loadSFZXX(barArray) {
 
 function loadScanInfo(barArray, strbarcode) {
 	var dataInfo = {};
-	console.log(barArray)
+	
 	dataInfo["hgzbh"] = barArray[2];
 	dataInfo["ccrq"] = barArray[3];
 

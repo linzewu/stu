@@ -29,7 +29,7 @@
 				this.$avatarWrapper = this.$avatarModal.find('.avatar-wrapper');
 				this.$avatarPreview = this.$avatarModal.find('.avatar-preview');
 				this.init();
-				console.log(this);
+				
 			}
 			CropAvatar.prototype = {
 				constructor : CropAvatar,
@@ -80,13 +80,13 @@
 							try {
 								data = $(this).contents().find('body').text();
 							} catch (e) {
-								console.log(e.message);
+								//console.log(e.message);
 							}
 							if (data) {
 								try {
 									data = $.parseJSON(data);
 								} catch (e) {
-									console.log(e.message);
+									//console.log(e.message);
 								}
 								_this.submitDone(data);
 							} else {
@@ -210,7 +210,7 @@
 					this.$loading.fadeIn();
 				},
 				submitDone : function(data) {
-					console.log(data);
+					
 					if ($.isPlainObject(data) && data.state === 200) {
 						if (data.result) {
 							this.url = data.result;
