@@ -12,11 +12,7 @@ function openWinOfyx(){
 	var ywlx=$("form[name=tmri] input[name=ywlx]").val();
 	var lsh=$("form[name=agentInfoForm] input[name=lsh]").val();
 	
-	console.log("hphm:"+hphm);
-	console.log("hpzl:"+hpzl);
-	console.log("clsbdh:"+clsbdh);
-	console.log("ywlx:"+ywlx);
-	console.log("lsh:"+lsh);
+	
 	if(clsbdh==""){
 		alert("车辆识别代号不能为空！");
 		return false;

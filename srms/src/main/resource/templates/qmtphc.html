@@ -63,7 +63,7 @@ if("注册申请表" == tempName){
 }
 
 var reqParam = [[${reqParam}]];
-console.log("reqParam:"+reqParam);
+
 for(var i in reqParam){
 	var temp = document.getElementById("myform");
     var opt = document.createElement("input");
@@ -72,7 +72,7 @@ for(var i in reqParam){
     opt.type = "hidden";
     // alert(opt.name)
     temp.appendChild(opt);
-    console.log("i:"+i+" value:"+reqParam[i]);
+    
 }
 
 $("#bgdImage").attr("src","../static/cache/qmtp/"+[[${bgdImage}]]);

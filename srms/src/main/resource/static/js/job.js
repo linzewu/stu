@@ -9,7 +9,7 @@ function getImgCount(){
 	if($.trim(lsh)!="" && imgCount > currIndex){
 		setTimeout(function(){
 			uploadFile(index);
-			console.log("timeoutgetImgCount:"+currIndex);
+			
 		}, 500);
 		currIndex++;
 	}
