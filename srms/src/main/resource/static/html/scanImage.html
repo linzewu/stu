@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+.docs-pictures{
+POSITION: absolute;
+}
+.docs-pictures li img { width: 100%;}
+
+.docs-pictures li{ display: inline-block; width: 60px; margin-left: 1%; padding-top: 1%; text-align: center;}
+</style>
+<link rel="stylesheet" type="text/css"
+	href="../js/easyui/themes/gray/easyui.css">
+
+
+<script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+<script type="text/javascript" src="../js/json2.js"></script>
+<script type="text/javascript"
+	src="../js/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript"
+	src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="Resources/dynamsoft.webtwain.initiate.js"></script>
+<script type="text/javascript" src="../js/common.js"></script>
+<script type="text/javascript" src="../js/extendValidate.js"></script>
+<script type="text/javascript" src="../../bps/all.js"></script>
+</head>
+<body>
+
+
+<div class="easyui-layout" fit="true">
+		<div data-options="region:'north'" style="height:75px">
+			<table style="height: 60px">
+				<tr><td align="left" style="width: 400px" >流水号：<input name="lsh" id="sm_lsh" class="easyui-textbox" >
+					<!--<a href="javascript:queryBySmLsh()" class="easyui-linkbutton">查询</a>-->
+					<a href="javascript:clearAll()" class="easyui-linkbutton">清空</a>
+					</td>
+				    <td align="right" style="width: 120px">车辆识别代号：</td><td style="width: 120px"><input name="clsbdh" id="clsbdh_sm" /> </td>
+				    <td align="right" style="width: 120px">号牌号码：</td><td style="width: 120px"><input name="hphm" id="hphm_sm"></td></tr>
+				<tr><td></td><td align="right">号牌种类：</td><td><input name="hpzl" id="hpzl_sm"></td>
+				    <td align="right">业务类型：</td><td><input name="ywlx" id="ywlx_sm">
+					    <input name="hpzl_hid" id="hpzl_hid" type="hidden">
+					    <input name="ywlx_hid" id="ywlx_hid" type="hidden">
+				    </td></tr>
+				
+			</table>
+		</div>
+		<div data-options="region:'center'">
+			<!--<object classid="clsid:15D142CD-E529-4B01-9D62-22C9A6C00E9B" id="scaner1" width="100%" height="600" codebase="../cabs/ScanOnWeb.cab#version=1,0,0,10"> 
+  			</object>-->
+  			<!--<select size="1" id="source" style="position: relative; width: 220px;"></select>-->
+  			<input id="source" class="easyui-combobox"  style="position: relative; width: 220px;" data-options="                       
+                        valueField:'value',
+                        textField:'text',                       
+                    ">
+  			<a href="#" class="easyui-linkbutton"  onclick="AcquireImage()">扫描</a>
+  			<label for="BW">
+		        <input type="radio" id="BW" name="PixelType">黑白 </label>
+		    <label for="Gray">
+		        <input type="radio" id="Gray" name="PixelType">灰色</label>
+		    <label for="RGB">
+		        <input type="radio" id="RGB" name="PixelType" checked="checked">彩色</label>
+		     <!--<input type="button" value="Scan" onclick="AcquireImage();" />
+		    <input type="button" value="Load" onclick="LoadImage();" />-->
+		
+		    <div style="width: 960px; display: block;">
+		
+		        <!-- dwtcontrolContainer is the default div id for Dynamic Web TWAIN control.
+		        If you need to rename the id, you should also change the id in the dynamsoft.webtwain.config.js accordingly. -->
+		        <div id="dwtcontrolContainer"></div>
+		
+		        <div>
+		        	<a href="#" class="easyui-linkbutton"  onclick="btnFirstImage_onclick()"> |< </a>
+		        	<a href="#" class="easyui-linkbutton"  onclick="btnPreImage_onclick()"> < </a>
+		        	<input type="text" size="2" id="DW_CurrentImage" readonly="readonly" value="0" />
+		            /
+		            <input type="text" size="2" id="DW_TotalImage" readonly="readonly" value="0" />
+		        	<a href="#" class="easyui-linkbutton"  onclick="btnNextImage_onclick()"> > </a>
+		        	<a href="#" class="easyui-linkbutton"  onclick="btnLastImage_onclick()"> >| </a>
+		        <!--
+		            <input onclick="btnFirstImage_onclick()" type="button" value=" |< " />
+		            <input onclick="btnPreImage_onclick()" type="button" value=" < " />
+		            <input type="text" size="2" id="DW_CurrentImage" readonly="readonly" value="0" />
+		            /
+		            <input type="text" size="2" id="DW_TotalImage" readonly="readonly" value="0" />
+		            <input onclick="btnNextImage_onclick()" type="button" value=" > " />
+		            <input onclick="btnLastImage_onclick()" type="button" value=" >| " />
+		            
+		            <select size="1" id="DW_PreviewMode" onchange="setlPreviewMode();">-->
+		            <select class="easyui-combobox" id="DW_PreviewMode" label="预览模式:" labelPosition="left" style="width: 180px;" data-options="onSelect:setlPreviewMode">
+		                <option value="0">1X1</option>
+		                <option value="1">2X2</option>
+		                <option value="2" selected="selected">3X3</option>
+		                <option value="3">4X4</option>
+		                <option value="4">5X5</option>
+		                <option value="5">6X6</option>
+		                <option value="6">7X7</option>
+		                <option value="7">8X8</option>
+		            </select>
+		            &nbsp;&nbsp;&nbsp;&nbsp;
+		            <input id="quer_zplx" label="照片类型:" labelPosition="left"  prompt='请选择照片类型' data-options="data:comm.getBaseParames('zplx'),	valueField: 'id',
+		textField: 'value'"  class="easyui-combobox" style="width: 220px;">
+		        </div>
+		    </div>
+			<a class="easyui-linkbutton" onclick="btnRemoveSelectedImages_onclick()" >删除选中图片</a>
+			<a class="easyui-linkbutton" onclick="btnRemoveAllImages_onclick()" >删除所有图片</a>
+		</div>
+</div>
+<script type="text/javascript" src="Resources/dynamsoft.webtwain.config.js"></script>
+<script type="text/javascript">
+var lshflag = false;
+var imgIdArr = [];
+function findCarByLsh_sm(lsh){
+	$.post("../../archivalCase/findCarInfoByBarCode",{"barCode":lsh},function(data){
+		if (data.state == "1"){
+			if(!$.isEmptyObject(data)){
+				lshflag = true;
+			}else{
+				lshflag = false;
+			}
+			imgIdArr = [];
+			$("#hphm_sm").textbox("setValue",data.data['HPHM']);
+			$("#hpzl_sm").textbox("setValue",comm.getParamNameByValue("hpzl",data.data['HPZL']));	
+			$("#clsbdh_sm").textbox("setValue",data.data['CLSBDH']);
+			$("#ywlx_sm").textbox("setValue",comm.getParamNameByValue("ywlx",data.data['YWLX']));	
+			
+			$("#hpzl_hid").val(data.data['HPZL']);
+			$("#ywlx_hid").val(data.data['YWLX']);
+			getVehImgMapByLsh(lsh);
+		}
+		
+	},"json").complete(function(){
+	});
+}
+
+function getVehImgMapByLsh(lsh){
+	$.post("../../historyArchivesScan/getVehImgMapByLsh",{"lsh":lsh},function(data){		
+		if (data.state == "1"){
+			$.each(data.data,function(i,n){
+				imgIdArr.push(n.id);
+				setTimeout(function(){
+					getImgById(n.id);
+				 }, (i*300));
+				
+			});
+			
+		}
+		
+	},"json").complete(function(){
+	});
+}
+
+function getImgById(id){
+	$.post("../../historyArchivesScan/getImgById",{"id":id},function(data1){		
+		if (data1.state == "1"){
+			if (DWObject) {
+		        var strHTTPServer = location.hostname; 
+		        var downloadfilename = "/srms/static/cache/vehimg/"+id+".jpg";
+		        DWObject.HTTPPort = location.port == "" ? 8081 : location.port;
+		        
+		        DWObject.HTTPDownload(strHTTPServer, downloadfilename, function(){
+		        	
+		        	
+		        	
+		        }, OnDownloadFailure);
+		    }
+		}
+		
+	},"json").complete(function(){
+	});
+}
+
+function queryBySmLsh(){
+	if($("#sm_lsh").textbox("getValue") == ""){
+		$.messager.alert("提示", "流水号不能为空!");
+		return;
+	}else{
+		DWObject.RemoveAllImages();
+	    document.getElementById("DW_TotalImage").value = "0";
+	    document.getElementById("DW_CurrentImage").value = "0";
+	    findCarByLsh_sm($("#sm_lsh").textbox("getValue"));
+	}
+}
+
+function clearAll(){
+	DWObject.RemoveAllImages();
+    document.getElementById("DW_TotalImage").value = "0";
+    document.getElementById("DW_CurrentImage").value = "0";
+    $("#hphm_sm").textbox("setValue","");
+	$("#hpzl_sm").textbox("setValue","");	
+	$("#clsbdh_sm").textbox("setValue","");
+	$("#ywlx_sm").textbox("setValue","");	
+	$("#sm_lsh").textbox("setValue","")
+	$("#hpzl_hid").val("");
+	$("#ywlx_hid").val("");
+	imgIdArr = [];
+}
+
+$(function(){
+	$("#sm_lsh").textbox({
+		onChange:function(newValue,oldValue){
+			if(newValue.length >=13){				
+				DWObject.RemoveAllImages();
+		        document.getElementById("DW_TotalImage").value = "0";
+		        document.getElementById("DW_CurrentImage").value = "0";
+		        findCarByLsh_sm(newValue);
+			}
+		}
+	});
+	$("#clsbdh_sm").textbox({readonly:true});
+	$("#clsbdh_sm").textbox('textbox').css({"background-color":"#f0f1ef"});
+	$("#hphm_sm").textbox({readonly:true});
+	$("#hphm_sm").textbox('textbox').css({"background-color":"#f0f1ef"});	
+	
+	$("#hpzl_sm").textbox({readonly:true});
+	$("#hpzl_sm").textbox('textbox').css({"background-color":"#f0f1ef"});
+	$("#ywlx_sm").textbox({readonly:true});
+	$("#ywlx_sm").textbox('textbox').css({"background-color":"#f0f1ef"});
+	
+	$("#quer_zplx").combobox({
+		onSelect:function(record){
+			if (DWObject) {
+				var currIndex = DWObject.CurrentImageIndexInBuffer;
+				
+				$.post("../../historyArchivesScan/updateZplx",{id:imgIdArr[currIndex],zplx:record.id},function(data){		        		
+	        		if(data.state==1){
+	        			$.messager.alert("提示", "修改成功!");
+	        		}
+	            });
+			}
+		}
+	})
+});
+/**
+var currIndex = 0;
+
+function uploadFile(imgIndex){
+   var scanObj = document.getElementById('scaner1');
+   var imgCount = scanObj.imagesCount; 
+   console.log("uploadFile:"+imgIndex);
+
+	  
+    var param={};
+	param.ywlx=$("#ywlx_hid").val();
+	param.lsh=$("#sm_lsh").textbox("getValue");
+	param.clsbdh=$("#clsbdh_sm").textbox("getValue");
+	param.hpzl=$("#hpzl_hid").val();
+	param.hphm=$("#hphm_sm").textbox("getValue");
+	param.base64Img=scanObj.getJpegBase64DataById(imgIndex+1);
+	param.zplx=99;  //其他
+	$.post("../../historyArchivesScan/saveImg",param,function(data){
+		
+		if(data.state==1){
+			var mid = data.data.id;
+			var temp="<li><img  style='width:60px;height:60px;' src=\"data:image/jpeg;base64,"+param.base64Img+"\" ></img><br><input name=\"zplx_"+data.data.id+"\" id=\"zplx_"+data.data.id+"\" style='width:50px;'> </li>";
+			$(".docs-pictures").append(temp);
+			$("#zplx_"+mid).combobox({
+				valueField:'id',
+			    textField:'value',
+			    required:true,
+			    editable:false,
+			    data:comm.getBaseParames('zplx'),
+			    onSelect: function(rec){	            
+		            $.post("../../historyArchivesScan/updateZplx",{id:mid,zplx:rec.id},function(data){		        		
+		        		if(data.state==1){
+		        			$.messager.alert("提示", "修改成功!");
+		        		}
+		            });
+		        }
+			});
+			//$("#zplx_"+mid).combobox("select",data.data.zplx)
+			//$(".docs-pictures img[zplx="+data.data.zplx+"]").attr("src","/dzyxh/vehWin/getImgById?id="+data.data.id);
+			//$("input[name=zplx]:checked").attr("zpid",data.data.id);
+			$("#photos").viewer({});
+		}
+	});
+		
+
+}**/
+
+
+ var DWObject;
+
+ function Dynamsoft_OnReady() {
+ 	
+     DWObject = Dynamsoft.WebTwainEnv.GetWebTwain(dwcId); // Get the Dynamic Web TWAIN object that is embeded in the div with id 'dwtcontrolContainer'
+     DWObject.SetViewMode(3, 3);
+     DWObject.Width = 1150;
+     DWObject.Height = 400;
+     if (DWObject) {
+    	 DWObject.IfShowUI = false;
+         var count = DWObject.SourceCount; // Get how many sources are installed in the system
+         var sourceArr = [];
+         for (var i = 0; i < count; i++){
+        	 var sourceObj = {};
+        	 sourceObj.value = i+"";
+        	 sourceObj.text = DWObject.GetSourceNameItems(i);
+        	 sourceArr.push(sourceObj);
+         }
+         $("#source").combobox("loadData",sourceArr);
+         if(sourceArr.length > 0){
+        	 $("#source").combobox("setValue","0");
+         }
+             //document.getElementById("source").options.add(new Option(DWObject.GetSourceNameItems(i), i)); // Add the sources in a drop-down list
+
+         // The event OnPostTransfer fires after each image is scanned and transferred
+         DWObject.RegisterEvent("OnPostTransfer", function () {
+        	 UploadImage();
+             updatePageInfo();
+         });
+       
+
+         // The event OnPostLoad fires after the images from a local directory have been loaded into the control
+         DWObject.RegisterEvent("OnPostLoad", function () {
+             updatePageInfo();
+         });
+
+         // The event OnMouseClick fires when the mouse clicks on an image on Dynamic Web TWAIN viewer
+         DWObject.RegisterEvent("OnMouseClick", function (sImageIndex) {
+             updatePageInfo();
+             
+         });
+
+         // The event OnTopImageInTheViewChanged fires when the top image currently displayed in the viewer changes
+         DWObject.RegisterEvent("OnTopImageInTheViewChanged", function (index) {
+             DWObject.CurrentImageIndexInBuffer = index;
+             updatePageInfo();
+         });
+         
+         DWObject.RegisterEvent('OnMouseDoubleClick', function(sImageIndex){
+        	 ShowImageEditor();
+         });
+         
+         
+     }
+ }
+ 
+ function UploadImage() {
+	    if (DWObject) {
+	        // If no image in buffer, return the function
+	        if (DWObject.HowManyImagesInBuffer == 0)
+	            return;
+	 
+	        var strHTTPServer = location.hostname;
+	        var CurrentPathName = unescape(location.pathname);
+	        var CurrentPath = CurrentPathName.substring(0, CurrentPathName.lastIndexOf("/") + 1);
+	        var strActionPage = CurrentPath + "../../historyArchivesScan/saveVehImg";
+	        DWObject.IfSSL = false; // Set whether SSL is used
+	        DWObject.HTTPPort = location.port == "" ? 8081 : location.port;
+	        var Digital = new Date();
+	        var uploadfilename = Digital.getMilliseconds();
+	        
+	        // Upload the image(s) to the server asynchronously
+	        //Upload image in JPEG
+	        DWObject.SetHTTPFormField("hphm", $("#hphm_sm").textbox("getValue"));
+	        DWObject.SetHTTPFormField("ywlx", $("#ywlx_hid").val());
+	        DWObject.SetHTTPFormField("lsh", $("#sm_lsh").textbox("getValue"));
+	        DWObject.SetHTTPFormField("clsbdh", $("#clsbdh_sm").textbox("getValue"));
+	        DWObject.SetHTTPFormField("hpzl", $("#hpzl_hid").val());
+	    	//param.base64Img=scanObj.getJpegBase64DataById(imgIndex+1);
+	    	DWObject.SetHTTPFormField("zplx", 99);  //其他
+	    	
+            //1 is B&W, 8 is Gray, 24 is RGB
+            if (DWObject.GetImageBitDepth(DWObject.CurrentImageIndexInBuffer) == 1){
+                //If so, convert the image to Gray
+                DWObject.ConvertToGrayScale(DWObject.CurrentImageIndexInBuffer);
+            }
+	        DWObject.HTTPUploadThroughPost(strHTTPServer, DWObject.CurrentImageIndexInBuffer, strActionPage, uploadfilename + ".jpg", OnHttpUploadSuccess, OnHttpUploadFailure);
+	        
+	    }
+	} 
+ 
+    function OnHttpUploadSuccess() {
+	 DWObject.CreateTextFont(400, 320, 0, 0, 30, 0, 0, 0, 0, 0, 0, 0, 0, "Arial");
+	 DWObject.AddText(DWObject.CurrentImageIndexInBuffer, 100, 100, '√', 0x5eb705, 0xffffff, 0.5, 0.5);
+	}
+	function OnHttpUploadFailure(errorCode, errorString, sHttpResponse) {
+		var res = $.parseJSON(sHttpResponse);
+		if(res.state == 1){
+			DWObject.CreateTextFont(400, 320, 0, 0, 30, 0, 0, 0, 0, 0, 0, 0, 0, "Arial");
+			DWObject.AddText(DWObject.CurrentImageIndexInBuffer, 100, 100, '√', 0x5eb705, 0xffffff, 0.5, 0.5);
+			imgIdArr.push(res.data);
+		}else{
+			DWObject.CreateTextFont(400, 320, 0, 0, 30, 0, 0, 0, 0, 0, 0, 0, 0, "Arial");
+			DWObject.AddText(DWObject.CurrentImageIndexInBuffer, 100, 100, 'X', 0x0000ff, 0xffffff, 0.5, 0.5);
+			imgIdArr.push("");
+		}
+	}
+	
+	function OnDownloadFailure(errorCode, errorString) {
+	    alert(errorString);
+	}
+ 
+ function ShowImageEditor() {
+	    if (DWObject) {
+	        if (DWObject.HowManyImagesInBuffer == 0)
+	            alert("There is no image in buffer.");
+	        else
+	            DWObject.ShowImageEditor();
+	    }
+	}       
+
+  function AcquireImage() {
+	  
+	  if(!lshflag){
+ 		 $.messager.alert("提示", "无法匹配流水数据!");
+ 		 return;
+ 	 }
+     if (DWObject) {    	
+    	
+    	 //alert(document.getElementById("source").selectedIndex)
+          DWObject.SelectSourceByIndex(parseInt($("#source").combobox("getValue")));//(document.getElementById("source").selectedIndex);
+          DWObject.OpenSource();
+          DWObject.IfDisableSourceAfterAcquire = true;	// Scanner source will be disabled/closed automatically after the scan.
+        //Pixel type
+          if (document.getElementById("BW").checked)
+              DWObject.PixelType = EnumDWT_PixelType.TWPT_BW;
+          else if (document.getElementById("Gray").checked)
+              DWObject.PixelType = EnumDWT_PixelType.TWPT_GRAY;
+          else if (document.getElementById("RGB").checked)
+              DWObject.PixelType = EnumDWT_PixelType.TWPT_RGB;
+          DWObject.AcquireImage();
+      }
+  }
+  
+  function DownloadImage() {
+	    if (DWObject) {
+	        var strHTTPServer = location.hostname; 
+	        var downloadfilename = 
+	                location.pathname.substring(0, location.pathname.lastIndexOf('/'))
+	                + "/Resources/reference/imgs/img.png";
+	        DWObject.HTTPPort = location.port == "" ? 80 : location.port;
+	 
+	        DWObject.HTTPDownload(strHTTPServer, downloadfilename, OnSuccess, OnFailure);
+	    }
+	} 
+
+  //Callback functions for async APIs
+  function OnSuccess() {
+      //console.log('successful');
+  }
+
+  function OnFailure(errorCode, errorString) {
+      alert(errorString);
+  }
+
+  function LoadImage() {
+      if (DWObject) {
+          DWObject.IfShowFileDialog = true; // Open the system's file dialog to load image
+          DWObject.LoadImageEx("", EnumDWT_ImageType.IT_ALL, OnSuccess, OnFailure); // Load images in all supported formats (.bmp, .jpg, .tif, .png, .pdf). OnSuccess or OnFailure will be called after the operation
+      }
+  }
+
+  function btnPreImage_onclick() {
+      if (DWObject) {
+          if (DWObject.HowManyImagesInBuffer > 0) {
+              DWObject.CurrentImageIndexInBuffer = DWObject.CurrentImageIndexInBuffer - 1;
+              updatePageInfo();
+          }
+      }
+  }
+
+  function btnNextImage_onclick() {
+      if (DWObject) {
+          if (DWObject.HowManyImagesInBuffer > 0) {
+              DWObject.CurrentImageIndexInBuffer = DWObject.CurrentImageIndexInBuffer + 1;
+              updatePageInfo();
+          }
+      }
+  }
+
+  function btnFirstImage_onclick() {
+      if (DWObject) {
+          if (DWObject.HowManyImagesInBuffer != 0 && DWObject.CurrentImageIndexInBuffer != 0) {
+              DWObject.CurrentImageIndexInBuffer = 0;
+              updatePageInfo();
+          }
+      }
+  }
+
+  function btnLastImage_onclick() {
+      if (DWObject) {
+          if (DWObject.HowManyImagesInBuffer > 0) {
+              DWObject.CurrentImageIndexInBuffer = DWObject.HowManyImagesInBuffer - 1;
+              updatePageInfo();
+          }
+      }
+  }
+  function setlPreviewMode(record) {
+      if (DWObject) {
+    	  var txtArr = record.text.split("X");
+          //var o = parseInt(document.getElementById("DW_PreviewMode").selectedIndex + 1);
+          DWObject.SetViewMode(txtArr[0], txtArr[1]);
+      }
+  }
+
+  function btnRemoveSelectedImages_onclick() {
+	  if(!lshflag){
+	 		 $.messager.alert("提示", "无法匹配流水数据!");
+	 		 return;
+	  }
+	  if(DWObject.CurrentImageIndexInBuffer == -1){
+		  $.messager.alert("提示", "请选择图片进行删除!");
+	 	  return;
+	  }
+	  $.messager.confirm('删除图片', '确定删除该图片?', function(r){
+          if (r){
+        	  if (DWObject) {
+        		  var currIndex = DWObject.CurrentImageIndexInBuffer;
+        		  
+            	  $.post("../../historyArchivesScan/deleteVehImgById",{id:imgIdArr[currIndex]},function(data){		        		
+              		if(data.state==1){
+              			$.messager.alert("提示", "删除图片成功!");
+              			imgIdArr.splice(currIndex,1);
+              			DWObject.RemoveAllSelectedImages();
+                        if (DWObject.HowManyImagesInBuffer == 0) {
+                            document.getElementById("DW_CurrentImage").value = "0";
+                            document.getElementById("DW_TotalImage").value = "0";
+                        }
+                        else {
+                            updatePageInfo();
+                        }
+              		}
+              		
+                  });
+                  
+              }
+          }
+      });
+	  
+      
+  }
+
+  function btnRemoveAllImages_onclick() {
+	  if(!lshflag){
+	 		 $.messager.alert("提示", "无法匹配流水数据!");
+	 		 return;
+	  }
+	  $.messager.confirm('删除图片', '确定删除该流水对应的所有图片?', function(r){
+          if (r){
+        	  if (DWObject) {
+            	  
+            	  $.post("../../historyArchivesScan/deleteVehImgByLsh",{lsh:$("#sm_lsh").textbox("getValue")},function(data){		        		
+              		if(data.state==1){
+              			$.messager.alert("提示", "删除所有成功!");
+              			DWObject.RemoveAllImages();
+                        document.getElementById("DW_TotalImage").value = "0";
+                        document.getElementById("DW_CurrentImage").value = "0";
+              			$("#hphm_sm").textbox("setValue","");
+            			$("#hpzl_sm").textbox("setValue","");	
+            			$("#clsbdh_sm").textbox("setValue","");
+            			$("#ywlx_sm").textbox("setValue","");	
+            			$("#sm_lsh").textbox("setValue","")
+            			$("#hpzl_hid").val("");
+            			$("#ywlx_hid").val("");
+              		}
+                  });
+                  
+              }
+          }
+      });
+      
+  }
+
+  function updatePageInfo() {
+      if (DWObject) {
+          document.getElementById("DW_TotalImage").value = DWObject.HowManyImagesInBuffer;
+          document.getElementById("DW_CurrentImage").value = DWObject.CurrentImageIndexInBuffer + 1;
+      }
+  }
+  
+///////////////////////////scan
+Dynamsoft.WebTwainEnv.RegisterEvent('OnWebTwainReady', Dynamsoft_OnReady); // Register OnWebTwainReady event. This event fires as soon as Dynamic Web TWAIN is initialized and ready to be used
+
+</script>
+
+</body>
+</html>

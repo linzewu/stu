@@ -206,7 +206,7 @@ public class ArchivalCaseManagerImpl implements IArchivalCaseManager {
 
 	@Override
 	public synchronized ArchivalCase UsedCarArchivalCheckIn(ArchivalCase archivalCase) {
-		ArchivalCase acc = new ArchivalCase();
+		ArchivalCase acc = null;
 		List<ArchivalCase> oldCaseList = archivalCaseRepository.getArchivalCaseByClsbdh(archivalCase.getClsbdh());		
 		ArchivalCase caseOne = null;
 		if ((StringUtils.isNotEmpty(archivalCase.getArchivesNo())) && (StringUtils.isNotEmpty(archivalCase.getRackNo()))

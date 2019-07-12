@@ -211,4 +211,84 @@ public class Sql2WordUtil {
 		}
 		return (String) map.get(key);
 	}
+	
+	
+	public static Document map2WordUtil2(final String template,Map<String,Object> data) throws Exception{
+		
+		Document doc=null;
+		if(data!=null) {
+			 doc = createTemplate2(template,data);
+		}
+		return doc;
+	}
+	
+	public static Document createTemplate2(String template,Map<String, Object> data) throws Exception {
+		
+		InputStream wordTemplate = Sql2WordUtil.class.getClassLoader().getResourceAsStream(template);
+		Document doc = new Document(wordTemplate);
+		NodeCollection shapeCollection = doc.getChildNodes(NodeType.SHAPE, true);// 查询文档中所有wmf图片
+		Node[] shapes = shapeCollection.toArray();// 序列化
+		
+		for(Node node:shapes) {
+			Shape shape = (Shape) node;
+			com.aspose.words.ImageData i = shape.getImageData();// 获得图片数据
+			Object imgObj=data.get(shape.getAlternativeText()); 
+			if(imgObj==null) {
+				continue;
+			}
+			if(imgObj instanceof Proxy) {
+				SerializableBlobProxy proxy = (SerializableBlobProxy) Proxy.getInvocationHandler(imgObj);
+				Blob blob =proxy.getWrappedBlob();
+				if (blob!=null) {// 如果shape类型是ole类型
+					InputStream inStream = blob.getBinaryStream();
+					i.setImage(inStream);
+				}
+			}
+			
+			if(imgObj instanceof InputStream) {
+				InputStream inStream =(InputStream)imgObj;
+				i.setImage(inStream);
+			}
+			
+		}
+		
+		// 填充文字
+		if (data != null) {
+			
+			String[] fieldNames =  doc.getMailMerge().getFieldNames();
+			Object[] fieldValues = new Object[fieldNames.length];
+			int i=0;
+			for(String fieldName:fieldNames) {
+				if(fieldName.indexOf("CK##")==0) {
+					String[] temp = fieldName.split("##");
+					String value=temp[1];
+					String key =temp[2].toLowerCase();
+					fieldValues[i]=(String)data.get(key);
+					if(value.equals(fieldValues[i])) {
+						fieldValues[i]="☑";
+					}else {
+						fieldValues[i]="□";
+					}
+				}
+//				else if(bpsMap!=null&&bpsMap.containsKey(fieldName.toLowerCase())){
+//					
+//					fieldValues[i] = translateParamVlaue(data.get(fieldName),bpsMap.get(fieldName.toLowerCase()));
+//					
+//				}
+				else {
+					fieldValues[i] = translateMapValue(data, fieldName.toLowerCase());
+				}
+				i++;
+			}
+			
+			// 合并模版，相当于页面的渲染
+			doc.getMailMerge().execute(fieldNames, fieldValues);
+			
+			
+		}
+		return doc;
+		
+	}
+
+
 }

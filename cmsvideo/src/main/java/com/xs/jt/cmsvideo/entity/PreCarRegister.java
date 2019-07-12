@@ -179,6 +179,9 @@ public class PreCarRegister extends BaseEntity {
 	@Transient
 	private boolean sdzt;
 	
+	@Transient
+	private String bh;
+	
 	
 
 	public String getStationCode() {
@@ -617,6 +620,16 @@ public class PreCarRegister extends BaseEntity {
 
 	public void setSjhm(String sjhm) {
 		this.sjhm = sjhm;
+	}
+
+
+	public String getBh() {
+		return bh;
+	}
+
+
+	public void setBh(String bh) {
+		this.bh = bh;
 	}
 
 

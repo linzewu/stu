@@ -19,6 +19,15 @@
 			<div data-options="title:'基本信息'" >
 			<form id="newCarArchivesForm" method="post" novalidate> 
 				<table class="base_table" cellspacing="0" cellpadding="0"> 
+					<tr>
+						<td class="info_title">流水号：</td>
+						<td class="info"><input name="lsh" id="rk_lsh" >
+							<a href="javascript:queryByLsh()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
+														
+						</td>
+						<td class="info_title">指定档案格：</td>
+						<td class="info"><a href="javascript:checkDAG()" class="easyui-linkbutton" data-options="iconCls:'icon-filter'">档案格选择</a><span id="dagtxt"></span>&nbsp;&nbsp;<a href="javascript:clearDAG()" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">清除</a></td>
+					</tr>
 					<tr><td class="info_title">号牌号码：</td>
 						<td class="info"><input name="hphm" id="rk_hphm" class="easyui-textbox" required="true">
 						</td>
@@ -35,15 +44,7 @@
 						<td class="info"><input name="clsbdh" id="rk_clsbdh" class="easyui-textbox" required="true">
 						</td>
 					</tr>
-					<tr>
-						<td class="info_title">流水号：</td>
-						<td class="info"><input name="lsh" id="rk_lsh" class="easyui-textbox" >
-							<a href="javascript:queryByLsh()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
-														
-						</td>
-						<td class="info_title">指定档案格：</td>
-						<td class="info"><a href="javascript:checkDAG()" class="easyui-linkbutton" data-options="iconCls:'icon-filter'">档案格选择</a><span id="dagtxt"></span>&nbsp;&nbsp;<a href="javascript:clearDAG()" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">清除</a></td>
-					</tr>
+					
 					<tr>
 						<td colspan="4" class="info" align="center">
 							<a href="javascript:newCarCheckIn()" class="easyui-linkbutton" data-options="iconCls:'icon-save'">入库</a>
@@ -178,8 +179,9 @@ function newCarCheckIn(){
 			if(data.state==1){
 				$.messager.alert("提示","保存成功！","info",function(){
 					$('#newCarArchivesForm').form('clear');
-					$('#datagrid-archiveRegisterNew').datagrid("reload");
+					$('#datagrid-archiveRegisterNew').datagrid("reload");					
 					printBQ(data.data);
+					$('#rk_lsh').textbox('textbox').focus();
 				});				
 			}else{
 				$.messager.alert("提示",data.message,"error");
@@ -229,9 +231,10 @@ $(function(){
 				findCarByLsh(newValue);
 			}
 		}
-	})
+	});
+	
 });
-
+setTimeout("$('#rk_lsh').textbox('textbox').focus();",1000);
 
 function checkDAG(){
 	$('#dagDlg').dialog('open');

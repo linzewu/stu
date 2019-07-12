@@ -342,7 +342,7 @@ function saveUser(url,callback){
 	$('#userInfoForm').form('submit', {
 		url: url,
 	    success: function(data){
-	    	console.log(data)
+	    	
 	        var data = $.parseJSON(data);
 	        
 	        if (data.state == "1"){

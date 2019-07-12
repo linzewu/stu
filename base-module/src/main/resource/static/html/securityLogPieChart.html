@@ -4,7 +4,7 @@
 //Build the chart
 $(function(){
 	$.post("../../securityLog/getStatisticsSecurityLog",function(data){
-		 console.log(data);
+		 
 		 var dataArr = [];
 		 if(data.state == 1){
 			 var datas = data.data;
@@ -14,7 +14,7 @@ $(function(){
 				 item.y = Number((datas[i].cou/datas[i].allCount).toFixed(2));
 				 dataArr.push(item);
 			 }
-			 console.log(dataArr)
+			 
 			 $('#container').highcharts({
 					chart: {
 						plotBackgroundColor: null,

@@ -21,6 +21,12 @@ public class CarInfoRepository {
 	}
 	
 	public List<Map<String,Object>> getCarInfoByClsbdh(String clsbdh){
+		String sql = "select c.* from veh_flow c where clsbdh=? and lszt = 'E'";
+		return jdbcTemplate.queryForList(sql, clsbdh);
+		
+	}
+	
+	public List<Map<String,Object>> getVehFlowByClsbdh(String clsbdh){
 		String sql = "select c.* from veh_flow c where clsbdh=?";
 		return jdbcTemplate.queryForList(sql, clsbdh);
 		

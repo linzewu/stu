@@ -1,0 +1,83 @@
+<table id="datagrid-elecarchiveQuery" title="电子档案查询" class="easyui-datagrid" style="width:100%;height:500px"
+	            toolbar="#datagrid-elecarchiveQuery-toolbar" pagination="true" url="../../electronArchives/getVehCarInfosList" pageSize="20"
+	            pageList="[20,50,100,200,300]"
+	            rownumbers="true"  singleSelect="true" data-options="onDblClickRow:loadImg">
+	        <thead>
+	            <tr>
+	                <th  width="120px" data-options="field:'HPHM'">号牌号码</th>	                
+	                <th  width="120px" data-options="field:'HPZL',formatter:hpzlFormat">号牌种类</th>
+	                <th  width="160px" data-options="field:'CLSBDH'">车辆识别代号</th>
+	                <th  width="120px" data-options="field:'SYR'">机动车所有人</th>
+	                <th  width="160px" data-options="field:'SFZMHM'">身份证号码</th>
+	                <th  width="120px" data-options="field:'FDJXH'">发动机型号</th>
+	                <th  width="160px" data-options="field:'FDJH'">发动机号</th>
+	                <th  width="140px" data-options="field:'CCRQ'">出场日期</th>
+	                <th  width="140px" data-options="field:'CCDJRQ'">初次登记日期</th>
+	                <th  width="200px" data-options="field:'CLPP1'">车辆品牌</th>
+	                      
+	            </tr>
+	        </thead>
+	    </table>
+	    <div id="datagrid-elecarchiveQuery-toolbar">
+	    	<ul class="querParamList">
+	    		<li><label>号牌种类：</label><input id="quer_hpzl"   prompt='请选择号牌种类' data-options="data:comm.getBaseParames('hpzl'),	valueField: 'id',
+					textField: 'value'"  class="easyui-combobox" style="width: 160px;"></li>
+		    	<li><label>车辆识别代号：</label><input type="text" class="easyui-textbox" id="quer_clsbdh" style="width: 160px;"></li>
+		    	<li><label>机动车所有人：</label><input type="text" class="easyui-textbox" id="quer_xm" style="width: 160px;"></li><br/>
+				<li><label>号牌号码：</label><input type="text" class="easyui-textbox" id="quer_hphm" style="width: 160px;"></li>
+				<li><label>身份证：</label><input type="text" class="easyui-textbox" id="quer_sfzmhm" style="width: 160px;"></li>
+				<li><a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="queryElecArchival()">查询</a></li>
+		    </ul>
+	    </div>
+
+
+<div id="elecWin" class="easyui-window" title="My Window" style="width:1180px;height:600px"
+        data-options="iconCls:'icon-save',modal:true,closed:true">
+    <div id="elecTab" style="width:1110px;height:580px;"  class="easyui-tabs" >
+    
+    </div>
+</div>	    
+<script type="text/javascript">
+function queryElecArchival(){
+	var quer_xm = $("#quer_xm").textbox("getValue");
+	var quer_clsbdh=$("#quer_clsbdh").textbox("getValue");	
+	var quer_hpzl = $("#quer_hpzl").combobox("getValue");	
+	var quer_hphm = $("#quer_hphm").textbox("getValue");
+	var quer_sfzmhm = $("#quer_sfzmhm").textbox("getValue");
+	$('#datagrid-elecarchiveQuery').datagrid("reload",{clsbdh:quer_clsbdh,hpzl:quer_hpzl,hphm:quer_hphm,xm:quer_xm,sfzmhm:quer_sfzmhm});
+}
+
+function loadImg(index,row){
+	
+	
+	$('#elecWin').window('setTitle',comm.getParamNameByValue("hpzl", row.HPZL) +" "+ row.HPHM+" 车辆识别代号："+ row.CLSBDH); 
+	
+	var windowElec =  $('#elecWin').window('open');
+	windowElec.panel('clear');
+	windowElec.panel({content:"<div id='elecTab' style='width:1110px;height:580px;'  class='easyui-tabs' ></div>"});
+	
+	
+	$.post("../../electronArchives/getVehFlowList",{clsbdh:row.CLSBDH},function(data){
+		if(data.state==1){
+			var dataList = data.data;
+			for(var i = 0;i<dataList.length;i++){
+				var obj = dataList[i];
+				//lshArr.push(obj.LSH);
+				$('#elecTab').tabs('add',{
+				    title:comm.getParamNameByValue("ywlx", obj.YWLX)+(i+1),
+				    href:'electronImage.html',
+				    closable:false,
+				    selected:i==0?true:false,
+				    lsh:obj.LSH
+				});
+			}
+		}else{
+			$.messager.alert("提示","查询机动车电子档案流水信息失败！","error");
+		}
+		
+	},"json").complete(function(){
+		$.messager.progress('close');
+	});
+}
+
+</script>

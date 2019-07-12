@@ -26,6 +26,7 @@ $(function(){
 	$("#sfzySpn").hide();
 	$("#out_ywlx").combobox({
 		onSelect:function(obj){
+			
 			var sfzyStr = "";
 			var bxzyStr = "";
 			var sfzyArr = comm.getBaseParames("sfzyqtdyj");
@@ -44,20 +45,25 @@ $(function(){
 			if(sfzyStr.indexOf(obj.id) != -1){
 				$("#sfzySpn").show();
 				$('#sfzy').checkbox({
-				    checked: false
+				    checked: false,
+				    disabled: false
 				});
-			}else if(bxzyStr.indexOf(obj.id) !=-1){
+			}
+			if(bxzyStr.indexOf(obj.id) !=-1){
 				$("#sfzySpn").show();
 				$('#sfzy').checkbox({
-				    checked: true
+				    checked: true,
+				    disabled: true
 				});
-			}else{
+			}
+			if(sfzyStr.indexOf(obj.id) == -1 && bxzyStr.indexOf(obj.id) ==-1){
 				$('#sfzy').checkbox({
-				    checked: false
+				    checked: false,
+				    disabled: false
 				});
 				$("#sfzySpn").hide();
 			}
-			console.log(obj)
+			
 		}
 	})
 })

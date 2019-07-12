@@ -106,8 +106,7 @@ function clickLogin() {
             }, 10);
         },
         error: function (status, xmlDoc) {
-        	console.log("status:"+status)
-        	console.log("xmlDoc:"+xmlDoc)
+        	
             //showOPInfo(szDeviceIdentify + " 登录失败！", status, xmlDoc);
             LogMessage(getErrorMsg(szDeviceIdentify + " 登录失败！",status, xmlDoc));
         }
@@ -222,7 +221,7 @@ function getChannelInfo(szDeviceIdentifys) {
             LogMessage(getErrorMsg(szDeviceIdentify + " 获取零通道失败！",status, xmlDoc));
         }
     });
-    console.log(channelList)
+    
     $("#input_channel").combobox("loadData",channelList);
 }
 
@@ -248,7 +247,7 @@ function getDevicePort(szDeviceIdentifys) {
 //开始预览
 function clickStartRealPlay(iStreamType) {
 	var  m_iNowChanNo = $("#fm input[name=channel]").val();
-    console.log(m_iNowChanNo);
+    
     if (m_iNowChanNo !="") {
     	var szIP = $("#fm input[name=ip]").val(),
         szPort = $("#fm input[name=port]").val();
@@ -443,7 +442,7 @@ function getChannel(){
                 }
             }
         }
-        console.log(channelList)
+        
         $("#input_channel").combobox("loadData",channelList);
 	}
 }
@@ -452,7 +451,7 @@ function getChannel(){
 function play(){
 	
      var  m_iNowChanNo = $("#fm input[name=channel]").val();
-     console.log(m_iNowChanNo);
+     
      if (m_iNowChanNo !="") {
     	 m_iNowChanNo=parseInt(m_iNowChanNo);
     	 if(m_iNowChanNo>=m_iChannelNum)

@@ -196,13 +196,15 @@ public class LogAopAction {
 		jsonConfig.setExcludes(new String[] { "qmFile","mm" });
 		if (args != null && args.length > 0 && isNotExistMethod(methodName)) {
 			for (int c = 0; c < args.length; c++) {
-				if (args[c].getClass().getSuperclass() == BaseEntity.class
-						|| args[c].getClass() == LinkedHashMap.class) {
-					sbStr.append("参数" + (c + 1) + "=" + JSONObject.fromObject(args[c], jsonConfig).toString() + ",");
-				} else if (args[c].getClass() == String.class || args[c].getClass() == Integer.class) {
-					sbStr.append("参数" + (c + 1) + "=" + args[c] + ",");
+				if(args[c] != null) {
+					if (args[c].getClass().getSuperclass() == BaseEntity.class
+							|| args[c].getClass() == LinkedHashMap.class) {
+						sbStr.append("参数" + (c + 1) + "=" + JSONObject.fromObject(args[c], jsonConfig).toString() + ",");
+					} else if (args[c].getClass() == String.class || args[c].getClass() == Integer.class) {
+						sbStr.append("参数" + (c + 1) + "=" + args[c] + ",");
+					}
+					// args[0] = "改变后的参数1";
 				}
-				// args[0] = "改变后的参数1";
 			}
 		}
 		log.setOperationCondition(sbStr.toString());

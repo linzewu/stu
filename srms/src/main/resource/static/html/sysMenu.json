@@ -38,7 +38,7 @@
 				},
 				{
 					"icon": "../../static/images/archiveinsert.png",
-					"title": "档案入库",
+					"title": "档案归还",
 					"href": "../../static/html/archiveCheckIn.html",
 					"permission":"archivalCase.getArchivalCaseCheckOutList"
 				},
@@ -82,6 +82,34 @@
 					"href": "http://www.baidu.com",
 					"permission":"driverFiles.getDriverFilesList",
 					"mode":"new"
+				}
+			]
+		}]
+},{
+	"module": "机动车电子档案",
+	"group": [
+		{
+			"groupName": "机动车电子档案",
+			"menus": [
+				{
+					"icon": "../../static/images/archives2.png",
+					"title": "电子档案查询",
+					"href": "../../static/html/electronArchives.html",
+					"permission":"electronArchives.getVehCarInfosList"
+				}
+			]
+		}]
+},{
+	"module": "历史档案扫描",
+	"group": [
+		{
+			"groupName": "历史档案扫描",
+			"menus": [
+				{
+					"icon": "../../static/images/history.png",
+					"title": "历史档案扫描",
+					"href": "../../static/html/historyArchivesScans.html",
+					"permission":"electronArchives.getVehCarInfosList"
 				}
 			]
 		}]
