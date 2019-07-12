@@ -115,7 +115,7 @@ public class VehController {
 				i++;
 			}
 		}
-		Map<String, Object> data = vehCheckLoginManager.getVehChecking(page, rows, vehCheckLogin, jczt);
+		Map<String, Object> data = vehCheckLoginManager.getVehChecking(page-1, rows, vehCheckLogin, jczt);
 
 		return data;
 	}

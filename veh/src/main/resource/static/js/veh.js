@@ -1237,23 +1237,23 @@ var report={
 				}
 			} catch (e) {}
 			if(row.cllx.indexOf("N")>=0){
-				$("#report1").panel({"href":"/veh/html/report/tricycleReport1.html","onLoad":report.getReport1,baseInfo:row});
+				$("#report1").panel({"href":"/veh/static/html/report/tricycleReport1.html","onLoad":report.getReport1,baseInfo:row});
 			}else{
-				$("#report1").panel({"href":"/veh/html/report/report1.html","onLoad":report.getReport1,baseInfo:row});
+				$("#report1").panel({"href":"/veh/static/html/report/report1.html","onLoad":report.getReport1,baseInfo:row});
 			}
 			//
-			$("#report2").panel({"href":"/veh/html/report/report2.html","onLoad":report.getReport2,baseInfo:row});
-			$("#report3").panel({"href":"/veh/html/report/report3.html","onLoad":report.getReport3,baseInfo:row});
-			$("#report4").panel({"href":"/veh/html/report/report4.html","onLoad":report.getReport4,baseInfo:row});
-			$("#upimage").panel({"href":"/veh/html/report/upimage.html",baseInfo:row});
-			$("#process").panel({"href":"/veh/html/report/process.html",baseInfo:row});
-			$("#online").panel({"href":"/veh/html/report/online.html",baseInfo:row});
-			$("#commit").panel({"href":"/veh/html/report/commit.html",baseInfo:row});
-			$("#roadCheck").panel({"href":"/veh/html/report/roadCheck.html",baseInfo:row});
-			$("#zbzlTab").panel({"href":"/veh/html/report/curbWeight.html",baseInfo:row});
+			$("#report2").panel({"href":"/veh/static/html/report/report2.html","onLoad":report.getReport2,baseInfo:row});
+			$("#report3").panel({"href":"/veh/static/html/report/report3.html","onLoad":report.getReport3,baseInfo:row});
+			$("#report4").panel({"href":"/veh/static/html/report/report4.html","onLoad":report.getReport4,baseInfo:row});
+			$("#upimage").panel({"href":"/veh/static/html/report/upimage.html",baseInfo:row});
+			$("#process").panel({"href":"/veh/static/html/report/process.html",baseInfo:row});
+			$("#online").panel({"href":"/veh/static/html/report/online.html",baseInfo:row});
+			$("#commit").panel({"href":"/veh/static/html/report/commit.html",baseInfo:row});
+			$("#roadCheck").panel({"href":"/veh/static/html/report/roadCheck.html",baseInfo:row});
+			$("#zbzlTab").panel({"href":"/veh/static/html/report/curbWeight.html",baseInfo:row});
 			$("#tab-report").tabs("getSelected").panel("refresh");
-			$("#performanceCk").panel({"href":"/veh/html/report/performanceCk.html",baseInfo:row});
-			$("#performanceCkRep").panel({"href":"/veh/html/report/performanceCkRep.html",baseInfo:row});
+			$("#performanceCk").panel({"href":"/veh/static/html/report/performanceCk.html",baseInfo:row});
+			$("#performanceCkRep").panel({"href":"/veh/static/html/report/performanceCkRep.html",baseInfo:row});
 			
 		}
 	},
