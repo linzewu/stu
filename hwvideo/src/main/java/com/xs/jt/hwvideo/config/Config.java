@@ -30,7 +30,7 @@ public class Config {
 	
 	protected static Log logger = LogFactory.getLog(Config.class);
 	
-	private WeightContainer weightContainer;
+	private WeightContainer weightContainer =new WeightContainer();
 	
 	@Value("${com.xs.hw.com}")
 	private String com;
@@ -93,6 +93,12 @@ public class Config {
 		return factory;
 	}
 	
+	@Bean("weight")
+	public WeightContainer weight() {
+		weightContainer.setWeight(0f);
+		return weightContainer;
+	}
+	
 	@Bean("simpleRead")
 	public SimpleRead simpleRead() throws InstantiationException, IllegalAccessException, ClassNotFoundException{
 		SimpleRead sm = new SimpleRead();
@@ -101,11 +107,9 @@ public class Config {
 		sm.setParity(parity);
 		sm.setRate(rate);
 		sm.setStopbits(stopbits);
-		
 		WeightDecodeAbstract weightDecode = (WeightDecodeAbstract) Class.forName("com.xs.jt.hwvideo.manager.decode."+weightDecodeName).newInstance();
-		
+		weightDecode.setWeightContainer(weightContainer);
 		sm.setWeightDecode(weightDecode);
-		
 		try {
 			sm.open();
 		}catch (Exception e) {
@@ -114,11 +118,6 @@ public class Config {
 		return sm;
 	}
 	
-	@Bean("weight")
-	public WeightContainer weight() {
-		weightContainer =new WeightContainer();
-		weightContainer.setWeight(0f);
-		return weightContainer;
-	}
+	
 
 }

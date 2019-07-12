@@ -30,6 +30,23 @@ public class HKVisionUtil {
 	
 	@Value("${hk.picPath}")
 	private String picPath;
+	
+	
+	
+	@Value("${hk1.ip}")
+	private String devIp;
+	
+	@Value("${hk1.port}")
+	private int devPort;
+	
+	@Value("${hk1.userName}")
+	private String devUserName;
+	
+	@Value("${hk1.password}")
+	private String devPassword;
+	
+	@Value("${hk1.channel}")
+	private long devChannel;
 
 	
 	
@@ -73,15 +90,15 @@ public class HKVisionUtil {
 	public void taskPicture(String recordId) throws Exception {
 		// 初始化
 		cameraInit();
-		NativeLong lUserID = register(userName,password,ip,port);
+		NativeLong lUserID = register(devUserName,devPassword,devIp,devPort);
 		try {
-			NativeLong lChannel =new NativeLong(channel);
+			NativeLong lChannel =new NativeLong(devChannel);
 			HCNetSDK.NET_DVR_JPEGPARA jpgparam =new HCNetSDK.NET_DVR_JPEGPARA();
 			jpgparam.wPicQuality=1;
-			jpgparam.wPicSize=0xff;
+			jpgparam.wPicSize=5;
 			boolean flag = hCNetSDK.NET_DVR_CaptureJPEGPicture(lUserID, lChannel, jpgparam, picPath+"\\"+recordId+".jpg");
 			if(!flag) {
-				log.error("拍照失败" );
+				log.error("拍照失败:"+hCNetSDK.NET_DVR_GetLastError() );
 				throw new Exception("拍照失");
 			}
 		}finally {

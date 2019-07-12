@@ -21,9 +21,9 @@ public class PlayUtil {
 			// 语音朗读速度 -10 到 +10
 			sap.setProperty("Rate", new Variant(-3));
 			// 执行朗读
-			for(int i=0;i<count;i++) {
-				Dispatch.call(sapo, "Speak", new Variant(message));
-			}
+			//for(int i=0;i<count;i++) {
+			Dispatch.call(sapo, "Speak", new Variant(message));
+			//}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

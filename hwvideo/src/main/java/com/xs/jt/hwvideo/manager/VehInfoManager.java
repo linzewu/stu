@@ -1,5 +1,6 @@
 package com.xs.jt.hwvideo.manager;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,9 @@ import com.xs.jt.hwvideo.entity.VehInfo;
 
 @Service
 public class VehInfoManager {
+	
+	@Value("${spring.jpa.database}")
+	private String database;
 	
 	@Autowired
 	private VehInfoRepository vehInfoRepository;
@@ -77,10 +81,23 @@ public class VehInfoManager {
 	@Scheduled(cron = "0/10 * * * * ? ")
 	public void downLoadInVideo() throws Exception {
 		em.clear();
-		String sql ="from VehInfo where status=3 and inVideoStatus=0 and jcjssj<DATEADD(n,2,GETDATE())";
+		String sql="";
+		
+		if(database.trim().equals("SQLSERVER")) {
+			sql ="from VehInfo where status=3 and inVideoStatus=0 and jcjssj<DATEADD(mi,-2,GETDATE())";
+		}
+		if(database.trim().equals("MYSQL")) {
+			sql ="from VehInfo where status=3 and inVideoStatus=0 and jcjssj<?";
+		}
 		Query query = em.createQuery(sql,VehInfo.class);
 		query.setFirstResult(0);
 		query.setMaxResults(1);
+		if(database.trim().equals("MYSQL")) {
+			Calendar calendar=Calendar.getInstance();
+			calendar.add(Calendar.MINUTE, -2);
+			query.setParameter(0, calendar.getTime());
+		}
+		
 		List<VehInfo> datas =(List<VehInfo>)query.getResultList();
 		if(!CollectionUtils.isEmpty(datas)) {
 			VehInfo data =datas.get(0);
@@ -96,10 +113,22 @@ public class VehInfoManager {
 	@Scheduled(cron = "0/10 * * * * ? ")
 	public void downLoadOutVideo() throws Exception {
 		em.clear();
-		String sql ="from VehInfo where status=3 and outVideoStatus=0 and ccjssj<DATEADD(n,2,GETDATE())";
+		String sql="";
+		if(database.trim().equals("SQLSERVER")) {
+			sql ="from VehInfo where status=3 and outVideoStatus=0 and ccjssj<DATEADD(mi,-2,GETDATE())";
+		}
+		
+		if(database.trim().equals("MYSQL")) {
+			sql ="from VehInfo where status=3 and outVideoStatus=0 and ccjssj<?";
+		}
 		Query query = em.createQuery(sql,VehInfo.class);
 		query.setFirstResult(0);
 		query.setMaxResults(1);
+		if(database.trim().equals("MYSQL")) {
+			Calendar calendar=Calendar.getInstance();
+			calendar.add(Calendar.MINUTE, -2);
+			query.setParameter(0, calendar.getTime());
+		}
 		List<VehInfo> datas =(List<VehInfo>)query.getResultList();
 		if(!CollectionUtils.isEmpty(datas)) {
 			VehInfo data =datas.get(0);

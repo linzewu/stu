@@ -54,6 +54,11 @@
 			<artifactId>jacob</artifactId>
 			<version>1.19</version>
 		</dependency>
+		<dependency>
+		    <groupId>mysql</groupId>
+		    <artifactId>mysql-connector-java</artifactId>
+		    <version>8.0.16</version>
+		</dependency>
 	</dependencies>
 	<!--maven的插件 -->
 	<build>

@@ -3,6 +3,7 @@ package com.xs.jt.hwvideo.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 public class CharUtil {
 
 	public static String toHexString(String s) {
@@ -121,11 +122,14 @@ public class CharUtil {
 		
 		System.out.println((char)s[0]);*/
 		
+		System.out.println( CharUtil.bcd2Str(new byte[] { CharUtil.hexStringToByte("30")[0], CharUtil.hexStringToByte("30")[0] }));
 		
-		byte[] b = CharUtil.hexStringToByte("FF0007EE");
-		
-		System.out.println(CharUtil.getCheckSum("410452"));
-		System.out.println(CharUtil.hexStringToByte("41")[0]);
+		/*
+		 * byte[] b = CharUtil.hexStringToByte("FF0007EE");
+		 * 
+		 * System.out.println(CharUtil.getCheckSum("410452"));
+		 * System.out.println(CharUtil.hexStringToByte("41")[0]);
+		 */
 	}
 
 	public static String byte2HexOfString(byte[] b) {

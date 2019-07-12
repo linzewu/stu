@@ -211,10 +211,10 @@ public class SimpleRead implements SerialPortEventListener {
 				}
 				byte[] endodedData = new byte[length];
 				System.arraycopy(readBuffer, 0, endodedData, 0, length);
-				System.out.println(new String(endodedData));
+			//	System.out.println(new String(endodedData));
 				weightDecode.decode(endodedData);
 			} catch (Exception e) {
-				logger.error("读取灯光仪数据流异常", e);
+				logger.error("读取数据流异常", e);
 			}
 			break;
 		}

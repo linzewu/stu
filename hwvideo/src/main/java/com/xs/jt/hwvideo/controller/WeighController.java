@@ -1,11 +1,13 @@
 package com.xs.jt.hwvideo.controller;
 
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,7 +30,6 @@ import com.xs.jt.hwvideo.entity.VehInfo;
 import com.xs.jt.hwvideo.manager.SimpleRead;
 import com.xs.jt.hwvideo.manager.VehInfoManager;
 import com.xs.jt.hwvideo.manager.WeighManager;
-import com.xs.jt.hwvideo.manager.WeightDecodeAbstract;
 import com.xs.jt.hwvideo.util.CharUtil;
 import com.xs.jt.hwvideo.util.PlayUtil;
 import com.xs.jt.hwvideo.util.WeightContainer;
@@ -82,11 +83,43 @@ public class WeighController {
 	private String picPath;
 	
 	
+	@RequestMapping(value = "/scanVeh2", method = RequestMethod.POST)
+	public  @ResponseBody JSONObject scan2(HttpServletRequest request) throws Exception{
+		Enumeration<String> param = request.getParameterNames();
+		while(param.hasMoreElements()) {
+			String key =param.nextElement();
+			System.out.println(key);
+			System.out.println(request.getParameter(key));
+		}
+		
+		JSONObject json=new JSONObject();
+		JSONObject alarmInfoPlate =new JSONObject();
+		JSONObject result=new JSONObject();
+		JSONObject plateResult=new JSONObject();
+		plateResult.put("license", request.getParameter("car_plate"));
+		result.put("PlateResult", plateResult);
+		alarmInfoPlate.put("result",result);
+		json.put("AlarmInfoPlate",alarmInfoPlate);
+		
+//		BufferedReader streamReader = new BufferedReader( new InputStreamReader(request.getInputStream(), "UTF-8"));  
+//		StringBuilder responseStrBuilder = new StringBuilder();  
+//		String inputStr;  
+//		while ((inputStr = streamReader.readLine()) != null) {
+//			responseStrBuilder.append(inputStr);
+//		}
+		scan(json);
+		JSONObject jo =new JSONObject();
+		jo.put("status",200);
+		jo.put("is_paid",true);
+		jo.put("verified",true);
+		return jo;
+	}
 
 	
 
 	@RequestMapping(value = "/scanVeh", method = RequestMethod.POST,consumes="application/json")
 	public @ResponseBody String scan(@RequestBody JSONObject jsonObject) throws Exception {
+		
 		JSONObject alarmInfoPlate = jsonObject.getJSONObject("AlarmInfoPlate");
 		JSONObject respJson =new JSONObject();
 		respJson.put("info","no");
@@ -95,18 +128,24 @@ public class WeighController {
 		JSONObject respData =new JSONObject();
 		respData.put("Response_AlarmInfoPlate",respJson);
 			
-		String type=null;
+		String type="IN";
 		String typeMessage=null;
-		if(alarmInfoPlate==null) {
-			return respData.toJSONString();
-		}else {
-			String ip = alarmInfoPlate.getString("ipaddr");
-			JSONObject config = JSONObject.parseObject(ipTypeConfig);
-			type = config.getString(ip);
-		}
+		/*
+		 * if(alarmInfoPlate==null) { return respData.toJSONString(); }else { String ip
+		 * = alarmInfoPlate.getString("ipaddr"); JSONObject config =
+		 * JSONObject.parseObject(ipTypeConfig); type = config.getString(ip); }
+		 */
 		
 		JSONObject plateResult = getPlateResult(jsonObject);
 		String hphm =plateResult.getString("license");
+		VehInfo vehInfo = vehInfoManager.getVehInfoOfcc(hphm);
+		
+		if(vehInfo==null) {
+			type="IN";
+		}else {
+			type="OUT";
+		}
+		
 		if(!StringUtils.isEmpty(hphm)) {
 			JSONObject param=new JSONObject();
 			param.put("token", token);
@@ -117,16 +156,20 @@ public class WeighController {
 			msgBody.put("type", type);
 			param.put("msgBody", msgBody);
 			JSONObject jo = restTemplate.postForObject(url, param, JSONObject.class);
-			if(jo.getInteger("status")==0) {
+			if(jo.getInteger("status")==0&&vehInfo==null) {
 				playUtil.play(hphm + "暂无派车单！",3);
-			}else if(jo.getInteger("status")==1) {
+			}else {
 				JSONArray datas =  jo.getJSONArray("data");
-				VehInfo vehInfo = vehInfoManager.getVehInfoOfcc(hphm);
 				if(vehInfo!=null) {
-					if(vehInfo.getStatus()==2) {
-						weighManager.cccz(vehInfo);
-						vehInfo.setCckssj(new Date());
-						vehInfoManager.save(vehInfo);
+					if(vehInfo.getStatus()==0) {
+						playUtil.play("车辆"+hphm+"，请行驶到地磅称重！。",3);
+						respJson.put("info","ok");
+						return respData.toJSONString();
+					}else if(vehInfo.getStatus()==2) {
+						playUtil.play("车辆"+hphm+"，请行驶到地磅称重！。",3);
+//						weighManager.cccz(vehInfo);
+//						vehInfo.setCckssj(new Date());
+//						vehInfoManager.save(vehInfo);
 						respJson.put("info","ok");
 						return respData.toJSONString();
 					}else if(vehInfo.getStatus()==1) {
@@ -238,23 +281,25 @@ public class WeighController {
 		String[] types = uploadType.split(",");
 		String inRecordId=params.getString("inRecordId");
 		String outRecordId=params.getString("outRecordId");
-		
+		logger.info("========================uploadType:"+uploadType);
 		for(String type:types) {
 			if("1".equals(type)) {
-				return weighManager.uploadPhoto(picPath, inRecordId);
+				weighManager.uploadPhoto(picPath, inRecordId);
 			}
 			if("2".equals(type)) {
-				return weighManager.uploadPhoto(picPath, outRecordId);
+				 weighManager.uploadPhoto(picPath, outRecordId);
 			}
 			if("3".equals(type)) {
-				return weighManager.uploadFile(picPath, inRecordId);
+				 weighManager.uploadFile(picPath, inRecordId);
 			}
 			if("4".equals(type)) {
-				return weighManager.uploadFile(picPath, outRecordId);
+				 weighManager.uploadFile(picPath, outRecordId);
 			}
 		}
+		JSONObject jo =new JSONObject();
+		jo.put("status", 200);
 		
-		return null;
+		return jo;
 		
 	}
 	

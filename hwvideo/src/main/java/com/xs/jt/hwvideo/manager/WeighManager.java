@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -19,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xs.jt.hwvideo.controller.WeighController;
 import com.xs.jt.hwvideo.dao.VehInfoRepository;
 import com.xs.jt.hwvideo.entity.VehInfo;
 import com.xs.jt.hwvideo.util.HCNetSDK;
@@ -29,6 +32,8 @@ import com.xs.jt.hwvideo.util.WeightContainer;
 
 @Service
 public class WeighManager {
+	
+	protected static Log logger = LogFactory.getLog(WeighManager.class);
 	
 	@Autowired
 	private WeightContainer weightContainer;
@@ -63,13 +68,14 @@ public class WeighManager {
 	@Autowired
 	private VehInfoRepository vehInfoRepository;
 	
+	@Async
 	public void inVeh(JSONObject jsonObject) {
 		String hphm = jsonObject.getString("vehicleNo");
 		currentInDatas.clear();
 		VehInfo vehInfo=new VehInfo();
 		vehInfo.setHphm(hphm);
 		vehInfo.setJsonData(jsonObject.toJSONString());
-		vehInfo.setStatus(1);
+		vehInfo.setStatus(0);
 		vehInfo.setJckssj(new Date());
 		vehInfo.setBillNo(jsonObject.getString("billNo"));
 		vehInfo.setInVideoStatus(0);
@@ -99,6 +105,7 @@ public class WeighManager {
 		Float weight = cz();
 		vehInfo.setOutWeightDate(new Date());
 		playUtil.play(hphm+"称重完成，重量"+weight+"公斤，请打开闸机出场。",2);
+		hkUtil.taskPicture(recordId);
 		vehInfo.setOutRecordId(recordId);
 		vehInfo.setStatus(3);
 		vehInfo.setOutWeight(weight);
@@ -119,9 +126,11 @@ public class WeighManager {
 		Float weight = cz();
 		vehInfo.setInWeightDate(new Date());
 		playUtil.play(hphm+"称重完成，重量"+weight+"公斤，请打开内闸机进场！",2);
+		hkUtil.taskPicture(recordId);
 		vehInfo.setInWeight(weight);
 		vehInfo.setJcjssj(new Date());
 		vehInfo.setInRecordId(recordId);
+		vehInfo.setStatus(1);
 		vehInfoRepository.save(vehInfo);
 		uploadWeigh(vehInfo,"IN");
 	}
@@ -163,14 +172,14 @@ public class WeighManager {
 		SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		if("IN".equals(type)) {
 			msgBody.put("type",type);
-			msgBody.put("weight", vehInfo.getInWeight());
+			msgBody.put("weight", vehInfo.getInWeight()/1000);
 			msgBody.put("weightTime", sdf.format(vehInfo.getInWeightDate()));
 			msgBody.put("recordId", vehInfo.getInRecordId());
 			
 		}
 		if("OUT".equals(type)) {
 			msgBody.put("type", type);
-			msgBody.put("weight", vehInfo.getOutWeight());
+			msgBody.put("weight", vehInfo.getOutWeight()/1000);
 			msgBody.put("weightTime", sdf.format(vehInfo.getOutWeightDate()));
 			msgBody.put("recordId", vehInfo.getOutRecordId());
 		}
@@ -189,26 +198,38 @@ public class WeighManager {
    @Async
    public JSONObject uploadFile(String filePath,String recordId) {
 	   
+	   logger.info("begin uploadFile:"+recordId);
+	   
 	   FileSystemResource resource = new FileSystemResource(new File(filePath+"\\"+recordId+".mp4"));  
 	   MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();  
 	   param.add("files", resource);
 	   param.add("recordId", recordId);
 	   JSONObject jo = restTemplate.postForObject(uploadUrl, param, JSONObject.class);
+	   
+	   logger.info("end uploadFile:"+recordId);
 	   return jo;
    }
    
    @Async
    public JSONObject uploadPhoto(String filePath,String recordId) {
 	   
+	   logger.info("begin uploadPhoto:"+recordId);
+	   
 	   FileSystemResource resource = new FileSystemResource(new File(filePath+"\\"+recordId+".jpg"));  
 	   MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();  
 	   param.add("files", resource);
 	   param.add("recordId", recordId);
 	   JSONObject jo = restTemplate.postForObject(uploadUrl, param, JSONObject.class);
+	   logger.info("ennd uploadPhoto:"+recordId);
+	   
 	   return jo;
    }
    
    public void dowloandVideo(String id,Date beginDate,Date endDate) throws Exception {
+	   
+	   SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	   System.out.println("开始时间："+sdf.format(beginDate));
+	   System.out.println("结束时间："+sdf.format(endDate));
 	   
 	   NET_DVR_TIME lpStartTime = new HCNetSDK.NET_DVR_TIME();
 	   convert(beginDate, lpStartTime);
@@ -239,7 +260,7 @@ public class WeighManager {
 	   int i=0;
 	   while(i<5*5) {
 		   Thread.sleep(200);
-		   if(Math.abs(f-weightContainer.getWeight())<2) {
+		   if(Math.abs(f-weightContainer.getWeight())<2&&f>0) {
 			   i++;
 		   }else {
 			   i=0;
@@ -247,6 +268,10 @@ public class WeighManager {
 		   f=weightContainer.getWeight();
 	   }
 	   return f;
+   }
+   
+   public static void main(String[] age) {
+	   System.out.println(1420f/1000);
    }
    
 
