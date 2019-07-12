@@ -80,6 +80,7 @@ public class WeighManager {
 		vehInfo.setBillNo(jsonObject.getString("billNo"));
 		vehInfo.setInVideoStatus(0);
 		vehInfo.setOutVideoStatus(0);
+		vehInfo.setInRecordId(jsonObject.getString("recordId"));
 		vehInfoRepository.save(vehInfo);
 	
 	}
@@ -89,6 +90,8 @@ public class WeighManager {
 		currentInDatas.clear();
 		VehInfo vehInfo=vehInfoRepository.findById(jsonObject.getInteger("vehInfoId")).get();
 		vehInfo.setStatus(2);
+		vehInfo.setOutRecordId(jsonObject.getString("recordId"));
+		
 		vehInfoRepository.save(vehInfo);
 		
 	}
@@ -100,13 +103,12 @@ public class WeighManager {
 		
 		String hphm = jsonObject.getString("vehicleNo");
 		String billNo =jsonObject.getString("billNo");
-		String recordId =getRecordId(hphm,"OUT",billNo);
+		//String recordId =getRecordId(hphm,"OUT",billNo);
 		playUtil.play(hphm+"，开始称重，请行驶到地磅称重。",2);
 		Float weight = cz();
 		vehInfo.setOutWeightDate(new Date());
 		playUtil.play(hphm+"称重完成，重量"+weight+"公斤，请打开闸机出场。",2);
-		hkUtil.taskPicture(recordId);
-		vehInfo.setOutRecordId(recordId);
+		hkUtil.taskPicture(vehInfo.getOutRecordId());
 		vehInfo.setStatus(3);
 		vehInfo.setOutWeight(weight);
 		vehInfo.setCcjssj(new Date());
@@ -121,15 +123,14 @@ public class WeighManager {
 		JSONObject jsonObject=JSONObject.parseObject(strData);
 		String hphm = jsonObject.getString("vehicleNo");
 		String billNo =jsonObject.getString("billNo");
-		String recordId =getRecordId(hphm,"IN",billNo);
+		//String recordId =getRecordId(hphm,"IN",billNo);
 		playUtil.play(hphm+"，请行驶到地磅称重。",2);
 		Float weight = cz();
 		vehInfo.setInWeightDate(new Date());
 		playUtil.play(hphm+"称重完成，重量"+weight+"公斤，请打开内闸机进场！",2);
-		hkUtil.taskPicture(recordId);
+		hkUtil.taskPicture(vehInfo.getInRecordId());
 		vehInfo.setInWeight(weight);
 		vehInfo.setJcjssj(new Date());
-		vehInfo.setInRecordId(recordId);
 		vehInfo.setStatus(1);
 		vehInfoRepository.save(vehInfo);
 		uploadWeigh(vehInfo,"IN");

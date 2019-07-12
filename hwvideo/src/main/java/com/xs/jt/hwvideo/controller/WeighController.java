@@ -130,11 +130,6 @@ public class WeighController {
 			
 		String type="IN";
 		String typeMessage=null;
-		/*
-		 * if(alarmInfoPlate==null) { return respData.toJSONString(); }else { String ip
-		 * = alarmInfoPlate.getString("ipaddr"); JSONObject config =
-		 * JSONObject.parseObject(ipTypeConfig); type = config.getString(ip); }
-		 */
 		
 		JSONObject plateResult = getPlateResult(jsonObject);
 		String hphm =plateResult.getString("license");
@@ -167,9 +162,6 @@ public class WeighController {
 						return respData.toJSONString();
 					}else if(vehInfo.getStatus()==2) {
 						playUtil.play("车辆"+hphm+"，请行驶到地磅称重！。",3);
-//						weighManager.cccz(vehInfo);
-//						vehInfo.setCckssj(new Date());
-//						vehInfoManager.save(vehInfo);
 						respJson.put("info","ok");
 						return respData.toJSONString();
 					}else if(vehInfo.getStatus()==1) {
@@ -229,6 +221,9 @@ public class WeighController {
 		param.put("msgBody", msgBody);
 		JSONObject jo = restTemplate.postForObject(url, param, JSONObject.class);
 		if(jo.getInteger("status")==1) {
+			
+			jsonObject.put("recordId", jo.getJSONObject("data").getString("recordId"));
+			System.out.println("recordId====="+jo.getJSONObject("data").getString("recordId"));
 			if("IN".equals(type)) {
 				weighManager.inVeh(jsonObject);
 			}else if("OUT".equals(type)) {
