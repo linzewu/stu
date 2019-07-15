@@ -223,7 +223,7 @@ public class WeighController {
 		if(jo.getInteger("status")==1) {
 			
 			jsonObject.put("recordId", jo.getJSONObject("data").getString("recordId"));
-			System.out.println("recordId====="+jo.getJSONObject("data").getString("recordId"));
+			logger.info("recordId====="+jo.getJSONObject("data").getString("recordId"));
 			if("IN".equals(type)) {
 				weighManager.inVeh(jsonObject);
 			}else if("OUT".equals(type)) {
